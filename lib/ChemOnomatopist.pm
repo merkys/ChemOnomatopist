@@ -5,6 +5,30 @@ use warnings;
 
 use Graph::Traversal::BFS;
 
+our @prefixes = qw(
+    ?
+    meth
+    eth
+    prop
+    but
+    bent
+    hex
+    hept
+    oct
+    non
+    dec
+    undec
+    dodec
+    tridec
+    tetradec
+    pentadec
+    hexadec
+    heptadec
+    octadec
+    nonadec
+    icos
+);
+
 sub get_name
 {
     my( $graph ) = @_;
@@ -16,7 +40,7 @@ sub get_name
     my @order = $bfs->bfs;
     $last = pop @order; # should return the last-visited node
     get_chain( $graph, $last );
-    print "e\n";
+    print "ane\n";
 }
 
 sub get_chain
@@ -56,11 +80,11 @@ sub get_chain
             $graph->delete_edge( $atom, $neighbour );
             printf '%d-(', $i+1;
             get_chain( $graph, $neighbour );
-            print ')';
+            print 'yl)-';
         }
     }
 
-    printf '%den-', scalar @chain;
+    print $prefixes[scalar @chain];
 }
 
 1;
