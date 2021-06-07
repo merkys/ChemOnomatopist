@@ -16,18 +16,21 @@ sub get_name
     my @order = $bfs->bfs;
     $last = pop @order; # should return the last-visited node
     get_chain( $graph, $last );
+    print "e\n";
 }
 
 sub get_chain
 {
     my( $graph, $start ) = @_;
 
-    my %order;
     my $bfs = Graph::Traversal::BFS->new( $graph,
                                           start => $start,
-                                          pre  => sub { $order{$_[0]} = scalar %order },
                                         );
     my @order = $bfs->bfs;
+    my %order;
+    for my $i (0..$#order) {
+        $order{$order[$i]} = $i;
+    }
 
     # Identify the main chain by backtracking
     my $end = pop @order;
@@ -44,7 +47,20 @@ sub get_chain
         $end = $min;
     }
 
-    print STDERR sprintf "%d-mer\n", scalar @chain;
+    @chain = reverse @chain;
+    $graph->delete_path( @chain );
+
+    for my $i (0..$#chain) {
+        my $atom = $chain[$i];
+        for my $neighbour ($graph->neighbours( $atom )) {
+            $graph->delete_edge( $atom, $neighbour );
+            printf '%d-(', $i+1;
+            get_chain( $graph, $neighbour );
+            print ')';
+        }
+    }
+
+    printf '%den-', scalar @chain;
 }
 
 1;
