@@ -35,17 +35,18 @@ sub get_name
 
     my $last;
     my $bfs = Graph::Traversal::BFS->new( $graph,
-                                          # next_root  => undef,
+                                          # next_root => undef,
                                         );
     my @order = $bfs->bfs;
-    $last = pop @order; # should return the last-visited node
-    get_chain( $graph, $last );
+    get_chain( $graph, pop @order, { choose_direction => 1 } );
     print "ane\n";
 }
 
 sub get_chain
 {
-    my( $graph, $start ) = @_;
+    my( $graph, $start, $options ) = @_;
+
+    $options = {} unless $options;
 
     my $bfs = Graph::Traversal::BFS->new( $graph,
                                           start => $start,
@@ -73,6 +74,21 @@ sub get_chain
 
     @chain = reverse @chain;
     $graph->delete_path( @chain );
+
+    # Establishing a stable order similarly as suggested by the IUPAC
+    # rules
+    if( $options->{choose_direction} ) {
+        for my $i (0..int(@chain/2)-1) {
+            if( $graph->degree( $chain[$i] ) !=
+                $graph->degree( $chain[$#chain-$i] ) ) {
+                if( $graph->degree( $chain[$i] ) <
+                    $graph->degree( $chain[$#chain-$i] ) ) {
+                    @chain = reverse @chain;
+                }
+                last;
+            }
+        }
+    }
 
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
