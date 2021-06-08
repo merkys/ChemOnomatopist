@@ -30,6 +30,26 @@ our @prefixes = qw(
     octadec
     nonadec
     icos
+    henicos
+    docos
+    tricos
+    tetracos
+    pentacos
+    hexacos
+    heptacos
+    octacos
+    nonacos
+    triacont
+    hentriacont
+    dotriacont
+    tritriacont
+    tetratriacont
+    pentatriacont
+    hexatriacont
+    heptatriacont
+    octatriacont
+    nonatriacont
+    tetracont
 );
 
 sub get_name
