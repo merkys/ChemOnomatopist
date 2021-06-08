@@ -197,6 +197,8 @@ sub is_element
                 return $atom->is_oxygen;
             }
             warn "cannot say whether $atom is $element\n";
+        } elsif( $atom->isa( 'Chemistry::Atom' ) ) {
+            return $atom->symbol eq $element;
         }
         return '';
     }
