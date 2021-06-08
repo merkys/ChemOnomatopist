@@ -5,6 +5,8 @@ use warnings;
 
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Carbonyl;
+use ChemOnomatopist::Group::Carboxyl;
+use ChemOnomatopist::Group::Hydroxy;
 use Graph::Traversal::BFS;
 use Scalar::Util qw(blessed);
 
@@ -170,13 +172,13 @@ sub find_groups
             blessed $neighbours[0] &&
             $neighbours[0]->isa( ChemOnomatopist::Group::Carbonyl:: ) ) {
             my( $hydroxy, $carbonyl ) = ( $atom, @neighbours );
-            my $carboxyl = ChemOnomatopist::Group::Carbonyl->new( $carbonyl );
+            my $carboxyl = ChemOnomatopist::Group::Carboxyl->new( $carbonyl );
             for ($graph->neighbours( $carbonyl )) {
                 $graph->add_edge( $_, $carboxyl );
                 $graph->delete_edge( $_, $carbonyl );
             }
             $graph->delete_vertex( $carboxyl );
-            $graph->delete_vertex( $hydroxyl );
+            $graph->delete_vertex( $hydroxy );
         }
     }
 }
