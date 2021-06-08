@@ -58,6 +58,10 @@ sub get_name
 {
     my( $graph ) = @_;
 
+    if( scalar $graph->edges != $graph->vertices - 1 ) {
+        die "cannot handle graphs with cycles for now\n";
+    }
+
     my $last;
     my $bfs = Graph::Traversal::BFS->new( $graph,
                                           # next_root => undef,
