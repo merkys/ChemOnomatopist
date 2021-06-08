@@ -9,7 +9,8 @@ sub new
     return bless $self, $class;
 }
 
-# Not carbon by default
+# Neither of these by default
 sub is_carbon { return '' }
+sub is_oxygen { return '' }
 
 1;

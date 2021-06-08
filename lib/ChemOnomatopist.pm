@@ -117,12 +117,25 @@ sub find_groups
         if( is_element( $atom, 'O' ) &&
             scalar @neighbours == 1 &&
             is_element( $neighbours[0], 'C' ) ) {
-            my $ketone = ChemOnomatopist::Group::Carbonyl->new( $neighbours[0] );
+            my $carbonyl = ChemOnomatopist::Group::Carbonyl->new( $neighbours[0] );
             for ($graph->neighbours( $neighbours[0] )) {
-                $graph->add_edge( $_, $ketone ) unless $_ eq $atom;
+                $graph->add_edge( $_, $carbonyl );
                 $graph->delete_edge( $_, $neighbours[0] );
             }
             $graph->delete_vertex( $atom );
+
+            # Carbonyl derivatives should be detected here
+        # Detecting hydroxyls
+        } elsif( is_element( $atom, 'O' ) &&
+                 scalar @neighbours == 2 &&
+                 grep { is_element( $_, 'H' ) } @neighbours == 1 ) {
+            my $hydroxyl = ChemOnomatopist::Group::Hydroxyl->new( $atom );
+            my $hydrogen = grep { is_element( $_, 'H' ) } @neighbours;
+            for (@neighbours) {
+                $graph->add_edge( $_, $hydroxyl );
+                $graph->delete_edge( $_, $atom );
+            }
+            $graph->delete_vertex( $hydrogen );
         }
     }
 }
@@ -135,8 +148,10 @@ sub is_element
 
     if( blessed $atom ) {
         if( $atom->isa( ChemOnomatopist::Group:: ) ) {
-            if( $element eq 'C' ) {
+            if(      $element eq 'C' ) {
                 return $atom->is_carbon;
+            } elsif( $element eq 'O' ) {
+                return $atom->is_oxygen;
             }
             warn "cannot say whether $atom is $element\n";
         }
