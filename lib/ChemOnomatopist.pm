@@ -138,6 +138,27 @@ sub find_groups
             $graph->delete_vertex( $hydrogen );
         }
     }
+
+    # Second pass is needed to build on top of these trivial groups
+    for my $atom ($graph->vertices) {
+        my @neighbours = $graph->neighbours( $atom );
+
+        # Detecging carboxyl
+        if( blessed $atom &&
+            $atom->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
+            scalar @neighbours == 1 &&
+            blessed $neighbours[0] &&
+            $neighbours[0]->isa( ChemOnomatopist::Group::Carbonyl:: ) ) {
+            my( $hydroxy, $carbonyl ) = ( $atom, @neighbours );
+            my $carboxyl = ChemOnomatopist::Group::Carbonyl->new( $carbonyl );
+            for ($graph->neighbours( $carbonyl )) {
+                $graph->add_edge( $_, $carboxyl );
+                $graph->delete_edge( $_, $carbonyl );
+            }
+            $graph->delete_vertex( $carboxyl );
+            $graph->delete_vertex( $hydroxyl );
+        }
+    }
 }
 
 sub is_element
