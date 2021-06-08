@@ -3,7 +3,10 @@ package ChemOnomatopist;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Group;
+use ChemOnomatopist::Group::Ketone;
 use Graph::Traversal::BFS;
+use Scalar::Util qw(blessed);
 
 our @prefixes = qw(
     ?
@@ -101,6 +104,48 @@ sub get_chain
     }
 
     print $prefixes[scalar @chain];
+}
+
+sub find_groups
+{
+    my( $graph ) = @_;
+
+    for my $atom ($graph->vertices) {
+        my @neighbours = $graph->neighbours( $atom );
+
+        # Detecting ketone
+        if( is_element( $atom, 'O' ) &&
+            scalar @neighbours == 1 &&
+            is_element( $neighbours[0], 'C' ) ) {
+            my $ketone = ChemOnomatopist::Group::Ketone->new( $neighbours[0] );
+            for ($graph->neighbours( $neighbours[0] )) {
+                $graph->add_edge( $_, $ketone ) unless $_ eq $atom;
+                $graph->delete_edge( $_, $neighbours[0] );
+            }
+            $graph->delete_vertex( $atom );
+        }
+    }
+}
+
+sub is_element
+{
+    my( $atom, $element ) = @_;
+
+    return unless ref $atom;
+
+    if( blessed $atom ) {
+        if( $atom->isa( ChemOnomatopist::Group:: ) ) {
+            if( $element eq 'C' ) {
+                return $atom->is_carbon;
+            }
+            warn "cannot say whether $atom is $element\n";
+        }
+        return '';
+    }
+
+    return ref $atom eq 'HASH' &&
+           exists $atom->{symbol} &&
+           $atom->{symbol} eq $element;
 }
 
 1;
