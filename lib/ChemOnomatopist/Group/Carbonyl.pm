@@ -1,4 +1,4 @@
-package ChemOnomatopist::Group::Ketone;
+package ChemOnomatopist::Group::Carbonyl;
 
 use strict;
 use warnings;

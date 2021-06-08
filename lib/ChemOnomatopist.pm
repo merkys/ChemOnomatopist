@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Group;
-use ChemOnomatopist::Group::Ketone;
+use ChemOnomatopist::Group::Carbonyl;
 use Graph::Traversal::BFS;
 use Scalar::Util qw(blessed);
 
@@ -113,11 +113,11 @@ sub find_groups
     for my $atom ($graph->vertices) {
         my @neighbours = $graph->neighbours( $atom );
 
-        # Detecting ketone
+        # Detecting carbonyls
         if( is_element( $atom, 'O' ) &&
             scalar @neighbours == 1 &&
             is_element( $neighbours[0], 'C' ) ) {
-            my $ketone = ChemOnomatopist::Group::Ketone->new( $neighbours[0] );
+            my $ketone = ChemOnomatopist::Group::Carbonyl->new( $neighbours[0] );
             for ($graph->neighbours( $neighbours[0] )) {
                 $graph->add_edge( $_, $ketone ) unless $_ eq $atom;
                 $graph->delete_edge( $_, $neighbours[0] );
