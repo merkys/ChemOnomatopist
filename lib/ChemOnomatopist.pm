@@ -113,7 +113,7 @@ sub find_groups
     for my $atom ($graph->vertices) {
         my @neighbours = $graph->neighbours( $atom );
 
-        # Detecting carbonyls
+        # Detecting carbonyl
         if( is_element( $atom, 'O' ) &&
             scalar @neighbours == 1 &&
             is_element( $neighbours[0], 'C' ) ) {
@@ -125,14 +125,14 @@ sub find_groups
             $graph->delete_vertex( $atom );
 
             # Carbonyl derivatives should be detected here
-        # Detecting hydroxyls
+        # Detecting hydroxy
         } elsif( is_element( $atom, 'O' ) &&
                  scalar @neighbours == 2 &&
                  grep { is_element( $_, 'H' ) } @neighbours == 1 ) {
-            my $hydroxyl = ChemOnomatopist::Group::Hydroxyl->new( $atom );
+            my $hydroxy  = ChemOnomatopist::Group::Hydroxy->new( $atom );
             my $hydrogen = grep { is_element( $_, 'H' ) } @neighbours;
             for (@neighbours) {
-                $graph->add_edge( $_, $hydroxyl );
+                $graph->add_edge( $_, $hydroxy );
                 $graph->delete_edge( $_, $atom );
             }
             $graph->delete_vertex( $hydrogen );

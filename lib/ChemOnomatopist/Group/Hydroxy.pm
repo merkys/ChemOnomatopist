@@ -1,4 +1,4 @@
-package ChemOnomatopist::Group::Hydroxyl;
+package ChemOnomatopist::Group::Hydroxy;
 
 use strict;
 use warnings;
