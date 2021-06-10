@@ -6,7 +6,7 @@ use warnings;
 use ChemOnomatopist;
 use Graph;
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 my $g = Graph->new( undirected => 1 );
 $g->add_path( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' );
@@ -22,3 +22,7 @@ is( ChemOnomatopist::get_name( $g ), '3,3-dimethyl-5-ethyloctane' );
 $g->add_edge( 'H', 'I' );
 
 is( ChemOnomatopist::get_name( $g ), '4,4-dimethyl-6-ethylnonane' );
+
+$g->add_edge( 'H', 'HB' );
+
+is( ChemOnomatopist::get_name( $g ), '6-ethyl-2,4,4-trimethylnonane' );
