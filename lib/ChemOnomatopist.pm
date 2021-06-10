@@ -3,6 +3,9 @@ package ChemOnomatopist;
 use strict;
 use warnings;
 
+# ABSTRACT: Give molecule a name
+# VERSION
+
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
