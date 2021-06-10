@@ -57,6 +57,9 @@ our @prefixes = qw(
     tetracont
 );
 
+my @numbers = ( '?', '', 'di', 'tri', 'tetra',
+                'penta', 'sexta', 'hepta', 'octa' );
+
 sub get_name
 {
     my( $graph ) = @_;
@@ -70,7 +73,9 @@ sub get_name
                                           # next_root => undef,
                                         );
     my @order = $bfs->bfs;
-    return get_chain( $graph, pop @order, { choose_direction => 1 } ) . 'ane';
+    return get_chain( $graph->copy,
+                      pop @order,
+                      { choose_direction => 1 } ) . 'ane';
 }
 
 sub get_chain
@@ -121,15 +126,24 @@ sub get_chain
         }
     }
 
-    my $name = '';
+    my %attachments;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
             $graph->delete_edge( $atom, $neighbour );
-            $name .= sprintf '%d-(', $i+1;
-            $name .= get_chain( $graph, $neighbour );
-            $name .= 'yl)-';
+            push @{$attachments{get_chain( $graph, $neighbour ) . 'yl'}},
+                 $i;
         }
+    }
+
+    my $name = '';
+    for my $attachment_name (sort { $numbers[scalar @{$attachments{$a}}] . $a cmp
+                                    $numbers[scalar @{$attachments{$b}}] . $b }
+                             keys %attachments) {
+        $name = $name ? $name . '-' : $name;
+        $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-' .
+                 $numbers[scalar @{$attachments{$attachment_name}}] .
+                 $attachment_name;
     }
 
     return $name . $prefixes[scalar @chain];
