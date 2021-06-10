@@ -70,8 +70,7 @@ sub get_name
                                           # next_root => undef,
                                         );
     my @order = $bfs->bfs;
-    get_chain( $graph, pop @order, { choose_direction => 1 } );
-    print "ane\n";
+    return get_chain( $graph, pop @order, { choose_direction => 1 } ) . 'ane';
 }
 
 sub get_chain
@@ -122,17 +121,18 @@ sub get_chain
         }
     }
 
+    my $name = '';
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
             $graph->delete_edge( $atom, $neighbour );
-            printf '%d-(', $i+1;
-            get_chain( $graph, $neighbour );
-            print 'yl)-';
+            $name .= sprintf '%d-(', $i+1;
+            $name .= get_chain( $graph, $neighbour );
+            $name .= 'yl)-';
         }
     }
 
-    print $prefixes[scalar @chain];
+    return $name . $prefixes[scalar @chain];
 }
 
 sub find_groups
