@@ -4,11 +4,11 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
-use Graph;
+use Graph::Undirected;
 
 use Test::More tests => 5;
 
-my $g = Graph->new( undirected => 1 );
+my $g = Graph::Undirected->new;
 $g->add_path( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' );
 $g->add_path( 'D', 'DB', 'DC', );
 $g->add_edge( 'F', 'FB' );

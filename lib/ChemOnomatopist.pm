@@ -11,6 +11,7 @@ use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Hydroxy;
 use Graph::Traversal::BFS;
+use Graph::Undirected;
 use Scalar::Util qw(blessed);
 
 our @prefixes = qw(
@@ -62,7 +63,15 @@ my @numbers = ( '?', '', 'di', 'tri', 'tetra',
 
 sub get_name
 {
-    my( $graph ) = @_;
+    my( $what ) = @_;
+
+    my( $graph );
+    if( blessed $what && $what->isa( Graph::Undirected:: ) ) {
+        $graph = $what;
+    } else {
+        # TOOD: Assume SMILES string
+    }
+    die "nothing supplied for get_name()\n" unless $graph;
 
     if( scalar $graph->edges != $graph->vertices - 1 ) {
         die "cannot handle graphs with cycles for now\n";
