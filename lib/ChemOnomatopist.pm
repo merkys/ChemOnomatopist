@@ -216,6 +216,16 @@ sub find_groups
     }
 }
 
+sub remove_pendant_vertices
+{
+    my( $graph ) = @_;
+
+    while( my @pendants = grep { $graph->degree( $_ ) == 1 }
+                               $graph->vertices ) {
+        $graph->delete_vertices( @pendants );
+    }
+}
+
 sub is_element
 {
     my( $atom, $element ) = @_;
