@@ -10,6 +10,7 @@ use Test::More;
 my %SMILES_cases = (
     'CCCCC'  => 'pentane',
     'CC(C)C' => '2-methylpropane', # FIXME: 'methylpropane'
+    'C1CCC1' => 'cyclobutane',
 );
 
 plan tests => 5 + scalar keys %SMILES_cases;

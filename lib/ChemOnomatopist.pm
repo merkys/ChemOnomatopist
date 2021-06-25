@@ -10,6 +10,8 @@ use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Hydroxy;
+use Chemistry::OpenSMILES::Writer qw( write_SMILES );
+use Graph::Nauty qw( canonical_order );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
 use Scalar::Util qw(blessed);
@@ -77,6 +79,12 @@ sub get_name
     die "nothing supplied for get_name()\n" unless $graph;
 
     if( scalar $graph->edges != $graph->vertices - 1 ) {
+        my $smiles = canonical_SMILES( $graph );
+        while( $smiles =~ s/\(([^\()]+)\)\)/$1)/ ) {}; # need to simplify
+        if( $smiles =~ /^C1\((C+)1\)$/ ) {
+            # Cycloalkane
+            return 'cyclo' . $prefixes[1 + length $1] . 'ane';
+        }
         die "cannot handle graphs with cycles for now\n";
     }
 
@@ -224,6 +232,40 @@ sub remove_pendant_vertices
                                $graph->vertices ) {
         $graph->delete_vertices( @pendants );
     }
+}
+
+# Original source:
+# URL: svn+ssh://saulius-grazulis.lt/home/andrius/svn-repositories/cod-smi-generation/trunk/bin/isomorphism.pl
+# Relative URL: ^/trunk/bin/isomorphism.pl
+# Repository Root: svn+ssh://saulius-grazulis.lt/home/andrius/svn-repositories/cod-smi-generation
+# Repository UUID: 389e3913-ab09-4cbd-b281-3fb5d633c480
+# Revision: 570
+sub canonical_SMILES
+{
+    my( $graph, $color_sub ) = @_;
+
+    my @order = canonical_order( $graph, $color_sub );
+    my %order;
+    for (0..$#order) {
+        $order{$order[$_]} = $_;
+    }
+
+    my $smiles = write_SMILES(
+        $graph,
+        sub {
+            my @sorted = sort { $order{$a} <=> $order{$b} }
+                              keys %{$_[0]};
+            return $_[0]->{shift @sorted};
+        } );
+
+    # A.M.: I cannot find a counter-example, thus the following seems
+    # reasonable to me. In a SMILES descriptor, one can substitute all
+    # '/' with '\' and vice versa, and retain correct cis/trans settings.
+    if( $smiles =~ /([\/\\])/ && $1 eq '\\' ) {
+        $smiles =~ tr/\/\\/\\\//;
+    }
+
+    return $smiles;
 }
 
 sub is_element
