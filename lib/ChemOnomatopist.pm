@@ -20,7 +20,7 @@ our @prefixes = qw(
     eth
     prop
     but
-    bent
+    pent
     hex
     hept
     oct
@@ -69,7 +69,10 @@ sub get_name
     if( blessed $what && $what->isa( Graph::Undirected:: ) ) {
         $graph = $what;
     } else {
-        # TOOD: Assume SMILES string
+        # Assume SMILES string
+        require Chemistry::OpenSMILES::Parser;
+        my $parser = Chemistry::OpenSMILES::Parser->new;
+        ( $graph ) = $parser->parse( $what, { raw => 1 } ); # Taking only the first graph
     }
     die "nothing supplied for get_name()\n" unless $graph;
 

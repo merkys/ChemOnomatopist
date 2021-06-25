@@ -5,8 +5,14 @@ use warnings;
 
 use ChemOnomatopist;
 use Graph::Undirected;
+use Test::More;
 
-use Test::More tests => 5;
+my %SMILES_cases = (
+    'CCCCC'  => 'pentane',
+    'CC(C)C' => '2-methylpropane', # FIXME: 'methylpropane'
+);
+
+plan tests => 5 + scalar keys %SMILES_cases;
 
 my $g = Graph::Undirected->new;
 $g->add_path( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' );
@@ -30,3 +36,9 @@ is( ChemOnomatopist::get_name( $g ), '6-ethyl-2,4,4-trimethylnonane' );
 $g->add_edge( 'DB', 'DBB' );
 
 is( ChemOnomatopist::get_name( $g ), '6-1-methylethyl-2,4,4-trimethylnonane' );
+
+# Tests with SMILES input
+
+for my $case (sort keys %SMILES_cases) {
+    is( ChemOnomatopist::get_name( $case ), $SMILES_cases{$case} );
+}
