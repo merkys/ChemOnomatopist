@@ -67,6 +67,7 @@ sub get_name
 {
     my( $what ) = @_;
 
+    # Detect the type of the input data
     my( $graph );
     if( blessed $what && $what->isa( Graph::Undirected:: ) ) {
         $graph = $what;
@@ -78,21 +79,25 @@ sub get_name
     }
     die "nothing supplied for get_name()\n" unless $graph;
 
+    # Check if graph is a tree as trees are easy to process
     if( scalar $graph->edges != $graph->vertices - 1 ) {
+        # If it is not a tree, than the graph has cycles, and we have to
+        # do our best to recognise them
         my $smiles = canonical_SMILES( $graph );
-        while( $smiles =~ s/\(([^\()]+)\)\)/$1)/ ) {}; # need to simplify
+        while( $smiles =~ s/\(([^\()]+)\)\)/$1)/ ) {}; # need to simplify SMILES
         if( $smiles =~ /^C1\((C+)1\)$/ ) {
-            # Cycloalkane
+            # Cycloalkane detected
             return 'cyclo' . $prefixes[1 + length $1] . 'ane';
         }
+        # No other types of graphs with cycles can be processed for now
         die "cannot handle graphs with cycles for now\n";
     }
 
-    my $last;
-    my $bfs = Graph::Traversal::BFS->new( $graph,
-                                          # next_root => undef,
-                                        );
+    # Traverse the graph using breadth-first traversal and pick one of
+    # the furthest vertices as a starting point for naming
+    my $bfs = Graph::Traversal::BFS->new( $graph );
     my @order = $bfs->bfs;
+
     return get_chain( $graph->copy,
                       pop @order,
                       { choose_direction => 1 } ) . 'ane';
@@ -104,9 +109,10 @@ sub get_chain
 
     $options = {} unless $options;
 
-    my $bfs = Graph::Traversal::BFS->new( $graph,
-                                          start => $start,
-                                        );
+    # As per https://www.geeksforgeeks.org/longest-path-undirected-tree/,
+    # two BFSes are needed to find the longest path in a tree
+
+    my $bfs = Graph::Traversal::BFS->new( $graph, start => $start );
     my @order = $bfs->bfs;
     my %order;
     for my $i (0..$#order) {
@@ -131,8 +137,9 @@ sub get_chain
     @chain = reverse @chain;
     $graph->delete_path( @chain );
 
-    # Establishing a stable order similarly as suggested by the IUPAC
-    # rules
+    # Establishing a stable direction similarly as suggested by the IUPAC
+    # rules: choosing a direction which has more attachments to its
+    # beginning than to its end
     if( $options->{choose_direction} ) {
         for my $i (0..int(@chain/2)-1) {
             if( $graph->degree( $chain[$i] ) !=
@@ -146,6 +153,9 @@ sub get_chain
         }
     }
 
+    # Examine the attachments to the main chain: delete the edges
+    # connecting them to the main chain, at the same time giving them
+    # names according to their lengths via calls to get_chain()
     my %attachments;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
@@ -156,6 +166,7 @@ sub get_chain
         }
     }
 
+    # Collecting names of all the attachments
     my $name = '';
     for my $attachment_name (sort { $numbers[scalar @{$attachments{$a}}] . $a cmp
                                     $numbers[scalar @{$attachments{$b}}] . $b }
@@ -169,6 +180,7 @@ sub get_chain
     return $name . $prefixes[scalar @chain];
 }
 
+# FIXME: not used in the main code yet
 sub find_groups
 {
     my( $graph ) = @_;
@@ -206,7 +218,7 @@ sub find_groups
     for my $atom ($graph->vertices) {
         my @neighbours = $graph->neighbours( $atom );
 
-        # Detecging carboxyl
+        # Detecting carboxyl
         if( blessed $atom &&
             $atom->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
             scalar @neighbours == 1 &&
@@ -268,6 +280,7 @@ sub canonical_SMILES
     return $smiles;
 }
 
+# Check if an object or Perl hash is of certain chemical element
 sub is_element
 {
     my( $atom, $element ) = @_;
