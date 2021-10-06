@@ -75,16 +75,20 @@ sub get_name
         # Assume SMILES string
         require Chemistry::OpenSMILES::Parser;
         my $parser = Chemistry::OpenSMILES::Parser->new;
-        ( $graph ) = $parser->parse( $what, { raw => 1 } ); # Taking only the first graph
+      (  $graph ) = $parser->parse( $what ); # Taking only the first graph
+      # ( $graph ) = $parser->parse( $what, { raw => 1} ); # Taking only the first graph
     }
     die "nothing supplied for get_name()\n" unless $graph;
-
+    use Data::Dumper;
+        find_groups($graph);
+    #my @all = $graph->all_neighbours($graph->vertices)
+    #print Dumper(@all);
     # Check if graph is a tree as trees are easy to process
     if( scalar $graph->edges != $graph->vertices - 1 ) {
         # If it is not a tree, than the graph has cycles, and we have to
         # do our best to recognise them
         my $smiles = canonical_SMILES( $graph );
-        while( $smiles =~ s/\(([^\()]+)\)\)/$1)/ ) {}; # need to simplify SMILES
+        while( $smiles =~ s/\(([^\()]+)\)\)/$1)/ ) {}; # simplifying SMILES
         if( $smiles =~ /^C1\((C+)1\)$/ ) {
             # Cycloalkane detected
             return 'cyclo' . $prefixes[1 + length $1] . 'ane';
@@ -92,15 +96,57 @@ sub get_name
         # No other types of graphs with cycles can be processed for now
         die "cannot handle graphs with cycles for now\n";
     }
+    my @v = $graph->vertices;
+    #my %ve = %{$graph->vertices};
+    #my $ver = pop @v;
+   # print Dumper($v[0]{symbol});
+    my $oExists = 0;
+    for my $i (0..$#v) {
+       # if ('O' eq $v[$i]{symbol}){
+            $oExists = 1;
+            last;
+        #}
+    }
+    
+    if ($oExists) {
+    #return pick_name_with_oxygen($graph->copy);
+}
 
+    
+    #print Dumper(values %{$ve{symbol});
+   # print Dumper($graph->neighbours($v[4]));
     # Traverse the graph using breadth-first traversal and pick one of
     # the furthest vertices as a starting point for naming
     my $bfs = Graph::Traversal::BFS->new( $graph );
     my @order = $bfs->bfs;
+    #print Dumper(%v[0]{symbol});
+   # if ( 'C' =~ [values %{$ve{symbol}}]){
+       # print("yas");
+    #}
 
     return get_chain( $graph->copy,
                       pop @order,
                       { choose_direction => 1 } ) . 'ane';
+}
+
+sub pick_name_with_oxygen
+{
+    my( $graph, $options ) = @_;
+    
+    its_alcohol($graph);
+    
+    return 'Found some';
+    
+}
+
+sub its_alcohol
+{
+    my( $graph, $options ) = @_;
+    
+# print Dumper $graph;
+ my @v = $graph->vertices;
+ 
+  #  print Dumper ($graph->get_edge_attribute($v[4], $v[5]))
 }
 
 sub get_chain
@@ -114,6 +160,7 @@ sub get_chain
 
     my $bfs = Graph::Traversal::BFS->new( $graph, start => $start );
     my @order = $bfs->bfs;
+    #print Dumper(@order);
     my %order;
     for my $i (0..$#order) {
         $order{$order[$i]} = $i;
@@ -156,14 +203,20 @@ sub get_chain
     # Examine the attachments to the main chain: delete the edges
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_chain()
+    my $c = 0;
     my %attachments;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
+        next if (is_element( $atom, 'H' ));
+       # print ($i . " " . $c);
         for my $neighbour ($graph->neighbours( $atom )) {
             $graph->delete_edge( $atom, $neighbour );
-            push @{$attachments{get_chain( $graph, $neighbour ) . 'yl'}},
-                 $i;
+            unless (is_element( $neighbour, 'H' )){
+                push @{$attachments{get_chain( $graph, $neighbour ) . 'yl'}},
+                 $c;
+             }
         }
+        $c = $c + 1;
     }
 
     # Collecting names of all the attachments
@@ -176,34 +229,45 @@ sub get_chain
                  $numbers[scalar @{$attachments{$attachment_name}}] .
                  $attachment_name;
     }
-
-    return $name . $prefixes[scalar @chain];
+    my $cChain = 0;
+    for my $atom (@chain) {
+        if (is_element( $atom, 'C' )){
+            $cChain = $cChain + 1;
+        }
+    }
+    return $name . $prefixes[$cChain];
 }
 
 # FIXME: not used in the main code yet
 sub find_groups
 {
     my( $graph ) = @_;
-
+#print "here";
+                print('alko');
     for my $atom ($graph->vertices) {
+        #print Dumper $graph;
         my @neighbours = $graph->neighbours( $atom );
 
+                    #  print $graph->get_edge_attribute($atom, $neighbours[0], 'bond');
         # Detecting carbonyl
         if( is_element( $atom, 'O' ) &&
             scalar @neighbours == 1 &&
-            is_element( $neighbours[0], 'C' ) ) {
+            is_element( $neighbours[0], 'C' ) ){
             my $carbonyl = ChemOnomatopist::Group::Carbonyl->new( $neighbours[0] );
             for ($graph->neighbours( $neighbours[0] )) {
                 $graph->add_edge( $_, $carbonyl );
                 $graph->delete_edge( $_, $neighbours[0] );
             }
             $graph->delete_vertex( $atom );
-
             # Carbonyl derivatives should be detected here
         # Detecting hydroxy
         } elsif( is_element( $atom, 'O' ) &&
-                 scalar @neighbours == 2 &&
-                 grep { is_element( $_, 'H' ) } @neighbours == 1 ) {
+                 scalar @neighbours == 2 #&&
+                # grep { is_element( $_, 'H' ) } @neighbours #&&
+                 #grep { is_element( $_, 'C' ) } @neighbours == 1 
+                 )
+                {
+                    # print Dumper (@neighbours);
             my $hydroxy  = ChemOnomatopist::Group::Hydroxy->new( $atom );
             my $hydrogen = grep { is_element( $_, 'H' ) } @neighbours;
             for (@neighbours) {
@@ -213,6 +277,7 @@ sub find_groups
             $graph->delete_vertex( $hydrogen );
         }
     }
+
 
     # Second pass is needed to build on top of these trivial groups
     for my $atom ($graph->vertices) {

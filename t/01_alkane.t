@@ -38,6 +38,10 @@ $g->add_edge( 'DB', 'DBB' );
 
 is( ChemOnomatopist::get_name( $g ), '6-1-methylethyl-2,4,4-trimethylnonane' );
 
+
+is( ChemOnomatopist::get_name( 'CCCCC' ), 'pentane' );
+
+is( ChemOnomatopist::get_name( 'CC(C)C' ), '2-methylpropane' );
 # Tests with SMILES input
 
 for my $case (sort keys %SMILES_cases) {
