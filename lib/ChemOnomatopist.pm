@@ -138,6 +138,7 @@ sub get_chain
 
         my $min = $end;
         for my $neighbour ($graph->neighbours( $end )) {
+            next if !exists $order{$neighbour};
             next if $order{$neighbour} >= $order{$min};
             $min = $neighbour;
         }
@@ -155,7 +156,7 @@ sub get_chain
             next if grep { is_element( $_, 'H' ) } $chain[$i] == 1;
 
             if( ($graph->degree( $chain[$i] ) - grep { is_element( $_, 'H' ) } $graph->neighbours($chain[$i])) !=
-                ($graph->degree( $chain[$#chain-$i] - grep { is_element( $_, 'H' ) } $graph->neighbours($chain[$#chain-$i]) ) ) ) {
+                ($graph->degree( $chain[$#chain-$i] ) - grep { is_element( $_, 'H' ) } $graph->neighbours($chain[$#chain-$i]) ) ) {
                 if( $graph->degree( $chain[$i] ) >
                     $graph->degree( $chain[$#chain-$i] ) ) {
                     @chain = reverse @chain;
@@ -346,7 +347,7 @@ sub BFS_order_carbons_only
     my $carbon_graph = $graph->copy;
 
     $carbon_graph->delete_vertices( grep {!is_element( $_, 'C') } $carbon_graph->vertices );
-    
+
     if ($start) {
         my $bfs = Graph::Traversal::BFS->new( $carbon_graph, start => $start);
         my @order = $bfs->bfs;
