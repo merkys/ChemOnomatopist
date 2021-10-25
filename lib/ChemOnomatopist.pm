@@ -92,11 +92,15 @@ sub get_name
         # No other types of graphs with cycles can be processed for now
         die "cannot handle graphs with cycles for now\n";
     }
+    use Data::Dumper;
 
     # Traverse the graph using breadth-first traversal and pick one of
     # the furthest vertices as a starting point for naming
-    my $bfs = Graph::Traversal::BFS->new( $graph );
-    my @order = $bfs->bfs;
+   # my $bfs = Graph::Traversal::BFS->new( $graph );
+    
+    #my @order = $bfs->bfs;
+    
+    my @order = BFS_order_carbons_only($graph);
 
     return get_chain( $graph->copy,
                       pop @order,
@@ -109,15 +113,18 @@ sub get_chain
 
     $options = {} unless $options;
 
-    my $operations;
-    $operations->{first_root} = \&pick_carbon_vertices;
-    $operations->{next_successor} = \&pick_carbon_vertices;
+    #my $operations;
+    #$operations->{first_root} = \&pick_carbon_vertices;
+    #$operations->{next_successor} = \&pick_carbon_vertices;
     
     # As per https://www.geeksforgeeks.org/longest-path-undirected-tree/,
     # two BFSes are needed to find the longest path in a tree
 
-    my $bfs = Graph::Traversal::BFS->new( $graph, start => $start, %$operations);
-    my @order = $bfs->bfs;
+    #my $bfs = Graph::Traversal::BFS->new( $graph, start => $start);
+    #my @order = $bfs->bfs;
+   
+    my @order = BFS_order_carbons_only($graph, $start);
+    
     my %order;
     for my $i (0..$#order) {
         $order{$order[$i]} = $i;
@@ -331,5 +338,24 @@ sub pick_carbon_vertices
     my @possible_roots = grep { is_element( $unseen->{$_}, 'C' ) } keys %$unseen;
     return undef unless ( @possible_roots );
     return $unseen->{$possible_roots[0]};
+}
+
+sub BFS_order_carbons_only
+{
+    my ( $graph, $start ) = @_;
+    my $carbon_graph = $graph->copy;
+
+    $carbon_graph->delete_vertices( grep {!is_element( $_, 'C') } $carbon_graph->vertices );
+    
+    if ($start) {
+        my $bfs = Graph::Traversal::BFS->new( $carbon_graph, start => $start);
+        my @order = $bfs->bfs;
+        return @order;
+    }
+    else{
+        my $bfs = Graph::Traversal::BFS->new( $carbon_graph);
+        my @order = $bfs->bfs;
+        return @order;
+    }
 }
 1;
