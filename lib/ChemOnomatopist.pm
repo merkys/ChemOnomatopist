@@ -92,14 +92,9 @@ sub get_name
         # No other types of graphs with cycles can be processed for now
         die "cannot handle graphs with cycles for now\n";
     }
-    use Data::Dumper;
 
     # Traverse the graph using breadth-first traversal and pick one of
     # the furthest vertices as a starting point for naming
-   # my $bfs = Graph::Traversal::BFS->new( $graph );
-    
-    #my @order = $bfs->bfs;
-    
     my @order = BFS_order_carbons_only($graph);
 
     return get_chain( $graph->copy,
@@ -113,18 +108,11 @@ sub get_chain
 
     $options = {} unless $options;
 
-    #my $operations;
-    #$operations->{first_root} = \&pick_carbon_vertices;
-    #$operations->{next_successor} = \&pick_carbon_vertices;
-    
     # As per https://www.geeksforgeeks.org/longest-path-undirected-tree/,
     # two BFSes are needed to find the longest path in a tree
 
-    #my $bfs = Graph::Traversal::BFS->new( $graph, start => $start);
-    #my @order = $bfs->bfs;
-   
     my @order = BFS_order_carbons_only($graph, $start);
-    
+
     my %order;
     for my $i (0..$#order) {
         $order{$order[$i]} = $i;
@@ -153,12 +141,17 @@ sub get_chain
     # beginning than to its end
     if( $options->{choose_direction} ) {
         for my $i (0..int(@chain/2)-1) {
-            next if grep { is_element( $_, 'H' ) } $chain[$i] == 1;
+            my $forward_chain_degree =
+                    scalar $graph->neighbours( $chain[$i] ) -
+                    grep { is_element( $_, 'H' ) }
+                    $graph->neighbours( $chain[$i] );
+            my $backward_chain_degree =
+                    scalar $graph->neighbours( $chain[$#chain-$i] ) -
+                    grep { is_element( $_, 'H' ) }
+                    $graph->neighbours( $chain[$#chain-$i] );
 
-            if( ($graph->degree( $chain[$i] ) - grep { is_element( $_, 'H' ) } $graph->neighbours($chain[$i])) !=
-                ($graph->degree( $chain[$#chain-$i] ) - grep { is_element( $_, 'H' ) } $graph->neighbours($chain[$#chain-$i]) ) ) {
-                if( $graph->degree( $chain[$i] ) >
-                    $graph->degree( $chain[$#chain-$i] ) ) {
+            if( $forward_chain_degree != $backward_chain_degree ) {
+                if( $forward_chain_degree < $backward_chain_degree ) {
                     @chain = reverse @chain;
                 }
                 last;
@@ -169,40 +162,28 @@ sub get_chain
     # Examine the attachments to the main chain: delete the edges
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_chain()
-    my $c = 0;
     my %attachments;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
-        next if (is_element( $atom, 'H' ));
-       # print ($i . " " . $c);
         for my $neighbour ($graph->neighbours( $atom )) {
             $graph->delete_edge( $atom, $neighbour );
             unless (is_element( $neighbour, 'H' )){
                 push @{$attachments{get_chain( $graph, $neighbour ) . 'yl'}},
-                 $c;
+                $i;
              }
         }
-        $c = $c + 1;
     }
 
     # Collecting names of all the attachments
     my $name = '';
-    for my $attachment_name (sort { $numbers[scalar @{$attachments{$a}}] . $a cmp
-                                    $numbers[scalar @{$attachments{$b}}] . $b }
-                             keys %attachments) {
+    for my $attachment_name (sort { $a cmp $b } keys %attachments) {
         $name = $name ? $name . '-' : $name;
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-' .
                  $numbers[scalar @{$attachments{$attachment_name}}] .
                  $attachment_name;
     }
-    
-    my $cChain = 0;
-    for my $atom (@chain) {
-        if (is_element( $atom, 'C' )){
-            $cChain = $cChain + 1;
-        }
-    }
-    return $name . $prefixes[$cChain];
+
+    return $name . $prefixes[scalar @chain];
 }
 
 # FIXME: not used in the main code yet
@@ -329,16 +310,6 @@ sub is_element
     return ref $atom eq 'HASH' &&
            exists $atom->{symbol} &&
            $atom->{symbol} eq $element;
-}
-
-sub pick_carbon_vertices
-{
-    my ( $bfs, $unseen ) = @_;
-    my $graph = $bfs->graph;
-    my @vertices = $graph->vertices;
-    my @possible_roots = grep { is_element( $unseen->{$_}, 'C' ) } keys %$unseen;
-    return undef unless ( @possible_roots );
-    return $unseen->{$possible_roots[0]};
 }
 
 sub BFS_order_carbons_only
