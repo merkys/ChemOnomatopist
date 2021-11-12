@@ -60,8 +60,10 @@ our @prefixes = qw(
     tetracont
 );
 
-my @numbers = ( '?', '', 'di', 'tri', 'tetra',
-                'penta', 'sexta', 'hepta', 'octa' );
+my @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
+                'sexta', 'hepta', 'octa', 'nona', 'deca',
+                'undeca', 'dodeca', 'trideca', 'tetradeca', 'pentadeca',
+                'hexadeca', 'octadeca' );
 
 sub get_name
 {
@@ -90,6 +92,11 @@ sub get_name
         if( $smiles =~ /^C1\((C+)1\)$/ ) {
             # Cycloalkane detected
             return 'cyclo' . $prefixes[scalar $graph->vertices] . 'ane';
+        } elsif( $smiles =~ /^c:1\(:c((:c)+):1\)$/ &&
+                 ( length( $1 ) / 2 ) =~ /^(4|6|8|10|12|14|16)$/ ) {
+            # Annulene detected
+            return 'cyclo' . $numbers[scalar $graph->vertices] .
+                   $numbers[scalar $graph->vertices / 2] . 'ene';
         }
         # No other types of graphs with cycles can be processed for now
         die "cannot handle graphs with cycles for now\n";
