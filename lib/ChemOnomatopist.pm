@@ -82,12 +82,14 @@ sub get_name
     # Check if graph is a tree as trees are easy to process
     if( scalar $graph->edges != $graph->vertices - 1 ) {
         # If it is not a tree, than the graph has cycles, and we have to
-        # do our best to recognise them
+        # do our best to recognise them. To make it easier, hydrogen atoms
+        # are removed here for now.
+        $graph->delete_vertices( grep { $_->{symbol} eq 'H' } $graph->vertices );
         my $smiles = canonical_SMILES( $graph );
         while( $smiles =~ s/\(([^\()]+)\)\)/$1)/ ) {}; # need to simplify SMILES
         if( $smiles =~ /^C1\((C+)1\)$/ ) {
             # Cycloalkane detected
-            return 'cyclo' . $prefixes[1 + length $1] . 'ane';
+            return 'cyclo' . $prefixes[scalar $graph->vertices] . 'ane';
         }
         # No other types of graphs with cycles can be processed for now
         die "cannot handle graphs with cycles for now\n";
