@@ -172,13 +172,15 @@ sub get_chain
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_chain()
     my %attachments;
+    my $attachment_name;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
             $graph->delete_edge( $atom, $neighbour );
             unless (is_element( $neighbour, 'H' )){
-                push @{$attachments{get_chain( $graph, $neighbour ) . 'yl'}},
-                $i;
+                $attachment_name = get_chain( $graph, $neighbour );
+                my $prefix = ($attachment_name =~ /^\(/) ? 'yl)' : 'yl';
+                push @{$attachments{$attachment_name . $prefix}}, $i;
              }
         }
     }
@@ -187,12 +189,14 @@ sub get_chain
     my $name = '';
     for my $attachment_name (sort { $a cmp $b } keys %attachments) {
         $name = $name ? $name . '-' : $name;
-        $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-' .
-                 $numbers[scalar @{$attachments{$attachment_name}}] .
+        $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} )
+                 . '-' . $numbers[scalar @{$attachments{$attachment_name}}] .
                  $attachment_name;
     }
+    my $bracket =
+        ($options->{choose_direction} || not ($name =~ /^[0-9]/)) ? '' : '(';
 
-    return $name . $prefixes[scalar @chain];
+    return $bracket . $name . $prefixes[scalar @chain];
 }
 
 # FIXME: not used in the main code yet
@@ -218,7 +222,7 @@ sub find_groups
         # Detecting hydroxy
         } elsif( is_element( $atom, 'O' ) &&
                  scalar @neighbours == 2 &&
-                 grep { is_element( $_, 'H' ) } @neighbours == 1 ) {
+                 grep { is_element( $_, 'H' ) == 1 } @neighbours ){
             my $hydroxy  = ChemOnomatopist::Group::Hydroxy->new( $atom );
             my $hydrogen = grep { is_element( $_, 'H' ) } @neighbours;
             for (@neighbours) {
