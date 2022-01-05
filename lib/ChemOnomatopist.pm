@@ -64,6 +64,10 @@ my @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
                 'sexta', 'hepta', 'octa', 'nona', 'deca',
                 'undeca', 'dodeca', 'trideca', 'tetradeca', 'pentadeca',
                 'hexadeca', 'octadeca' );
+                
+my $is_any_visited;
+my %lengths;
+my %tree;
 
 sub get_name
 {
@@ -101,6 +105,8 @@ sub get_name
         # No other types of graphs with cycles can be processed for now
         die "cannot handle graphs with cycles for now\n";
     }
+
+    create_structure($graph);
 
     # Traverse the graph using breadth-first traversal and pick one of
     # the furthest vertices as a starting point for naming
@@ -333,7 +339,13 @@ sub BFS_order_carbons_only
     $carbon_graph->delete_vertices( grep {!is_element( $_, 'C') } $carbon_graph->vertices );
 
     if ($start) {
-        my $bfs = Graph::Traversal::BFS->new( $carbon_graph, start => $start);
+        my $bfs = Graph::Traversal::BFS->new( $carbon_graph,
+            pre => sub { if(!$is_any_visited) {
+                            $lengths{$_[0]->{number}} = 0; $is_any_visited = 1  } },
+            tree_edge => sub { if ( !defined $lengths{$_[0]->{number}} ) {
+                ( $_[0], $_[1] ) = ( $_[1], $_[0] );
+            }
+            $lengths{$_[1]->{number}} = $lengths{$_[0]->{number}} + 1}, start => $start);
         my @order = $bfs->bfs;
         return @order;
     }
@@ -343,4 +355,70 @@ sub BFS_order_carbons_only
         return @order;
     }
 }
+
+sub create_structure
+{
+    use Data::Dumper;
+    my ( $graph ) = @_;
+    my @order = BFS_order_carbons_only($graph);
+
+    my $start = pop @order;
+
+    my @second_order = BFS_order_carbons_only($graph, $start);
+    print Dumper (\%lengths);
+    
+    my $end = pop @second_order;
+
+    my @farthest = grep { $lengths{$_} eq $lengths{$end->{number}} } keys %lengths;
+    push(@farthest, $start->{number});
+
+    for (my $i = 0; $i < scalar(@farthest); $i++) {
+        %tree = ();
+        my @value_array = 0;
+        $tree{$farthest[$i]} = [@value_array];
+
+        my $carbon_graph = $graph->copy;
+        $carbon_graph->delete_vertices( grep {!is_element( $_, 'C') } $carbon_graph->vertices );
+
+        my @vertice = grep { $_->{number} eq $farthest[$i] } $carbon_graph->vertices;
+
+        create_tree($carbon_graph, $vertice[0], \%tree);
+
+        print($farthest[$i]);
+
+        print Dumper(\%tree);
+    }
+}
+
+sub create_tree
+{
+    my ( $graph, $atom, $tree ) = @_;
+
+    my @neighbours = $graph->neighbours( $atom );
+
+    my @array = @ { $tree->{$atom->{number}}};
+    my @new_array;
+
+    foreach my $arr (@array){
+        push(@new_array, $arr + 1);
+    }
+
+    if (scalar @neighbours == 1) {
+        unless (exists $tree->{$neighbours[0]->{number}}){
+            $tree->{$neighbours[0]->{number}} = [@new_array];
+            $graph->delete_vertex($atom);
+            create_tree($graph, $neighbours[0], $tree)
+        }
+    }
+    elsif(scalar @neighbours > 1){
+        my @treee;
+        push(@new_array, 0);
+        $graph->delete_vertex($atom);
+        foreach my $neighbour (@neighbours) {
+            $tree->{$neighbour->{number}} = [@new_array];
+            create_tree($graph, $neighbour, $tree);
+        }
+    }
+}
+
 1;

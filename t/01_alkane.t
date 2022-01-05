@@ -22,7 +22,7 @@ my %SMILES_cases = (
     'C(C)C(C(CCC)(C)C)(C(C(CCC)(C)CC)CCC)CCC' => '5,7-diethyl-4,4,7-trimethyl-5,6-dipropyldecane',
     'CCCCCCCCCCCCCCCCCCCCCCC' => 'tricosane',
     #'CC(CC(CCC)CCC)C' => '4-(2-methylpropyl)heptane' inconsistent results
-    #'CC(CC(CC(CC(CC)CC)C)(CC(CC(CC)C)C)CC(CC(CC)C)C)CC(CC)C' => '7,7-bis(2,4-dimethylhexyl)-3-ethyl-5,9,11-trimethyltridecane'
+    #'CC(CC(CC(CC(CC)CC)C)(CC(CC(CC)C)C)CC(CC(CC)C)C)CC(CC)C' => '7,7-di(2,4-dimethylhexyl)-3-ethyl-5,9,11-trimethyltridecane' inconsistent results
     'CC(C(CCC)C)C(CC(CCCC)CC)CCCCCC' => '7-(1,2-dimethylpentyl)-5-ethyltridecane'
 );
 
