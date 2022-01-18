@@ -287,6 +287,12 @@ sub canonical_SMILES
         $order{$order[$_]} = $_;
     }
 
+    # Ignoring most likely harmless warning emitted by Set::Object
+    local $SIG{__WARN__} = sub {
+        return if $_[0] =~ /^Reference found where even-sized list expected at \S+\/Set\/Object\.pm line [0-9]+\.\n$/;
+        print STDERR $_[0];
+    };
+
     my $smiles = write_SMILES(
         $graph,
         sub {
