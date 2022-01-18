@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
-use Graph::Undirected;
 use Test::More;
 
 my %SMILES_cases = (
