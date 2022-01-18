@@ -3,6 +3,9 @@ package ChemOnomatopist::Group;
 use strict;
 use warnings;
 
+# ABSTRACT: Chemical group
+# VERSION
+
 sub new
 {
     my( $class, $self ) = @_;

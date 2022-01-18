@@ -2,6 +2,10 @@ package ChemOnomatopist::Group::Cycloalkane;
 
 use strict;
 use warnings;
+
+# ABSTRACT: Cycloalkane group
+# VERSION
+
 use parent ChemOnomatopist::Group::;
 
 sub new {
