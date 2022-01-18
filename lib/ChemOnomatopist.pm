@@ -64,10 +64,8 @@ my @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
                 'sexta', 'hepta', 'octa', 'nona', 'deca',
                 'undeca', 'dodeca', 'trideca', 'tetradeca', 'pentadeca',
                 'hexadeca', 'octadeca' );
-                
-my $is_any_visited;
+
 my %lengths;
-my %tree;
 
 sub get_name
 {
@@ -339,6 +337,9 @@ sub is_element
 
 sub BFS_order_carbons_only
 {
+    my $is_any_visited;
+    %lengths = ();
+
     my ( $graph, $start ) = @_;
     my $carbon_graph = $graph->copy;
 
@@ -364,7 +365,8 @@ sub BFS_order_carbons_only
 
 sub create_structure
 {
-    use Data::Dumper;
+    my %tree;
+
     my ( $graph ) = @_;
     my @order = BFS_order_carbons_only($graph);
 
@@ -412,7 +414,6 @@ sub create_tree
         }
     }
     elsif(scalar @neighbours > 1){
-        my @treee;
         push(@new_array, 0);
         $graph->delete_vertex($atom);
         foreach my $neighbour (@neighbours) {
