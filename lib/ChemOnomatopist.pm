@@ -371,8 +371,7 @@ sub create_structure
     my $start = pop @order;
 
     my @second_order = BFS_order_carbons_only($graph, $start);
-    print Dumper (\%lengths);
-    
+
     my $end = pop @second_order;
 
     my @farthest = grep { $lengths{$_} eq $lengths{$end->{number}} } keys %lengths;
@@ -389,10 +388,6 @@ sub create_structure
         my @vertice = grep { $_->{number} eq $farthest[$i] } $carbon_graph->vertices;
 
         create_tree($carbon_graph, $vertice[0], \%tree);
-
-        print($farthest[$i]);
-
-        print Dumper(\%tree);
     }
 }
 
