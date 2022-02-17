@@ -104,8 +104,6 @@ sub get_name
         die "cannot handle graphs with cycles for now\n";
     }
 
-    create_structure($graph);
-
     # Traverse the graph using breadth-first traversal and pick one of
     # the furthest vertices as a starting point for naming
     my @order = BFS_order_carbons_only($graph);
@@ -363,24 +361,30 @@ sub BFS_order_carbons_only
     }
 }
 
+# Returns tree like structures for all the longest paths
 sub create_structure
 {
-    my %tree;
+    my @all_trees;
 
     my ( $graph ) = @_;
     my @order = BFS_order_carbons_only($graph);
 
-    my $start = pop @order;
+    my $start = $order[-1];
 
     my @second_order = BFS_order_carbons_only($graph, $start);
 
-    my $end = pop @second_order;
+    my $end = $second_order[-1];
 
+    # Finding all farthest vertices
     my @farthest = grep { $lengths{$_} eq $lengths{$end->{number}} } keys %lengths;
     push(@farthest, $start->{number});
 
+    if (scalar @farthest == 2) {
+        return @order;
+    }
+
     for (my $i = 0; $i < scalar(@farthest); $i++) {
-        %tree = ();
+        my %tree;
         my @value_array = 0;
         $tree{$farthest[$i]} = [@value_array];
 
@@ -389,10 +393,14 @@ sub create_structure
 
         my @vertice = grep { $_->{number} eq $farthest[$i] } $carbon_graph->vertices;
 
-        create_tree($carbon_graph, $vertice[0], \%tree);
+        # Start creation of the tree from all the starting vertices
+        push(@all_trees, \%{create_tree($carbon_graph, $vertice[0], \%tree)});
     }
-}
 
+    rule_greatest_number_of_side_chains(@all_trees);
+
+}
+# Creating tree like structure for all the longest paths in molecule
 sub create_tree
 {
     my ( $graph, $atom, $tree ) = @_;
@@ -420,6 +428,68 @@ sub create_tree
             $tree->{$neighbour->{number}} = [@new_array];
             create_tree($graph, $neighbour, $tree);
         }
+    }
+    return $tree;
+}
+# Tries to find the chain which has the greatest number of side chains
+sub rule_greatest_number_of_side_chains
+{
+    my ( @trees ) = @_;
+
+    my @paths = ();
+    my $index = 0;
+
+    foreach my $tree (@trees){
+        my %structure = %{$tree};
+        my @sorted = sort {
+                            @{$structure{$a}} <=> @{$structure{$b}}
+                           or
+                            $structure{$a}->[0] cmp $structure{$b}->[0]
+                          } keys %structure;
+
+        my $last = $sorted[-1];
+        my @pair;
+        my @first = grep {join ("", @{$structure{$_}}) == 0} keys %structure;
+        if ($first[0] <= $last){
+            $pair[0] = $first[0];
+            $pair[1] = $last;
+        }
+        else {
+            $pair[0] = $last;
+            $pair[1] = $first[0];
+        }
+        $pair[2] = $index;
+        $pair[3] = $structure{$last};
+
+        if (!@paths){
+            push @paths, [@pair];
+        }
+
+        my $seen;
+        foreach my $i (0..@paths - 1) {
+            if ($paths[$i][0] == $pair[0] and $paths[$i][1] == $pair[1])
+            {
+                $seen = 1;
+                last;
+            }
+        }
+
+        unless ($seen){
+            push @paths, [ @pair];
+        }
+        $index++;
+    }
+
+    my @sorted_paths = sort {
+                                @{$a->[3]} <=> @{$b->[3]}
+                            } @paths;
+
+    my $path_length = @{$sorted_paths[-1][3]};
+    my @longest_paths = grep {@{$_->[3]} == $path_length} @paths;
+    my @result = @trees[map {$_->[2]} @longest_paths];
+
+    if (scalar @result == 1) {
+        return @result;
     }
 }
 
