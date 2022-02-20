@@ -103,7 +103,7 @@ sub get_name
         # No other types of graphs with cycles can be processed for now
         die "cannot handle graphs with cycles for now\n";
     }
-
+    create_structure($graph);
     # Traverse the graph using breadth-first traversal and pick one of
     # the furthest vertices as a starting point for naming
     my @order = BFS_order_carbons_only($graph);
@@ -397,8 +397,19 @@ sub create_structure
         push(@all_trees, \%{create_tree($carbon_graph, $vertice[0], \%tree)});
     }
 
-    rule_greatest_number_of_side_chains(@all_trees);
-
+    my @main_chains = rule_greatest_number_of_side_chains(@all_trees);
+    if (scalar @main_chains != 1){
+        @main_chains = rule_lowest_numbered_locants(@main_chains);
+        if (scalar @main_chains != 1){
+            #@main_chains = rule_most_carbon_in_side_chains(@main_chains);
+        }
+        else{
+            #return created order
+        }
+    }
+    else{
+        #return created order
+    }
 }
 # Creating tree like structure for all the longest paths in molecule
 sub create_tree
@@ -431,8 +442,8 @@ sub create_tree
     }
     return $tree;
 }
-# Tries to find the chain which has the greatest number of side chains
-sub rule_greatest_number_of_side_chains
+
+sub sort_trees_find_paths
 {
     my ( @trees ) = @_;
 
@@ -449,48 +460,53 @@ sub rule_greatest_number_of_side_chains
 
         my $last = $sorted[-1];
         my @pair;
-        my @first = grep {join ("", @{$structure{$_}}) == 0} keys %structure;
-        if ($first[0] <= $last){
-            $pair[0] = $first[0];
-            $pair[1] = $last;
-        }
-        else {
-            $pair[0] = $last;
-            $pair[1] = $first[0];
-        }
-        $pair[2] = $index;
-        $pair[3] = $structure{$last};
 
-        if (!@paths){
-            push @paths, [@pair];
-        }
+        $pair[0] = $index;
+        $pair[1] = $structure{$last};
 
-        my $seen;
-        foreach my $i (0..@paths - 1) {
-            if ($paths[$i][0] == $pair[0] and $paths[$i][1] == $pair[1])
-            {
-                $seen = 1;
-                last;
-            }
-        }
-
-        unless ($seen){
-            push @paths, [ @pair];
-        }
+        push @paths, [ @pair];
         $index++;
     }
 
+    return @paths;
+}
+
+# Tries to find the chain which has the greatest number of side chains
+sub rule_greatest_number_of_side_chains
+{
+    my ( @trees ) = @_;
+
+    my @paths = sort_trees_find_paths(@trees);
+
     my @sorted_paths = sort {
-                                @{$a->[3]} <=> @{$b->[3]}
+                                @{$a->[1]} <=> @{$b->[1]}
                             } @paths;
 
-    my $path_length = @{$sorted_paths[-1][3]};
-    my @longest_paths = grep {@{$_->[3]} == $path_length} @paths;
-    my @result = @trees[map {$_->[2]} @longest_paths];
+    my $path_length = @{$sorted_paths[-1][1]};
+    my @longest_paths = grep {@{$_->[1]} == $path_length} @paths;
+    my @result = @trees[map {$_->[0]} @longest_paths];
 
-    if (scalar @result == 1) {
-        return @result;
-    }
+    return @result;
+}
+
+# Tries to find the chain which has the lowest-numbered locants
+sub rule_lowest_numbered_locants
+{
+    my ( @trees ) = @_;
+
+    my @paths = sort_trees_find_paths(@trees);
+
+    my @sorted_paths = sort {
+                                $a->[1]->[1] <=> $b->[1]->[1]
+                            } reverse @paths;
+
+    my $lowest_locants = $sorted_paths[-1][1];
+    my @lowest_locants_paths = grep {
+                    join("", ( @{$_->[1]})) == join("", (@{$lowest_locants}))
+                                    } @paths;
+    my @result = @trees[map {$_->[0]} @lowest_locants_paths];
+
+    return @result;
 }
 
 1;
