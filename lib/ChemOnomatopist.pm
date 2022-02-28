@@ -14,7 +14,8 @@ use Chemistry::OpenSMILES::Writer qw( write_SMILES );
 use Graph::Nauty qw( canonical_order );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
-use Scalar::Util qw(blessed);
+use Scalar::Util qw( blessed );
+use Clone qw( clone );
 
 our @prefixes = qw(
     ?
@@ -365,7 +366,6 @@ sub BFS_order_carbons_only
 sub create_structure
 {
     my @all_trees;
-
     my ( $graph ) = @_;
     my @order = BFS_order_carbons_only($graph);
 
@@ -385,7 +385,9 @@ sub create_structure
 
     for (my $i = 0; $i < scalar(@farthest); $i++) {
         my %tree;
-        my @value_array = 0;
+        my @value_array;
+        push(@value_array, $farthest[$i]);
+        push(@value_array, 0);
         $tree{$farthest[$i]} = [@value_array];
 
         my $carbon_graph = $graph->copy;
@@ -421,6 +423,10 @@ sub create_tree
     my @array = @ { $tree->{$atom->{number}}};
     my @new_array;
 
+    push(@new_array, $atom->{number});
+
+    shift @array;
+
     foreach my $arr (@array){
         push(@new_array, $arr + 1);
     }
@@ -429,7 +435,7 @@ sub create_tree
         unless (exists $tree->{$neighbours[0]->{number}}){
             $tree->{$neighbours[0]->{number}} = [@new_array];
             $graph->delete_vertex($atom);
-            create_tree($graph, $neighbours[0], $tree)
+            create_tree($graph, $neighbours[0], $tree);
         }
     }
     elsif(scalar @neighbours > 1){
@@ -447,11 +453,20 @@ sub sort_trees_find_paths
 {
     my ( @trees ) = @_;
 
+    my $trees_copy = clone(\@trees);
+
     my @paths = ();
     my $index = 0;
 
-    foreach my $tree (@trees){
+    foreach my $tree ($trees_copy->[0]){
+
         my %structure = %{$tree};
+
+        foreach my $key (keys %structure)
+        {
+            shift @ { $structure{$key} };
+        }
+
         my @sorted = sort {
                             @{$structure{$a}} <=> @{$structure{$b}}
                            or
