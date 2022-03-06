@@ -356,10 +356,19 @@ sub BFS_order_carbons_only
         return @order;
     }
     else{
-        my $bfs = Graph::Traversal::BFS->new( $carbon_graph);
+        my $bfs = Graph::Traversal::BFS->new( $carbon_graph );
         my @order = $bfs->bfs;
         return @order;
     }
+}
+
+sub BFS_calculate_chain_length
+{
+    my $length = 0;
+    my ( $graph, $start ) = @_;
+    my $bfs = Graph::Traversal::BFS->new( $graph, start => $start);
+    my @order = $bfs->bfs;
+    return scalar @order;
 }
 
 # Returns tree like structures for all the longest paths
@@ -403,7 +412,9 @@ sub create_structure
     if (scalar @main_chains != 1){
         @main_chains = rule_lowest_numbered_locants(@main_chains);
         if (scalar @main_chains != 1){
-            #@main_chains = rule_most_carbon_in_side_chains(@main_chains);
+            my $carbon_graph = $graph->copy;
+            $carbon_graph->delete_vertices( grep {!is_element( $_, 'C') } $carbon_graph->vertices );
+            @main_chains = rule_most_carbon_in_side_chains($carbon_graph, @main_chains);
         }
         else{
             #return created order
@@ -458,7 +469,7 @@ sub sort_trees_find_paths
     my @paths = ();
     my $index = 0;
 
-    foreach my $tree ($trees_copy->[0]){
+    foreach my $tree (@{$trees_copy}){
 
         my %structure = %{$tree};
 
@@ -466,7 +477,7 @@ sub sort_trees_find_paths
         {
             shift @ { $structure{$key} };
         }
-
+#not working
         my @sorted = sort {
                             @{$structure{$a}} <=> @{$structure{$b}}
                            or
@@ -522,6 +533,132 @@ sub rule_lowest_numbered_locants
     my @result = @trees[map {$_->[0]} @lowest_locants_paths];
 
     return @result;
+}
+
+# Tries to find chan that has the greatest number of carbon atoms in the smaller
+# side chains
+sub rule_most_carbon_in_side_chains
+{
+    my ( $graph, @trees ) = @_;
+
+    my $trees_copy = clone(\@trees);
+
+    foreach my $tree (@{$trees_copy}){
+
+        my %structure = %{ clone $tree};
+        my @all_vertices = keys %structure;
+
+        foreach my $key (keys %structure)
+        {
+            shift @ { $structure{$key} };
+        }
+
+              my @sorted = sort {
+                            @{$structure{$a}} <=> @{$structure{$b}}
+                           or
+                            $structure{$a}->[0] cmp $structure{$b}->[0]
+                          } keys %structure;
+        my $last = $sorted[-1];
+
+        my %structure2 = %{$tree};
+
+        my @vertex_array = ($last);
+        my @parental_chain =
+                        save_main_chain_vertices_in_array(
+                            $last,
+                            \@vertex_array,
+                            \%structure2
+                        );
+
+        my @side_chain_lengths = ();
+        my $graph_copy = $graph->copy;
+        find_lengths_of_side_chains(
+            $graph_copy,
+            $last,
+            \@parental_chain,
+            \@side_chain_lengths,
+            \%structure2
+        );
+    }
+}
+
+sub remove_main_chain_vertices_from_array
+{
+    my ( $curr_vertex, $all_vertices, $structure ) = @_;
+
+    if ($structure->{$curr_vertex}->[0] == $curr_vertex) {
+        my @other_vertices = grep { $_ != $curr_vertex } @{ $all_vertices};
+        return @other_vertices;
+    }
+    else {
+        my @other_vertices = grep { $_ != $curr_vertex } @{ $all_vertices};
+        remove_main_chain_vertices_from_array(
+        $structure->{$curr_vertex}->[0], \@other_vertices , $structure);
+    }
+}
+
+sub save_main_chain_vertices_in_array
+{
+    my ( $curr_vertex, $all_vertices, $structure ) = @_;
+
+    if ($structure->{$curr_vertex}->[0] == $curr_vertex){
+        return $all_vertices;
+    }
+    else {
+        push (@{$all_vertices}, $structure->{$curr_vertex}->[0]);
+        save_main_chain_vertices_in_array(
+        $structure->{$curr_vertex}->[0], $all_vertices , $structure);
+    }
+}
+
+sub find_lengths_of_side_chains
+{
+    my ( $graph, $curr_vertex, $all_vertices, $vertex_array, $structure ) = @_;
+
+    if ($structure->{$curr_vertex}->[0] == $curr_vertex){
+        return $vertex_array;
+    }
+    else {
+        my @vertices = $graph->vertices();
+        my @vertex = grep {$_->{number} == $curr_vertex} @vertices;
+        my @curr_neighbours = $graph->neighbours( $vertex[0] );
+        if (scalar @curr_neighbours == 1 ){
+            $graph->delete_vertex($vertex[0]);
+            find_lengths_of_side_chains(
+                $graph,
+                $curr_neighbours[0]->{number},
+                $all_vertices,
+                $vertex_array,
+                $structure
+            );
+        }
+        else {
+            my @side_chain_neighbours = ();
+            my $next_chain_vertex;
+            foreach my $neigh (@curr_neighbours) {
+                if (grep { $neigh->{number} eq $_ } @{$all_vertices->[0]}) {
+                   $next_chain_vertex = $neigh;
+                }
+                else {
+                    push (@side_chain_neighbours, $neigh);
+                }
+            }
+            $graph->delete_vertex($vertex[0]);
+
+            foreach my $neighbour (@side_chain_neighbours) {
+                push(@{$vertex_array},
+                        BFS_calculate_chain_length($graph, $neighbour));
+            }
+
+            find_lengths_of_side_chains(
+                $graph,
+                $next_chain_vertex->{number},
+                $all_vertices,
+                $vertex_array,
+                $structure
+            );
+        }
+    }
 }
 
 1;
