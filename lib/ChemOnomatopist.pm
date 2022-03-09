@@ -407,7 +407,8 @@ sub create_structure
         # Start creation of the tree from all the starting vertices
         push(@all_trees, \%{create_tree($carbon_graph, $vertice[0], \%tree)});
     }
-
+use Data::Dumper;
+print Dumper @all_trees;
     my @main_chains = rule_greatest_number_of_side_chains(@all_trees);
     if (scalar @main_chains != 1){
         @main_chains = rule_lowest_numbered_locants(@main_chains);
@@ -486,14 +487,18 @@ sub sort_trees_find_paths
 
         my $last = $sorted[-1];
         my @pair;
-
-        $pair[0] = $index;
-        $pair[1] = $structure{$last};
-
-        push @paths, [ @pair];
+        my @pairs = grep{ join("", ( @{$structure{$_}})) eq join("", (@{$structure{$last}})) } keys %structure;
+print scalar @pairs;
+        foreach my $path (@pairs) {
+            $pair[0] = $index;
+            $pair[1] = $structure{$path};
+            print('a');
+            push @paths, [ @pair ];
+        }
+        print ('');
         $index++;
     }
-
+print "BAIGEU";
     return @paths;
 }
 
@@ -501,7 +506,7 @@ sub sort_trees_find_paths
 sub rule_greatest_number_of_side_chains
 {
     my ( @trees ) = @_;
-
+print Dumper "r1";
     my @paths = sort_trees_find_paths(@trees);
 
     my @sorted_paths = sort {
@@ -519,6 +524,8 @@ sub rule_greatest_number_of_side_chains
 sub rule_lowest_numbered_locants
 {
     my ( @trees ) = @_;
+print Dumper "r2";
+print Dumper @trees;
 
     my @paths = sort_trees_find_paths(@trees);
 
@@ -542,6 +549,7 @@ sub rule_most_carbon_in_side_chains
     my ( $graph, @trees ) = @_;
 
     my $trees_copy = clone(\@trees);
+    my @all_chains;
 
     foreach my $tree (@{$trees_copy}){
 
@@ -553,7 +561,7 @@ sub rule_most_carbon_in_side_chains
             shift @ { $structure{$key} };
         }
 
-              my @sorted = sort {
+        my @sorted = sort {
                             @{$structure{$a}} <=> @{$structure{$b}}
                            or
                             $structure{$a}->[0] cmp $structure{$b}->[0]
@@ -569,19 +577,46 @@ sub rule_most_carbon_in_side_chains
                             \@vertex_array,
                             \%structure2
                         );
+                        
+                       if (already_exists(@all_chains, @parental_chain)) {
+                           print "BABYU";
+                       }
 
-        my @side_chain_lengths = ();
-        my $graph_copy = $graph->copy;
-        find_lengths_of_side_chains(
-            $graph_copy,
-            $last,
-            \@parental_chain,
-            \@side_chain_lengths,
-            \%structure2
-        );
+        push(@all_chains, @parental_chain);
+
     }
+
+    my @unique_chains = unique(@all_chains);
+    my @side_chain_lengths = ();
+    my $index = 0;
+=use
+    foreach my $chain (@unique_chains) {
+        my @side_chain_length = ();
+        $index += 1;
+        my $graph_copy = $graph->copy;
+        push ( @side_chain_lengths, [$index, [ find_lengths_of_side_chains(
+                                                        $graph_copy,
+                                                        $unique_chains[$index][$#unique_chains],
+                                                        \$chain,
+                                                        \@side_chain_length,
+                                                        \%structure2
+                                                        ) ] ]
+    }
+    
+    
+=use
+    push ( @side_chain_lengths, [$index, [ find_lengths_of_side_chains(
+                                                        $graph_copy,
+                                                        $last,
+                                                        \@parental_chain,
+                                                        \@side_chain_length,
+                                                        \%structure2
+                                                        ) ] ] 
+=cut
+    #print Dumper @side_chain_lengths;
 }
 
+# Returns array that contains numbers of vertices that are in side chains
 sub remove_main_chain_vertices_from_array
 {
     my ( $curr_vertex, $all_vertices, $structure ) = @_;
@@ -597,6 +632,7 @@ sub remove_main_chain_vertices_from_array
     }
 }
 
+# Returns array that contains numbers of vertices that are in main chain
 sub save_main_chain_vertices_in_array
 {
     my ( $curr_vertex, $all_vertices, $structure ) = @_;
@@ -611,12 +647,13 @@ sub save_main_chain_vertices_in_array
     }
 }
 
+# Returns array that contains lengths of all side chains
 sub find_lengths_of_side_chains
 {
     my ( $graph, $curr_vertex, $all_vertices, $vertex_array, $structure ) = @_;
 
     if ($structure->{$curr_vertex}->[0] == $curr_vertex){
-        return $vertex_array;
+        return sort @{$vertex_array};
     }
     else {
         my @vertices = $graph->vertices();
@@ -659,6 +696,11 @@ sub find_lengths_of_side_chains
             );
         }
     }
+}
+
+sub already_exists {
+    my ( $curr, $all ) = @_;
+    return grep { $_, $all } @{$all};
 }
 
 1;
