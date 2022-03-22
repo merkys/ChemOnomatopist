@@ -5,6 +5,7 @@ use warnings;
 
 use ChemOnomatopist;
 use DBI;
+use IPC::Run3;
 use Test::More;
 
 my $dbh = db_connect('mysql', 'www.crystallography.net', 'cod', 3306, 'cod_reader', '');
@@ -12,29 +13,33 @@ my $dbh = db_connect('mysql', 'www.crystallography.net', 'cod', 3306, 'cod_reade
 # FIXME: Skip tests if connection is unsuccessful. (A.M.)
 # FIXME: Skip tests if OPSIN is not installed. (A.M.)
 
-my $sth = $dbh->prepare( 'SELECT chemname, value FROM data JOIN smiles ON file = cod_id WHERE chemname IS NOT NULL' );
+my $sth = $dbh->prepare( 'SELECT chemname, value AS smiles FROM data JOIN smiles ON file = cod_id WHERE chemname IS NOT NULL' );
 $sth->execute;
 
 my %tests;
 while (my $item = $sth->fetchrow_hashref) {
-    if ($item->{'value'} =~ /\A[CchH\[\]\(\)]*\z/) {
-        $tests{$item->{'chemname'}} = $item->{'value'};
+    if ($item->{'smiles'} =~ /\A[CchH\[\]\(\)]*\z/) {
+        $tests{$item->{'chemname'}} = $item->{'smiles'};
     }
 }
 
 my %opsin_approved;
 for my $compound (keys %tests) {
-    my $out = `echo $compound | java -jar /usr/share/java/opsin.jar`;
-    chomp($out);
-    if ($out eq $tests{$compound}) {
-        # FIXME: Why lc and uc are used? (A.M.)
-        $opsin_approved{lc($compound)} = uc($tests{$compound});
+    my( $smiles, $stderr );
+    run3 'java -jar /usr/share/java/opsin.jar', \"$compound\n", \$smiles, \$stderr;
+    chomp $smiles;
+    next unless $smiles; # Skipping names that were not understood by OPSIN
+    if( $smiles eq $tests{$compound} ) { # Ensuring OPSIN approval
+        $opsin_approved{$smiles} = $compound;
     }
 }
 
 plan tests => scalar keys %opsin_approved;
 
 for my $case (keys %opsin_approved) {
+    # FIXME: Chemical name may have initial letter uppercased, but it may
+    #        not be the right choice to lowercase it before comparison.
+    #        Need to think a bit more on how to deal with it. (A.M.)
     is( ChemOnomatopist::get_name( $case ), $opsin_approved{$case} );
 }
 
