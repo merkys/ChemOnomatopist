@@ -18,7 +18,7 @@ $sth->execute;
 
 my %tests;
 while (my $item = $sth->fetchrow_hashref) {
-    if ($item->{'smiles'} =~ /\A[CchH\[\]\(\)]*\z/) {
+    if ($item->{'smiles'} =~ /^[CchH\[\]\(\)\-\+]+$/) {
         $tests{$item->{'chemname'}} = $item->{'smiles'};
     }
 }
