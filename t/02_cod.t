@@ -9,21 +9,25 @@ use Test::More;
 
 my $dbh = db_connect('mysql', 'www.crystallography.net', 'cod', 3306, 'cod_reader', '');
 
-my $sth = $dbh->prepare( "SELECT chemname, value FROM data join smiles on file = cod_id where chemname is not null" );
-$sth->execute();
+# FIXME: Skip tests if connection is unsuccessful. (A.M.)
+# FIXME: Skip tests if OPSIN is not installed. (A.M.)
+
+my $sth = $dbh->prepare( 'SELECT chemname, value FROM data JOIN smiles ON file = cod_id WHERE chemname IS NOT NULL' );
+$sth->execute;
 
 my %tests;
-while (my $item = $sth->fetchrow_hashref ) {
-    if ($item->{'value'} =~ /\A[CchH\[\]\(\)]*\z/){
+while (my $item = $sth->fetchrow_hashref) {
+    if ($item->{'value'} =~ /\A[CchH\[\]\(\)]*\z/) {
         $tests{$item->{'chemname'}} = $item->{'value'};
     }
 }
 
 my %opsin_approved;
-for my $compound (keys %tests){
+for my $compound (keys %tests) {
     my $out = `echo $compound | java -jar /usr/share/java/opsin.jar`;
     chomp($out);
-    if ($out eq $tests{$compound}){
+    if ($out eq $tests{$compound}) {
+        # FIXME: Why lc and uc are used? (A.M.)
         $opsin_approved{lc($compound)} = uc($tests{$compound});
     }
 }
@@ -38,12 +42,9 @@ sub db_connect
 {
     my ($db_platform, $db_host, $db_name, $db_port, $db_user, $db_pass) = @_;
     my $dsn = "dbi:$db_platform:hostname=$db_host;dbname=$db_name;" . 
-    "user=$db_user;password=$db_pass";
-    my $options = {PrintError => 0};
-    $options->{mysql_enable_utf8} = 1;
+              "user=$db_user;password=$db_pass";
+    my $options = { PrintError => 0, mysql_enable_utf8 => 1 };
     my $dbh = DBI->connect( $dsn, $db_user, $db_pass, $options );
-    if ( !$dbh ) {
-        die 'could not connect to the database - ' . lcfirst( $DBI::errstr );
-    }
+    die 'could not connect to the database - ' . lcfirst( $DBI::errstr ) unless $dbh;
     return $dbh
 }
