@@ -345,13 +345,15 @@ sub BFS_order_carbons_only
     $carbon_graph->delete_vertices( grep {!is_element( $_, 'C') } $carbon_graph->vertices );
 
     if ($start) {
-        my $bfs = Graph::Traversal::BFS->new( $carbon_graph,
+        my $bfs = Graph::Traversal::BFS->new(
+            $carbon_graph,
             pre => sub { if(!$is_any_visited) {
                             $lengths{$_[0]->{number}} = 0; $is_any_visited = 1  } },
             tree_edge => sub { if ( !defined $lengths{$_[0]->{number}} ) {
                 ( $_[0], $_[1] ) = ( $_[1], $_[0] );
             }
-            $lengths{$_[1]->{number}} = $lengths{$_[0]->{number}} + 1}, start => $start);
+            $lengths{$_[1]->{number}} = $lengths{$_[0]->{number}} + 1},
+            start => $start);
         my @order = $bfs->bfs;
         return @order;
     }
@@ -369,6 +371,25 @@ sub BFS_calculate_chain_length
     my $bfs = Graph::Traversal::BFS->new( $graph, start => $start);
     my @order = $bfs->bfs;
     return scalar @order;
+}
+
+sub BFS_is_chain_branched
+{
+    my $branched = 0;
+    my ( $graph, $start ) = @_;
+
+    my $graph_copy = $graph->copy;
+
+    my $bfs = Graph::Traversal::BFS->new(
+        $graph,
+        pre => sub {
+            my @neighbours = $graph_copy->neighbours( $_[0] );
+            if ( scalar @neighbours > 1 ) { $branched = 1; }
+            $graph_copy->delete_vertex($_[0]);
+        },
+        start => $start);
+    my @order = $bfs->bfs;
+    return $branched;
 }
 
 # Returns tree like structures for all the longest paths
@@ -409,13 +430,21 @@ sub create_structure
     }
     my @main_chains = prepare_paths(@all_trees);
     my $trees;
-
-    ($trees, @main_chains) = rule_greatest_number_of_side_chains(\@main_chains, @all_trees);
+    my $carbon_graph = $graph->copy;
+    $carbon_graph->delete_vertices(
+        grep {!is_element( $_, 'C') } $carbon_graph->vertices
+    );
+    ($trees, @main_chains) = rule_greatest_number_of_side_chains($carbon_graph, \@main_chains, @all_trees);
 
     if (scalar @{$main_chains[0]} != 1){
         my @trr = @{$trees};
-        ($trees, @main_chains) = rule_lowest_numbered_locants(@main_chains, @trr);
-
+        my $carbon_graph = $graph->copy;
+        $carbon_graph->delete_vertices(
+            grep {!is_element( $_, 'C') } $carbon_graph->vertices
+        );
+        ($trees, @main_chains) = rule_lowest_numbered_locants(
+                                    $carbon_graph, @main_chains, @trr
+                                 );
         if (scalar @{$main_chains[0]} != 1){
             my @trr = @{$trees};
             my $carbon_graph = $graph->copy;
@@ -425,6 +454,20 @@ sub create_structure
             ($trees, @main_chains) = rule_most_carbon_in_side_chains(
                                         $carbon_graph, @main_chains, @trr
                                     );
+            if (scalar @{$main_chains[0]} != 1){
+                my @trr = @{$trees};
+                my $carbon_graph = $graph->copy;
+                $carbon_graph->delete_vertices(
+                    grep {!is_element( $_, 'C') } $carbon_graph->vertices
+                );
+                ($trees, @main_chains) = rule_least_branched_side_chains($carbon_graph, @main_chains, @trr);
+                if(scalar @{$main_chains[0]} != 1){
+                    #pick one from all equal chains
+                }
+            }
+            else{
+                #return created order
+            }
         }
         else{
             #return created order
@@ -503,68 +546,52 @@ sub prepare_paths
     return @all_chains;
 }
 
-
-sub sort_trees_find_paths
+# Tries to find the chain which has the greatest number of side chains
+sub rule_greatest_number_of_side_chains
 {
-    my ( $chains, @trees ) = @_;
+    my ( $graph, $chains, @trees ) = @_;
 
     my $trees_copy = clone(\@trees);
-    my @paths = ();
     my $index = 0;
+    my @number_of_side_chains = ();
 
     foreach my $tree (@{$trees_copy}){
 
-        my %structure = %{$tree};
+        my %structure = %{clone $tree};
+        my %structure2 = %{$tree};
 
         foreach my $key (keys %structure)
         {
             shift @ { $structure{$key} };
         }
-#not working
-        my @sorted = sort {
-                            @{$structure{$a}} <=> @{$structure{$b}}
-                           or
-                            $structure{$a}->[0] cmp $structure{$b}->[0]
-                          } keys %structure;
-
-        my $last = $sorted[-1];
-        my @pair;
-        my @pairs =
-        grep{
-            join("", ( @{$structure{$_}})) eq join("", (@{$structure{$last}}))
-        } keys %structure;
 
         my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
+        my @chains_in_the_tree = grep {@{$_}[0] == $first[0]} @{$chains};
 
-        foreach my $path (@pairs) {
-            if (grep{$first[0] == $_->[0] and $path == $_->[-1] } @{$chains}){
-                $pair[0] = $index;
-                $pair[1] = $first[0];
-                $pair[2] = $path;
-                $pair[3] = $structure{$path};
-                push @paths, [ @pair ];
-            }
+        for my $chain (@chains_in_the_tree){
+            my $graph_copy = $graph->copy;
+            push ( @number_of_side_chains,
+                [$index, @{$chain}[0], @{$chain}[-1],
+                    find_number_of_side_chains(
+                        $graph_copy,
+                        \@{$chain},
+                        \%structure2
+                    )
+                ]
+            )
         }
-        $index++;
+        $index += 1;
     }
-    return \@paths;
-}
-
-# Tries to find the chain which has the greatest number of side chains
-sub rule_greatest_number_of_side_chains
-{
-    my ( $chains, @trees ) = @_;
-    my @paths = @{sort_trees_find_paths($chains, @trees)};
 
     my @sorted_paths = sort {
-                                @{$a->[3]} <=> @{$b->[3]}
-                            } @paths;
-    my $path_length = @{$sorted_paths[-1][3]};
-    my @longest_paths = grep {@{$_->[3]} == $path_length} @paths;
+                                $a->[3] <=> $b->[3]
+                            } @number_of_side_chains;
+
+    my $path_length = $sorted_paths[-1][3];
+    my @longest_paths = grep {$_->[3] == $path_length} @number_of_side_chains;
     my %seen;
     my @uniq_longest_paths = grep { !$seen{$_->[0]}++ } @longest_paths;
     my @result = @trees[map {$_->[0]} @uniq_longest_paths];
-
     my @eligible_chains;
 
     for my $chain (@{$chains}){
@@ -572,25 +599,54 @@ sub rule_greatest_number_of_side_chains
             push(@eligible_chains, $chain);
         }
     }
-
     return \@result, \@eligible_chains;
 }
 
 # Tries to find the chain which has the lowest-numbered locants
 sub rule_lowest_numbered_locants
 {
-    my ( $chains, @trees ) = @_;
+    my ( $graph, $chains, @trees ) = @_;
 
-    my @paths = @{sort_trees_find_paths($chains, @trees)};
+    my $trees_copy = clone(\@trees);
+    my $index = 0;
+    my @locant_placing = ();
+
+    foreach my $tree (@{$trees_copy}){
+
+        my %structure = %{clone $tree};
+        my %structure2 = %{$tree};
+
+        foreach my $key (keys %structure)
+        {
+            shift @ { $structure{$key} };
+        }
+
+        my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
+        my @chains_in_the_tree = grep {@{$_}[0] == $first[0]} @{$chains};
+
+        for my $chain (@chains_in_the_tree){
+            my $graph_copy = $graph->copy;
+            push ( @locant_placing,
+                [$index, @{$chain}[0], @{$chain}[-1],
+                    [find_locant_placing(
+                        $graph_copy,
+                        \@{$chain},
+                        \%structure2
+                    )]
+                ]
+            )
+        }
+        $index += 1;
+    }
 
     my @sorted_paths = sort {
-                                $a->[3]->[1] <=> $b->[3]->[1]
-                            } reverse @paths;
+                                join("", (@{$a->[3]})) cmp join("", (@{$b->[3]}))
+                            } reverse @locant_placing;
 
-    my $lowest_locants = $sorted_paths[-1][3];
+    my $lowest_locants = $sorted_paths[0][3];
     my @lowest_locants_paths = grep {
                     join("", ( @{$_->[3]})) == join("", (@{$lowest_locants}))
-                                    } @paths;
+                                    } @locant_placing;
     my %seen;
     my @uniq_lowest_locants_paths = grep { !$seen{$_->[0]}++ } @lowest_locants_paths;
     my @result = @trees[map {$_->[0]} @uniq_lowest_locants_paths];
@@ -602,7 +658,6 @@ sub rule_lowest_numbered_locants
             push(@eligible_chains, $chain);
         }
     }
-
     return \@result, \@eligible_chains;
 }
 
@@ -621,7 +676,6 @@ sub rule_most_carbon_in_side_chains
         my %structure = %{ clone $tree};
         my %structure2 = %{$tree};
         my @all_vertices = keys %structure;
-        $index += 1;
 
         foreach my $key (keys %structure)
         {
@@ -654,30 +708,86 @@ sub rule_most_carbon_in_side_chains
                 ]
             )
         }
+        $index += 1;
     }
 
-        my @sorted_final = sort {
-                              join("", @{@{$a}[3]}) cmp join("", @{@{$b}[3]})
+    my @sorted_final = sort {
+                            join("", @{@{$a}[3]}) cmp join("", @{@{$b}[3]})
                           } @side_chain_lengths;
 
-        my $last = $sorted_final[-1][3];
-        my @greatest_no_of_side_chains_paths = grep {
+    my $last = $sorted_final[-1][3];
+    my @greatest_no_of_side_chains_paths = grep {
                     join("", @{@{$_}[3]}) eq join("", @{$last})
                                     } @sorted_final;
-        my @eligible_chains;
+    my @eligible_chains;
 
-        for my $chain (@{$chains}){
-            if (grep {$_->[1] == $chain->[0] and $_->[2] == $chain->[-1]} 
-                @greatest_no_of_side_chains_paths
-            ){
-                push(@eligible_chains, $chain);
-
-            }
+    for my $chain (@{$chains}){
+        if (grep {$_->[1] == $chain->[0] and $_->[2] == $chain->[-1]}
+            @greatest_no_of_side_chains_paths
+        ){
+            push(@eligible_chains, $chain);
         }
+    }
     my %seen;
     my @uniq_side_chain_paths =
                 grep { !$seen{$_->[0]}++ } @greatest_no_of_side_chains_paths;
     my @result = @trees[map {$_->[0]} @uniq_side_chain_paths];
+
+    return \@result, \@eligible_chains;
+}
+
+# Tries to find chain that have the least branched side chains
+sub rule_least_branched_side_chains
+{
+    my ( $graph, $chains, @trees ) = @_;
+
+    my $trees_copy = clone(\@trees);
+    my $index = 0;
+    my @number_of_branched_side_chains = ();
+
+    foreach my $tree (@{$trees_copy}){
+
+        my %structure = %{clone $tree};
+        my %structure2 = %{$tree};
+
+        foreach my $key (keys %structure)
+        {
+            shift @ { $structure{$key} };
+        }
+
+        my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
+        my @chains_in_the_tree = grep {@{$_}[0] == $first[0]} @{$chains};
+
+        for my $chain (@chains_in_the_tree){
+            my $graph_copy = $graph->copy;
+            push ( @number_of_branched_side_chains,
+                [$index, @{$chain}[0], @{$chain}[-1],
+                    find_number_of_branched_side_chains(
+                        $graph_copy,
+                        \@{$chain},
+                        \%structure2
+                    )
+                ]
+            )
+        }
+        $index += 1;
+    }
+    my @sorted_paths = sort {
+                                $a->[3] <=> $b->[3]
+                            } @number_of_branched_side_chains;
+
+    my $path_length = $sorted_paths[-1][3];
+    my @longest_paths = grep {$_->[3] == $path_length} @number_of_branched_side_chains;
+    my %seen;
+    my @uniq_longest_paths = grep { !$seen{$_->[0]}++ } @longest_paths;
+    my @result = @trees[map {$_->[0]} @uniq_longest_paths];
+    my @eligible_chains;
+
+    for my $chain (@{$chains}){
+        if (grep {$_->[1] == $chain->[0] and $_->[2] == $chain->[-1]} @longest_paths){
+            push(@eligible_chains, $chain);
+        }
+    }
     return \@result, \@eligible_chains;
 }
 
@@ -758,6 +868,104 @@ sub find_lengths_of_side_chains
                 $vertex_array,
                 $structure
             );
+        }
+    }
+}
+
+#TODO: Try to merge all subroutines
+
+sub find_locant_placing
+{
+    my ( $graph, $main_chain, $structure ) = @_;
+
+    my @vertices = $graph->vertices();
+    my @places_of_locants = ();
+    my @reverted_main_chain = reverse @{$main_chain};
+    my $vertex_number = scalar @reverted_main_chain;
+
+    for my $curr_vertex ( @reverted_main_chain ){
+        my @vertex = grep {$_->{number} == $curr_vertex} @vertices;
+        my @curr_neighbours = $graph->neighbours( $vertex[0] );
+        if ( scalar @curr_neighbours == 0 ){
+            return @places_of_locants;
+        }
+        elsif ( scalar @curr_neighbours == 1 ){
+            $graph->delete_vertex($vertex[0]);
+        }
+        else{
+            $graph->delete_vertex($vertex[0]);
+            foreach my $neigh (@curr_neighbours) {
+                if (grep { $neigh->{number} eq $_ } @{$main_chain}) {
+                    next;
+                }
+                else{
+                    push(@places_of_locants, $vertex_number);
+                }
+            }
+        }
+        $vertex_number -= 1;
+    }
+}
+
+sub find_number_of_side_chains
+{
+    my ( $graph, $main_chain, $structure ) = @_;
+
+    my @vertices = $graph->vertices();
+    my $number_of_side_chains = 0;
+    my @reverted_main_chain = reverse @{$main_chain};
+
+    for my $curr_vertex ( @reverted_main_chain ){
+        my @vertex = grep {$_->{number} == $curr_vertex} @vertices;
+        my @curr_neighbours = $graph->neighbours( $vertex[0] );
+        if ( scalar @curr_neighbours == 0 ){
+            return $number_of_side_chains;
+        }
+        elsif ( scalar @curr_neighbours == 1 ){
+            $graph->delete_vertex($vertex[0]);
+        }
+        else{
+            $graph->delete_vertex($vertex[0]);
+            foreach my $neigh (@curr_neighbours) {
+                if (grep { $neigh->{number} eq $_ } @{$main_chain}) {
+                    next;
+                }
+                else{
+                    $number_of_side_chains += 1;
+                }
+            }
+        }
+    }
+}
+
+sub find_number_of_branched_side_chains
+{
+    my ( $graph, $main_chain, $structure ) = @_;
+
+    my @vertices = $graph->vertices();
+    my $number_of_branched_side_chains = 0;
+    my @reverted_main_chain = reverse @{$main_chain};
+
+    for my $curr_vertex ( @reverted_main_chain ){
+        my @vertex = grep {$_->{number} == $curr_vertex} @vertices;
+        my @curr_neighbours = $graph->neighbours( $vertex[0] );
+        if ( scalar @curr_neighbours == 0 ){
+            return $number_of_branched_side_chains;
+        }
+        if ( scalar @curr_neighbours == 1 ){
+            $graph->delete_vertex($vertex[0]);
+        }
+        else{
+            $graph->delete_vertex($vertex[0]);
+            foreach my $neigh (@curr_neighbours) {
+                if (grep { $neigh->{number} eq $_ } @{$main_chain}) {
+                    next;
+                }
+                else{
+                    $number_of_branched_side_chains +=
+                                    BFS_is_chain_branched($graph, $neigh);
+                }
+            }
         }
     }
 }
