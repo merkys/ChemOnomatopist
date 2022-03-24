@@ -639,9 +639,7 @@ sub rule_lowest_numbered_locants
         $index += 1;
     }
 
-    my @sorted_paths = sort {
-                                join("", (@{$a->[3]})) cmp join("", (@{$b->[3]}))
-                            } reverse @locant_placing;
+    my @sorted_paths = sort compare_locant_placings reverse @locant_placing;
 
     my $lowest_locants = $sorted_paths[0][3];
     my @lowest_locants_paths = grep {
@@ -711,9 +709,7 @@ sub rule_most_carbon_in_side_chains
         $index += 1;
     }
 
-    my @sorted_final = sort {
-                            join("", @{@{$a}[3]}) cmp join("", @{@{$b}[3]})
-                          } @side_chain_lengths;
+    my @sorted_final = sort compare_side_chain_lengths @side_chain_lengths;
 
     my $last = $sorted_final[-1][3];
     my @greatest_no_of_side_chains_paths = grep {
@@ -968,6 +964,30 @@ sub find_number_of_branched_side_chains
             }
         }
     }
+}
+
+sub compare_locant_placings{
+    my @first = @{$a->[3]};
+    my @second = @{$b->[3]};
+    my @index = (0..scalar @first-1);
+
+    foreach(@index){
+        if ($first[$_] > $second[$_]) {return 1}
+        elsif ($first[$_] < $second[$_]) {return -1}
+    }
+    {return 0}
+}
+
+sub compare_side_chain_lengths{
+    my @first = @{@{$a}[3]};
+    my @second = @{@{$b}[3]};
+    my @index = (0..scalar @first-1);
+
+    foreach(@index){
+        if ($first[$_] > $second[$_]) {return 1}
+        elsif ($first[$_] < $second[$_]) {return -1}
+    }
+    {return 0}
 }
 
 1;
