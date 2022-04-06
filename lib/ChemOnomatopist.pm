@@ -104,14 +104,21 @@ sub get_name
         # No other types of graphs with cycles can be processed for now
         die "cannot handle graphs with cycles for now\n";
     }
-    create_structure($graph);
-    # Traverse the graph using breadth-first traversal and pick one of
-    # the furthest vertices as a starting point for naming
-    my @order = BFS_order_carbons_only($graph);
+    my ($custom_order, $order) = create_structure($graph->copy);
 
-    return get_chain( $graph->copy,
-                      pop @order,
-                      { choose_direction => 1 } ) . 'ane';
+    if ( $custom_order ) {
+        return get_chain_2( $graph->copy,
+                        $order,
+                        { choose_direction => 1 } ) . 'ane';
+    }
+    else {
+        # Traverse the graph using breadth-first traversal and pick one of
+        # the furthest vertices as a starting point for naming
+        my @order = BFS_order_carbons_only($graph);
+
+        return get_chain( $graph->copy,
+                        pop @order,
+                        { choose_direction => 1 } ) . 'ane';
 }
 
 sub get_chain
@@ -119,7 +126,6 @@ sub get_chain
     my( $graph, $start, $options ) = @_;
 
     $options = {} unless $options;
-
     # As per https://www.geeksforgeeks.org/longest-path-undirected-tree/,
     # two BFSes are needed to find the longest path in a tree
 
@@ -152,21 +158,42 @@ sub get_chain
     # rules: choosing a direction which has more attachments to its
     # beginning than to its end
     if( $options->{choose_direction} ) {
+        my $graph_copy = $graph->copy;
+        $graph_copy->delete_vertices( grep {!is_element( $_, 'C') } $graph_copy->vertices );
+        my $graph_copy1 = $graph->copy;
+        $graph_copy1->delete_vertices( grep {!is_element( $_, 'C') } $graph_copy1->vertices );
+
         for my $i (0..int(@chain/2)-1) {
             my $forward_chain_degree =
-                    scalar $graph->neighbours( $chain[$i] ) -
-                    grep { is_element( $_, 'H' ) }
-                    $graph->neighbours( $chain[$i] );
+                scalar $graph_copy->neighbours( $chain[$i] ) -
+                grep { is_element( $_, 'H' ) }
+                    $graph_copy->neighbours( $chain[$i] );
             my $backward_chain_degree =
-                    scalar $graph->neighbours( $chain[$#chain-$i] ) -
-                    grep { is_element( $_, 'H' ) }
-                    $graph->neighbours( $chain[$#chain-$i] );
-
-            if( $forward_chain_degree != $backward_chain_degree ) {
-                if( $forward_chain_degree < $backward_chain_degree ) {
-                    @chain = reverse @chain;
-                }
+                scalar $graph_copy1->neighbours( $chain[$#chain-$i] ) -
+                grep { is_element( $_, 'H' ) }
+                    $graph_copy1->neighbours( $chain[$#chain-$i] );
+            if( $forward_chain_degree < $backward_chain_degree ) {
+                @chain = reverse @chain;
                 last;
+            }
+            elsif( $forward_chain_degree > $backward_chain_degree ) {
+                last;
+            }
+            elsif( $forward_chain_degree > 0 ) {
+                if ( $forward_chain_degree = $backward_chain_degree ) {
+                    my $atom = $chain[$i];
+                    my $atom2 = $chain[$#chain-$i];
+                    my @forw_neighbour = $graph_copy->neighbours( $atom );
+                    my @backw_neighbour = $graph_copy1->neighbours( $atom2 );
+                    $graph_copy->delete_edge( $atom, $forw_neighbour[0] );
+                    $graph_copy1->delete_edge( $atom2, $backw_neighbour[0] );
+                    my $forw_attachment_name = get_chain( $graph_copy, $forw_neighbour[0] );
+                    my $backw_attachment_name = get_chain( $graph_copy1, $backw_neighbour[0] );
+                    if ($forw_attachment_name gt $backw_attachment_name){
+                        @chain = reverse @chain;
+                        last;
+                    }
+                }
             }
         }
     }
@@ -202,6 +229,90 @@ sub get_chain
     return $bracket . $name . $prefixes[scalar @chain];
 }
 
+sub get_chain_2
+{
+    my( $graph, $main_chain, $options ) = @_;
+
+    my @vertices = $graph->vertices();
+    my @chain = ();
+
+    for my $curr_vertex (@{$main_chain}){
+        my @vertex = grep {$_->{number} == $curr_vertex} @vertices;
+        push(@chain, $vertex[0]);
+    }
+
+    $graph->delete_path( @chain );
+
+    my $graph_copy = $graph->copy;
+        $graph_copy->delete_vertices( grep {!is_element( $_, 'C') } $graph_copy->vertices );
+    my $graph_copy1 = $graph->copy;
+        $graph_copy1->delete_vertices( grep {!is_element( $_, 'C') } $graph_copy1->vertices );
+
+    for my $i (0..int(@chain/2)-1) {
+        my $forward_chain_degree =
+            scalar $graph_copy->neighbours( $chain[$i] ) -
+            grep { is_element( $_, 'H' ) }
+                $graph_copy->neighbours( $chain[$i] );
+        my $backward_chain_degree =
+            scalar $graph_copy1->neighbours( $chain[$#chain-$i] ) -
+            grep { is_element( $_, 'H' ) }
+                $graph_copy1->neighbours( $chain[$#chain-$i] );
+        if( $forward_chain_degree < $backward_chain_degree ) {
+            @chain = reverse @chain;
+            last;
+        }
+        elsif( $forward_chain_degree > $backward_chain_degree ) {
+            last;
+        }
+        elsif( $forward_chain_degree > 0 ) {
+            if ( $forward_chain_degree = $backward_chain_degree ) {
+                my $atom = $chain[$i];
+                my $atom2 = $chain[$#chain-$i];
+                my @forw_neighbour = $graph_copy->neighbours( $atom );
+                my @backw_neighbour = $graph_copy1->neighbours( $atom2 );
+                $graph_copy->delete_edge( $atom, $forw_neighbour[0] );
+                $graph_copy1->delete_edge( $atom2, $backw_neighbour[0] );
+                my $forw_attachment_name = get_chain( $graph_copy, $forw_neighbour[0] );
+                my $backw_attachment_name = get_chain( $graph_copy1, $backw_neighbour[0] );
+                if ($forw_attachment_name gt $backw_attachment_name){
+                    @chain = reverse @chain;
+                    last;
+                }
+            }
+        }
+    }
+
+    # Examine the attachments to the main chain: delete the edges
+    # connecting them to the main chain, at the same time giving them
+    # names according to their lengths via calls to get_chain()
+    my %attachments;
+    my $attachment_name;
+    for my $i (0..$#chain) {
+        my $atom = $chain[$i];
+        for my $neighbour ($graph->neighbours( $atom )) {
+            $graph->delete_edge( $atom, $neighbour );
+            unless (is_element( $neighbour, 'H' )){
+                $attachment_name = get_chain( $graph, $neighbour );
+                my $prefix = ($attachment_name =~ /^\(/) ? 'yl)' : 'yl';
+                push @{$attachments{$attachment_name . $prefix}}, $i;
+             }
+        }
+    }
+
+    # Collecting names of all the attachments
+    my $name = '';
+    for my $attachment_name (sort { $a cmp $b } keys %attachments) {
+        $name = $name ? $name . '-' : $name;
+        $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} )
+                 . '-' . $numbers[scalar @{$attachments{$attachment_name}}] .
+                 $attachment_name;
+    }
+    my $bracket =
+        ($options->{choose_direction} || not ($name =~ /^[0-9]/)) ? '' : '(';
+
+    return $bracket . $name . $prefixes[scalar @chain];
+}
+}
 # FIXME: not used in the main code yet
 sub find_groups
 {
@@ -343,7 +454,6 @@ sub BFS_order_carbons_only
     my $carbon_graph = $graph->copy;
 
     $carbon_graph->delete_vertices( grep {!is_element( $_, 'C') } $carbon_graph->vertices );
-
     if ($start) {
         my $bfs = Graph::Traversal::BFS->new(
             $carbon_graph,
@@ -405,14 +515,14 @@ sub create_structure
 
     my $end = $second_order[-1];
 
-    # Finding all farthest vertices
+    # Finding all farthest vertices and adding the first one
     my @farthest = grep { $lengths{$_} eq $lengths{$end->{number}} } keys %lengths;
     push(@farthest, $start->{number});
-
+=use
     if (scalar @farthest == 2) {
-        return @order;
+        return 0, @order;
     }
-
+=cut
     for (my $i = 0; $i < scalar(@farthest); $i++) {
         my %tree;
         my @value_array;
@@ -460,21 +570,27 @@ sub create_structure
                 $carbon_graph->delete_vertices(
                     grep {!is_element( $_, 'C') } $carbon_graph->vertices
                 );
-                ($trees, @main_chains) = rule_least_branched_side_chains($carbon_graph, @main_chains, @trr);
+                ($trees, @main_chains) = rule_least_branched_side_chains(
+                                            $carbon_graph, @main_chains, @trr
+                                        );
                 if(scalar @{$main_chains[0]} != 1){
-                    #pick one from all equal chains
+                    my $main_chain = rule_pick_chain_from_valid(@main_chains);
+                    return(1, @{$main_chains[0]});
+                }
+                else{
+                    return(1, @{$main_chains[0]});
                 }
             }
             else{
-                #return created order
+                return(1, @{$main_chains[0]});
             }
         }
         else{
-            #return created order
+            return(1, @{$main_chains[0]});
         }
     }
     else{
-        #return created order
+        return(1, @{$main_chains[0]});
     }
 }
 # Creating tree like structure for all the longest paths in molecule
@@ -513,6 +629,7 @@ sub create_tree
     return $tree;
 }
 
+# Create arrays of all possible longest chains in the tree
 sub prepare_paths
 {
     my ( @trees ) = @_;
@@ -543,7 +660,39 @@ sub prepare_paths
             )
         }
     }
+
+    # Adds reverted chains if they are not present yet as the longest chains
+    my $all = clone (\@all_chains);
+
+    for my $chain (@{$all}){
+        if (not array_exists([reverse @$chain], @all_chains)) {
+            push (@all_chains, [reverse @$chain] );
+        }
+    }
+
     return @all_chains;
+}
+
+# Checks if array exists in array of arrays
+sub array_exists
+{
+    my ( $chain, @all_chains) = @_;
+
+    my $same;
+
+    for my $curr_chain (@all_chains) {
+        $same = 1;
+        for my $index (0 .. scalar @{$curr_chain} - 1) {
+            if (@{$chain}[$index] != @{$curr_chain}[$index]) {
+                $same = 0;
+                last;
+            }
+        }
+        if ($same){
+            return(1);
+        }
+    }
+    return(0);
 }
 
 # Tries to find the chain which has the greatest number of side chains
@@ -771,8 +920,7 @@ sub rule_least_branched_side_chains
     my @sorted_paths = sort {
                                 $a->[3] <=> $b->[3]
                             } @number_of_branched_side_chains;
-
-    my $path_length = $sorted_paths[-1][3];
+    my $path_length = $sorted_paths[0][3];
     my @longest_paths = grep {$_->[3] == $path_length} @number_of_branched_side_chains;
     my %seen;
     my @uniq_longest_paths = grep { !$seen{$_->[0]}++ } @longest_paths;
@@ -785,6 +933,17 @@ sub rule_least_branched_side_chains
         }
     }
     return \@result, \@eligible_chains;
+}
+
+# Subroutine sorts all valid chains that are left and returns the first one -
+# the one that have carbons with lowest indexes
+sub rule_pick_chain_from_valid
+{
+    my ( $chains ) = @_;
+
+    my @sorted_chains = sort compare_arrays @{$chains};
+
+    return $sorted_chains[0];
 }
 
 # Returns array that contains numbers of vertices that are in side chains
@@ -981,6 +1140,18 @@ sub compare_locant_placings{
 sub compare_side_chain_lengths{
     my @first = @{@{$a}[3]};
     my @second = @{@{$b}[3]};
+    my @index = (0..scalar @first-1);
+
+    foreach(@index){
+        if ($first[$_] > $second[$_]) {return 1}
+        elsif ($first[$_] < $second[$_]) {return -1}
+    }
+    {return 0}
+}
+
+sub compare_arrays{
+    my @first = @{$a};
+    my @second = @{$b};
     my @index = (0..scalar @first-1);
 
     foreach(@index){
