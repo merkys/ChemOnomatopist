@@ -409,9 +409,9 @@ sub canonical_SMILES
             return $_[0]->{shift @sorted};
         } );
 
-    # A.M.: I cannot find a counter-example, thus the following seems
-    # reasonable to me. In a SMILES descriptor, one can substitute all
-    # '/' with '\' and vice versa, and retain correct cis/trans settings.
+    # In a SMILES descriptor, one can substitute all '/' with '\'
+    # and vice versa, retaining correct cis/trans settings.
+    # Similar rule is explained in O'Boyle, 2012, Rule H.
     if( $smiles =~ /([\/\\])/ && $1 eq '\\' ) {
         $smiles =~ tr/\/\\/\\\//;
     }
