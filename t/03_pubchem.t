@@ -6,7 +6,7 @@ use warnings;
 use ChemOnomatopist;
 use Test::More;
 
-open (my $f, '<', 'PubChemData') or die;
+open (my $f, '<', 't/PubChemData') or die;
 
 my %tests;
 while (my $line = <$f>) {
