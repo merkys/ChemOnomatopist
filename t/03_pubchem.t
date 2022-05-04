@@ -21,8 +21,5 @@ close $f;
 plan tests => scalar @iupac;
 
 for my $i (0 .. $#iupac){
-    # FIXME: Chemical name may have initial letter uppercased, but it may
-    #        not be the right choice to lowercase it before comparison.
-    #        Need to think a bit more on how to deal with it. (A.M.)
     is( ChemOnomatopist::get_name( $smiles[$i] ), $iupac[$i] );
 }
