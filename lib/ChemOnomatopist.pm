@@ -16,6 +16,7 @@ use Graph::Traversal::BFS;
 use Graph::Undirected;
 use Scalar::Util qw( blessed );
 use Clone qw( clone );
+no warnings 'recursion';
 
 our @prefixes = qw(
     ?
@@ -59,12 +60,184 @@ our @prefixes = qw(
     octatriacont
     nonatriacont
     tetracont
+    hentetracont
+    dotetracont
+    tritetracont
+    tetratetracont
+    pentatetracont
+    hexatetracont
+    heptatetracont
+    octatetracont
+    nonatetracont
+    pentacont
+    henpentacont
+    dopentacont
+    tripentacont
+    tetrapentacont
+    pentapentacont
+    hexapentacont
+    heptapentacont
+    octapentacont
+    nonapentacont
+    hexacont
+    henhexacont
+    dohexacont
+    trihexacont
+    tetrahexacont
+    pentahexacont
+    hexahexacont
+    heptahexacont
+    octahexacont
+    nonahexacont
+    heptacont
+    henheptacont
+    doheptacont
+    triheptacont
+    tetraheptacont
+    pentaheptacont
+    hexaheptacont
+    heptaheptacont
+    octaheptacont
+    nonaheptacont
+    octacont
+    henoctacont
+    dooctacont
+    trioctacont
+    tetraoctacont
+    pentaoctacont
+    hexaoctacont
+    heptaoctacont
+    octaoctacont
+    nonaoctacont
+    nonacont
+    hennonacont
+    dononacont
+    trinonacont
+    tetranonacont
+    pentanonacont
+    hexanonacont
+    heptanonacont
+    octanonacont
+    nonanonacont
+    hect
+    henihect
+    dohect
+    trihect
+    tetrahect
+    pentahect
+    hexahect
+    heptahect
+    octahect
+    nonahect
+    decahect
+    undecahect
+    dodecahect
+    tridecahect
+    tetradecahect
+    pentadecahect
+    hexadecahect
+    heptadecahect
+    octadecahect
+    nonadecahect
+    icosahect
+    henicosahect
+    docosahect
+    tricosahect
+    tetracosahect
+    pentacosahect
+    hexacosahect
+    heptacosahect
+    octacosahect
+    nonacosahect
+    triacontahect
+    hentriacontahect
+    dotriacontahect
+    tritriacontahect
+    tetratriacontahect
+    pentatriacontahect
+    hexatriacontahect
+    heptatriacontahect
+    octatriacontahect
+    nonatriacontahect
+    tetracontahect
+    hentetracontahect
+    dotetracontahect
+    tritetracontahect
+    tetratetracontahect
+    pentatetracontahect
+    hexatetracontahect
+    heptatetracontahect
+    octatetracontahect
+    nonatetracontahect
+    pentacontahect
+    henpentacontahect
+    dopentacontahect
+    tripentacontahect
+    tetrapentacontahect
+    pentapentacontahect
+    hexapentacontahect
+    heptapentacontahect
+    octapentacontahect
+    nonapentacontahect
+    hexacontahect
+    henhexacontahect
+    dohexacontahect
+    trihexacontahect
+    tetrahexacontahect
+    pentahexacontahect
+    hexahexacontahect
+    heptahexacontahect
+    octahexacontahect
+    nonahexacontahect
+    heptacontahect
+    henheptacontahect
+    doheptacontahect
+    triheptacontahect
+    tetraheptacontahect
+    pentaheptacontahect
+    hexaheptacontahect
+    heptaheptacontahect
+    octaheptacontahect
+    nonaheptacontahect
+    octacontahect
+    henoctacontahect
+    dooctacontahect
+    trioctacontahect
+    tetraoctacontahect
+    pentaoctacontahect
+    hexaoctacontahect
+    heptaoctacontahect
+    octaoctacontahect
+    nonaoctacontahect
+    nonacontahect
+    hennonacontahect
+    dononacontahect
+    trinonacontahect
+    tetranonacontahect
+    pentanonacontahect
+    hexanonacontahect
+    heptanonacontahect
+    octanonacontahect
+    nonanonacontahect
 );
 
 my @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
-                'sexta', 'hepta', 'octa', 'nona', 'deca',
-                'undeca', 'dodeca', 'trideca', 'tetradeca', 'pentadeca',
-                'hexadeca', 'octadeca' );
+                'hexa', 'hepta', 'octa', 'nona', 'deca',
+                'undeca', 'dodeca', 'trideca', 'tetradeca',
+                'pentadeca', 'hexadeca', 'heptadec', 'octadeca', 'nonadeca',
+                'icosa', 'henicosa', 'docosa', 'tricosa',
+                'tetracosa', 'pentacosa', 'hexacosa',
+                'heptacosa', 'octacosa', 'nonacosa', 'triaconta',
+                'hentriaconta', 'dotriaconta', 'tritriaconta', 'tetratriaconta',
+                'pentatriaconta', 'hexatriaconta', 'heptatriaconta',
+                'octatriaconta', 'nonatriaconta', 'tetraconta' );
+
+my %preferrable_names = ( 
+                '(1-methylethyl)' => 'propan-2-yl',
+                '(1-ethyl-1-methylpropyl)' => '(3-methylpentan-3-yl)',
+                '(1,1-dimethylethyl)' => 'tert-butyl',
+                '(1,3,3-trimethylbutyl)' => '(4,4-dimethylpentan-2-yl)',
+                '(1-methylpropyl)' => 'butan-2-yl' );
 
 my %lengths;
 
@@ -270,13 +443,36 @@ sub get_chain_2
                 my $atom2 = $chain[$#chain-$i];
                 my @forw_neighbour = $graph_copy->neighbours( $atom );
                 my @backw_neighbour = $graph_copy1->neighbours( $atom2 );
-                $graph_copy->delete_edge( $atom, $forw_neighbour[0] );
-                $graph_copy1->delete_edge( $atom2, $backw_neighbour[0] );
-                my $forw_attachment_name = get_chain( $graph_copy, $forw_neighbour[0] );
-                my $backw_attachment_name = get_chain( $graph_copy1, $backw_neighbour[0] );
-                if ($forw_attachment_name gt $backw_attachment_name){
-                    @chain = reverse @chain;
-                    last;
+                if (scalar @forw_neighbour == 1) {
+                    $graph_copy->delete_edge( $atom, $forw_neighbour[0] );
+                    $graph_copy1->delete_edge( $atom2, $backw_neighbour[0] );
+                    my $forw_attachment_name = get_chain( $graph_copy, $forw_neighbour[0] );
+                    my $backw_attachment_name = get_chain( $graph_copy1, $backw_neighbour[0] );
+                    if (forward_att_alpabetically_greater($forw_attachment_name, $backw_attachment_name)){
+                        @chain = reverse @chain;
+                        last;
+                    }
+                }
+                else {
+                    my $stop = 0;
+                    for (my $j = 0; $j < scalar @forw_neighbour; $j++ ) {
+                        $graph_copy->delete_edge( $atom, $forw_neighbour[$j] );
+                        $graph_copy1->delete_edge( $atom2, $backw_neighbour[$j] );
+                        my @forw_attachment_names;
+                        my @backw_attachment_names;
+                        push( @forw_attachment_names, 
+                            get_chain( $graph_copy, $forw_neighbour[$j] ));
+                        push( @backw_attachment_names, 
+                            get_chain( $graph_copy1, $backw_neighbour[$j] ));
+                        if (forward_atts_alpabetically_greater(\@forw_attachment_names, \@backw_attachment_names)) {
+                            @chain = reverse @chain;
+                            $stop = 1;
+                            last;
+                        }
+                    }
+                    if ($stop) {
+                        last;
+                    }
                 }
             }
         }
@@ -299,9 +495,18 @@ sub get_chain_2
         }
     }
 
+    # Replacing systematic IUPAC attachment names with their preferrable
+    # ones.
+    for my $att_name (keys %attachments) {
+        if (exists $preferrable_names{$att_name}){
+            $attachments{$preferrable_names{$att_name}} = $attachments{$att_name};
+            delete $attachments{$att_name};
+        }
+    }
+
     # Collecting names of all the attachments
     my $name = '';
-    for my $attachment_name (sort { $a cmp $b } keys %attachments) {
+    for my $attachment_name (sort compare_only_aphabetical keys %attachments) {
         $name = $name ? $name . '-' : $name;
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} )
                  . '-' . $numbers[scalar @{$attachments{$attachment_name}}] .
@@ -518,11 +723,7 @@ sub create_structure
     # Finding all farthest vertices and adding the first one
     my @farthest = grep { $lengths{$_} eq $lengths{$end->{number}} } keys %lengths;
     push(@farthest, $start->{number});
-=use
-    if (scalar @farthest == 2) {
-        return 0, @order;
-    }
-=cut
+
     for (my $i = 0; $i < scalar(@farthest); $i++) {
         my %tree;
         my @value_array;
@@ -534,11 +735,11 @@ sub create_structure
         $carbon_graph->delete_vertices( grep {!is_element( $_, 'C') } $carbon_graph->vertices );
 
         my @vertice = grep { $_->{number} eq $farthest[$i] } $carbon_graph->vertices;
-
         # Start creation of the tree from all the starting vertices
         push(@all_trees, \%{create_tree($carbon_graph, $vertice[0], \%tree)});
     }
     my @main_chains = prepare_paths(@all_trees);
+    
     my $trees;
     my $carbon_graph = $graph->copy;
     $carbon_graph->delete_vertices(
@@ -574,8 +775,13 @@ sub create_structure
                                             $carbon_graph, @main_chains, @trr
                                         );
                 if(scalar @{$main_chains[0]} != 1){
-                    my $main_chain = rule_pick_chain_from_valid(@main_chains);
-                    return(1, @{$main_chains[0]});
+                    my @trr = @{$trees};
+                    my $carbon_graph = $graph->copy;
+                    $carbon_graph->delete_vertices(
+                        grep {!is_element( $_, 'C') } $carbon_graph->vertices
+                    );
+                    my $main_chain = rule_pick_chain_from_valid($carbon_graph, @main_chains, @trr);
+                    return(1, $main_chain);
                 }
                 else{
                     return(1, @{$main_chains[0]});
@@ -715,7 +921,7 @@ sub rule_greatest_number_of_side_chains
         }
 
         my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
-        my @chains_in_the_tree = grep {@{$_}[0] == $first[0]} @{$chains};
+        my @chains_in_the_tree = grep {@{$_}[0] == $first[0] || @{$_}[-1] == $first[0]} @{$chains};
 
         for my $chain (@chains_in_the_tree){
             my $graph_copy = $graph->copy;
@@ -771,7 +977,7 @@ sub rule_lowest_numbered_locants
         }
 
         my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
-        my @chains_in_the_tree = grep {@{$_}[0] == $first[0]} @{$chains};
+        my @chains_in_the_tree = grep {@{$_}[0] == $first[0] || @{$_}[-1] == $first[0]} @{$chains};
 
         for my $chain (@chains_in_the_tree){
             my $graph_copy = $graph->copy;
@@ -792,7 +998,7 @@ sub rule_lowest_numbered_locants
 
     my $lowest_locants = $sorted_paths[0][3];
     my @lowest_locants_paths = grep {
-                    join("", ( @{$_->[3]})) == join("", (@{$lowest_locants}))
+                    join("", ( @{$_->[3]})) eq join("", (@{$lowest_locants}))
                                     } @locant_placing;
     my %seen;
     my @uniq_lowest_locants_paths = grep { !$seen{$_->[0]}++ } @lowest_locants_paths;
@@ -838,7 +1044,7 @@ sub rule_most_carbon_in_side_chains
 
         my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
 
-        my @structure_chains = grep{@{$_}[0] == $first[0]} @{$chains};
+        my @structure_chains = grep{@{$_}[0] == $first[0] || @{$_}[-1] == $first[0]} @{$chains};
 
         for my $chain (@structure_chains){
             my $graph_copy = $graph->copy;
@@ -850,7 +1056,8 @@ sub rule_most_carbon_in_side_chains
                         @{$chain}[-1],
                         \@{$chain},
                         \@side_chain_length,
-                        \%structure2
+                        \%structure2,
+                        scalar @{$chain}
                     )]
                 ]
             )
@@ -901,7 +1108,7 @@ sub rule_least_branched_side_chains
         }
 
         my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
-        my @chains_in_the_tree = grep {@{$_}[0] == $first[0]} @{$chains};
+        my @chains_in_the_tree = grep {@{$_}[0] == $first[0] || @{$_}[-1] == $first[0]} @{$chains};
 
         for my $chain (@chains_in_the_tree){
             my $graph_copy = $graph->copy;
@@ -936,14 +1143,101 @@ sub rule_least_branched_side_chains
 }
 
 # Subroutine sorts all valid chains that are left and returns the first one -
-# the one that have carbons with lowest indexes
+# the one that have carbons with lowest indexes if there is no differences 
+# regarding the attachment names. If there is, then selects the ones that have 
+# lowest attachment indexes with lowest attachments alphabetically
 sub rule_pick_chain_from_valid
 {
-    my ( $chains ) = @_;
+    my ( $graph, $chains, @trees ) = @_;
 
-    my @sorted_chains = sort compare_arrays @{$chains};
+    $a = pick_chain_with_lowest_attachments_alphabetically( $graph, $chains, @trees );
 
+    my @sorted_chains = sort compare_arrays @{$a};
     return $sorted_chains[0];
+}
+
+sub pick_chain_with_lowest_attachments_alphabetically
+{
+    my ( $graph, $chains, @trees ) = @_;
+
+    my @idk;
+    my $trees_copy = clone(\@trees);
+    my $index = 0;
+    my @locant_placing = ();
+
+        foreach my $tree (@{$trees_copy}){
+
+        my %structure = %{clone $tree};
+        my %structure2 = %{$tree};
+
+        foreach my $key (keys %structure)
+        {
+            shift @ { $structure{$key} };
+        }
+
+        my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
+        my @chains_in_the_tree = grep {@{$_}[0] == $first[0] || @{$_}[-1] == $first[0]} @{$chains};
+
+        for my $chain (@chains_in_the_tree){
+            my $graph_copy = $graph->copy;
+            push ( @locant_placing,
+                [$index, @{$chain}[0], @{$chain}[-1],
+                    [find_locant_placing(
+                        $graph_copy,
+                        \@{$chain},
+                        \%structure2
+                    )]
+                ]
+            )
+        }
+        $index += 1;
+    }
+
+    my @vertices = $graph->vertices();
+
+    my @attachments;
+    for (my $i = 0; $i < scalar(@locant_placing); $i++)
+    {
+        my @curr_chain = grep {@{$_}[0] == $locant_placing[$i][1] && @{$_}[-1] == $locant_placing[$i][2]} @{$chains};
+        my @attachments_only;
+        for my $locant (@{$locant_placing[$i][3]})
+        {
+            my @vertex = grep {$_->{number} == $curr_chain[0][$locant - 1]} @vertices;
+            my @curr_neighbours = $graph->neighbours( $vertex[0] );
+            
+            for my $neighbour (@curr_neighbours) {
+                if (grep { $neighbour->{number} eq $_ } @{$curr_chain[0]}) {
+                    next;
+                }
+                else{
+                    my $graph_copy = $graph->copy;
+                    $graph_copy->delete_edge( $vertex[0], $neighbour );
+                    my $attachment_name = get_chain( $graph_copy, $neighbour );
+                    my $prefix = ($attachment_name =~ /^\(/) ? 'yl)' : 'yl';
+                    push (@attachments_only, $attachment_name . $prefix);
+                 }
+            }
+        }
+        # Replacing systematic IUPAC attachment names with their preferrable
+        # ones.
+        for my $att_name (@attachments_only) {
+            if (exists $preferrable_names{$att_name}){
+                $att_name = $preferrable_names{$att_name};
+            }
+        }
+        my $c_chain = clone($curr_chain[0]);
+        push (@attachments, [$c_chain, \@attachments_only]);
+    }
+    my @sorted_attachments = sort sort_attachments @attachments;
+    
+    my $correct_attach = $sorted_attachments[0][1];
+    my @correct_chains_all = grep {join(',', @{$_->[1]}) eq join(',', @{$correct_attach})} @attachments;
+    my @correct_chains;
+    foreach my $c (@correct_chains_all)
+    {
+        push(@correct_chains, @{$c}[0]);
+    }
+    return \@correct_chains;
 }
 
 # Returns array that contains numbers of vertices that are in side chains
@@ -980,8 +1274,9 @@ sub save_main_chain_vertices_in_array
 # Returns array that contains lengths of all side chains
 sub find_lengths_of_side_chains
 {
-    my ( $graph, $curr_vertex, $all_vertices, $vertex_array, $structure ) = @_;
-    if ($structure->{$curr_vertex}->[0] == $curr_vertex){
+    my ( $graph, $curr_vertex, $all_vertices, $vertex_array, $structure, $atoms_left ) = @_;
+
+    if ($atoms_left == 0){
         return sort @{$vertex_array};
     }
     else {
@@ -990,12 +1285,14 @@ sub find_lengths_of_side_chains
         my @curr_neighbours = $graph->neighbours( $vertex[0] );
         if (scalar @curr_neighbours == 1 ){
             $graph->delete_vertex($vertex[0]);
+            $atoms_left -= 1;
             find_lengths_of_side_chains(
                 $graph,
                 $curr_neighbours[0]->{number},
                 $all_vertices,
                 $vertex_array,
-                $structure
+                $structure,
+                $atoms_left
             );
         }
         else {
@@ -1010,6 +1307,7 @@ sub find_lengths_of_side_chains
                 }
             }
             $graph->delete_vertex($vertex[0]);
+            $atoms_left -= 1;
 
             foreach my $neighbour (@side_chain_neighbours) {
                 push(@{$vertex_array},
@@ -1021,7 +1319,8 @@ sub find_lengths_of_side_chains
                 $next_chain_vertex->{number},
                 $all_vertices,
                 $vertex_array,
-                $structure
+                $structure,
+                $atoms_left
             );
         }
     }
@@ -1125,6 +1424,49 @@ sub find_number_of_branched_side_chains
     }
 }
 
+sub forward_atts_alpabetically_greater {
+    my ( $forw_attachments, $backw_attachments) = @_;
+
+    my @forw_sorted = sort @{$forw_attachments};
+    my @backw_sorted = sort @{$backw_attachments};
+
+    foreach(0..scalar @forw_sorted-1) {
+        my $first_alpha = $forw_sorted[$_];
+        my $second_alpha = $backw_sorted[$_];
+
+        $first_alpha =~ s/[^a-zA-Z]+//g;
+        $second_alpha =~ s/[^a-zA-Z]+//g;
+
+        if ($first_alpha eq 'tertbutyl') {
+            $first_alpha = 'butyl'
+        }
+        elsif ($second_alpha eq 'tertbutyl') {
+            $second_alpha = 'butyl'
+        }
+        if ($first_alpha gt $second_alpha) { return 1 }
+    }
+    {return 0}
+}
+
+sub forward_att_alpabetically_greater {
+    my ( $forw_attachment, $backw_attachment) = @_;
+
+        my $first_alpha = $forw_attachment;
+        my $second_alpha = $backw_attachment;
+
+        $first_alpha =~ s/[^a-zA-Z]+//g;
+        $second_alpha =~ s/[^a-zA-Z]+//g;
+
+        if ($first_alpha eq 'tertbutyl') {
+            $first_alpha = 'butyl'
+        }
+        elsif ($second_alpha eq 'tertbutyl') {
+            $second_alpha = 'butyl'
+        }
+        if ($first_alpha gt $second_alpha) { return 1 }
+    {return 0}
+}
+
 sub compare_locant_placings{
     my @first = @{$a->[3]};
     my @second = @{$b->[3]};
@@ -1145,6 +1487,47 @@ sub compare_side_chain_lengths{
     foreach(@index){
         if ($first[$_] > $second[$_]) {return 1}
         elsif ($first[$_] < $second[$_]) {return -1}
+    }
+    {return 0}
+}
+
+sub compare_only_aphabetical{
+    my $a_alpha = $a;
+    my $b_alpha = $b;
+    $a_alpha =~ s/[^a-zA-Z]+//g;
+    $b_alpha =~ s/[^a-zA-Z]+//g;
+
+    if ($a_alpha eq 'tertbutyl') {
+        $a_alpha = 'butyl'
+    }
+    elsif ($b_alpha eq 'tertbutyl') {
+        $b_alpha = 'butyl'
+    }
+
+    if ($a_alpha gt $b_alpha) {return 1}
+    {return -1}
+}
+
+sub sort_attachments {
+    my @first = @{@{$a}[1]};
+    my @second = @{@{$b}[1]};
+    my @index = (0..scalar @first-1);
+
+    foreach(@index){
+        my $first_alpha = $first[$_];
+        my $second_alpha = $second[$_];
+
+        $first_alpha =~ s/[^a-zA-Z]+//g;
+        $second_alpha =~ s/[^a-zA-Z]+//g;
+
+        if ($first_alpha eq 'tertbutyl') {
+            $first_alpha = 'butyl'
+        }
+        elsif ($second_alpha eq 'tertbutyl') {
+            $second_alpha = 'butyl'
+        }
+        if ($first_alpha lt $second_alpha) {return 1}
+        elsif ($first_alpha gt $second_alpha) {return -1}
     }
     {return 0}
 }
