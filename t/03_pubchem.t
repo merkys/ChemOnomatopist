@@ -6,21 +6,23 @@ use warnings;
 use ChemOnomatopist;
 use Test::More;
 
-open (my $f, '<', 'PubChemData') or die;
+open (my $f, '<', 't/PubChemData') or die;
 
-my %tests;
+my @iupac;
+my @smiles;
 while (my $line = <$f>) {
   my @elems = split ' ', $line;
-  $tests{$elems[2]} = $elems[1];
+  push(@iupac, $elems[1]);
+  push(@smiles, $elems[2]);
 }
 
 close $f;
 
-plan tests => scalar keys %tests;
+plan tests => scalar @iupac;
 
-for my $case (keys %tests) {
+for my $i (0 .. $#iupac){
     # FIXME: Chemical name may have initial letter uppercased, but it may
     #        not be the right choice to lowercase it before comparison.
     #        Need to think a bit more on how to deal with it. (A.M.)
-    is( ChemOnomatopist::get_name( $case ), $tests{$case} );
+    is( ChemOnomatopist::get_name( $smiles[$i] ), $iupac[$i] );
 }
