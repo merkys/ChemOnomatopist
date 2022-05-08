@@ -17,6 +17,7 @@ use Graph::Undirected;
 use Scalar::Util qw( blessed );
 use Clone qw( clone );
 no warnings 'recursion';
+use Data::Dumper;
 
 our @prefixes = qw(
     ?
@@ -224,7 +225,7 @@ our @prefixes = qw(
 my @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
                 'hexa', 'hepta', 'octa', 'nona', 'deca',
                 'undeca', 'dodeca', 'trideca', 'tetradeca',
-                'pentadeca', 'hexadeca', 'heptadec', 'octadeca', 'nonadeca',
+                'pentadeca', 'hexadeca', 'heptadeca', 'octadeca', 'nonadeca',
                 'icosa', 'henicosa', 'docosa', 'tricosa',
                 'tetracosa', 'pentacosa', 'hexacosa',
                 'heptacosa', 'octacosa', 'nonacosa', 'triaconta',
@@ -237,9 +238,26 @@ my %preferrable_names = (
                 '(1-ethyl-1-methylpropyl)' => '(3-methylpentan-3-yl)',
                 '(1,1-dimethylethyl)' => 'tert-butyl',
                 '(1,3,3-trimethylbutyl)' => '(4,4-dimethylpentan-2-yl)',
-                '(1-methylpropyl)' => 'butan-2-yl' );
-
-my %lengths;
+                '(1-methylpropyl)' => 'butan-2-yl',
+                '(1-ethylbutyl)' => 'hexan-3-yl',
+                '(1-butylheptyl)' => 'undecan-5-yl',
+                '(1-methyloctadecyl)' => 'nonadecan-2-yl',
+                '(1-methylbutyl)' => 'pentan-2-yl',
+                '(1-propylbutyl)' => 'heptan-4-yl',
+                '(1-ethylpropyl)' =>  'pentan-3-yl',
+                '(1-methylheptyl)' => 'octan-2-yl',
+                '(1-methylpentyl)' => 'hexan-2-yl',
+                '(1,2-dimethylpropyl)' => '(3-methylbutan-2-yl)',
+                '(1,2-dimethylbutyl)' => '(3-methylpentan-2-yl)',
+                '(1,1-dimethyldecyl)' => '(2-methylundecan-2-yl)',
+                '(1,1-dimethylpentyl)' => '(2-methylhexan-2-yl)',
+                '(1,1-dimethylbutyl)' => '2-methylpentan-2-yl',
+                '(1-propylpentyl)' => 'octan-4-yl',
+                '(1-ethyl-2-methylpropyl)' => '(2-methylpentan-3-yl)',
+                '(1-butylhexyl)' => 'decan-5-yl',
+                '(1-butylpentyl)' => 'nonan-5-yl',
+                '(1,1-dimethylpropyl)' => '(2-methylbutan-2-yl)'
+                );
 
 sub get_name
 {
@@ -277,7 +295,7 @@ sub get_name
         # No other types of graphs with cycles can be processed for now
         die "cannot handle graphs with cycles for now\n";
     }
-    my ($custom_order, $order) = create_structure($graph->copy);
+    my ($custom_order, $order) = select_main_chain($graph->copy);
 
     if ( $custom_order ) {
         return get_chain_2( $graph->copy,
@@ -299,9 +317,9 @@ sub get_chain
     my( $graph, $start, $options ) = @_;
 
     $options = {} unless $options;
+
     # As per https://www.geeksforgeeks.org/longest-path-undirected-tree/,
     # two BFSes are needed to find the longest path in a tree
-
     my @order = BFS_order_carbons_only($graph, $start);
 
     my %order;
@@ -326,50 +344,6 @@ sub get_chain
     }
     @chain = reverse @chain;
     $graph->delete_path( @chain );
-
-    # Establishing a stable direction similarly as suggested by the IUPAC
-    # rules: choosing a direction which has more attachments to its
-    # beginning than to its end
-    if( $options->{choose_direction} ) {
-        my $graph_copy = $graph->copy;
-        $graph_copy->delete_vertices( grep {!is_element( $_, 'C') } $graph_copy->vertices );
-        my $graph_copy1 = $graph->copy;
-        $graph_copy1->delete_vertices( grep {!is_element( $_, 'C') } $graph_copy1->vertices );
-
-        for my $i (0..int(@chain/2)-1) {
-            my $forward_chain_degree =
-                scalar $graph_copy->neighbours( $chain[$i] ) -
-                grep { is_element( $_, 'H' ) }
-                    $graph_copy->neighbours( $chain[$i] );
-            my $backward_chain_degree =
-                scalar $graph_copy1->neighbours( $chain[$#chain-$i] ) -
-                grep { is_element( $_, 'H' ) }
-                    $graph_copy1->neighbours( $chain[$#chain-$i] );
-            if( $forward_chain_degree < $backward_chain_degree ) {
-                @chain = reverse @chain;
-                last;
-            }
-            elsif( $forward_chain_degree > $backward_chain_degree ) {
-                last;
-            }
-            elsif( $forward_chain_degree > 0 ) {
-                if ( $forward_chain_degree = $backward_chain_degree ) {
-                    my $atom = $chain[$i];
-                    my $atom2 = $chain[$#chain-$i];
-                    my @forw_neighbour = $graph_copy->neighbours( $atom );
-                    my @backw_neighbour = $graph_copy1->neighbours( $atom2 );
-                    $graph_copy->delete_edge( $atom, $forw_neighbour[0] );
-                    $graph_copy1->delete_edge( $atom2, $backw_neighbour[0] );
-                    my $forw_attachment_name = get_chain( $graph_copy, $forw_neighbour[0] );
-                    my $backw_attachment_name = get_chain( $graph_copy1, $backw_neighbour[0] );
-                    if ($forw_attachment_name gt $backw_attachment_name){
-                        @chain = reverse @chain;
-                        last;
-                    }
-                }
-            }
-        }
-    }
 
     # Examine the attachments to the main chain: delete the edges
     # connecting them to the main chain, at the same time giving them
@@ -409,74 +383,13 @@ sub get_chain_2
     my @vertices = $graph->vertices();
     my @chain = ();
 
+    # Recreate main chain order by the array in $main_chain
     for my $curr_vertex (@{$main_chain}){
         my @vertex = grep {$_->{number} == $curr_vertex} @vertices;
         push(@chain, $vertex[0]);
     }
 
     $graph->delete_path( @chain );
-
-    my $graph_copy = $graph->copy;
-        $graph_copy->delete_vertices( grep {!is_element( $_, 'C') } $graph_copy->vertices );
-    my $graph_copy1 = $graph->copy;
-        $graph_copy1->delete_vertices( grep {!is_element( $_, 'C') } $graph_copy1->vertices );
-
-    for my $i (0..int(@chain/2)-1) {
-        my $forward_chain_degree =
-            scalar $graph_copy->neighbours( $chain[$i] ) -
-            grep { is_element( $_, 'H' ) }
-                $graph_copy->neighbours( $chain[$i] );
-        my $backward_chain_degree =
-            scalar $graph_copy1->neighbours( $chain[$#chain-$i] ) -
-            grep { is_element( $_, 'H' ) }
-                $graph_copy1->neighbours( $chain[$#chain-$i] );
-        if( $forward_chain_degree < $backward_chain_degree ) {
-            @chain = reverse @chain;
-            last;
-        }
-        elsif( $forward_chain_degree > $backward_chain_degree ) {
-            last;
-        }
-        elsif( $forward_chain_degree > 0 ) {
-            if ( $forward_chain_degree = $backward_chain_degree ) {
-                my $atom = $chain[$i];
-                my $atom2 = $chain[$#chain-$i];
-                my @forw_neighbour = $graph_copy->neighbours( $atom );
-                my @backw_neighbour = $graph_copy1->neighbours( $atom2 );
-                if (scalar @forw_neighbour == 1) {
-                    $graph_copy->delete_edge( $atom, $forw_neighbour[0] );
-                    $graph_copy1->delete_edge( $atom2, $backw_neighbour[0] );
-                    my $forw_attachment_name = get_chain( $graph_copy, $forw_neighbour[0] );
-                    my $backw_attachment_name = get_chain( $graph_copy1, $backw_neighbour[0] );
-                    if (forward_att_alpabetically_greater($forw_attachment_name, $backw_attachment_name)){
-                        @chain = reverse @chain;
-                        last;
-                    }
-                }
-                else {
-                    my $stop = 0;
-                    for (my $j = 0; $j < scalar @forw_neighbour; $j++ ) {
-                        $graph_copy->delete_edge( $atom, $forw_neighbour[$j] );
-                        $graph_copy1->delete_edge( $atom2, $backw_neighbour[$j] );
-                        my @forw_attachment_names;
-                        my @backw_attachment_names;
-                        push( @forw_attachment_names, 
-                            get_chain( $graph_copy, $forw_neighbour[$j] ));
-                        push( @backw_attachment_names, 
-                            get_chain( $graph_copy1, $backw_neighbour[$j] ));
-                        if (forward_atts_alpabetically_greater(\@forw_attachment_names, \@backw_attachment_names)) {
-                            @chain = reverse @chain;
-                            $stop = 1;
-                            last;
-                        }
-                    }
-                    if ($stop) {
-                        last;
-                    }
-                }
-            }
-        }
-    }
 
     # Examine the attachments to the main chain: delete the edges
     # connecting them to the main chain, at the same time giving them
@@ -495,12 +408,21 @@ sub get_chain_2
         }
     }
 
-    # Replacing systematic IUPAC attachment names with their preferrable
-    # ones.
+    # Replacing systematic IUPAC attachment names with their preferred ones
     for my $att_name (keys %attachments) {
         if (exists $preferrable_names{$att_name}){
             $attachments{$preferrable_names{$att_name}} = $attachments{$att_name};
             delete $attachments{$att_name};
+            if ($preferrable_names{$att_name} =~ /^[a-z0-9\-]+$/) {
+                # If there is more than one of the same attachment
+                # so complete name would start with the prefix, brackets
+                # should be added to the name
+                if (scalar @{$attachments{$preferrable_names{$att_name}}} > 1) {
+                    $attachments{'(' . $preferrable_names{$att_name} . ')'} =
+                                    $attachments{$preferrable_names{$att_name}};
+                    delete $attachments{$preferrable_names{$att_name}};
+                }
+            }
         }
     }
 
@@ -574,16 +496,6 @@ sub find_groups
     }
 }
 
-sub remove_pendant_vertices
-{
-    my( $graph ) = @_;
-
-    while( my @pendants = grep { $graph->degree( $_ ) == 1 }
-                               $graph->vertices ) {
-        $graph->delete_vertices( @pendants );
-    }
-}
-
 # Original source:
 # URL: svn+ssh://saulius-grazulis.lt/home/andrius/svn-repositories/cod-smi-generation/trunk/bin/isomorphism.pl
 # Relative URL: ^/trunk/bin/isomorphism.pl
@@ -650,35 +562,50 @@ sub is_element
            $atom->{symbol} eq $element;
 }
 
-sub BFS_order_carbons_only
+# Subroutine gets an graph, removes all vertices that do not have C as their element.
+# Performs BFS on that chain. During BFS, distance from start is calculated to each vertice
+sub BFS_order_carbons_only_return_lengths
 {
     my $is_any_visited;
-    %lengths = ();
+    my %lengths;
 
     my ( $graph, $start ) = @_;
     my $carbon_graph = $graph->copy;
 
     $carbon_graph->delete_vertices( grep {!is_element( $_, 'C') } $carbon_graph->vertices );
-    if ($start) {
-        my $bfs = Graph::Traversal::BFS->new(
-            $carbon_graph,
-            pre => sub { if(!$is_any_visited) {
-                            $lengths{$_[0]->{number}} = 0; $is_any_visited = 1  } },
-            tree_edge => sub { if ( !defined $lengths{$_[0]->{number}} ) {
-                ( $_[0], $_[1] ) = ( $_[1], $_[0] );
-            }
-            $lengths{$_[1]->{number}} = $lengths{$_[0]->{number}} + 1},
-            start => $start);
-        my @order = $bfs->bfs;
-        return @order;
-    }
-    else{
-        my $bfs = Graph::Traversal::BFS->new( $carbon_graph );
-        my @order = $bfs->bfs;
-        return @order;
-    }
+    my $bfs = Graph::Traversal::BFS->new(
+        $carbon_graph,
+        pre => sub { if(!$is_any_visited) {
+                        $lengths{$_[0]->{number}} = 0; $is_any_visited = 1  } },
+        tree_edge => sub { if ( !defined $lengths{$_[0]->{number}} ) {
+            ( $_[0], $_[1] ) = ( $_[1], $_[0] );
+        }
+        $lengths{$_[1]->{number}} = $lengths{$_[0]->{number}} + 1},
+        start => $start);
+    my @order = $bfs->bfs;
+    return \%lengths, @order;
 }
 
+# BFS is performed for the given graph after all vertices that are not carbons
+# removed
+sub BFS_order_carbons_only
+{
+    my ( $graph, $start ) = @_;
+    my $carbon_graph = $graph->copy;
+    my $bfs;
+
+    $carbon_graph->delete_vertices( grep {!is_element( $_, 'C') } $carbon_graph->vertices );
+    if ($start) {
+        $bfs = Graph::Traversal::BFS->new( $carbon_graph, start => $start );
+    }
+    else{
+        $bfs = Graph::Traversal::BFS->new( $carbon_graph );
+    }
+    my @order = $bfs->bfs;
+    return @order;
+}
+
+# Calculates length of given graph (vertices count)
 sub BFS_calculate_chain_length
 {
     my $length = 0;
@@ -688,6 +615,7 @@ sub BFS_calculate_chain_length
     return scalar @order;
 }
 
+# Returns 1 if there is any braches in the given graph and  if there is none
 sub BFS_is_chain_branched
 {
     my $branched = 0;
@@ -707,8 +635,8 @@ sub BFS_is_chain_branched
     return $branched;
 }
 
-# Returns tree like structures for all the longest paths
-sub create_structure
+# Returns main (parental) chain to be used during the naming
+sub select_main_chain
 {
     my @all_trees;
     my ( $graph ) = @_;
@@ -716,14 +644,20 @@ sub create_structure
 
     my $start = $order[-1];
 
-    my @second_order = BFS_order_carbons_only($graph, $start);
+    my ($lengths, @second_order) =
+                        BFS_order_carbons_only_return_lengths($graph, $start);
 
     my $end = $second_order[-1];
 
-    # Finding all farthest vertices and adding the first one
-    my @farthest = grep { $lengths{$_} eq $lengths{$end->{number}} } keys %lengths;
+    # Finding all farthest vertices from the starting point
+    my @farthest = grep { %{$lengths}{$_} eq %{$lengths}{$end->{number}} }
+                                                            keys %{$lengths};
+
+    # Also adding the first vertice to the array since it is farthest from other
+    # ones
     push(@farthest, $start->{number});
 
+    # Going through every vertice in "farthest" array and creating tree-like structures
     for (my $i = 0; $i < scalar(@farthest); $i++) {
         my %tree;
         my @value_array;
@@ -738,6 +672,9 @@ sub create_structure
         # Start creation of the tree from all the starting vertices
         push(@all_trees, \%{create_tree($carbon_graph, $vertice[0], \%tree)});
     }
+
+    # Extracts arrays of all longest chains with numbers of vertices (in order)
+    # from each tree-like structure
     my @main_chains = prepare_paths(@all_trees);
     
     my $trees;
@@ -745,42 +682,68 @@ sub create_structure
     $carbon_graph->delete_vertices(
         grep {!is_element( $_, 'C') } $carbon_graph->vertices
     );
-    ($trees, @main_chains) = rule_greatest_number_of_side_chains($carbon_graph, \@main_chains, @all_trees);
+    # From all possible main chains in tree-like structures, subroutine returns
+    # the ones that has the greatest number of side chains. Also returns only the
+    # trees that still have some possible main chains after selection
+    ($trees, @main_chains) = rule_greatest_number_of_side_chains(
+                                    $carbon_graph, \@main_chains, @all_trees
+                             );
 
+    # If more than one chain is left, second rule is applied
     if (scalar @{$main_chains[0]} != 1){
         my @trr = @{$trees};
         my $carbon_graph = $graph->copy;
         $carbon_graph->delete_vertices(
             grep {!is_element( $_, 'C') } $carbon_graph->vertices
         );
+        # From all main chains left, subroutine selects all that have the
+        # lowest numbered locants. Also the trees that have possible main
+        # chains returned
         ($trees, @main_chains) = rule_lowest_numbered_locants(
                                     $carbon_graph, @main_chains, @trr
                                  );
+
+        # If more than one chain is left, third rule is applied
         if (scalar @{$main_chains[0]} != 1){
             my @trr = @{$trees};
             my $carbon_graph = $graph->copy;
             $carbon_graph->delete_vertices(
                 grep {!is_element( $_, 'C') } $carbon_graph->vertices
             );
+            # From all main chains left, subroutine selects all that have the
+            # most carbons in side chains. Also the trees that have possible main
+            # chains returned
             ($trees, @main_chains) = rule_most_carbon_in_side_chains(
                                         $carbon_graph, @main_chains, @trr
                                     );
+
+            # If more than one chain is left, fourth rule is applied
             if (scalar @{$main_chains[0]} != 1){
                 my @trr = @{$trees};
                 my $carbon_graph = $graph->copy;
                 $carbon_graph->delete_vertices(
                     grep {!is_element( $_, 'C') } $carbon_graph->vertices
                 );
+                # From all main chains left, subroutine selects all that have
+                # the least branched side chains. Also the trees that have
+                # possible main chains returned
                 ($trees, @main_chains) = rule_least_branched_side_chains(
                                             $carbon_graph, @main_chains, @trr
                                         );
+
+                # If more than one chain is left, program states that there are
+                # few chains that are identical by all the rules and selects
+                # one from all that are left
                 if(scalar @{$main_chains[0]} != 1){
                     my @trr = @{$trees};
                     my $carbon_graph = $graph->copy;
                     $carbon_graph->delete_vertices(
                         grep {!is_element( $_, 'C') } $carbon_graph->vertices
                     );
-                    my $main_chain = rule_pick_chain_from_valid($carbon_graph, @main_chains, @trr);
+                    # One main chain is picked from all that are left
+                    my $main_chain = rule_pick_chain_from_valid(
+                                            $carbon_graph, @main_chains, @trr
+                                    );
                     return(1, $main_chain);
                 }
                 else{
@@ -811,12 +774,18 @@ sub create_tree
 
     push(@new_array, $atom->{number});
 
+    # Since first number in the stack-of-array boxes represents the parent of
+    # the vertice, array with box information is shifted
     shift @array;
 
+    # Box for the vertice is created by increasing box information in parental
+    # box by one
     foreach my $arr (@array){
         push(@new_array, $arr + 1);
     }
 
+    # If there is one neighbour, it means that vertice do not have any branching.
+    # Analysis of next vertice (the neighbour) is started
     if (scalar @neighbours == 1) {
         unless (exists $tree->{$neighbours[0]->{number}}){
             $tree->{$neighbours[0]->{number}} = [@new_array];
@@ -824,6 +793,8 @@ sub create_tree
             create_tree($graph, $neighbours[0], $tree);
         }
     }
+    # If there is more than one neighour for the current vertice, analysis of
+    # each of them is started independently
     elsif(scalar @neighbours > 1){
         push(@new_array, 0);
         $graph->delete_vertex($atom);
@@ -832,22 +803,24 @@ sub create_tree
             create_tree($graph, $neighbour, $tree);
         }
     }
+    # If there is no neighbour or other vertices, all graph has been analized.
+    # Created structure is returned
     return $tree;
 }
 
-# Create arrays of all possible longest chains in the tree
+# Create arrays of vertice numbers of all possible longest chains in the tree
 sub prepare_paths
 {
     my ( @trees ) = @_;
 
     my $trees_copy = clone(\@trees);
-
     my @all_chains;
 
     foreach my $tree (@{$trees_copy}){
 
         my %structure = %{$tree};
 
+        # Tree-like structure is sorted by parental vertice number
         my @sorted = sort {
                             $structure{$a}->[1] <=> $structure{$b}->[1]
                           } keys %structure;
@@ -915,14 +888,19 @@ sub rule_greatest_number_of_side_chains
         my %structure = %{clone $tree};
         my %structure2 = %{$tree};
 
+        # Reference to parental chain is removed from the boxes
         foreach my $key (keys %structure)
         {
             shift @ { $structure{$key} };
         }
 
+        # Beginning of the structure is found. Then all chains that belongs to
+        # the current tree are selected
         my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
         my @chains_in_the_tree = grep {@{$_}[0] == $first[0] || @{$_}[-1] == $first[0]} @{$chains};
 
+        # Structure with index of the tree, beginning and ending of the chain,
+        # number of side chains in the chain created for each chain
         for my $chain (@chains_in_the_tree){
             my $graph_copy = $graph->copy;
             push ( @number_of_side_chains,
@@ -938,19 +916,20 @@ sub rule_greatest_number_of_side_chains
         $index += 1;
     }
 
-    my @sorted_paths = sort {
+    # All chains that have the biggest number of side chains are selected and returned
+    my @sorted_numbers = sort {
                                 $a->[3] <=> $b->[3]
                             } @number_of_side_chains;
 
-    my $path_length = $sorted_paths[-1][3];
-    my @longest_paths = grep {$_->[3] == $path_length} @number_of_side_chains;
+    my $path_length = $sorted_numbers[-1][3];
+    my @biggest_number_of_side_chains = grep {$_->[3] == $path_length} @number_of_side_chains;
     my %seen;
-    my @uniq_longest_paths = grep { !$seen{$_->[0]}++ } @longest_paths;
-    my @result = @trees[map {$_->[0]} @uniq_longest_paths];
+    my @uniq_biggest_number_of_side_chains = grep { !$seen{$_->[0]}++ } @biggest_number_of_side_chains;
+    my @result = @trees[map {$_->[0]} @uniq_biggest_number_of_side_chains];
     my @eligible_chains;
 
     for my $chain (@{$chains}){
-        if (grep {$_->[1] == $chain->[0] and $_->[2] == $chain->[-1]} @longest_paths){
+        if (grep {$_->[1] == $chain->[0] and $_->[2] == $chain->[-1]} @biggest_number_of_side_chains){
             push(@eligible_chains, $chain);
         }
     }
@@ -971,14 +950,20 @@ sub rule_lowest_numbered_locants
         my %structure = %{clone $tree};
         my %structure2 = %{$tree};
 
+        # Reference to parental chain is removed from the boxes
         foreach my $key (keys %structure)
         {
             shift @ { $structure{$key} };
         }
 
+        # Beginning of the structure is found. Then all chains that belongs to
+        # the current tree are selected
         my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
         my @chains_in_the_tree = grep {@{$_}[0] == $first[0] || @{$_}[-1] == $first[0]} @{$chains};
 
+
+        # Structure with index of the tree, beginning and ending of the chain,
+        # places of the locants in the chain created for each tree
         for my $chain (@chains_in_the_tree){
             my $graph_copy = $graph->copy;
             push ( @locant_placing,
@@ -994,6 +979,7 @@ sub rule_lowest_numbered_locants
         $index += 1;
     }
 
+    # All chains that have the lowest numbers of locants are selected and returned
     my @sorted_paths = sort compare_locant_placings reverse @locant_placing;
 
     my $lowest_locants = $sorted_paths[0][3];
@@ -1030,6 +1016,7 @@ sub rule_most_carbon_in_side_chains
         my %structure2 = %{$tree};
         my @all_vertices = keys %structure;
 
+        # Reference to parental chain is removed from the boxes
         foreach my $key (keys %structure)
         {
             shift @ { $structure{$key} };
@@ -1042,10 +1029,13 @@ sub rule_most_carbon_in_side_chains
                           } keys %structure;
         my $last = $sorted[-1];
 
+        # Beginning of the structure is found. Then all chains that belongs to
+        # the current tree are selected
         my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
-
         my @structure_chains = grep{@{$_}[0] == $first[0] || @{$_}[-1] == $first[0]} @{$chains};
 
+        # Structure with index of the tree, beginning and ending of the chain,
+        # lengths of side chains of the chain created for each tree
         for my $chain (@structure_chains){
             my $graph_copy = $graph->copy;
             my @side_chain_length = ();
@@ -1065,6 +1055,7 @@ sub rule_most_carbon_in_side_chains
         $index += 1;
     }
 
+    # All chains that have the highest number of carbons in side chains are selected and returned
     my @sorted_final = sort compare_side_chain_lengths @side_chain_lengths;
 
     my $last = $sorted_final[-1][3];
@@ -1075,8 +1066,7 @@ sub rule_most_carbon_in_side_chains
 
     for my $chain (@{$chains}){
         if (grep {$_->[1] == $chain->[0] and $_->[2] == $chain->[-1]}
-            @greatest_no_of_side_chains_paths
-        ){
+            @greatest_no_of_side_chains_paths){
             push(@eligible_chains, $chain);
         }
     }
@@ -1102,11 +1092,14 @@ sub rule_least_branched_side_chains
         my %structure = %{clone $tree};
         my %structure2 = %{$tree};
 
+        # Reference to parental chain is removed from the boxes
         foreach my $key (keys %structure)
         {
             shift @ { $structure{$key} };
         }
 
+        # Beginning of the structure is found. Then all chains that belongs to
+        # the current tree are selected
         my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
         my @chains_in_the_tree = grep {@{$_}[0] == $first[0] || @{$_}[-1] == $first[0]} @{$chains};
 
@@ -1124,6 +1117,8 @@ sub rule_least_branched_side_chains
         }
         $index += 1;
     }
+
+    # All chains that have the least amount of branches side chains are selected and returned
     my @sorted_paths = sort {
                                 $a->[3] <=> $b->[3]
                             } @number_of_branched_side_chains;
@@ -1143,8 +1138,8 @@ sub rule_least_branched_side_chains
 }
 
 # Subroutine sorts all valid chains that are left and returns the first one -
-# the one that have carbons with lowest indexes if there is no differences 
-# regarding the attachment names. If there is, then selects the ones that have 
+# the one that have carbons with lowest indexes if there is no differences
+# regarding the attachment names. If there is, then selects the ones that have
 # lowest attachment indexes with lowest attachments alphabetically
 sub rule_pick_chain_from_valid
 {
@@ -1156,6 +1151,7 @@ sub rule_pick_chain_from_valid
     return $sorted_chains[0];
 }
 
+# Subroutine selects chain that has the lowest attachments by alpabetical naming
 sub pick_chain_with_lowest_attachments_alphabetically
 {
     my ( $graph, $chains, @trees ) = @_;
@@ -1170,14 +1166,18 @@ sub pick_chain_with_lowest_attachments_alphabetically
         my %structure = %{clone $tree};
         my %structure2 = %{$tree};
 
+        # Reference to parental chain is removed from the boxes
         foreach my $key (keys %structure)
         {
             shift @ { $structure{$key} };
         }
 
+        # Beginning of the structure is found. Then all chains that belongs to
+        # the current tree are selected
         my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
         my @chains_in_the_tree = grep {@{$_}[0] == $first[0] || @{$_}[-1] == $first[0]} @{$chains};
 
+        # Placings of the locants found for each chain
         for my $chain (@chains_in_the_tree){
             my $graph_copy = $graph->copy;
             push ( @locant_placing,
@@ -1195,13 +1195,12 @@ sub pick_chain_with_lowest_attachments_alphabetically
 
     my @vertices = $graph->vertices();
 
+    # Naming of all attachments found
     my @attachments;
-    for (my $i = 0; $i < scalar(@locant_placing); $i++)
-    {
+    for (my $i = 0; $i < scalar(@locant_placing); $i++) {
         my @curr_chain = grep {@{$_}[0] == $locant_placing[$i][1] && @{$_}[-1] == $locant_placing[$i][2]} @{$chains};
         my @attachments_only;
-        for my $locant (@{$locant_placing[$i][3]})
-        {
+        for my $locant (@{$locant_placing[$i][3]}) {
             my @vertex = grep {$_->{number} == $curr_chain[0][$locant - 1]} @vertices;
             my @curr_neighbours = $graph->neighbours( $vertex[0] );
             
@@ -1229,8 +1228,9 @@ sub pick_chain_with_lowest_attachments_alphabetically
         push (@attachments, [$c_chain, \@attachments_only]);
     }
     my @sorted_attachments = sort sort_attachments @attachments;
-    
     my $correct_attach = $sorted_attachments[0][1];
+
+    # All chains that have the same - alpabetically lowest attachments selected
     my @correct_chains_all = grep {join(',', @{$_->[1]}) eq join(',', @{$correct_attach})} @attachments;
     my @correct_chains;
     foreach my $c (@correct_chains_all)
@@ -1274,60 +1274,65 @@ sub save_main_chain_vertices_in_array
 # Returns array that contains lengths of all side chains
 sub find_lengths_of_side_chains
 {
-    my ( $graph, $curr_vertex, $all_vertices, $vertex_array, $structure, $atoms_left ) = @_;
+    my ( $graph, $curr_vertex, $main_chain_vertices, $side_chain_lengths, $structure, $atoms_left ) = @_;
 
     if ($atoms_left == 0){
-        return sort @{$vertex_array};
+        return sort @{$side_chain_lengths};
+    }
+
+    my @vertices = $graph->vertices();
+    my @vertex = grep {$_->{number} == $curr_vertex} @vertices;
+    my @curr_neighbours = $graph->neighbours( $vertex[0] );
+    if (scalar @curr_neighbours == 1 ){
+        $graph->delete_vertex($vertex[0]);
+        $atoms_left -= 1;
+        find_lengths_of_side_chains(
+            $graph,
+            $curr_neighbours[0]->{number},
+            $main_chain_vertices,
+            $side_chain_lengths,
+            $structure,
+            $atoms_left
+        );
     }
     else {
-        my @vertices = $graph->vertices();
-        my @vertex = grep {$_->{number} == $curr_vertex} @vertices;
-        my @curr_neighbours = $graph->neighbours( $vertex[0] );
-        if (scalar @curr_neighbours == 1 ){
-            $graph->delete_vertex($vertex[0]);
-            $atoms_left -= 1;
-            find_lengths_of_side_chains(
-                $graph,
-                $curr_neighbours[0]->{number},
-                $all_vertices,
-                $vertex_array,
-                $structure,
-                $atoms_left
+        my @side_chain_neighbours = ();
+        my $next_chain_vertex;
+
+        # Find all neighours of the chain that does not exist in main chain and
+        # the next chain to be analyzed
+        foreach my $neigh (@curr_neighbours) {
+            if (grep { $neigh->{number} eq $_ } @{$main_chain_vertices}) {
+                $next_chain_vertex = $neigh;
+            }
+            else {
+                push (@side_chain_neighbours, $neigh);
+            }
+        }
+        $graph->delete_vertex($vertex[0]);
+        $atoms_left -= 1;
+
+        # For each side chain neighbour, find their chain lengths
+        foreach my $neighbour (@side_chain_neighbours) {
+            push(@{$side_chain_lengths},
+                BFS_calculate_chain_length($graph, $neighbour)
             );
         }
-        else {
-            my @side_chain_neighbours = ();
-            my $next_chain_vertex;
-            foreach my $neigh (@curr_neighbours) {
-                if (grep { $neigh->{number} eq $_ } @{$all_vertices}) {
-                   $next_chain_vertex = $neigh;
-                }
-                else {
-                    push (@side_chain_neighbours, $neigh);
-                }
-            }
-            $graph->delete_vertex($vertex[0]);
-            $atoms_left -= 1;
 
-            foreach my $neighbour (@side_chain_neighbours) {
-                push(@{$vertex_array},
-                        BFS_calculate_chain_length($graph, $neighbour));
-            }
-
-            find_lengths_of_side_chains(
-                $graph,
-                $next_chain_vertex->{number},
-                $all_vertices,
-                $vertex_array,
-                $structure,
-                $atoms_left
-            );
-        }
+        find_lengths_of_side_chains(
+            $graph,
+            $next_chain_vertex->{number},
+            $main_chain_vertices,
+            $side_chain_lengths,
+            $structure,
+            $atoms_left
+        );
     }
 }
 
 #TODO: Try to merge all subroutines
 
+# Find placings of all locants in the chain
 sub find_locant_placing
 {
     my ( $graph, $main_chain, $structure ) = @_;
@@ -1361,6 +1366,7 @@ sub find_locant_placing
     }
 }
 
+# Returns number of side chains
 sub find_number_of_side_chains
 {
     my ( $graph, $main_chain, $structure ) = @_;
@@ -1424,49 +1430,7 @@ sub find_number_of_branched_side_chains
     }
 }
 
-sub forward_atts_alpabetically_greater {
-    my ( $forw_attachments, $backw_attachments) = @_;
-
-    my @forw_sorted = sort @{$forw_attachments};
-    my @backw_sorted = sort @{$backw_attachments};
-
-    foreach(0..scalar @forw_sorted-1) {
-        my $first_alpha = $forw_sorted[$_];
-        my $second_alpha = $backw_sorted[$_];
-
-        $first_alpha =~ s/[^a-zA-Z]+//g;
-        $second_alpha =~ s/[^a-zA-Z]+//g;
-
-        if ($first_alpha eq 'tertbutyl') {
-            $first_alpha = 'butyl'
-        }
-        elsif ($second_alpha eq 'tertbutyl') {
-            $second_alpha = 'butyl'
-        }
-        if ($first_alpha gt $second_alpha) { return 1 }
-    }
-    {return 0}
-}
-
-sub forward_att_alpabetically_greater {
-    my ( $forw_attachment, $backw_attachment) = @_;
-
-        my $first_alpha = $forw_attachment;
-        my $second_alpha = $backw_attachment;
-
-        $first_alpha =~ s/[^a-zA-Z]+//g;
-        $second_alpha =~ s/[^a-zA-Z]+//g;
-
-        if ($first_alpha eq 'tertbutyl') {
-            $first_alpha = 'butyl'
-        }
-        elsif ($second_alpha eq 'tertbutyl') {
-            $second_alpha = 'butyl'
-        }
-        if ($first_alpha gt $second_alpha) { return 1 }
-    {return 0}
-}
-
+# Sorts locant placings from lowest to biggest
 sub compare_locant_placings{
     my @first = @{$a->[3]};
     my @second = @{$b->[3]};
@@ -1479,6 +1443,7 @@ sub compare_locant_placings{
     {return 0}
 }
 
+# Sorts side chain legths from lowest to biggest
 sub compare_side_chain_lengths{
     my @first = @{@{$a}[3]};
     my @second = @{@{$b}[3]};
@@ -1491,6 +1456,7 @@ sub compare_side_chain_lengths{
     {return 0}
 }
 
+# Sorts given names only based on alphabetical part of the name
 sub compare_only_aphabetical{
     my $a_alpha = $a;
     my $b_alpha = $b;
@@ -1508,6 +1474,7 @@ sub compare_only_aphabetical{
     {return -1}
 }
 
+# Sorts given names only based on alphabetical part of the name
 sub sort_attachments {
     my @first = @{@{$a}[1]};
     my @second = @{@{$b}[1]};
@@ -1532,6 +1499,7 @@ sub sort_attachments {
     {return 0}
 }
 
+# Sorts arrays from lowest to biggest by values
 sub compare_arrays{
     my @first = @{$a};
     my @second = @{$b};
