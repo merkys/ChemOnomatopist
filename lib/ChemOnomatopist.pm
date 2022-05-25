@@ -233,6 +233,9 @@ my @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
                 'pentatriaconta', 'hexatriaconta', 'heptatriaconta',
                 'octatriaconta', 'nonatriaconta', 'tetraconta' );
 
+my @numberskis = ( '?', '', 'bis', 'tris', 'tetrakis', 'pentakis',
+                'hexakis', 'heptakis', 'octakis', 'nonakis', 'decakis' );
+
 my %preferrable_names = ( 
                 '(1-methylethyl)' => 'propan-2-yl',
                 '(1-ethyl-1-methylpropyl)' => '(3-methylpentan-3-yl)',
@@ -251,13 +254,14 @@ my %preferrable_names = (
                 '(1,2-dimethylbutyl)' => '(3-methylpentan-2-yl)',
                 '(1,1-dimethyldecyl)' => '(2-methylundecan-2-yl)',
                 '(1,1-dimethylpentyl)' => '(2-methylhexan-2-yl)',
-                '(1,1-dimethylbutyl)' => '2-methylpentan-2-yl',
+                '(1,1-dimethylbutyl)' => '(2-methylpentan-2-yl)',
                 '(1-propylpentyl)' => 'octan-4-yl',
                 '(1-ethyl-2-methylpropyl)' => '(2-methylpentan-3-yl)',
                 '(1-butylhexyl)' => 'decan-5-yl',
                 '(1-butylpentyl)' => 'nonan-5-yl',
-                '(1,1-dimethylpropyl)' => '(2-methylbutan-2-yl)'
-                );
+                '(1,1-dimethylpropyl)' => '(2-methylbutan-2-yl)',
+                '(1-(1-methylethyl)-2-methylpropyl)' => '(2,4-dimethylpentan-3-yl)',
+                '(1-ethylpentyl)' => 'heptan-3-yl' );
 
 sub get_name
 {
@@ -430,13 +434,18 @@ sub get_chain_2
     my $name = '';
     for my $attachment_name (sort compare_only_aphabetical keys %attachments) {
         $name = $name ? $name . '-' : $name;
+        my $number;
+        if ($attachment_name =~ /^\([0-9]/) {
+            $number = $numberskis[scalar @{$attachments{$attachment_name}}]
+        }
+        else {
+            $number = $numbers[scalar @{$attachments{$attachment_name}}]
+        }
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} )
-                 . '-' . $numbers[scalar @{$attachments{$attachment_name}}] .
-                 $attachment_name;
+                 . '-' . $number . $attachment_name;
     }
     my $bracket =
         ($options->{choose_direction} || not ($name =~ /^[0-9]/)) ? '' : '(';
-
     return $bracket . $name . $prefixes[scalar @chain];
 }
 }
