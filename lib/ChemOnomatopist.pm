@@ -582,15 +582,18 @@ sub BFS_order_carbons_only_return_lengths
     my ( $graph, $start ) = @_;
     my $carbon_graph = $graph->copy;
 
-    $carbon_graph->delete_vertices( grep {!is_element( $_, 'C') } $carbon_graph->vertices );
+    $carbon_graph->delete_vertices( grep { !is_element( $_, 'C') } $carbon_graph->vertices );
     my $bfs = Graph::Traversal::BFS->new(
         $carbon_graph,
-        pre => sub { if(!$is_any_visited) {
-                        $lengths{$_[0]->{number}} = 0; $is_any_visited = 1  } },
-        tree_edge => sub { if ( !defined $lengths{$_[0]->{number}} ) {
-            ( $_[0], $_[1] ) = ( $_[1], $_[0] );
-        }
-        $lengths{$_[1]->{number}} = $lengths{$_[0]->{number}} + 1},
+        pre => sub { if( !$is_any_visited ) {
+                         $lengths{$_[0]->{number}} = 0;
+                         $is_any_visited = 1;
+                     } },
+        tree_edge => sub { if( !defined $lengths{$_[0]->{number}} ) {
+                               ( $_[0], $_[1] ) = ( $_[1], $_[0] );
+                           }
+                           $lengths{$_[1]->{number}} = $lengths{$_[0]->{number}} + 1;
+                         },
         start => $start );
 
     return \%lengths, $bfs->bfs;
@@ -604,7 +607,7 @@ sub BFS_order_carbons_only
     my $carbon_graph = $graph->copy;
     my $bfs;
 
-    $carbon_graph->delete_vertices( grep {!is_element( $_, 'C') } $carbon_graph->vertices );
+    $carbon_graph->delete_vertices( grep { !is_element( $_, 'C') } $carbon_graph->vertices );
     if ($start) {
         $bfs = Graph::Traversal::BFS->new( $carbon_graph, start => $start );
     } else {
@@ -659,14 +662,14 @@ sub select_main_chain
 
     # Finding all farthest vertices from the starting point
     my @farthest = grep { %{$lengths}{$_} eq %{$lengths}{$end->{number}} }
-                                                            keys %{$lengths};
+                        keys %{$lengths};
 
     # Also adding the first vertice to the array since it is farthest from other
     # ones
     push @farthest, $start->{number};
 
     # Going through every vertice in "farthest" array and creating tree-like structures
-    for (my $i = 0; $i < scalar(@farthest); $i++) {
+    for (my $i = 0; $i < scalar @farthest; $i++) {
         my %tree;
         my @value_array;
         push @value_array, $farthest[$i];
@@ -678,14 +681,13 @@ sub select_main_chain
 
         my @vertice = grep { $_->{number} eq $farthest[$i] } $carbon_graph->vertices;
         # Start creation of the tree from all the starting vertices
-        push @all_trees, \%{create_tree($carbon_graph, $vertice[0], \%tree)};
+        push @all_trees, \%{create_tree( $carbon_graph, $vertice[0], \%tree )};
     }
 
     # Extracts arrays of all longest chains with numbers of vertices (in order)
     # from each tree-like structure
     my @main_chains = prepare_paths( @all_trees );
     
-    my $trees;
     my $carbon_graph = $graph->copy;
     $carbon_graph->delete_vertices(
         grep { !is_element( $_, 'C') } $carbon_graph->vertices
@@ -693,15 +695,14 @@ sub select_main_chain
     # From all possible main chains in tree-like structures, subroutine returns
     # the ones that has the greatest number of side chains. Also returns only the
     # trees that still have some possible main chains after selection
-    ( $trees, @main_chains ) = rule_greatest_number_of_side_chains(
+    ( my $trees, @main_chains ) = rule_greatest_number_of_side_chains(
                                     $carbon_graph,
                                     \@main_chains,
                                     @all_trees
                                );
 
     # If more than one chain is left, second rule is applied
-    if( scalar @{$main_chains[0]} != 1 ){
-        my @trr = @{$trees};
+    if( scalar @{$main_chains[0]} != 1 ) {
         my $carbon_graph = $graph->copy;
         $carbon_graph->delete_vertices(
             grep {!is_element( $_, 'C') } $carbon_graph->vertices
@@ -710,12 +711,11 @@ sub select_main_chain
         # lowest numbered locants. Also the trees that have possible main
         # chains returned
         ($trees, @main_chains) = rule_lowest_numbered_locants(
-                                    $carbon_graph, @main_chains, @trr
+                                    $carbon_graph, @main_chains, @$trees
                                  );
 
         # If more than one chain is left, third rule is applied
         if (scalar @{$main_chains[0]} != 1){
-            my @trr = @{$trees};
             my $carbon_graph = $graph->copy;
             $carbon_graph->delete_vertices(
                 grep {!is_element( $_, 'C') } $carbon_graph->vertices
@@ -724,12 +724,11 @@ sub select_main_chain
             # most carbons in side chains. Also the trees that have possible main
             # chains returned
             ($trees, @main_chains) = rule_most_carbon_in_side_chains(
-                                        $carbon_graph, @main_chains, @trr
-                                    );
+                                        $carbon_graph, @main_chains, @$trees
+                                     );
 
             # If more than one chain is left, fourth rule is applied
             if (scalar @{$main_chains[0]} != 1){
-                my @trr = @{$trees};
                 my $carbon_graph = $graph->copy;
                 $carbon_graph->delete_vertices(
                     grep {!is_element( $_, 'C') } $carbon_graph->vertices
@@ -738,22 +737,21 @@ sub select_main_chain
                 # the least branched side chains. Also the trees that have
                 # possible main chains returned
                 ($trees, @main_chains) = rule_least_branched_side_chains(
-                                            $carbon_graph, @main_chains, @trr
-                                        );
+                                            $carbon_graph, @main_chains, @$trees
+                                         );
 
                 # If more than one chain is left, program states that there are
                 # few chains that are identical by all the rules and selects
                 # one from all that are left
-                if(scalar @{$main_chains[0]} != 1){
-                    my @trr = @{$trees};
+                if( scalar @{$main_chains[0]} != 1 ){
                     my $carbon_graph = $graph->copy;
                     $carbon_graph->delete_vertices(
                         grep {!is_element( $_, 'C') } $carbon_graph->vertices
                     );
                     # One main chain is picked from all that are left
                     my $main_chain = rule_pick_chain_from_valid(
-                                            $carbon_graph, @main_chains, @trr
-                                    );
+                                            $carbon_graph, @main_chains, @$trees
+                                     );
                     return(1, $main_chain);
                 } else {
                     return(1, @{$main_chains[0]});
@@ -776,7 +774,7 @@ sub create_tree
 
     my @neighbours = $graph->neighbours( $atom );
 
-    my @array = @ { $tree->{$atom->{number}} };
+    my @array = @{$tree->{$atom->{number}}};
     my @new_array;
 
     push @new_array, $atom->{number};
@@ -796,8 +794,8 @@ sub create_tree
     if( scalar @neighbours == 1 ) {
         unless (exists $tree->{$neighbours[0]->{number}}){
             $tree->{$neighbours[0]->{number}} = [@new_array];
-            $graph->delete_vertex($atom);
-            create_tree($graph, $neighbours[0], $tree);
+            $graph->delete_vertex( $atom );
+            create_tree( $graph, $neighbours[0], $tree );
         }
     }
     # If there is more than one neighour for the current vertice, analysis of
@@ -807,7 +805,7 @@ sub create_tree
         $graph->delete_vertex( $atom );
         foreach my $neighbour (@neighbours) {
             $tree->{$neighbour->{number}} = [@new_array];
-            create_tree($graph, $neighbour, $tree);
+            create_tree( $graph, $neighbour, $tree );
         }
     }
     # If there is no neighbour or other vertices, all graph has been analized.
@@ -820,39 +818,35 @@ sub prepare_paths
 {
     my( @trees ) = @_;
 
-    my $trees_copy = clone(\@trees);
+    my $trees_copy = clone( \@trees );
     my @all_chains;
+    foreach my $tree (@$trees_copy) {
+        my %structure = %$tree;
 
-    foreach my $tree (@{$trees_copy}){
-
-        my %structure = %{$tree};
-
-        # Tree-like structure is sorted by parental vertice number
-        my @sorted = sort {
-                            $structure{$a}->[1] <=> $structure{$b}->[1]
-                          } keys %structure;
+        # Tree-like structure is sorted by parental vertex number
+        my @sorted = sort { $structure{$a}->[1] <=> $structure{$b}->[1] }
+                          keys %structure;
 
         my $last = $sorted[-1];
-        my @chain_ending = grep{ $structure{$_}->[1] == $structure{$last}->[1] }
-                                                                keys %structure;
+        my @chain_ending = grep { $structure{$_}->[1] == $structure{$last}->[1] }
+                                keys %structure;
 
-        foreach my $ending (@chain_ending){
+        foreach my $ending ( @chain_ending ) {
             my @vertex_array = ($ending);
-            my %structure2 = %{$tree};
-            push (@all_chains,
-                save_main_chain_vertices_in_array(
-                    $ending, \@vertex_array, \%structure2
-                )
-            )
+            my %structure2 = %$tree;
+            push @all_chains, save_main_chain_vertices_in_array(
+                                $ending,
+                                \@vertex_array,
+                                $tree
+                              );
         }
     }
 
     # Adds reverted chains if they are not present yet as the longest chains
-    my $all = clone (\@all_chains);
-
-    for my $chain (@{$all}){
-        if (not array_exists([reverse @$chain], @all_chains)) {
-            push (@all_chains, [reverse @$chain] );
+    my $all = clone( \@all_chains );
+    for my $chain (@$all) {
+        if( not array_exists([reverse @$chain], @all_chains) ) {
+            push @all_chains, [reverse @$chain];
         }
     }
 
