@@ -1337,6 +1337,26 @@ sub find_number_of_branched_side_chains
     }
 }
 
+# Finds center (or two centers) of a graph
+sub graph_center
+{
+    my( $graph ) = @_;
+
+    $graph = $graph->copy;
+    my $nvertices = scalar $graph->vertices;
+    while( $graph->vertices > 2 ) {
+        $graph->delete_vertex( grep { $graph->degree( $_ ) == 1 }
+                                    $graph->vertices );
+        my $nvertices_now = scalar $graph->vertices;
+        if( $nvertices_now == $nvertices ) {
+            # Safeguard for cycles and/or isolated vertices
+            die 'cannot find center of cyclic or isolated graphs';
+        }
+        $nvertices = $nvertices_now;
+    }
+    return $graph->vertices;
+}
+
 # Sorts locant placings from lowest to biggest
 sub compare_locant_placings {
     my @first  = @{$a->[3]};
