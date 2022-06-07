@@ -301,19 +301,19 @@ sub get_name
     }
     my ($custom_order, $order) = select_main_chain($graph->copy);
 
-    if ( $custom_order ) {
+    if( $custom_order ) {
         return get_chain_2( $graph->copy,
-                        $order,
-                        { choose_direction => 1 } ) . 'ane';
-    }
-    else {
+                            $order,
+                            { choose_direction => 1 } ) . 'ane';
+    } else {
         # Traverse the graph using breadth-first traversal and pick one of
         # the furthest vertices as a starting point for naming
         my @order = BFS_order_carbons_only($graph);
 
         return get_chain( $graph->copy,
-                        pop @order,
-                        { choose_direction => 1 } ) . 'ane';
+                          pop @order,
+                          { choose_direction => 1 } ) . 'ane';
+    }
 }
 
 sub get_chain
@@ -444,11 +444,12 @@ sub get_chain_2
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} )
                  . '-' . $number . $attachment_name;
     }
+
     my $bracket =
         ($options->{choose_direction} || not ($name =~ /^[0-9]/)) ? '' : '(';
     return $bracket . $name . $prefixes[scalar @chain];
 }
-}
+
 # FIXME: not used in the main code yet
 sub find_groups
 {
@@ -606,8 +607,7 @@ sub BFS_order_carbons_only
     $carbon_graph->delete_vertices( grep {!is_element( $_, 'C') } $carbon_graph->vertices );
     if ($start) {
         $bfs = Graph::Traversal::BFS->new( $carbon_graph, start => $start );
-    }
-    else{
+    } else {
         $bfs = Graph::Traversal::BFS->new( $carbon_graph );
     }
     my @order = $bfs->bfs;
@@ -618,8 +618,8 @@ sub BFS_order_carbons_only
 sub BFS_calculate_chain_length
 {
     my $length = 0;
-    my ( $graph, $start ) = @_;
-    my $bfs = Graph::Traversal::BFS->new( $graph, start => $start);
+    my( $graph, $start ) = @_;
+    my $bfs = Graph::Traversal::BFS->new( $graph, start => $start );
     my @order = $bfs->bfs;
     return scalar @order;
 }
