@@ -649,7 +649,7 @@ sub BFS_is_chain_branched
 sub select_main_chain
 {
     my @all_trees;
-    my ( $graph ) = @_;
+    my( $graph ) = @_;
     my @order = BFS_order_carbons_only( $graph );
 
     my $start = $order[-1];
@@ -1103,12 +1103,13 @@ sub rule_least_branched_side_chains
 # lowest attachment indexes with lowest attachments alphabetically
 sub rule_pick_chain_from_valid
 {
-    my ( $graph, $chains, @trees ) = @_;
+    my( $graph, $chains, @trees ) = @_;
 
-    $a = pick_chain_with_lowest_attachments_alphabetically( $graph, $chains, @trees );
+    my $chosen_chains =
+        pick_chain_with_lowest_attachments_alphabetically( $graph, $chains, @trees );
 
-    my @sorted_chains = sort compare_arrays @{$a};
-    return $sorted_chains[0];
+    my( $chain ) = sort compare_arrays @$chosen_chains;
+    return $chain;
 }
 
 # Subroutine selects chain that has the lowest attachments by alpabetical naming
@@ -1119,7 +1120,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
     my $trees_copy = clone \@trees;
     my $index = 0;
     my @locant_placing;
-    foreach my $tree (@{$trees_copy}){
+    foreach my $tree (@$trees_copy){
         my %structure = %{clone $tree};
 
         # Reference to parental chain is removed from the boxes
@@ -1175,8 +1176,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
                 $att_name = $preferrable_names{$att_name};
             }
         }
-        my $c_chain = clone $curr_chain[0];
-        push @attachments, [$c_chain, \@attachments_only];
+        push @attachments, [clone( $curr_chain[0] ), \@attachments_only];
     }
     my @sorted_attachments = sort sort_attachments @attachments;
     my $correct_attach = $sorted_attachments[0][1];
@@ -1265,10 +1265,9 @@ sub find_locant_placing
 
     my @vertices = $graph->vertices;
     my @places_of_locants;
-    my @reverted_main_chain = reverse @$main_chain;
-    my $vertex_number = scalar @reverted_main_chain;
+    my $vertex_number = scalar @$main_chain;
 
-    for my $curr_vertex ( @reverted_main_chain ) {
+    for my $curr_vertex ( reverse @$main_chain ) {
         my( $vertex ) = grep { $_->{number} == $curr_vertex } @vertices;
         my @curr_neighbours = $graph->neighbours( $vertex );
         return @places_of_locants unless scalar @curr_neighbours;
@@ -1291,9 +1290,8 @@ sub find_number_of_side_chains
 
     my @vertices = $graph->vertices;
     my $number_of_side_chains = 0;
-    my @reverted_main_chain = reverse @$main_chain;
 
-    for my $curr_vertex ( @reverted_main_chain ){
+    for my $curr_vertex ( reverse @$main_chain ) {
         my( $vertex ) = grep { $_->{number} == $curr_vertex } @vertices;
         my @curr_neighbours = $graph->neighbours( $vertex );
         return $number_of_side_chains unless scalar @curr_neighbours;
@@ -1314,9 +1312,8 @@ sub find_number_of_branched_side_chains
 
     my @vertices = $graph->vertices;
     my $number_of_branched_side_chains = 0;
-    my @reverted_main_chain = reverse @$main_chain;
 
-    for my $curr_vertex ( @reverted_main_chain ) {
+    for my $curr_vertex ( reverse @$main_chain ) {
         my @vertex = grep {$_->{number} == $curr_vertex} @vertices;
         my @curr_neighbours = $graph->neighbours( $vertex[0] );
         return $number_of_branched_side_chains unless scalar @curr_neighbours;
