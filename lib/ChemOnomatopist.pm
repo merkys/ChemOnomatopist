@@ -1337,7 +1337,7 @@ sub find_number_of_branched_side_chains
     }
 }
 
-# Finds center (or two centers) of a graph
+# Finds center (or two centers) of a tree graph
 sub graph_center
 {
     my( $graph ) = @_;
@@ -1355,6 +1355,40 @@ sub graph_center
         $nvertices = $nvertices_now;
     }
     return $graph->vertices;
+}
+
+# Finds longest paths in a tree graph. The subroutine finds all longest
+# paths originating at graph center(s) and produces all their combinations.
+sub graph_longest_paths
+{
+    my( $graph ) = @_;
+
+    my @centers = graph_center( $graph );
+    my @longest_paths;
+    if( @centers == 1 ) {
+        # Single-centered graph
+        my @longest_path_parts; # TODO: Collect longest paths starting at center
+        for my $i (0..$#longest_path_parts) {
+            for my $j ($i+1..$#longest_path_parts) {
+                push @longest_paths, [ @{$longest_path_parts[$i]},
+                                       @{$longest_path_parts[$j]} ];
+            }
+        }
+    } else {
+        # Double-centered graph
+        $graph = $graph->copy;
+        $graph->delete_edge( @centers );
+        my @longest_path_parts1; # TODO: Collect longest paths from first center
+        my @longest_path_parts2; # TODO: Collect longest paths from second center
+        for my $i (0..$#longest_path_parts1) {
+            for my $j (0..$#longest_path_parts2) {
+                push @longest_paths, [ @{$longest_path_parts1[$i]},
+                                       @{$longest_path_parts2[$j]} ];
+            }
+        }
+    }
+
+    return @longest_paths;
 }
 
 # Sorts locant placings from lowest to biggest
