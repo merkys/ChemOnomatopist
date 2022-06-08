@@ -1367,12 +1367,14 @@ sub graph_longest_paths
     my @longest_paths;
     if( @centers == 1 ) {
         # Single-centered graph
-        my @longest_path_parts = graph_longest_paths_from_vertex( $graph, $centers[0] );
+        # Removing the center from longest path parts, to be added later
+        my @longest_path_parts = map { [ @{$_}[1..-1] ] }
+                                     graph_longest_paths_from_vertex( $graph, $centers[0] );
         for my $i (0..$#longest_path_parts) {
             for my $j (0..$#longest_path_parts) {
                 next if $i == $j;
-                # FIXME: Center vertex is doubled, order is not right
-                push @longest_paths, [ @{$longest_path_parts[$i]},
+                push @longest_paths, [ reverse( @{$longest_path_parts[$i]} ),
+                                       $centers[0],
                                        @{$longest_path_parts[$j]} ];
             }
         }
@@ -1384,9 +1386,8 @@ sub graph_longest_paths
         my @longest_path_parts2 = graph_longest_paths_from_vertex( $graph, $centers[1] );
         for my $i (0..$#longest_path_parts1) {
             for my $j (0..$#longest_path_parts2) {
-                # FIXME: Order is not right
-                push @longest_paths, [ @{$longest_path_parts1[$i]},
-                                       @{$longest_path_parts2[$j]} ];
+                push @longest_paths, [ reverse( @{$longest_path_parts1[$i]} ),
+                                                @{$longest_path_parts2[$j]} ];
             }
         }
     }
