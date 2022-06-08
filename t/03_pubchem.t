@@ -6,14 +6,18 @@ use warnings;
 use ChemOnomatopist;
 use Test::More;
 
-open (my $f, '<', 't/PubChemData') or die;
+if( !$ENV{EXTENDED_TESTING} ) {
+    plan skip_all => "Skip \$ENV{EXTENDED_TESTING} is not set\n";
+}
+
+open( my $f, '<', 't/PubChemData' ) or die;
 
 my @iupac;
 my @smiles;
 while (my $line = <$f>) {
-  my @elems = split ' ', $line;
-  push(@iupac, $elems[1]);
-  push(@smiles, $elems[2]);
+    my @elems = split ' ', $line;
+    push @iupac,  $elems[1];
+    push @smiles, $elems[2];
 }
 
 close $f;

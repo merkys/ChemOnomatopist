@@ -8,6 +8,10 @@ use DBI;
 use IPC::Run3;
 use Test::More;
 
+if( !$ENV{EXTENDED_TESTING} ) {
+    plan skip_all => "Skip \$ENV{EXTENDED_TESTING} is not set\n";
+}
+
 my $dbh = db_connect('mysql', 'www.crystallography.net', 'cod', 3306, 'cod_reader', '');
 
 # FIXME: Skip tests if connection is unsuccessful. (A.M.)
