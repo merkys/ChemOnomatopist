@@ -1391,6 +1391,54 @@ sub graph_longest_paths
     return @longest_paths;
 }
 
+sub graph_longest_paths_from_vertex
+{
+    my( $graph, $vertex ) = @_;
+
+    my %from   = ( $vertex => undef );
+    my %length = ( $vertex => 0 );
+    my $bfs = Graph::Traversal::BFS->new(
+        $graph,
+        tree_edge =>
+            sub {
+                my( $u, $v ) = @_;
+                ( $u, $v ) = ( $v, $u ) if exists $from{$v};
+                $from{$v} = $u;
+                $length{$v} = $length{$u} + 1;
+            },
+        start => $vertex,
+    );
+    $bfs->bfs;
+
+    my @furthest_leaves;
+    my $furthest_distance = 0;
+    for my $vertex ( $graph->vertices ) {
+        next unless exists $length{$vertex}; # May happen in disconnected graphs
+        if(      $length{$vertex} < $furthest_distance ) {
+            next;
+        } elsif( $length{$vertex} == $furthest_distance ) {
+            push @furthest_leaves, $vertex;
+        } else {
+            @furthest_leaves = ( $vertex );
+            $furthest_distance = $length{$vertex};
+        }
+    }
+
+    # Backtrack starting from the furthest leaves to collect the longest
+    # paths. In the returned result path, starting vertex is the first.
+    my @longest_paths;
+    for my $vertex ( @furthest_leaves ) {
+        my @path;
+        while( $vertex ) {
+            push @path, $vertex;
+            $vertex = $from{$vertex};
+        }
+        push @longest_paths, [ reverse @path ];
+    }
+
+    return @longest_paths;
+}
+
 # Sorts locant placings from lowest to biggest
 sub compare_locant_placings {
     my @first  = @{$a->[3]};
