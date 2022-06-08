@@ -300,7 +300,14 @@ sub get_name
         # No other types of graphs with cycles can be processed for now
         die "cannot handle graphs with cycles for now\n";
     }
-    my ($custom_order, $order) = select_main_chain($graph->copy);
+
+    # Check for unsupported elements.
+    # FIXME: Chemistry::OpenSMILES atoms are supported here only.
+    if( any { $_->{symbol} !~ /^[CcH]$/ } $graph->vertices ) {
+        die "cannot handle atoms other than C and H now\n";
+    }
+
+    my( $custom_order, $order ) = select_main_chain( $graph->copy );
 
     if( $custom_order ) {
         return get_chain_2( $graph->copy,
