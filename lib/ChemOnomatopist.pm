@@ -11,14 +11,14 @@ use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Hydroxy;
 use Chemistry::OpenSMILES::Writer qw( write_SMILES );
+use Clone qw( clone );
 use Graph::Nauty qw( canonical_order );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
 use List::Util qw( any );
 use Scalar::Util qw( blessed );
-use Clone qw( clone );
+
 no warnings 'recursion';
-use Data::Dumper;
 
 our @prefixes = qw(
     ?
