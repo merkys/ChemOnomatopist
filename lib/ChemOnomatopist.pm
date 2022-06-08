@@ -1345,8 +1345,8 @@ sub graph_center
     $graph = $graph->copy;
     my $nvertices = scalar $graph->vertices;
     while( $graph->vertices > 2 ) {
-        $graph->delete_vertex( grep { $graph->degree( $_ ) == 1 }
-                                    $graph->vertices );
+        $graph->delete_vertices( grep { $graph->degree( $_ ) == 1 }
+                                      $graph->vertices );
         my $nvertices_now = scalar $graph->vertices;
         if( $nvertices_now == $nvertices ) {
             # Safeguard for cycles and/or isolated vertices
@@ -1367,9 +1367,11 @@ sub graph_longest_paths
     my @longest_paths;
     if( @centers == 1 ) {
         # Single-centered graph
-        my @longest_path_parts; # TODO: Collect longest paths starting at center
+        my @longest_path_parts = graph_longest_paths_from_vertex( $graph, $centers[0] );
         for my $i (0..$#longest_path_parts) {
-            for my $j ($i+1..$#longest_path_parts) {
+            for my $j (0..$#longest_path_parts) {
+                next if $i == $j;
+                # FIXME: Center vertex is doubled, order is not right
                 push @longest_paths, [ @{$longest_path_parts[$i]},
                                        @{$longest_path_parts[$j]} ];
             }
@@ -1378,10 +1380,11 @@ sub graph_longest_paths
         # Double-centered graph
         $graph = $graph->copy;
         $graph->delete_edge( @centers );
-        my @longest_path_parts1; # TODO: Collect longest paths from first center
-        my @longest_path_parts2; # TODO: Collect longest paths from second center
+        my @longest_path_parts1 = graph_longest_paths_from_vertex( $graph, $centers[0] );
+        my @longest_path_parts2 = graph_longest_paths_from_vertex( $graph, $centers[1] );
         for my $i (0..$#longest_path_parts1) {
             for my $j (0..$#longest_path_parts2) {
+                # FIXME: Order is not right
                 push @longest_paths, [ @{$longest_path_parts1[$i]},
                                        @{$longest_path_parts2[$j]} ];
             }
