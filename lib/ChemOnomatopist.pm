@@ -1512,4 +1512,52 @@ sub compare_arrays {
     return 0;
 }
 
+sub IUPAC_numerical_multiplier
+{
+    my( $N, $is_middle ) = @_;
+
+    my $ones      = $N % 10;
+    my $tens      = int( $N /   10 ) % 10;
+    my $hundreds  = int( $N /  100 ) % 10;
+    my $thousands = int( $N / 1000 ) % 10;
+
+    my @prefix = ( '', 'hen', 'di', 'tri', 'tetra', 'penta', 'hexa', 'hepta', 'octa', 'nona' );
+
+    return 'heni' if $N == 1 && $is_middle;
+    return 'mono' if $N == 1;
+    return 'do'   if $N == 2 && $is_middle;
+    return 'tria' if $N == 3 && $is_middle;
+
+    if( $N < 10 ) {
+        my $value = $prefix[$ones];
+        $value =~ s/a$// unless $is_middle;
+        return $value;
+    }
+
+    return 'dec'    . ($is_middle ? 'a' : '') if $N == 10;
+    return 'undec'  . ($is_middle ? 'a' : '') if $N == 11;
+    return 'dodec'  . ($is_middle ? 'a' : '') if $N == 12;
+    return 'tridec' . ($is_middle ? 'a' : '') if $N == 13;
+    return IUPAC_numerical_multiplier( $ones, 1 ) . 'dec' . ($is_middle ? 'a' : '') if $N < 20;
+    return 'icos'   . ($is_middle ? 'a' : '') if $N == 20;
+    return 'henicos'. ($is_middle ? 'a' : '') if $N == 21;
+    return 'docos'  . ($is_middle ? 'a' : '') if $N == 22;
+    return 'tricos' . ($is_middle ? 'a' : '') if $N == 23;
+    return IUPAC_numerical_multiplier( $ones, 1 ) . 'cos' . ($is_middle ? 'a' : '') if $N < 30;
+
+    if( $N < 100 ) {
+        if( $ones == 1 ) {
+            return 'hen' . IUPAC_numerical_multiplier( $tens, 1 ) . 'cont' . ($is_middle ? 'a' : '');
+        } elsif ( $ones == 3 ) {
+            return 'tri' . IUPAC_numerical_multiplier( $tens, 1 ) . 'cont' . ($is_middle ? 'a' : '');
+        } else {
+            return IUPAC_numerical_multiplier( $ones, 1 ) . IUPAC_numerical_multiplier( $tens, 1 ) . 'cont' . ($is_middle ? 'a' : '');
+        }
+    }
+
+    return 'trihect' if $N == 103;
+    return IUPAC_numerical_multiplier( int( $tens . $ones ), 1 ) . 'hect' if $N < 200;
+    return IUPAC_numerical_multiplier( int( $tens . $ones ), 1 ) . $prefix[$hundreds] . 'ct' if $N < 1000;
+}
+
 1;
