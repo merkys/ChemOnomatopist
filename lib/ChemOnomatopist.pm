@@ -1512,6 +1512,7 @@ sub compare_arrays {
     return 0;
 }
 
+# According to https://en.wikipedia.org/wiki/IUPAC_numerical_multiplier
 sub IUPAC_numerical_multiplier
 {
     my( $N, $is_middle ) = @_;
@@ -1551,13 +1552,18 @@ sub IUPAC_numerical_multiplier
         } elsif ( $ones == 3 ) {
             return 'tri' . IUPAC_numerical_multiplier( $tens, 1 ) . 'cont' . ($is_middle ? 'a' : '');
         } else {
-            return IUPAC_numerical_multiplier( $ones, 1 ) . IUPAC_numerical_multiplier( $tens, 1 ) . 'cont' . ($is_middle ? 'a' : '');
+            return IUPAC_numerical_multiplier( $ones, 1 ) .
+                   IUPAC_numerical_multiplier( $tens, 1 ) .
+                   'cont' . ($is_middle ? 'a' : '');
         }
     }
 
     return 'trihect' if $N == 103;
     return IUPAC_numerical_multiplier( int( $tens . $ones ), 1 ) . 'hect' if $N < 200;
-    return IUPAC_numerical_multiplier( int( $tens . $ones ), 1 ) . $prefix[$hundreds] . 'ct' if $N < 1000;
+    return IUPAC_numerical_multiplier( int( $tens . $ones ), 1 ) . $prefix[$hundreds] . 'ct'              if $N <  1000;
+    return IUPAC_numerical_multiplier( int( $hundreds . $tens . $ones ), 1 ) . 'kili'                     if $N <  2000;
+    return IUPAC_numerical_multiplier( int( $hundreds . $tens . $ones ), 1 ) . $prefix[$thousands] . 'li' if $N < 10000;
+    die "cannot generate IUPAC numerical multiplier for $N\n";
 }
 
 1;
