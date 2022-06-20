@@ -15,17 +15,17 @@ my %cases = (
     9267 => 'heptahexacontadictanonali',
 );
 
-plan tests => scalar( @ChemOnomatopist::prefixes ) - 5 +
+plan tests => scalar( @ChemOnomatopist::prefixes ) +
               scalar keys %cases;
 
-for (5..$#ChemOnomatopist::prefixes) {
-    is( ChemOnomatopist::IUPAC_numerical_multiplier( $_ ),
+for (0..$#ChemOnomatopist::prefixes) {
+    is( ChemOnomatopist::alkane_chain_name( $_ ),
         $ChemOnomatopist::prefixes[$_],
         "Number $_" );
 }
 
 for (sort keys %cases) {
-    is( ChemOnomatopist::IUPAC_numerical_multiplier( $_ ),
+    is( ChemOnomatopist::alkane_chain_name( $_ ),
         $cases{$_},
         "Number $_" );
 }
