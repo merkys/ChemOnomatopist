@@ -290,7 +290,7 @@ sub get_name
         while( $smiles =~ s/\(([^\()]+)\)\)/$1)/ ) {}; # need to simplify SMILES
         if( $smiles =~ /^C1\((C+)1\)$/ ) {
             # Cycloalkane detected
-            return 'cyclo' . $prefixes[scalar $graph->vertices] . 'ane';
+            return 'cyclo' . alkane_chain_name( scalar $graph->vertices ) . 'ane';
         } elsif( $smiles =~ /^c:1\(:c((:c)+):1\)$/ &&
                  ( length( $1 ) / 2 ) =~ /^(4|6|8|10|12|14|16)$/ ) {
             # Annulene detected
@@ -378,7 +378,7 @@ sub get_chain
     my $bracket =
         ($options->{choose_direction} || not ($name =~ /^[0-9]/)) ? '' : '(';
 
-    return $bracket . $name . $prefixes[scalar @chain];
+    return $bracket . $name . alkane_chain_name( scalar @chain );
 }
 
 sub get_chain_2
@@ -446,7 +446,7 @@ sub get_chain_2
 
     my $bracket =
         ($options->{choose_direction} || not ($name =~ /^[0-9]/)) ? '' : '(';
-    return $bracket . $name . $prefixes[scalar @chain];
+    return $bracket . $name . alkane_chain_name( scalar @chain );
 }
 
 # FIXME: not used in the main code yet
@@ -1564,6 +1564,16 @@ sub IUPAC_numerical_multiplier
     return IUPAC_numerical_multiplier( int( $hundreds . $tens . $ones ), 1 ) . 'kili'                     if $N <  2000;
     return IUPAC_numerical_multiplier( int( $hundreds . $tens . $ones ), 1 ) . $prefix[$thousands] . 'li' if $N < 10000;
     die "cannot generate IUPAC numerical multiplier for $N\n";
+}
+
+sub alkane_chain_name
+{
+    my( $N ) = @_;
+
+    my @names = qw( ? meth eth prop but );
+
+    return $names[$N] if $N < @names;
+    return IUPAC_numerical_multiplier( $N );
 }
 
 1;
