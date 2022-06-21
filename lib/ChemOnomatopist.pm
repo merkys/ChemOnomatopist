@@ -99,8 +99,8 @@ sub get_name
     }
 
     # Check for unsupported elements.
-    # FIXME: Chemistry::OpenSMILES atoms are supported here only.
-    if( any { $_->{symbol} !~ /^[CcH]$/ } $graph->vertices ) {
+    if( any { !is_element( $_, 'C' ) && !is_element( $_, 'H' ) }
+            $graph->vertices ) {
         die "cannot handle atoms other than C and H now\n";
     }
 
