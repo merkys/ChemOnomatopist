@@ -1252,7 +1252,7 @@ sub compare_locant_placings {
     return 0;
 }
 
-# Sorts side chain legths from lowest to biggest
+# Sorts side chain lengths from lowest to biggest
 sub compare_side_chain_lengths {
     my @first  = @{$a->[3]};
     my @second = @{$b->[3]};
@@ -1271,11 +1271,14 @@ sub compare_only_aphabetical {
     $a_alpha =~ s/[^a-zA-Z]+//g;
     $b_alpha =~ s/[^a-zA-Z]+//g;
 
-    if( $a_alpha eq 'tertbutyl' ) {
-        $a_alpha = 'butyl';
-    } elsif ($b_alpha eq 'tertbutyl') {
-        $b_alpha = 'butyl';
+    # FIXME: Not sure how to sort 'butyl' and 'tertbutyl', but stable
+    # order is important.
+    unless( grep( { $_ eq 'butyl'     } ( $a_alpha, $b_alpha ) ) &&
+            grep( { $_ eq 'tertbutyl' } ( $a_alpha, $b_alpha ) ) ) {
+        $a_alpha = 'butyl' if $a_alpha eq 'tertbutyl';
+        $b_alpha = 'butyl' if $b_alpha eq 'tertbutyl';
     }
+
     return $a_alpha cmp $b_alpha;
 }
 
