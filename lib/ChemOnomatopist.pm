@@ -1300,22 +1300,23 @@ sub sort_attachments {
         } elsif ($second_alpha eq 'tertbutyl') {
             $second_alpha = 'butyl'
         }
-        if ($first_alpha lt $second_alpha) {return 1}
-        elsif ($first_alpha gt $second_alpha) {return -1}
+
+        return $second_alpha cmp $first_alpha if $second_alpha cmp $first_alpha;
     }
+
     return 0;
 }
 
 # Sorts arrays from lowest to biggest by values
 sub compare_arrays {
-    my @first = @{$a};
-    my @second = @{$b};
-    my @index = (0..scalar @first-1);
+    my @first  = @$a;
+    my @second = @$b;
+    my @index  = (0..scalar @first-1);
 
     foreach( @index ){
-        if ($first[$_] > $second[$_]) {return 1}
-        elsif ($first[$_] < $second[$_]) {return -1}
+        return $first[$_] <=> $second[$_] if $first[$_] <=> $second[$_];
     }
+
     return 0;
 }
 
