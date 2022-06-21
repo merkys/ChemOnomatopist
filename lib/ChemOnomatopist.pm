@@ -676,13 +676,14 @@ sub rule_greatest_number_of_side_chains
         # Beginning of the structure is found. Then all chains that belongs to
         # the current tree are selected
         my @first = grep { $structure{$_}->[0] == 0 } keys %structure;
-        my @chains_in_the_tree = grep {$_->[0] == $first[0] || $_->[-1] == $first[0]} @$chains;
+        my @chains_in_the_tree =
+            grep { $_->[0] == $first[0] || $_->[-1] == $first[0] } @$chains;
 
         # Structure with index of the tree, beginning and ending of the chain,
         # number of side chains in the chain created for each chain
         for my $chain ( @chains_in_the_tree ) {
             push @number_of_side_chains,
-                 [$index, @{$chain}[0], @{$chain}[-1],
+                 [$index, $chain->[0], $chain->[-1],
                     find_number_of_side_chains(
                         $graph,
                         \@{$chain},
@@ -694,8 +695,7 @@ sub rule_greatest_number_of_side_chains
     }
 
     # All chains that have the biggest number of side chains are selected and returned
-    my @sorted_numbers = sort { $a->[3] <=> $b->[3] }
-                              @number_of_side_chains;
+    my @sorted_numbers = sort { $a->[3] <=> $b->[3] } @number_of_side_chains;
 
     my $path_length = $sorted_numbers[-1][3];
     my @biggest_number_of_side_chains = grep {$_->[3] == $path_length} @number_of_side_chains;
@@ -738,7 +738,7 @@ sub rule_lowest_numbered_locants
         # places of the locants in the chain created for each tree
         for my $chain ( @chains_in_the_tree ) {
             push @locant_placing,
-                 [$index, @{$chain}[0], @{$chain}[-1],
+                 [$index, $chain->[0], $chain->[-1],
                     [find_locant_placing(
                         $graph,
                         $chain,
@@ -753,9 +753,9 @@ sub rule_lowest_numbered_locants
     my @sorted_paths = sort compare_locant_placings reverse @locant_placing;
 
     my $lowest_locants = $sorted_paths[0][3];
-    my @lowest_locants_paths = grep {
-                    join("", ( @{$_->[3]})) eq join( "", @$lowest_locants )
-                                    } @locant_placing;
+    my @lowest_locants_paths =
+        grep { join( '', @{$_->[3]} ) eq join( '', @$lowest_locants ) }
+            @locant_placing;
     my %seen;
     my @uniq_lowest_locants_paths = grep { !$seen{$_->[0]}++ } @lowest_locants_paths;
     my @result = @trees[map {$_->[0]} @uniq_lowest_locants_paths];
@@ -825,9 +825,9 @@ sub rule_most_carbon_in_side_chains
     my @sorted_final = sort compare_side_chain_lengths @side_chain_lengths;
 
     my $last = $sorted_final[-1][3];
-    my @greatest_no_of_side_chains_paths = grep {
-                    join("", @{@{$_}[3]}) eq join("", @{$last})
-                                    } @sorted_final;
+    my @greatest_no_of_side_chains_paths =
+        grep { join( '', @{$_->[3]} ) eq join( '', @$last ) }
+            @sorted_final;
     my @eligible_chains;
     for my $chain (@{$chains}){
         if( any { $_->[1] == $chain->[0] && $_->[2] == $chain->[-1] }
@@ -838,7 +838,7 @@ sub rule_most_carbon_in_side_chains
     my %seen;
     my @uniq_side_chain_paths =
                 grep { !$seen{$_->[0]}++ } @greatest_no_of_side_chains_paths;
-    my @result = @trees[map {$_->[0]} @uniq_side_chain_paths];
+    my @result = @trees[map { $_->[0] } @uniq_side_chain_paths];
 
     return \@result, \@eligible_chains;
 }
