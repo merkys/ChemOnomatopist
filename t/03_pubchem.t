@@ -10,20 +10,19 @@ if( !$ENV{EXTENDED_TESTING} ) {
     plan skip_all => "Skip \$ENV{EXTENDED_TESTING} is not set\n";
 }
 
-open( my $f, '<', 't/PubChemData' ) or die;
+open( my $inp, '<', 't/PubChemData' ) or die;
 
-my @iupac;
-my @smiles;
-while (my $line = <$f>) {
-    my @elems = split ' ', $line;
-    push @iupac,  $elems[1];
-    push @smiles, $elems[2];
+my @cases;
+while (my $line = <$inp>) {
+    my @fields = split /\s+/, $line;
+    push @cases, { id => $fields[0], iupac => $fields[1], smiles => $fields[2] };
 }
+close $inp;
 
-close $f;
+plan tests => scalar @cases;
 
-plan tests => scalar @iupac;
-
-for my $i (0 .. $#iupac){
-    is( ChemOnomatopist::get_name( $smiles[$i] ), $iupac[$i] );
+for my $case (@cases) {
+    is( ChemOnomatopist::get_name( $case->{smiles} ),
+        $case->{iupac},
+        'ID ' . $case->{id} );
 }
