@@ -97,7 +97,7 @@ sub get_name
         # No other types of graphs with cycles can be processed for now
         die "cannot handle graphs with cycles for now\n";
     }
-    my ($custom_order, $order) = select_main_chain($graph->copy);
+    my( $custom_order, $order ) = select_main_chain( $graph->copy );
 
     if( $custom_order ) {
         return get_chain_2( $graph->copy,
@@ -122,7 +122,7 @@ sub get_chain
 
     # As per https://www.geeksforgeeks.org/longest-path-undirected-tree/,
     # two BFSes are needed to find the longest path in a tree
-    my @order = BFS_order_carbons_only($graph, $start);
+    my @order = BFS_order_carbons_only( $graph, $start );
 
     my %order;
     for my $i (0..$#order) {
@@ -175,7 +175,7 @@ sub get_chain
                  '-' . $number . $attachment_name;
     }
     my $bracket =
-        ($options->{choose_direction} || not ($name =~ /^[0-9]/)) ? '' : '(';
+        ($options->{choose_direction} || $name !~ /^[0-9]/) ? '' : '(';
 
     return $bracket . $name . alkane_chain_name( scalar @chain );
 }
@@ -246,7 +246,7 @@ sub get_chain_2
     }
 
     my $bracket =
-        ($options->{choose_direction} || not ($name =~ /^[0-9]/)) ? '' : '(';
+        ($options->{choose_direction} || $name !~ /^[0-9]/) ? '' : '(';
     return $bracket . $name . alkane_chain_name( scalar @chain );
 }
 
@@ -449,7 +449,6 @@ sub BFS_is_chain_branched
 # Returns main (parental) chain to be used during the naming
 sub select_main_chain
 {
-    my @all_trees;
     my( $graph ) = @_;
     my @order = BFS_order_carbons_only( $graph );
 
@@ -469,6 +468,7 @@ sub select_main_chain
     push @farthest, $start->{number};
 
     # Going through every vertice in "farthest" array and creating tree-like structures
+    my @all_trees;
     for (my $i = 0; $i < scalar @farthest; $i++) {
         my %tree = ( $farthest[$i] => [ $farthest[$i], 0 ] );
 
@@ -587,7 +587,7 @@ sub create_tree
     }
     # If there is more than one neighour for the current vertice, analysis of
     # each of them is started independently
-    elsif( scalar @neighbours > 1 ){
+    elsif( scalar @neighbours > 1 ) {
         push @new_array, 0;
         $graph->delete_vertex( $atom );
         foreach my $neighbour ( @neighbours ) {
