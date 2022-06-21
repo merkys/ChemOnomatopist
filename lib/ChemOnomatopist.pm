@@ -167,10 +167,12 @@ sub get_chain
     # Collecting names of all the attachments
     my $name = '';
     for my $attachment_name (sort { $a cmp $b } keys %attachments) {
+        my $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
+        $number =~ s/^mono$//;
+        $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
         $name = $name ? $name . '-' : $name;
-        $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} )
-                 . '-' . $numbers[scalar @{$attachments{$attachment_name}}] .
-                 $attachment_name;
+        $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) .
+                 '-' . $number . $attachment_name;
     }
     my $bracket =
         ($options->{choose_direction} || not ($name =~ /^[0-9]/)) ? '' : '(';
@@ -235,10 +237,12 @@ sub get_chain_2
         if( $attachment_name =~ /^\([0-9]/ ) {
             $number = $numberskis[scalar @{$attachments{$attachment_name}}];
         } else {
-            $number = $numbers[scalar @{$attachments{$attachment_name}}]
+            $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
+            $number =~ s/^mono$//;
+            $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
         }
-        $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} )
-                 . '-' . $number . $attachment_name;
+        $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) .
+                 '-' . $number . $attachment_name;
     }
 
     my $bracket =
