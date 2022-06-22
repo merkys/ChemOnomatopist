@@ -22,6 +22,11 @@ close $inp;
 plan tests => scalar @cases;
 
 for my $case (@cases) {
+    # Minor regularizations for PubChem names:
+    $case->{iupac} =~ s/(di|tetra)tert-butyl/$1\(tert-butyl\)/g;
+    $case->{iupac} =~ s/di\((nonyl|heptadecyl|hentriacontyl|undecyl|tridecyl|docosyl|icosyl|tetradecyl|pentadecyl)\)/di$1/g;
+    $case->{iupac} =~ s/tetra\(tridecyl\)/tetratridecyl/g;
+
     is( ChemOnomatopist::get_name( $case->{smiles} ),
         $case->{iupac},
         'ID ' . $case->{id} );
