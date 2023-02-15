@@ -50,6 +50,17 @@ sub BFS_is_chain_branched
     return $branched;
 }
 
+# Find how many side attachments are at every position of the given path.
+sub graph_attachment_positions
+{
+    my( $graph, @vertices ) = @_;
+
+    $graph = $graph->copy;
+    $graph->delete_path( @vertices );
+
+    return map { $graph->degree( $_ ) } @vertices;
+}
+
 # Finds center (or two centers) of a tree graph.
 # Returns one or two vertices constituting the center.
 sub graph_center
