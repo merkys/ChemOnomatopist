@@ -82,13 +82,13 @@ sub graph_longest_paths
     if( @centers == 1 ) {
         # Single-centered graph
         # Removing the center from longest path parts, to be added later
-        my @longest_path_parts = map { [ @{$_}[1..-1] ] }
+        my @longest_path_parts = map { [ @{$_}[1..$#$_] ] }
                                      graph_longest_paths_from_vertex( $graph, $centers[0] );
         for my $i (0..$#longest_path_parts) {
             for my $j (0..$#longest_path_parts) {
                 next if $i == $j;
-                # FIXME: Need to ensure that two paths do not start at the same vertex.
-                # next if $longest_path_parts[$i]->[0] eq $longest_path_parts[$i]->[1]; # Somehow this does not work?
+                # Ensure that two paths do not start at the same vertex.
+                next if $longest_path_parts[$i]->[0] eq $longest_path_parts[$j]->[0];
                 push @longest_paths, [ reverse( @{$longest_path_parts[$i]} ),
                                        $centers[0],
                                        @{$longest_path_parts[$j]} ];
