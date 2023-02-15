@@ -71,8 +71,9 @@ sub graph_center
     return $graph->vertices;
 }
 
-# Finds longest paths in a tree graph. The subroutine finds all longest
-# paths originating at graph center(s) and produces all their combinations.
+# Finds longest paths in a tree graph.
+# The subroutine finds all longest paths originating at graph center(s) and produces all their combinations.
+# No two paths containing the same vertices are returned.
 sub graph_longest_paths
 {
     my( $graph ) = @_;
@@ -86,7 +87,7 @@ sub graph_longest_paths
                                      graph_longest_paths_from_vertex( $graph, $centers[0] );
         for my $i (0..$#longest_path_parts) {
             for my $j (0..$#longest_path_parts) {
-                next if $i == $j;
+                next if $i >= $j;
                 # Ensure that two paths do not start at the same vertex.
                 next if $longest_path_parts[$i]->[0] eq $longest_path_parts[$j]->[0];
                 push @longest_paths, [ reverse( @{$longest_path_parts[$i]} ),
