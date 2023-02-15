@@ -8,6 +8,7 @@ use warnings;
 
 use Exporter;
 use Graph::Traversal::BFS;
+use List::Util qw( sum0 );
 
 use parent Exporter::;
 
@@ -16,6 +17,7 @@ our @EXPORT_OK = qw(
     BFS_is_chain_branched
     graph_longest_paths
     graph_longest_paths_from_vertex
+    tree_number_of_branches
 );
 
 # Calculates length of given graph (vertices count)
@@ -154,6 +156,14 @@ sub graph_longest_paths_from_vertex
     }
 
     return @longest_paths;
+}
+
+# Given a tree and a path, finds the number of branches branching off the given path.
+# It is equal to the sum of all degrees minus the edges between vertices in a path.
+sub tree_number_of_branches
+{
+    my( $tree, @vertices ) = @_;
+    return sum0( map { $tree->degree( $_ ) } @vertices ) - 2 * (scalar @vertices - 1);
 }
 
 1;
