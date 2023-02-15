@@ -48,7 +48,8 @@ sub BFS_is_chain_branched
     return $branched;
 }
 
-# Finds center (or two centers) of a tree graph
+# Finds center (or two centers) of a tree graph.
+# Returns one or two vertices constituting the center.
 sub graph_center
 {
     my( $graph ) = @_;
