@@ -87,6 +87,8 @@ sub graph_longest_paths
         for my $i (0..$#longest_path_parts) {
             for my $j (0..$#longest_path_parts) {
                 next if $i == $j;
+                # FIXME: Need to ensure that two paths do not start at the same vertex.
+                # next if $longest_path_parts[$i]->[0] eq $longest_path_parts[$i]->[1]; # Somehow this does not work?
                 push @longest_paths, [ reverse( @{$longest_path_parts[$i]} ),
                                        $centers[0],
                                        @{$longest_path_parts[$j]} ];
@@ -148,7 +150,7 @@ sub graph_longest_paths_from_vertex
     my @longest_paths;
     for my $vertex ( @furthest_leaves ) {
         my @path;
-        while( $vertex ) {
+        while( defined $vertex ) {
             push @path, $vertex;
             $vertex = $from{$vertex};
         }
