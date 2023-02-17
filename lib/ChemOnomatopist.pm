@@ -554,8 +554,46 @@ sub select_main_chain_new
     }
 
     # Find the number of side chains
-    my @branches = map { max map { tree_number_of_branches( $tree, @$_ ) } @$_ }
-                       @path_parts;
+    my @paths = rule_greatest_number_of_side_chains_new( $tree, @path_parts );
+    return @paths if @paths;
+}
+
+sub rule_greatest_number_of_side_chains_new
+{
+    my( $tree, @path_parts ) = @_;
+
+    my $paths_by_length = {};
+    for my $direction (0..$#path_parts) {
+        my $max_value;
+        my $max_id;
+        for my $path (0..$#{$path_parts[$direction]}) {
+            my $branches = tree_number_of_branches( $tree, @{$path_parts[$direction]->[$path]} );
+            if( !defined $max_id || $max_value < $branches ) {
+                $max_value = $branches;
+                $max_id = $path;
+            } elsif( $max_value == $branches ) {
+                # Two branches are the same, need better rule to discriminate between them.
+                return;
+            }
+        }
+
+        $paths_by_length->{$max_value} = [] unless $paths_by_length->{$max_value};
+        push @{$paths_by_length->{$max_value}}, $path_parts[$direction]->[$max_id];
+    }
+
+    # Pick two branches having the most side chains
+    my @sizes = sort keys %$paths_by_length;
+    my @paths;
+
+    for (@sizes) {
+        # Return if there is an ambiguity
+        return if scalar( @{$paths_by_length->{$_}} ) > 2 - @paths;
+        while( @{$paths_by_length->{$_}} && @paths < 2 ) {
+            push @paths, shift @{$paths_by_length->{$_}};
+        }
+    }
+
+    return @paths if @paths == 2;
 }
 
 # Creating tree like structure for all the longest paths in molecule
