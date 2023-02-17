@@ -13,13 +13,15 @@ use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
+    graph_center
+    tree_number_of_branches
 );
 use Chemistry::OpenSMILES::Writer qw( write_SMILES );
 use Clone qw( clone );
 use Graph::Nauty qw( canonical_order );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
-use List::Util qw( any );
+use List::Util qw( any max );
 use Scalar::Util qw( blessed );
 
 no warnings 'recursion';
@@ -526,6 +528,34 @@ sub select_main_chain
                         @$trees
                      );
     return $main_chain;
+}
+
+# Selects the main chain by evaluating its parts
+sub select_main_chain_new
+{
+    my( $tree ) = @_;
+
+    my @center = graph_center( $tree );
+    my @path_parts;
+    if( @center == 1 ) {
+        # Longest path has odd length
+        my $longest_paths = {};
+        for my $path (graph_longest_paths_from_vertex( $tree, $center[0] )) {
+            $longest_paths->{$path->[1]} = [] unless $longest_paths->{$path->[1]};
+            push @{$longest_paths->{$path->[1]}}, $path;
+        }
+        @path_parts = map { $longest_paths->{$_} } sort keys %$longest_paths;
+    } else {
+        # Longest path has even length
+        my $tree = $tree->copy;
+        $tree->delete_edge( @center );
+        @path_parts = map { [ graph_longest_paths_from_vertex( $tree, $_ ) ] }
+                          @center;
+    }
+
+    # Find the number of side chains
+    my @branches = map { max map { tree_number_of_branches( $tree, @$_ ) } @$_ }
+                       @path_parts;
 }
 
 # Creating tree like structure for all the longest paths in molecule
