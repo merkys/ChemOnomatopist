@@ -40,7 +40,8 @@ is( ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
                                                               [ [ 'B', 'C', 'C1' ] ] ),
     2 );
 is( ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
-                                                              [ [ 'B', 'A', 'A1' ], [ 'B', 'A', 'A2' ] ],
+                                                              [ [ 'B', 'A', 'A1' ],
+                                                                [ 'B', 'A', 'A2' ] ],
                                                               [ [ 'B', 'C', 'C1' ] ] ),
     undef );
 
@@ -58,6 +59,7 @@ is( ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
                                                               [ [ 'C', 'D', 'D1' ] ] ),
     2 );
 is( ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
-                                                              [ [ 'B', 'A', 'A1' ], [ 'B', 'A', 'A2' ] ],
+                                                              [ [ 'B', 'A', 'A1' ],
+                                                                [ 'B', 'A', 'A2' ] ],
                                                               [ [ 'C', 'D', 'D1' ] ] ),
     undef );
