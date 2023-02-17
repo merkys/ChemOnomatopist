@@ -11,7 +11,7 @@ use ChemOnomatopist::Util::Graph qw(
 use Graph::Undirected;
 use Test::More;
 
-plan tests => 10;
+plan tests => 12;
 
 my $graph;
 
@@ -63,3 +63,25 @@ is( ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
                                                                 [ 'B', 'A', 'A2' ] ],
                                                               [ [ 'C', 'D', 'D1' ] ] ),
     undef );
+
+# Elongated Y-shaped graph with an even-numbered longest path
+$graph = Graph::Undirected->new;
+$graph->add_path( 'AA1'..'AA5' );
+$graph->add_path( 'AB1'..'AB5' );
+$graph->add_path( 'BA1'..'BA5' );
+$graph->add_edge( 'A', 'AA1' );
+$graph->add_edge( 'A', 'AB1' );
+$graph->add_edge( 'B', 'BA1' );
+$graph->add_edge( 'A', 'B' );
+
+is( ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
+                                                              [ [ 'A', 'AA1'..'AA5' ],
+                                                                [ 'A', 'AB1'..'AB5' ] ],
+                                                              [ [ 'B', 'BA1'..'BA5' ] ] ), undef );
+
+$graph->add_path( 'AA2', 'branch' );
+
+is( ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
+                                                              [ [ 'A', 'AA1'..'AA5' ],
+                                                                [ 'A', 'AB1'..'AB5' ] ],
+                                                              [ [ 'B', 'BA1'..'BA5' ] ] ), 2 );
