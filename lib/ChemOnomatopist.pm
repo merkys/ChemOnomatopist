@@ -108,21 +108,10 @@ sub get_name
         die "cannot handle atoms other than C and H now\n";
     }
 
-    my( $custom_order, $order ) = select_main_chain( $graph->copy );
-
-    if( $custom_order ) {
-        return get_chain_2( $graph->copy,
-                            $order,
-                            { choose_direction => 1 } ) . 'ane';
-    } else {
-        # Traverse the graph using breadth-first traversal and pick one of
-        # the furthest vertices as a starting point for naming
-        my @order = BFS_order_carbons_only($graph);
-
-        return get_chain( $graph->copy,
-                          pop @order,
-                          { choose_direction => 1 } ) . 'ane';
-    }
+    my( $order ) = select_main_chain( $graph->copy );
+    return get_chain_2( $graph->copy,
+                        $order,
+                        { choose_direction => 1 } ) . 'ane';
 }
 
 sub get_chain
@@ -479,7 +468,7 @@ sub select_main_chain
                                     \@main_chains,
                                     @all_trees
                                );
-    return ( 1, @{$main_chains[0]} ) if scalar @{$main_chains[0]} == 1;
+    return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
 
     # If more than one chain is left, second rule is applied
     $carbon_graph = $graph->copy;
@@ -493,7 +482,7 @@ sub select_main_chain
                                 $carbon_graph, @main_chains, @$trees
                                );
 
-    return ( 1, @{$main_chains[0]} ) if scalar @{$main_chains[0]} == 1;
+    return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
 
     # If more than one chain is left, third rule is applied
     $carbon_graph = $graph->copy;
@@ -507,7 +496,7 @@ sub select_main_chain
                                 $carbon_graph, @main_chains, @$trees
                                );
 
-    return ( 1, @{$main_chains[0]} ) if scalar @{$main_chains[0]} == 1;
+    return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
 
     # If more than one chain is left, fourth rule is applied
     $carbon_graph = $graph->copy;
@@ -521,7 +510,7 @@ sub select_main_chain
                                 $carbon_graph, @main_chains, @$trees
                                );
 
-    return ( 1, @{$main_chains[0]} ) if scalar @{$main_chains[0]} == 1;
+    return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
 
     # If more than one chain is left, program states that there are
     # few chains that are identical by all the rules and selects
@@ -536,7 +525,7 @@ sub select_main_chain
                         @main_chains,
                         @$trees
                      );
-    return ( 1, $main_chain );
+    return $main_chain;
 }
 
 # Creating tree like structure for all the longest paths in molecule
