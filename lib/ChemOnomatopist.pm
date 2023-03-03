@@ -14,6 +14,7 @@ use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
     graph_center
+    tree_branch_positions
     tree_number_of_branches
 );
 use Chemistry::OpenSMILES::Writer qw( write_SMILES );
@@ -21,7 +22,7 @@ use Clone qw( clone );
 use Graph::Nauty qw( canonical_order );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
-use List::Util qw( any max );
+use List::Util qw( any max sum0 );
 use Scalar::Util qw( blessed );
 
 no warnings 'recursion';
@@ -573,6 +574,7 @@ sub rule_greatest_number_of_side_chains_new
                 $max_id = $path;
             } elsif( $max_value == $branches ) {
                 # Two branches are the same, need better rule to discriminate between them.
+                # FIXME: This might be not the final max value yet!
                 return;
             }
         }
@@ -594,6 +596,85 @@ sub rule_greatest_number_of_side_chains_new
     }
 
     return @paths if @paths == 2;
+}
+
+# On success, this returns two paths, the first one is to be reversed and the second one has to go as written.
+sub rule_lowest_numbered_locants_new
+{
+    my( $tree, @path_parts ) = @_;
+
+    my $length = scalar @{$path_parts[0]->[0]}; # all paths are equal in length
+    my @min_values_forward;
+    my @min_values_backward;
+    for my $direction (0..$#path_parts) {
+        my( $min_value_forward, $min_id_forward, $min_count_forward );
+        my( $min_value_backward, $min_id_backward, $min_count_backward );
+
+        for my $path (0..$#{$path_parts[$direction]}) {
+            my @locants = tree_branch_positions( $tree, @{$path_parts[$direction]->[$path]} );
+            my $value_forward  = $length * @locants     + sum0 @locants;
+            my $value_backward = ($length+1) * @locants - sum0 @locants;
+
+            if( !defined $min_id_forward || $min_value_forward > $value_forward ) {
+                $min_value_forward = $value_forward;
+                $min_id_forward = $path;
+                $min_count_forward = 1;
+            } elsif( $min_value_forward == $value_forward ) {
+                $min_count_forward++;
+            }
+
+            if( !defined $min_id_backward || $min_value_backward > $value_backward ) {
+                $min_value_backward = $value_backward;
+                $min_id_backward = $path;
+                $min_count_backward = 1;
+            } elsif( $min_value_backward == $value_backward ) {
+                $min_count_backward++;
+            }
+        }
+
+        push @min_values_forward, [ $min_value_forward, $min_id_forward, $min_count_forward ];
+        push @min_values_backward, [ $min_value_backward, $min_id_backward, $min_count_backward ];
+    }
+
+    # Sort the best values for each direction
+    my @forward_sorted  = sort { $min_values_forward[$a]->[0]  <=>
+                                 $min_values_forward[$b]->[0] }  0..$#min_values_forward;
+    my @backward_sorted = sort { $min_values_backward[$a]->[0] <=>
+                                 $min_values_backward[$b]->[0] } 0..$#min_values_backward;
+
+    # Taking the best forward value, find the best backward value from a different branch
+    my $min_sum_by_forward;
+    my $best_backward;
+    if( $min_values_forward[$forward_sorted[0]]->[2] == 1 ) {
+        ( $best_backward ) = grep { $_ != $forward_sorted[0] } @backward_sorted;
+        if( $min_values_backward[$best_backward]->[2] == 1 ) {
+            $min_sum_by_forward = $min_values_forward[$forward_sorted[0]]->[0] +
+                                  $min_values_backward[$best_backward]->[0];
+        }
+    }
+
+    # Taking the best backward value, find the best forward value from a different branch
+    my $min_sum_by_backward;
+    my $best_forward;
+    if( $min_values_backward[$backward_sorted[0]]->[2] == 1 ) {
+        ( $best_forward ) = grep { $_ != $backward_sorted[0] } @forward_sorted;
+        if( $min_values_forward[$best_forward]->[2] == 1 ) {
+            $min_sum_by_backward = $min_values_backward[$backward_sorted[0]]->[0] +
+                                   $min_values_forward[$best_forward]->[0];
+        }
+    }
+
+    if( !defined $min_sum_by_forward && !defined $min_sum_by_backward ) {
+        return;
+    } elsif( !defined $min_sum_by_backward || $min_sum_by_forward  < $min_sum_by_backward ) {
+        return $path_parts[$best_backward]->[$min_values_backward[$best_backward]->[1]],
+               $path_parts[$forward_sorted[0]]->[$min_values_forward[$forward_sorted[0]]->[1]];
+    } elsif( !defined $min_sum_by_forward  || $min_sum_by_backward < $min_sum_by_forward  ) {
+        return $path_parts[$backward_sorted[0]]->[$min_values_backward[$backward_sorted[0]]->[1]],
+               $path_parts[$best_forward]->[$min_values_forward[$best_forward]->[1]];
+    } else {
+        return; # Equal: cannot say anything
+    }
 }
 
 # Creating tree like structure for all the longest paths in molecule

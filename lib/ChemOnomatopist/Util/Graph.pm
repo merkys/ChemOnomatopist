@@ -18,6 +18,7 @@ our @EXPORT_OK = qw(
     graph_center
     graph_longest_paths
     graph_longest_paths_from_vertex
+    tree_branch_positions
     tree_number_of_branches
 );
 
@@ -179,6 +180,14 @@ sub tree_number_of_branches
 {
     my( $tree, @vertices ) = @_;
     return sum0( map { $tree->degree( $_ ) } @vertices ) - 2 * (scalar @vertices - 1);
+}
+
+sub tree_branch_positions
+{
+    my( $tree, @vertices ) = @_;
+    return map  { ( $_ ) x ( $tree->degree( $vertices[$_] ) - 2 ) }
+           grep { $tree->degree( $vertices[$_] ) > 2 }
+                0..$#vertices;
 }
 
 1;
