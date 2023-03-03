@@ -27,7 +27,7 @@ is scalar( @paths ), 2;
 is join( ',', @{$paths[0]} ), '0,1,22,23,24,25,26,27';
 is join( ',', @{$paths[1]} ), '0,11,12,13,14,15,16,17';
 
-# Image 7 from Urbonaitė, 2022.
+# Figure 7 from Urbonaitė, 2022.
 # In the image, however, one branch is held as having priority over another, while in fact they are equal.
 $graph = Graph::Undirected->new;
 $graph->add_path( 'A'..'G' );
