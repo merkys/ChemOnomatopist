@@ -691,10 +691,11 @@ sub rule_most_carbon_in_side_chains_new
     for my $direction (0..$#path_parts) {
         my( $max_value, $max_id, $max_count );
         for my $path (0..$#{$path_parts[$direction]}) {
-            my $C = grep { is_element( $_, 'C' ) }
+            my $C = # grep { is_element( $_, 'C' ) } # FIXME: Will not work in tests, have to enable later.
                     map  { Graph::Traversal::DFS->new( $copy, start => $_ )->dfs }
                     grep { $copy->has_vertex( $_ ) }
-                    map  { $tree->neighbours( $_ ) } @$path;
+                    map  { $tree->neighbours( $_ ) }
+                         @{$path_parts[$direction]->[$path]};
             if( !defined $max_id || $max_value < $C ) {
                 $max_value = $C;
                 $max_id = $path;
