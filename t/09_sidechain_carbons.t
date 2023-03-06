@@ -7,7 +7,7 @@ use ChemOnomatopist;
 use Graph::Undirected;
 use Test::More;
 
-plan tests => 1;
+plan tests => 2;
 
 my $graph;
 my @paths;
@@ -25,3 +25,8 @@ $graph->add_path( 22, 26, 27 );
                                                                        [ [ 0, 31..35 ] ],
                                                                        [ [ 0, 41..45 ] ] );
 is scalar( @paths ), 2;
+
+@paths = ChemOnomatopist::rule_most_carbon_in_side_chains_new( $graph, [ [ 0, 11..15 ] ],
+                                                                       [ [ 0, 31..35 ] ],
+                                                                       [ [ 0, 41..45 ] ] );
+is scalar( @paths ), 0;
