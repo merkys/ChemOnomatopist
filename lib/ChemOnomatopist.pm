@@ -569,6 +569,10 @@ sub select_main_chain_new
     # Third rule: largest number of carbon atoms in side chains
     @paths = rule_most_carbon_in_side_chains_new( $tree, @path_parts );
     return @paths if @paths;
+
+    # Fourth rule: least branched side chains
+    @paths = rule_least_branched_side_chains_new( $tree, @path_parts );
+    return @paths if @paths;
 }
 
 sub rule_greatest_number_of_side_chains_new
@@ -729,6 +733,49 @@ sub rule_most_carbon_in_side_chains_new
 
     return $path_parts[$A]->[$max_values[$A]->[1]],
            $path_parts[$B]->[$max_values[$B]->[1]];
+}
+
+sub rule_least_branched_side_chains_new
+{
+    my( $tree, @path_parts ) = @_;
+
+    # Make a copy with all atoms from candidate chains removed.
+    my $copy = $tree->copy;
+    $copy->delete_vertices( map { map { @$_ } @$_ } @path_parts );
+
+    my @min_values;
+    for my $direction (0..$#path_parts) {
+        my( $min_value, $min_id, $min_count );
+        for my $path (0..$#{$path_parts[$direction]}) {
+            my $branches = sum0 map  { $_ > 2 ? $_ - 2 : 0 }
+                                map  { $copy->degree( $_ ) }
+                                map  { Graph::Traversal::DFS->new( $copy, start => $_ )->dfs }
+                                grep { $copy->has_vertex( $_ ) }
+                                map  { $tree->neighbours( $_ ) }
+                                     @{$path_parts[$direction]->[$path]};
+            if( !defined $min_id || $min_value > $branches ) {
+                $min_value = $branches;
+                $min_id = $path;
+                $min_count = 1;
+            } elsif( $min_value == $branches ) {
+                $min_count++;
+            }
+        }
+        push @min_values, [ $min_value, $min_id, $min_count ];
+    }
+    return if @min_values < 2;
+
+    my( $A, $B, $C ) = sort { $min_values[$a]->[0] <=> $min_values[$b]->[0] }
+                            0..$#min_values;
+
+    # The first two options have to differ from the third option
+    return if $C && $min_values[$B]->[0] == $min_values[$C]->[0];
+
+    # The first two options have to contain a single choice
+    return if any { $min_values[$_]->[2] > 1 } ( $A, $B );
+
+    return $path_parts[$A]->[$min_values[$A]->[1]],
+           $path_parts[$B]->[$min_values[$B]->[1]];
 }
 
 # Creating tree like structure for all the longest paths in molecule
