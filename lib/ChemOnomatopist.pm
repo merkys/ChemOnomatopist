@@ -1033,7 +1033,7 @@ sub rule_least_branched_side_chains
             shift @{$structure{$key}};
         }
 
-        # Beginning of the structure is found. Then all chains that belongs to
+        # Beginning of the structure is found. Then all chains that belong to
         # the current tree are selected
         my @first = grep { $structure{$_}->[0] == 0 } keys %structure;
         my @chains_in_the_tree = grep { $_->[0] == $first[0] || $_->[-1] == $first[0] } @$chains;
