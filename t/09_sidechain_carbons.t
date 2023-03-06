@@ -27,7 +27,7 @@ $graph->add_path( 22, 26, 27 );
 is scalar( @paths ), 2;
 
 is join( ',', @{$paths[0]} ), '0,21,22,23,24,25';
-is join( ',', @{$paths[0]} ), '0,21,22,23,24,25';
+is join( ',', @{$paths[1]} ), '0,11,12,13,14,15';
 
 @paths = ChemOnomatopist::rule_most_carbon_in_side_chains_new( $graph, [ [ 0, 11..15 ] ],
                                                                        [ [ 0, 31..35 ] ],
