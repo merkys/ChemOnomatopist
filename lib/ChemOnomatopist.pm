@@ -556,8 +556,18 @@ sub select_main_chain_new
                           @center;
     }
 
-    # Find the number of side chains
-    my @paths = rule_greatest_number_of_side_chains_new( $tree, @path_parts );
+    my @paths;
+
+    # First rule: largest number of side chains
+    @paths = rule_greatest_number_of_side_chains_new( $tree, @path_parts );
+    return @paths if @paths;
+
+    # Second rule: lowest sum of locant attachments
+    @paths = rule_lowest_numbered_locants_new( $tree, @path_parts );
+    return @paths if @paths;
+
+    # Third rule: largest number of carbon atoms in side chains
+    @paths = rule_most_carbon_in_side_chains_new( $tree, @path_parts );
     return @paths if @paths;
 }
 
