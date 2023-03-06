@@ -536,6 +536,8 @@ sub select_main_chain_new
 {
     my( $tree ) = @_;
 
+    # Here the candidate halves for the longest (and "best") path are placed in @path_parts.
+    # Each of candidate halves start with center atom.
     my @center = graph_center( $tree );
     my @path_parts;
     if( @center == 1 ) {
@@ -675,6 +677,47 @@ sub rule_lowest_numbered_locants_new
     } else {
         return; # Equal: cannot say anything
     }
+}
+
+sub rule_most_carbon_in_side_chains_new
+{
+    my( $tree, @path_parts ) = @_;
+
+    # Make a copy with all atoms from candidate chains removed.
+    my $copy = $tree->copy;
+    $copy->delete_vertices( map { map { @$_ } @$_ } @path_parts );
+
+    my @max_values;
+    for my $direction (0..$#path_parts) {
+        my( $max_value, $max_id, $max_count );
+        for my $path (0..$#{$path_parts[$direction]}) {
+            my $C = grep { is_element( $_, 'C' ) }
+                    map  { Graph::Traversal::DFS->new( $copy, start => $_ )->dfs }
+                    grep { $copy->has_vertex( $_ ) }
+                    map  { $tree->neighbours( $_ ) } @$path;
+            if( !defined $max_id || $max_value < $C ) {
+                $max_value = $C;
+                $max_id = $path;
+                $max_count = 1;
+            } elsif( $max_value == $C ) {
+                $max_count++;
+            }
+        }
+        push @max_values, [ $max_value, $max_id, $max_count ];
+    }
+    return if @max_values < 2;
+
+    my( $A, $B, $C ) = sort { $max_values[$b]->[0] <=> $max_values[$a]->[0] }
+                            0..$#max_values;
+
+    # The first two options have to differ from the third option
+    return if $C && $max_values[$B]->[0] == $max_values[$C]->[0];
+
+    # The first two options have to contain a single choice
+    return if any { $max_values[$_]->[2] > 1 } ( $A, $B );
+
+    return $path_parts[$A]->[$max_values[$A]->[1]],
+           $path_parts[$B]->[$max_values[$B]->[1]];
 }
 
 # Creating tree like structure for all the longest paths in molecule
