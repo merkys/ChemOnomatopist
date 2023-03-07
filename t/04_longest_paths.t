@@ -40,6 +40,7 @@ is scalar graph_longest_paths( $graph ), 4;
                                                                    [ [ 'B', 'A', 'A1' ] ],
                                                                    [ [ 'B', 'C', 'C1' ] ] );
 is scalar @paths, 2;
+
 @paths = ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
                                                                    [ [ 'B', 'A', 'A1' ],
                                                                      [ 'B', 'A', 'A2' ] ],
@@ -59,6 +60,7 @@ is scalar graph_longest_paths( $graph ), 4;
                                                                    [ [ 'B', 'A', 'A1' ] ],
                                                                    [ [ 'C', 'D', 'D1' ] ] ),
 is scalar @paths, 2;
+
 @paths = ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
                                                                    [ [ 'B', 'A', 'A1' ],
                                                                      [ 'B', 'A', 'A2' ] ],
