@@ -13,23 +13,25 @@ my $graph;
 my @paths;
 my @chain;
 
-$graph = Graph::Undirected->new;
-$graph->add_path( 1, 0, 11..17 );
-$graph->add_path( 1, 22..27 );
-$graph->add_path( 1, 32..37 );
-$graph->add_edge( 11, 18 );
-$graph->add_edge( 25, 28 );
-$graph->add_edge( 32, 38 );
+my @atoms = map { { symbol => 'C', number => $_ } } 0..38;
 
-@paths = ChemOnomatopist::rule_lowest_numbered_locants_new( $graph, [ [ 0, 11..17 ] ],
-                                                                    [ [ 0, 1, 22..27 ],
-                                                                      [ 0, 1, 32..37 ] ] );
+$graph = Graph::Undirected->new( refvertexed => 1 );
+$graph->add_path( map { $atoms[$_] } ( 1, 0, 11..17 ) );
+$graph->add_path( map { $atoms[$_] } ( 1, 22..27 ) );
+$graph->add_path( map { $atoms[$_] } ( 1, 32..37 ) );
+$graph->add_edge( map { $atoms[$_] } ( 11, 18 ) );
+$graph->add_edge( map { $atoms[$_] } ( 25, 28 ) );
+$graph->add_edge( map { $atoms[$_] } ( 32, 38 ) );
+
+@paths = ChemOnomatopist::rule_lowest_numbered_locants_new( $graph, [ [ map { $atoms[$_] } ( 0, 11..17 ) ] ],
+                                                                    [ [ map { $atoms[$_] } ( 0, 1, 22..27 ) ],
+                                                                      [ map { $atoms[$_] } ( 0, 1, 32..37 ) ] ] );
 is scalar( @paths ), 2;
-is join( ',', @{$paths[0]} ), '0,1,22,23,24,25,26,27';
-is join( ',', @{$paths[1]} ), '0,11,12,13,14,15,16,17';
+is join( ',', map { $_->{number} } @{$paths[0]} ), '0,1,22,23,24,25,26,27';
+is join( ',', map { $_->{number} } @{$paths[1]} ), '0,11,12,13,14,15,16,17';
 
 @chain = ChemOnomatopist::select_main_chain_new( $graph );
-is join( ',', @chain ), '27,26,25,24,23,22,1,0,11,12,13,14,15,16,17';
+is join( ',', map { $_->{number} } @chain ), '27,26,25,24,23,22,1,0,11,12,13,14,15,16,17';
 
 # Figure 7 from Urbonaitė, 2022.
 # In the image, however, one branch is held as having priority over another, while in fact they are equal.

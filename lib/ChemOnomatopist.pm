@@ -542,6 +542,10 @@ sub select_main_chain_new
 {
     my( $tree ) = @_;
 
+    # Remove non-carbon atoms
+    $tree = $tree->copy;
+    $tree->delete_vertices( grep { !is_element( $_, 'C' ) } $tree->vertices );
+
     # Here the candidate halves for the longest (and "best") path are placed in @path_parts.
     # Each of candidate halves start with center atom.
     my @center = graph_center( $tree );
@@ -565,7 +569,8 @@ sub select_main_chain_new
     for my $rule ( \&rule_greatest_number_of_side_chains_new,
                    \&rule_lowest_numbered_locants_new,
                    \&rule_most_carbon_in_side_chains_new,
-                   \&rule_least_branched_side_chains_new ) {
+                   \&rule_least_branched_side_chains_new,
+                   \&rule_no_ambiguity ) {
         my @paths = $rule->( $tree, @path_parts );
         next unless @paths;
 
@@ -773,6 +778,16 @@ sub rule_least_branched_side_chains_new
 
     return $path_parts[$A]->[$min_values[$A]->[1]],
            $path_parts[$B]->[$min_values[$B]->[1]];
+}
+
+# This is not an official rule, just a fallback when there is no ambiguity.
+sub rule_no_ambiguity
+{
+    my( $tree, @path_parts ) = @_;
+
+    return if @path_parts != 2;
+    return if any { scalar( @$_ ) != 1 } @path_parts;
+    return $path_parts[0]->[0], $path_parts[1]->[0];
 }
 
 # Creating tree like structure for all the longest paths in molecule
