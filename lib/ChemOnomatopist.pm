@@ -579,39 +579,34 @@ sub rule_greatest_number_of_side_chains_new
 {
     my( $tree, @path_parts ) = @_;
 
-    my $paths_by_length = {};
+    my @max_values;
     for my $direction (0..$#path_parts) {
-        my $max_value;
-        my $max_id;
+        my( $max_value, $max_id, $max_count );
         for my $path (0..$#{$path_parts[$direction]}) {
             my $branches = tree_number_of_branches( $tree, @{$path_parts[$direction]->[$path]} );
             if( !defined $max_id || $max_value < $branches ) {
                 $max_value = $branches;
                 $max_id = $path;
+                $max_count = 1;
             } elsif( $max_value == $branches ) {
-                # Two branches are the same, need better rule to discriminate between them.
-                # FIXME: This might be not the final max value yet!
-                return;
+                $max_count++;
             }
         }
-
-        $paths_by_length->{$max_value} = [] unless $paths_by_length->{$max_value};
-        push @{$paths_by_length->{$max_value}}, $path_parts[$direction]->[$max_id];
+        push @max_values, [ $max_value, $max_id, $max_count ];
     }
+    return if @max_values < 2;
 
-    # Pick two branches having the most side chains
-    my @sizes = sort keys %$paths_by_length;
-    my @paths;
+    my( $A, $B, $C ) = sort { $max_values[$b]->[0] <=> $max_values[$a]->[0] }
+                            0..$#max_values;
 
-    for (@sizes) {
-        # Return if there is an ambiguity
-        return if scalar( @{$paths_by_length->{$_}} ) > 2 - @paths;
-        while( @{$paths_by_length->{$_}} && @paths < 2 ) {
-            push @paths, shift @{$paths_by_length->{$_}};
-        }
-    }
+    # The first two options have to differ from the third option
+    return if $C && $max_values[$B]->[0] == $max_values[$C]->[0];
 
-    return @paths if @paths == 2;
+    # The first two options have to contain a single choice
+    return if any { $max_values[$_]->[2] > 1 } ( $A, $B );
+
+    return $path_parts[$A]->[$max_values[$A]->[1]],
+           $path_parts[$B]->[$max_values[$B]->[1]];
 }
 
 # On success, this returns two paths, the first one is to be reversed and the second one has to go as written.

@@ -14,6 +14,7 @@ use Test::More;
 plan tests => 12;
 
 my $graph;
+my @paths;
 
 $graph = Graph::Undirected->new;
 for (1..10) {
@@ -34,16 +35,16 @@ $graph->add_edge( 'A', 'A2' );
 $graph->add_edge( 'C', 'C1' );
 $graph->add_edge( 'C', 'C2' );
 
-is( scalar graph_longest_paths( $graph ), 4 );
-is( ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
-                                                              [ [ 'B', 'A', 'A1' ] ],
-                                                              [ [ 'B', 'C', 'C1' ] ] ),
-    2 );
-is( ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
-                                                              [ [ 'B', 'A', 'A1' ],
-                                                                [ 'B', 'A', 'A2' ] ],
-                                                              [ [ 'B', 'C', 'C1' ] ] ),
-    undef );
+is scalar graph_longest_paths( $graph ), 4;
+@paths = ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
+                                                                   [ [ 'B', 'A', 'A1' ] ],
+                                                                   [ [ 'B', 'C', 'C1' ] ] );
+is scalar @paths, 2;
+@paths = ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
+                                                                   [ [ 'B', 'A', 'A1' ],
+                                                                     [ 'B', 'A', 'A2' ] ],
+                                                                   [ [ 'B', 'C', 'C1' ] ] );
+is scalar @paths, 0;
 
 # Elongated X-shaped graph with an even-numbered longest path
 $graph = Graph::Undirected->new;
@@ -53,16 +54,16 @@ $graph->add_edge( 'A', 'A2' );
 $graph->add_edge( 'D', 'D1' );
 $graph->add_edge( 'D', 'D2' );
 
-is( scalar graph_longest_paths( $graph ), 4 );
-is( ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
-                                                              [ [ 'B', 'A', 'A1' ] ],
-                                                              [ [ 'C', 'D', 'D1' ] ] ),
-    2 );
-is( ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
-                                                              [ [ 'B', 'A', 'A1' ],
-                                                                [ 'B', 'A', 'A2' ] ],
-                                                              [ [ 'C', 'D', 'D1' ] ] ),
-    undef );
+is scalar graph_longest_paths( $graph ), 4;
+@paths = ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
+                                                                   [ [ 'B', 'A', 'A1' ] ],
+                                                                   [ [ 'C', 'D', 'D1' ] ] ),
+is scalar @paths, 2;
+@paths = ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
+                                                                   [ [ 'B', 'A', 'A1' ],
+                                                                     [ 'B', 'A', 'A2' ] ],
+                                                                   [ [ 'C', 'D', 'D1' ] ] ),
+is scalar @paths, 0;
 
 # Elongated Y-shaped graph with an even-numbered longest path
 $graph = Graph::Undirected->new;
@@ -74,14 +75,15 @@ $graph->add_edge( 'A', 'AB1' );
 $graph->add_edge( 'B', 'BA1' );
 $graph->add_edge( 'A', 'B' );
 
-is( ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
-                                                              [ [ 'A', 'AA1'..'AA5' ],
-                                                                [ 'A', 'AB1'..'AB5' ] ],
-                                                              [ [ 'B', 'BA1'..'BA5' ] ] ), undef );
+@paths = ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
+                                                                   [ [ 'A', 'AA1'..'AA5' ],
+                                                                     [ 'A', 'AB1'..'AB5' ] ],
+                                                                   [ [ 'B', 'BA1'..'BA5' ] ] );
+is scalar @paths, 0;
 
 $graph->add_path( 'AA2', 'branch' );
-
-is( ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
-                                                              [ [ 'A', 'AA1'..'AA5' ],
-                                                                [ 'A', 'AB1'..'AB5' ] ],
-                                                              [ [ 'B', 'BA1'..'BA5' ] ] ), 2 );
+@paths = ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
+                                                                   [ [ 'A', 'AA1'..'AA5' ],
+                                                                     [ 'A', 'AB1'..'AB5' ] ],
+                                                                   [ [ 'B', 'BA1'..'BA5' ] ] );
+is scalar @paths, 2;
