@@ -112,7 +112,12 @@ sub get_name
         die "cannot handle atoms other than C and H now\n";
     }
 
-    my( $order ) = select_main_chain( $graph->copy );
+    my $order;
+    if( 1 ) {
+        ( $order ) = select_main_chain( $graph->copy );
+    } else {
+        $order = [ map { $_->{number} } select_main_chain_new( $graph->copy ) ];
+    }
     return get_chain_2( $graph->copy,
                         $order,
                         { choose_direction => 1 } ) . 'ane';
@@ -557,23 +562,19 @@ sub select_main_chain_new
                           @center;
     }
 
-    my @paths;
+    for my $rule ( \&rule_greatest_number_of_side_chains_new,
+                   \&rule_lowest_numbered_locants_new,
+                   \&rule_most_carbon_in_side_chains_new,
+                   \&rule_least_branched_side_chains_new ) {
+        my @paths = $rule->( $tree, @path_parts );
+        next unless @paths;
 
-    # First rule: largest number of side chains
-    @paths = rule_greatest_number_of_side_chains_new( $tree, @path_parts );
-    return @paths if @paths;
+        shift @{$paths[0]}; # Center atom appears in all chains
+        return reverse( @{$paths[0]} ), @{$paths[1]};
+    }
 
-    # Second rule: lowest sum of locant attachments
-    @paths = rule_lowest_numbered_locants_new( $tree, @path_parts );
-    return @paths if @paths;
-
-    # Third rule: largest number of carbon atoms in side chains
-    @paths = rule_most_carbon_in_side_chains_new( $tree, @path_parts );
-    return @paths if @paths;
-
-    # Fourth rule: least branched side chains
-    @paths = rule_least_branched_side_chains_new( $tree, @path_parts );
-    return @paths if @paths;
+    # TODO: Handle the case when all rules do not single out a chain.
+    return ();
 }
 
 sub rule_greatest_number_of_side_chains_new
