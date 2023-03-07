@@ -71,7 +71,7 @@ my %preferrable_names = (
 
 sub get_name
 {
-    my( $what ) = @_;
+    my( $what, $use_new_method ) = @_;
 
     # Detect the type of the input data
     my( $graph );
@@ -113,10 +113,10 @@ sub get_name
     }
 
     my $order;
-    if( 1 ) {
-        ( $order ) = select_main_chain( $graph->copy );
-    } else {
+    if( $use_new_method ) {
         $order = [ map { $_->{number} } select_main_chain_new( $graph->copy ) ];
+    } else {
+        ( $order ) = select_main_chain( $graph->copy );
     }
     return get_chain_2( $graph->copy,
                         $order,

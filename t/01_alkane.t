@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
+use List::Util qw( all );
 use Test::More;
 
 my %SMILES_cases = (
@@ -25,8 +26,22 @@ my %SMILES_cases = (
     'CC(C(CCC)C)C(CC(CCCC)CC)CCCCCC' => '7-(1,2-dimethylpentyl)-5-ethyltridecane'
 );
 
-plan tests => scalar keys %SMILES_cases;
+my @new_method_exclude = qw(
+    CC(C)C
+    CC(C)CC(CCC(C)C)C
+    C(C)C(CCC(CCC(C)C)(C)C)C
+    C(C)C(CC(C)C)CC
+    C(C)C(C(CC)C)C(C(CCC)(C)C)(CC)CC
+    C(C)C(C(C(CCC)C)(CCC)CCC)(CCCC)CCC
+    C(C)C(C(CCC)C)(C(CCCC)C)C
+    C(C)C(C(CCC)(C)C)(C(C(CCC)(C)CC)CCC)CCC
+);
+
+plan tests => 2 * scalar( keys %SMILES_cases ) - @new_method_exclude;
 
 for my $case (sort keys %SMILES_cases) {
     is( ChemOnomatopist::get_name( $case ), $SMILES_cases{$case} );
+    if( all { $_ ne $case } @new_method_exclude ) {
+        is( ChemOnomatopist::get_name( $case, 1 ), $SMILES_cases{$case} );
+    }
 }
