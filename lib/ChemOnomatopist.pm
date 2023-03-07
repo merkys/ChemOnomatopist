@@ -14,6 +14,7 @@ use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
     graph_center
+    graph_longest_paths_from_vertex
     tree_branch_positions
     tree_number_of_branches
 );
