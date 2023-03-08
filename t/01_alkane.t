@@ -33,9 +33,6 @@ my @new_method_exclude = qw(
     C(C)C(CCC(CCC(C)C)(C)C)C
     C(C)C(CC(C)C)CC
     C(C)C(C(CC)C)C(C(CCC)(C)C)(CC)CC
-    C(C)C(C(C(CCC)C)(CCC)CCC)(CCCC)CCC
-    C(C)C(C(CCC)C)(C(CCCC)C)C
-    C(C)C(C(CCC)(C)C)(C(C(CCC)(C)CC)CCC)CCC
 );
 
 plan tests => 2 * scalar( keys %SMILES_cases ) - @new_method_exclude;
