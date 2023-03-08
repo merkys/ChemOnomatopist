@@ -574,7 +574,8 @@ sub select_main_chain_new
         my @paths = $rule->( $tree, @path_parts );
         next unless @paths;
 
-        shift @{$paths[0]}; # Center atom appears in all chains
+        # If longest path has odd length, the center center atom appears in all chains
+        shift @{$paths[0]} if @center == 1;
         return reverse( @{$paths[0]} ), @{$paths[1]};
     }
 
