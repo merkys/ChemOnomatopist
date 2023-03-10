@@ -1296,21 +1296,19 @@ sub find_locant_placing
     $graph = $graph->copy;
 
     my @places_of_locants;
-    my $vertex_number = scalar @$main_chain;
-
-    for my $curr_vertex ( reverse @$main_chain ) {
+    for( my $i = $#$main_chain; $i >= 0; $i-- ) {
+        my $curr_vertex = $main_chain->[$i];
         my( $vertex ) = grep { $_->{number} == $curr_vertex } $graph->vertices;
-        my @curr_neighbours = $graph->neighbours( $vertex );
-        return @places_of_locants unless @curr_neighbours;
+        return @places_of_locants unless $graph->degree( $vertex );
 
+        my @neighbours = $graph->neighbours( $vertex );
         $graph->delete_vertex( $vertex );
-        if( @curr_neighbours > 1 ) {
-            foreach my $neigh (@curr_neighbours) {
+        if( @neighbours > 1 ) {
+            foreach my $neigh (@neighbours) {
                 next if any { $neigh->{number} eq $_ } @$main_chain;
-                push @places_of_locants, $vertex_number;
+                push @places_of_locants, $i;
             }
         }
-        $vertex_number--;
     }
 }
 
