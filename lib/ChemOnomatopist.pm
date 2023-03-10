@@ -1147,11 +1147,11 @@ sub pick_chain_with_lowest_attachments_alphabetically
 {
     my( $graph, $chains, @trees ) = @_;
 
+    # Locant placements are found for all trees
     my $trees_copy = clone \@trees;
-    my $index = 0;
     my @locant_placing;
-    foreach my $tree (@$trees_copy) {
-        my %structure = %{clone $tree};
+    for my $i (0..$#$trees_copy) {
+        my %structure = %{clone $trees_copy->[$i]};
 
         # Reference to parental chain is removed from the boxes
         foreach my $key (keys %structure) {
@@ -1160,31 +1160,24 @@ sub pick_chain_with_lowest_attachments_alphabetically
 
         # Beginning of the structure is found. Then all chains that belongs to
         # the current tree are selected
-        my @first = grep { $structure{$_}->[0] == 0 } keys %structure;
-        my @chains_in_the_tree = grep { $_->[0] == $first[0] || $_->[-1] == $first[0] } @$chains;
+        my( $first ) = grep { $structure{$_}->[0] == 0 } keys %structure;
+        my @chains_in_the_tree = grep { $_->[0] == $first || $_->[-1] == $first } @$chains;
 
         # Placings of the locants found for each chain
         for my $chain (@chains_in_the_tree) {
             push @locant_placing,
-                 [$index, $chain->[0], $chain->[-1],
-                    [find_locant_placing(
-                        $graph,
-                        $chain,
-                    )]
-                 ];
+                 [$i, $chain->[0], $chain->[-1], [find_locant_placing( $graph, $chain )] ];
         }
-        $index++;
     }
 
-    my @vertices = $graph->vertices;
-
-    # Naming of all attachments found
+    # Names of all attachments are found
     my @attachments;
     for (my $i = 0; $i < @locant_placing; $i++) {
-        my @curr_chain = grep { $_->[0] == $locant_placing[$i][1] && $_->[-1] == $locant_placing[$i][2] } @$chains;
+        my @curr_chain = grep { $_->[ 0] == $locant_placing[$i][1] &&
+                                $_->[-1] == $locant_placing[$i][2] } @$chains;
         my @attachments_only;
         for my $locant (@{$locant_placing[$i][3]}) {
-            my( $vertex ) = grep { $_->{number} == $curr_chain[0][$locant-1] } @vertices;
+            my( $vertex ) = grep { $_->{number} == $curr_chain[0][$locant-1] } $graph->vertices;
             
             for my $neighbour ($graph->neighbours( $vertex )) {
                 next if any { $neighbour->{number} eq $_ } @{$curr_chain[0]};
@@ -1192,16 +1185,14 @@ sub pick_chain_with_lowest_attachments_alphabetically
                 my $graph_copy = $graph->copy;
                 $graph_copy->delete_edge( $vertex, $neighbour );
                 my $attachment_name = get_chain( $graph_copy, $neighbour );
-                push @attachments_only, $attachment_name .
-                                        $attachment_name =~ /^\(/ ? 'yl)' : 'yl';
-            }
-        }
+                $attachment_name .= $attachment_name =~ /^\(/ ? 'yl)' : 'yl';
 
-        # Replacing systematic IUPAC attachment names with their preferrable
-        # ones.
-        for my $att_name (@attachments_only) {
-            if( exists $preferrable_names{$att_name} ) {
-                $att_name = $preferrable_names{$att_name};
+                # Replace systematic IUPAC attachment names with their preferrable ones
+                if( exists $preferrable_names{$attachment_name} ) {
+                    $attachment_name = $preferrable_names{$attachment_name};
+                }
+
+                push @attachments_only, $attachment_name;
             }
         }
 
@@ -1211,9 +1202,10 @@ sub pick_chain_with_lowest_attachments_alphabetically
     my $correct_attach = $sorted_attachments[0][1];
 
     # All chains that have the same - alpabetically lowest attachments selected
-    my @correct_chains_all = grep { join( ',', @{$_->[1]} ) eq join( ',', @$correct_attach ) } @attachments;
-    my @correct_chains = map { $_->[0] } @correct_chains_all;
-    return \@correct_chains;
+    my @correct_chains_all = grep { join( ',', @{$_->[1]} ) eq
+                                    join( ',', @$correct_attach ) }
+                                  @attachments;
+    return [ map { $_->[0] } @correct_chains_all ];
 }
 
 # Returns array that contains numbers of vertices that are in main chain
