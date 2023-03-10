@@ -1290,23 +1290,30 @@ sub find_lengths_of_side_chains
 # Find placings of all locants in the chain
 sub find_locant_placing
 {
-    my( $graph, $main_chain, $structure ) = @_;
+    my( $graph, $main_chain ) = @_;
 
     # Code is destructive, need to make a copy before execution:
     $graph = $graph->copy;
 
-    my @places_of_locants;
+    # Indices received instead of vertices, transform them.
+    # This later on should be removed.
+    if( @$main_chain && !ref $main_chain->[0] ) {
+        my %vertices_by_id = map { ( $_->{number} => $_ ) } $graph->vertices;
+        $main_chain = [ map { $vertices_by_id{$_} } @$main_chain ];
+    }
+
+    # Visit all attachments of a chain in reverse order, memorize their attachment positions
+    my @locants;
     for( my $i = $#$main_chain; $i >= 0; $i-- ) {
-        my $curr_vertex = $main_chain->[$i];
-        my( $vertex ) = grep { $_->{number} == $curr_vertex } $graph->vertices;
-        return @places_of_locants unless $graph->degree( $vertex );
+        my $vertex = $main_chain->[$i];
+        return @locants unless $graph->degree( $vertex );
 
         my @neighbours = $graph->neighbours( $vertex );
         $graph->delete_vertex( $vertex );
         if( @neighbours > 1 ) {
-            foreach my $neigh (@neighbours) {
-                next if any { $neigh->{number} eq $_ } @$main_chain;
-                push @places_of_locants, $i;
+            foreach my $neighbour (@neighbours) {
+                next if any { $_ eq $neighbour } @$main_chain;
+                push @locants, $i;
             }
         }
     }
