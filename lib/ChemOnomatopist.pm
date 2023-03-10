@@ -1151,7 +1151,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
     my $trees_copy = clone \@trees;
     my $index = 0;
     my @locant_placing;
-    foreach my $tree (@$trees_copy){
+    foreach my $tree (@$trees_copy) {
         my %structure = %{clone $tree};
 
         # Reference to parental chain is removed from the boxes
@@ -1161,7 +1161,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
 
         # Beginning of the structure is found. Then all chains that belongs to
         # the current tree are selected
-        my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
+        my @first = grep { $structure{$_}->[0] == 0 } keys %structure;
         my @chains_in_the_tree = grep { $_->[0] == $first[0] || $_->[-1] == $first[0] } @$chains;
 
         # Placings of the locants found for each chain
@@ -1295,17 +1295,16 @@ sub find_locant_placing
     # Code is destructive, need to make a copy before execution:
     $graph = $graph->copy;
 
-    my @vertices = $graph->vertices;
     my @places_of_locants;
     my $vertex_number = scalar @$main_chain;
 
     for my $curr_vertex ( reverse @$main_chain ) {
-        my( $vertex ) = grep { $_->{number} == $curr_vertex } @vertices;
+        my( $vertex ) = grep { $_->{number} == $curr_vertex } $graph->vertices;
         my @curr_neighbours = $graph->neighbours( $vertex );
-        return @places_of_locants unless scalar @curr_neighbours;
+        return @places_of_locants unless @curr_neighbours;
 
         $graph->delete_vertex( $vertex );
-        if( scalar @curr_neighbours > 1 ) {
+        if( @curr_neighbours > 1 ) {
             foreach my $neigh (@curr_neighbours) {
                 next if any { $neigh->{number} eq $_ } @$main_chain;
                 push @places_of_locants, $vertex_number;
