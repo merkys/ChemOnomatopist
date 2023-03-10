@@ -1177,11 +1177,14 @@ sub pick_chain_with_lowest_attachments_alphabetically
                                 $_->[-1] == $locant_placing[$i][2] } @$chains;
         my @attachments_only;
         for my $locant (@{$locant_placing[$i][3]}) {
-            my( $vertex ) = grep { $_->{number} == $curr_chain[0][$locant-1] } $graph->vertices;
-            
+            my( $vertex ) = grep { $_->{number} == $curr_chain[0][$locant-1] }
+                                 $graph->vertices;
+
+            # Cycle through non-mainchain neighbours:
             for my $neighbour ($graph->neighbours( $vertex )) {
                 next if any { $neighbour->{number} eq $_ } @{$curr_chain[0]};
 
+                # Find the name for a sidechain
                 my $graph_copy = $graph->copy;
                 $graph_copy->delete_edge( $vertex, $neighbour );
                 my $attachment_name = get_chain( $graph_copy, $neighbour );
@@ -1401,20 +1404,16 @@ sub compare_only_aphabetical {
 sub sort_attachments {
     my @first = @{@{$a}[1]};
     my @second = @{@{$b}[1]};
-    my @index = (0..scalar @first-1);
 
-    foreach( @index ){
+    for (0..$#first) {
         my $first_alpha  = $first[$_];
         my $second_alpha = $second[$_];
 
         $first_alpha  =~ s/[^a-zA-Z]+//g;
         $second_alpha =~ s/[^a-zA-Z]+//g;
 
-        if( $first_alpha eq 'tertbutyl') {
-            $first_alpha = 'butyl'
-        } elsif ($second_alpha eq 'tertbutyl') {
-            $second_alpha = 'butyl'
-        }
+        $first_alpha  = 'butyl' if $first_alpha  eq 'tertbutyl';
+        $second_alpha = 'butyl' if $second_alpha eq 'tertbutyl';
 
         return $second_alpha cmp $first_alpha if $second_alpha cmp $first_alpha;
     }
