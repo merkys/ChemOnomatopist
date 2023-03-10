@@ -975,7 +975,6 @@ sub rule_lowest_numbered_locants
                     [find_locant_placing(
                         $graph,
                         $chain,
-                        $tree
                     )]
                  ];
         }
@@ -1170,8 +1169,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
                  [$index, $chain->[0], $chain->[-1],
                     [find_locant_placing(
                         $graph,
-                        \@{$chain},
-                        $tree
+                        $chain,
                     )]
                  ];
         }
@@ -1182,22 +1180,23 @@ sub pick_chain_with_lowest_attachments_alphabetically
 
     # Naming of all attachments found
     my @attachments;
-    for (my $i = 0; $i < scalar(@locant_placing); $i++) {
+    for (my $i = 0; $i < @locant_placing; $i++) {
         my @curr_chain = grep { $_->[0] == $locant_placing[$i][1] && $_->[-1] == $locant_placing[$i][2] } @$chains;
         my @attachments_only;
         for my $locant (@{$locant_placing[$i][3]}) {
-            my( $vertex ) = grep {$_->{number} == $curr_chain[0][$locant-1]} @vertices;
-            my @curr_neighbours = $graph->neighbours( $vertex );
+            my( $vertex ) = grep { $_->{number} == $curr_chain[0][$locant-1] } @vertices;
             
-            for my $neighbour (@curr_neighbours) {
+            for my $neighbour ($graph->neighbours( $vertex )) {
                 next if any { $neighbour->{number} eq $_ } @{$curr_chain[0]};
+
                 my $graph_copy = $graph->copy;
                 $graph_copy->delete_edge( $vertex, $neighbour );
                 my $attachment_name = get_chain( $graph_copy, $neighbour );
-                my $prefix = ($attachment_name =~ /^\(/) ? 'yl)' : 'yl';
-                push @attachments_only, $attachment_name . $prefix;
+                push @attachments_only, $attachment_name .
+                                        $attachment_name =~ /^\(/ ? 'yl)' : 'yl';
             }
         }
+
         # Replacing systematic IUPAC attachment names with their preferrable
         # ones.
         for my $att_name (@attachments_only) {
@@ -1205,6 +1204,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
                 $att_name = $preferrable_names{$att_name};
             }
         }
+
         push @attachments, [clone( $curr_chain[0] ), \@attachments_only];
     }
     my @sorted_attachments = sort sort_attachments @attachments;
