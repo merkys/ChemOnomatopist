@@ -446,17 +446,18 @@ sub select_main_chain
     # ones
     push @farthest, $start->{number};
 
+    # Make a carbon-only graph
+    my $carbon_graph = $graph->copy;
+    $carbon_graph->delete_vertices( grep { !is_element( $_, 'C' ) } $carbon_graph->vertices );
+
     # Going through every vertice in "farthest" array and creating tree-like structures
     my @all_trees;
     for (my $i = 0; $i < scalar @farthest; $i++) {
         my %tree = ( $farthest[$i] => [ $farthest[$i], 0 ] );
 
-        my $carbon_graph = $graph->copy;
-        $carbon_graph->delete_vertices( grep { !is_element( $_, 'C' ) } $carbon_graph->vertices );
-
-        my( $vertice ) = grep { $_->{number} eq $farthest[$i] } $carbon_graph->vertices;
+        my( $vertex ) = grep { $_->{number} eq $farthest[$i] } $carbon_graph->vertices;
         # Start creation of the tree from all the starting vertices
-        push @all_trees, \%{create_tree( $carbon_graph, $vertice, \%tree )};
+        push @all_trees, \%{create_tree( $carbon_graph->copy, $vertex, \%tree )};
     }
 
     my $trees;
@@ -465,60 +466,44 @@ sub select_main_chain
     # from each tree-like structure
     my @main_chains = prepare_paths( @all_trees );
 
-    my $carbon_graph = $graph->copy;
-    $carbon_graph->delete_vertices(
-        grep { !is_element( $_, 'C' ) } $carbon_graph->vertices
-    );
     # From all possible main chains in tree-like structures, subroutine returns
     # the ones that has the greatest number of side chains. Also returns only the
     # trees that still have some possible main chains after selection
     ( $trees, @main_chains ) = rule_greatest_number_of_side_chains(
-                                    $carbon_graph,
+                                    $carbon_graph->copy,
                                     \@main_chains,
                                     @all_trees,
                                );
     return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
 
-    # If more than one chain is left, second rule is applied
-    $carbon_graph = $graph->copy;
-    $carbon_graph->delete_vertices(
-        grep { !is_element( $_, 'C' ) } $carbon_graph->vertices
-    );
+    # If more than one chain is left, second rule is applied.
     # From all main chains left, subroutine selects all that have the
     # lowest numbered locants. Also the trees that have possible main
     # chains returned
     ( $trees, @main_chains ) = rule_lowest_numbered_locants(
-                                    $carbon_graph,
+                                    $carbon_graph->copy,
                                     @main_chains,
                                     @$trees,
                                );
     return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
 
-    # If more than one chain is left, third rule is applied
-    $carbon_graph = $graph->copy;
-    $carbon_graph->delete_vertices(
-        grep { !is_element( $_, 'C' ) } $carbon_graph->vertices
-    );
+    # If more than one chain is left, third rule is applied.
     # From all main chains left, subroutine selects all that have the
     # most carbons in side chains. Also the trees that have possible main
     # chains returned
     ( $trees, @main_chains ) = rule_most_carbon_in_side_chains(
-                                    $carbon_graph,
+                                    $carbon_graph->copy,
                                     @main_chains,
                                     @$trees,
                                );
     return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
 
-    # If more than one chain is left, fourth rule is applied
-    $carbon_graph = $graph->copy;
-    $carbon_graph->delete_vertices(
-        grep { !is_element( $_, 'C' ) } $carbon_graph->vertices
-    );
+    # If more than one chain is left, fourth rule is applied.
     # From all main chains left, subroutine selects all that have
     # the least branched side chains. Also the trees that have
     # possible main chains returned
     ( $trees, @main_chains ) = rule_least_branched_side_chains(
-                                    $carbon_graph,
+                                    $carbon_graph->copy,
                                     @main_chains,
                                     @$trees,
                                );
@@ -526,16 +511,12 @@ sub select_main_chain
 
     # If more than one chain is left, program states that there are
     # few chains that are identical by all the rules and selects
-    # one from all that are left
-    $carbon_graph = $graph->copy;
-    $carbon_graph->delete_vertices(
-        grep { !is_element( $_, 'C' ) } $carbon_graph->vertices
-    );
+    # one from all that are left.
     # One main chain is picked from all that are left
     my $main_chain = rule_pick_chain_from_valid(
-                        $carbon_graph,
+                        $carbon_graph->copy,
                         @main_chains,
-                        @$trees
+                        @$trees,
                      );
     return $main_chain;
 }
