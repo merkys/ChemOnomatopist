@@ -1166,17 +1166,16 @@ sub pick_chain_with_lowest_attachments_alphabetically
         # Placings of the locants found for each chain
         for my $chain (@chains_in_the_tree) {
             push @locant_placing,
-                 [$i, $chain->[0], $chain->[-1], [find_locant_placing( $graph, $chain )] ];
+                 [$i, $chain, [find_locant_placing( $graph, $chain )] ];
         }
     }
 
     # Names of all attachments are found
     my @attachments;
     for (my $i = 0; $i < @locant_placing; $i++) {
-        my @curr_chain = grep { $_->[ 0] == $locant_placing[$i][1] &&
-                                $_->[-1] == $locant_placing[$i][2] } @$chains;
+        my @curr_chain = $locant_placing[$i][1];
         my @attachments_only;
-        for my $locant (@{$locant_placing[$i][3]}) {
+        for my $locant (@{$locant_placing[$i][2]}) {
             my( $vertex ) = grep { $_->{number} == $curr_chain[0][$locant-1] }
                                  $graph->vertices;
 
