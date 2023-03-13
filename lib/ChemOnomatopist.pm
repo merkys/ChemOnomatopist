@@ -1149,7 +1149,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
 
     # Locant placements are found for all trees
     my $trees_copy = clone \@trees;
-    my @locant_placing;
+    my @attachments;
     for my $i (0..$#$trees_copy) {
         my %structure = %{clone $trees_copy->[$i]};
 
@@ -1166,39 +1166,31 @@ sub pick_chain_with_lowest_attachments_alphabetically
         # Placings of the locants found for each chain
         for my $chain (@chains_in_the_tree) {
             my @locants = find_locant_placing( $graph, $chain );
-            push @locant_placing, [$i, $chain, \@locants ];
-        }
-    }
+            my @attachments_only;
+            for my $locant (@locants) {
+                my( $vertex ) = grep { $_->{number} == $chain->[$locant-1] } $graph->vertices;
 
-    # Names of all attachments are found
-    my @attachments;
-    for (my $i = 0; $i < @locant_placing; $i++) {
-        my $chain = $locant_placing[$i][1];
-        my @locants = @{$locant_placing[$i][2]};
-        my @attachments_only;
-        for my $locant (@locants) {
-            my( $vertex ) = grep { $_->{number} == $chain->[$locant-1] } $graph->vertices;
+                # Cycle through non-mainchain neighbours:
+                for my $neighbour ($graph->neighbours( $vertex )) {
+                    next if any { $neighbour->{number} eq $_ } @$chain;
 
-            # Cycle through non-mainchain neighbours:
-            for my $neighbour ($graph->neighbours( $vertex )) {
-                next if any { $neighbour->{number} eq $_ } @$chain;
+                    # Find the name for a sidechain
+                    my $graph_copy = $graph->copy;
+                    $graph_copy->delete_edge( $vertex, $neighbour );
+                    my $attachment_name = get_chain( $graph_copy, $neighbour );
+                    $attachment_name .= $attachment_name =~ /^\(/ ? 'yl)' : 'yl';
 
-                # Find the name for a sidechain
-                my $graph_copy = $graph->copy;
-                $graph_copy->delete_edge( $vertex, $neighbour );
-                my $attachment_name = get_chain( $graph_copy, $neighbour );
-                $attachment_name .= $attachment_name =~ /^\(/ ? 'yl)' : 'yl';
+                    # Replace systematic IUPAC attachment names with their preferrable ones
+                    if( exists $preferrable_names{$attachment_name} ) {
+                        $attachment_name = $preferrable_names{$attachment_name};
+                    }
 
-                # Replace systematic IUPAC attachment names with their preferrable ones
-                if( exists $preferrable_names{$attachment_name} ) {
-                    $attachment_name = $preferrable_names{$attachment_name};
+                    push @attachments_only, $attachment_name;
                 }
-
-                push @attachments_only, $attachment_name;
             }
-        }
 
-        push @attachments, [clone( $chain ), \@attachments_only];
+            push @attachments, [clone( $chain ), \@attachments_only];
+        }
     }
     my @sorted_attachments = sort sort_attachments @attachments;
     my $correct_attach = $sorted_attachments[0][1];
