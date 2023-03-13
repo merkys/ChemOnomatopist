@@ -1149,7 +1149,6 @@ sub rule_pick_chain_from_valid
 }
 
 # Subroutine selects chain that has the lowest attachments by alpabetical naming
-# FIXME: This does not include the actual locant attachment numbers - is this correct?
 sub pick_chain_with_lowest_attachments_alphabetically
 {
     my( $graph, $chains, @trees ) = @_;
