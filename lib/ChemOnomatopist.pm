@@ -1054,7 +1054,7 @@ sub rule_most_carbon_in_side_chains
     }
 
     # All chains that have the highest number of carbons in side chains are selected and returned
-    my @sorted_final = sort compare_side_chain_lengths @side_chain_lengths;
+    my @sorted_final = sort compare_locant_placings @side_chain_lengths;
 
     my $last = $sorted_final[-1][3];
     my @greatest_no_of_side_chains_paths =
@@ -1359,6 +1359,7 @@ sub find_number_of_branched_side_chains
 }
 
 # Sorts locant placings from lowest to largest
+# This had code identical to compare_side_chain_lengths(), thus calls to the latter have been redirected here.
 sub compare_locant_placings {
     my @A = @$a;
     my @B = @$b;
@@ -1373,18 +1374,6 @@ sub compare_locant_placings {
         return $A[$_] <=> $B[$_] if $A[$_] <=> $B[$_];
     }
 
-    return 0;
-}
-
-# Sorts side chain lengths from lowest to biggest
-sub compare_side_chain_lengths {
-    my @first  = @{$a->[3]};
-    my @second = @{$b->[3]};
-    my @index = (0..scalar @first-1);
-
-    foreach( @index ) {
-        return $first[$_] <=> $second[$_] if $first[$_] <=> $second[$_];
-    }
     return 0;
 }
 
