@@ -1149,18 +1149,18 @@ sub rule_pick_chain_from_valid
 }
 
 # Subroutine selects chain that has the lowest attachments by alpabetical naming
+# FIXME: This does not include the actual locant attachment numbers - is this correct?
 sub pick_chain_with_lowest_attachments_alphabetically
 {
     my( $graph, $chains, @trees ) = @_;
 
     # Locant placements are found for all trees
-    my $trees_copy = clone \@trees;
     my @attachments;
-    for my $i (0..$#$trees_copy) {
-        my %structure = %{clone $trees_copy->[$i]};
+    for my $i (0..$#trees) {
+        my %structure = %{clone $trees[$i]};
 
         # Reference to parental chain is removed from the boxes
-        foreach my $key (keys %structure) {
+        for my $key (keys %structure) {
             shift @{$structure{$key}};
         }
 
