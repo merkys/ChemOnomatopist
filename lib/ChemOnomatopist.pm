@@ -1173,15 +1173,15 @@ sub pick_chain_with_lowest_attachments_alphabetically
     # Names of all attachments are found
     my @attachments;
     for (my $i = 0; $i < @locant_placing; $i++) {
-        my @chain = $locant_placing[$i][1];
+        my $chain = $locant_placing[$i][1];
         my @locants = @{$locant_placing[$i][2]};
         my @attachments_only;
         for my $locant (@locants) {
-            my( $vertex ) = grep { $_->{number} == $chain[0][$locant-1] } $graph->vertices;
+            my( $vertex ) = grep { $_->{number} == $chain->[$locant-1] } $graph->vertices;
 
             # Cycle through non-mainchain neighbours:
             for my $neighbour ($graph->neighbours( $vertex )) {
-                next if any { $neighbour->{number} eq $_ } @{$chain[0]};
+                next if any { $neighbour->{number} eq $_ } @$chain;
 
                 # Find the name for a sidechain
                 my $graph_copy = $graph->copy;
@@ -1198,7 +1198,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
             }
         }
 
-        push @attachments, [clone( $chain[0] ), \@attachments_only];
+        push @attachments, [clone( $chain ), \@attachments_only];
     }
     my @sorted_attachments = sort sort_attachments @attachments;
     my $correct_attach = $sorted_attachments[0][1];
