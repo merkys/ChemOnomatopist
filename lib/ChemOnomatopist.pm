@@ -791,6 +791,12 @@ sub rule_no_ambiguity
     return $path_parts[0]->[0], $path_parts[1]->[0];
 }
 
+sub pick_chain_with_lowest_attachments_alphabetically_new
+{
+    my( $tree, @path_parts ) = @_;
+    # ...
+}
+
 # Creating tree like structure for all the longest paths in molecule
 sub create_tree
 {
