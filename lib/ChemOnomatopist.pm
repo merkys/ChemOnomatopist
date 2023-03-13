@@ -475,7 +475,7 @@ sub select_main_chain
     ( $trees, @main_chains ) = rule_greatest_number_of_side_chains(
                                     $carbon_graph,
                                     \@main_chains,
-                                    @all_trees
+                                    @all_trees,
                                );
     return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
 
@@ -488,9 +488,10 @@ sub select_main_chain
     # lowest numbered locants. Also the trees that have possible main
     # chains returned
     ( $trees, @main_chains ) = rule_lowest_numbered_locants(
-                                $carbon_graph, @main_chains, @$trees
+                                    $carbon_graph,
+                                    @main_chains,
+                                    @$trees,
                                );
-
     return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
 
     # If more than one chain is left, third rule is applied
@@ -502,9 +503,10 @@ sub select_main_chain
     # most carbons in side chains. Also the trees that have possible main
     # chains returned
     ( $trees, @main_chains ) = rule_most_carbon_in_side_chains(
-                                $carbon_graph, @main_chains, @$trees
+                                    $carbon_graph,
+                                    @main_chains,
+                                    @$trees,
                                );
-
     return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
 
     # If more than one chain is left, fourth rule is applied
@@ -516,9 +518,10 @@ sub select_main_chain
     # the least branched side chains. Also the trees that have
     # possible main chains returned
     ( $trees, @main_chains ) = rule_least_branched_side_chains(
-                                $carbon_graph, @main_chains, @$trees
+                                    $carbon_graph,
+                                    @main_chains,
+                                    @$trees,
                                );
-
     return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
 
     # If more than one chain is left, program states that there are
