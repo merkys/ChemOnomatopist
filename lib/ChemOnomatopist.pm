@@ -1274,6 +1274,7 @@ sub find_lengths_of_side_chains
 # TODO: Try to merge all subroutines
 
 # Find placings of all locants in the chain.
+# Returns an array of indices denoting locant placements.
 # This code treats vertices with degrees larger than 2 as having sidechain attachments.
 sub find_locant_placing
 {
@@ -1286,9 +1287,9 @@ sub find_locant_placing
         $main_chain = [ map { $vertices_by_id{$_} } @$main_chain ];
     }
 
-    # Visit all attachments of a chain in reverse order, memorize their attachment positions
+    # Visit all attachments and memorize their attachment positions
     my @locants;
-    for( my $i = $#$main_chain; $i >= 0; $i-- ) {
+    for my $i (0..$#$main_chain) {
         my $vertex = $main_chain->[$i];
         next unless $graph->degree( $vertex ) > 2;
         push @locants, ( $i ) x ( $graph->degree( $vertex ) - 2 );
