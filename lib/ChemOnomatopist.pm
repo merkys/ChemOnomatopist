@@ -1358,15 +1358,21 @@ sub find_number_of_branched_side_chains
     }
 }
 
-# Sorts locant placings from lowest to biggest
+# Sorts locant placings from lowest to largest
 sub compare_locant_placings {
-    my @first  = @{$a->[3]};
-    my @second = @{$b->[3]};
-    my @index = (0..scalar @first-1);
+    my @A = @$a;
+    my @B = @$b;
 
-    foreach( @index ) {
-        return $first[$_] <=> $second[$_] if $first[$_] <=> $second[$_];
+    if( @A >= 4 && ref $A[3] ) {
+        # This is the "old" data structure
+        @A = @{$A[3]};
+        @B = @{$B[3]};
     }
+
+    for (0..$#A) {
+        return $A[$_] <=> $B[$_] if $A[$_] <=> $B[$_];
+    }
+
     return 0;
 }
 
