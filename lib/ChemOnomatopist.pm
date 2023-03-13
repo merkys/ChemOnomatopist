@@ -23,7 +23,7 @@ use Clone qw( clone );
 use Graph::Nauty qw( canonical_order );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
-use List::Util qw( any max sum0 );
+use List::Util qw( any max sum0 uniq );
 use Scalar::Util qw( blessed );
 
 no warnings 'recursion';
@@ -1171,9 +1171,8 @@ sub pick_chain_with_lowest_attachments_alphabetically
 
         # Placings of the locants found for each chain
         for my $chain (@chains_in_the_tree) {
-            my @locants = find_locant_placing( $graph, $chain );
             my @attachments_only;
-            for my $locant (@locants) {
+            for my $locant (uniq find_locant_placing( $graph, $chain )) {
                 my( $vertex ) = grep { $_->{number} == $chain->[$locant-1] } $graph->vertices;
 
                 # Cycle through non-mainchain neighbours:
