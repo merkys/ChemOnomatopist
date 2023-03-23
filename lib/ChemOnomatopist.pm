@@ -313,6 +313,8 @@ sub find_groups
             $graph->delete_vertex( $hydroxy );
         }
     }
+
+    return;
 }
 
 # Original source:
@@ -385,13 +387,13 @@ sub is_element
 # Performs BFS on that chain. During BFS, distance from start is calculated to each vertice
 sub BFS_order_carbons_only_return_lengths
 {
+    my ( $graph, $start ) = @_;
+
+    my $carbon_graph = $graph->copy;
+    $carbon_graph->delete_vertices( grep { !is_element( $_, 'C') } $carbon_graph->vertices );
+
     my $is_any_visited;
     my %lengths;
-
-    my ( $graph, $start ) = @_;
-    my $carbon_graph = $graph->copy;
-
-    $carbon_graph->delete_vertices( grep { !is_element( $_, 'C') } $carbon_graph->vertices );
     my $bfs = Graph::Traversal::BFS->new(
         $carbon_graph,
         pre => sub { if( !$is_any_visited ) {
@@ -413,6 +415,7 @@ sub BFS_order_carbons_only_return_lengths
 sub BFS_order_carbons_only
 {
     my( $graph, $start ) = @_;
+
     my $carbon_graph = $graph->copy;
     $carbon_graph->delete_vertices( grep { !is_element( $_, 'C' ) } $carbon_graph->vertices );
 
@@ -852,7 +855,7 @@ sub prepare_paths
     }
 
     # Adds reverted chains if they are not present yet as the longest chains
-    for my $chain ( @all_chains ) {
+    for my $chain (@all_chains) {
         next if array_exists( [reverse @$chain], @all_chains );
         push @all_chains, [reverse @$chain];
     }
