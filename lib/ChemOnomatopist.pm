@@ -177,7 +177,7 @@ sub get_chain
     my $name = '';
     for my $attachment_name (sort { $a cmp $b } keys %attachments) {
         my $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
-        $number =~ s/^mono$//;
+        $number = '' if $number eq 'mono';
         $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
         $name = $name ? $name . '-' : $name;
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) .
@@ -247,7 +247,7 @@ sub get_chain_2
             $number = $numberskis[scalar @{$attachments{$attachment_name}}];
         } else {
             $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
-            $number =~ s/^mono$//;
+            $number = '' if $number eq 'mono';
             $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
         }
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) .
