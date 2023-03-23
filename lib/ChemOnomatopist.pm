@@ -845,10 +845,9 @@ sub prepare_paths
                                 keys %structure;
 
         foreach my $ending ( @chain_ending ) {
-            my @vertex_array = ($ending);
             push @all_chains, save_main_chain_vertices_in_array(
                                 $ending,
-                                \@vertex_array,
+                                [$ending],
                                 $tree
                               );
         }
@@ -1022,26 +1021,23 @@ sub rule_most_carbon_in_side_chains
 
         # Beginning of the structure is found. Then all chains that belongs to
         # the current tree are selected
-        my @first = grep{ $structure{$_}->[0] == 0 } keys %structure;
-        my @structure_chains = grep { @{$_}[0] == $first[0] || @{$_}[-1] == $first[0] } @$chains;
+        my( $first ) = grep { $structure{$_}->[0] == 0 } keys %structure;
+        my @structure_chains = grep { $_->[0] == $first || $_->[-1] == $first } @$chains;
 
         # Structure with index of the tree, beginning and ending of the chain,
         # lengths of side chains of the chain created for each tree
         for my $chain (@structure_chains) {
-            my $graph_copy = $graph->copy;
-            my @side_chain_length;
-            push ( @side_chain_lengths,
-                [$index, $chain->[0], $chain->[-1],
+            push @side_chain_lengths,
+                 [$index, $chain->[0], $chain->[-1],
                     [find_lengths_of_side_chains(
-                        $graph_copy,
+                        $graph->copy,
                         $chain->[-1],
                         \@{$chain},
-                        \@side_chain_length,
+                        [],
                         $tree,
                         scalar @{$chain}
                     )]
-                ]
-            )
+                 ];
         }
         $index++;
     }
@@ -1087,8 +1083,8 @@ sub rule_least_branched_side_chains
 
         # Beginning of the structure is found. Then all chains that belong to
         # the current tree are selected
-        my @first = grep { $structure{$_}->[0] == 0 } keys %structure;
-        my @chains_in_the_tree = grep { $_->[0] == $first[0] || $_->[-1] == $first[0] } @$chains;
+        my( $first ) = grep { $structure{$_}->[0] == 0 } keys %structure;
+        my @chains_in_the_tree = grep { $_->[0] == $first || $_->[-1] == $first } @$chains;
 
         for my $chain (@chains_in_the_tree) {
             push @number_of_branched_side_chains,
@@ -1380,8 +1376,8 @@ sub compare_only_aphabetical {
 
 # Sorts given names only based on alphabetical part of the name
 sub sort_attachments {
-    my @first = @{@{$a}[1]};
-    my @second = @{@{$b}[1]};
+    my @first  = @{$a->[1]};
+    my @second = @{$b->[1]};
 
     for (0..$#first) {
         my $first_alpha  = $first[$_];
