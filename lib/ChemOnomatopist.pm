@@ -631,7 +631,7 @@ sub rule_lowest_numbered_locants_new
 
         for my $path (0..$#{$path_parts[$direction]}) {
             my @locants = tree_branch_positions( $tree, @{$path_parts[$direction]->[$path]} );
-            my $value_forward  = $length * @locants     + sum0 @locants;
+            my $value_forward  =  $length    * @locants + sum0 @locants;
             my $value_backward = ($length+1) * @locants - sum0 @locants;
 
             if( !defined $min_id_forward || $min_value_forward > $value_forward ) {
@@ -651,7 +651,7 @@ sub rule_lowest_numbered_locants_new
             }
         }
 
-        push @min_values_forward, [ $min_value_forward, $min_id_forward, $min_count_forward ];
+        push @min_values_forward,  [ $min_value_forward,  $min_id_forward,  $min_count_forward ];
         push @min_values_backward, [ $min_value_backward, $min_id_backward, $min_count_backward ];
     }
 
