@@ -1197,12 +1197,11 @@ sub pick_chain_with_lowest_attachments_alphabetically
             push @attachments, [clone( $chain ), \@attachments_only];
         }
     }
-    my @sorted_attachments = sort sort_attachments @attachments;
-    my $correct_attach = $sorted_attachments[0][1];
 
     # All chains that have the same - alpabetically lowest attachments selected
+    my( $best ) = sort sort_attachments @attachments;
     my @correct_chains_all = grep { join( ',', @{$_->[1]} ) eq
-                                    join( ',', @$correct_attach ) }
+                                    join( ',', @{$best->[1]} ) }
                                   @attachments;
     return [ map { $_->[0] } @correct_chains_all ];
 }
