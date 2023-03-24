@@ -21,6 +21,12 @@ sub branch_positions()
     return tree_branch_positions( $self->{graph}, @{$self->{vertices}} );
 }
 
+sub group()
+{
+    my( $self ) = @_;
+    return $self->{group};
+}
+
 sub length()
 {
     my( $self ) = @_;

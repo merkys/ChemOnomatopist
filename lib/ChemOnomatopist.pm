@@ -540,26 +540,19 @@ sub select_main_chain_new
     my @path_parts;
     if( @center == 1 ) {
         # Longest path has odd length
-        my $longest_paths = {};
         for my $path ( graph_longest_paths_from_vertex( $tree, $center[0] ) ) {
             push @path_parts,
-                 ChemOnomatopist::ChainHalf->new( $tree, $path->[1], $path );
-            $longest_paths->{$path->[1]} = [] unless $longest_paths->{$path->[1]};
-            push @{$longest_paths->{$path->[1]}}, $path;
+                 ChemOnomatopist::ChainHalf->new( $tree, $path->[1], @$path );
         }
-        @path_parts = (); # For now
-        @path_parts = map { $longest_paths->{$_} } sort keys %$longest_paths;
     } else {
         # Longest path has even length
         my $tree = $tree->copy;
         $tree->delete_edge( @center );
         for my $vertex ( @center ) {
             push @path_parts,
-                 map { ChemOnomatopist::ChainHalf->new( $tree, $vertex, $_ ) }
+                 map { ChemOnomatopist::ChainHalf->new( $tree, $vertex, @$_ ) }
                      graph_longest_paths_from_vertex( $tree, $vertex );
         }
-        @path_parts = map { [ graph_longest_paths_from_vertex( $tree, $_ ) ] }
-                          @center;
     }
 
     for my $rule ( sub { return @_[1..$#_] },
@@ -594,37 +587,17 @@ sub rule_greatest_number_of_side_chains_new
 {
     my( $tree, @path_parts ) = @_;
 
-    my @max_values;
-    for my $direction (0..$#path_parts) {
-        my( $max_value, @max_ids );
-        for my $path (0..$#{$path_parts[$direction]}) {
-            my $branches = tree_number_of_branches( $tree, @{$path_parts[$direction]->[$path]} );
-            if( !@max_ids || $max_value < $branches ) {
-                $max_value = $branches;
-                @max_ids = ( $path );
-            } elsif( $max_value == $branches ) {
-                push @max_ids, $path;
-            }
-        }
-        push @max_values, { value => $max_value, ids => \@max_ids };
-    }
+    my @sorted_values = sort { $b->number_of_branches <=>
+                               $a->number_of_branches } @path_parts;
+    my @path_parts_now;
 
-    # Selecting one or at most two largest values and pooling them together
-    my @sorted_values = reverse sort map { $_->{value} } @max_values;
-    my @best_directions;
     for my $value (@sorted_values) {
-        last if @best_directions >= 2;
-        push @best_directions,
-             grep { $max_values[$_]->{value} == $value } 0..$#max_values;
+        last if uniq map { $_->group } @path_parts_now >= 2;
+        push @path_parts_now,
+             grep { $_->number_of_branches == $value } @path_parts;
     }
 
-    my @max_values_now;
-    for my $direction (sort @best_directions) { # Not sure if sort is needed
-        push @max_values_now, [ map { $path_parts[$direction]->[$_] }
-                                    @{$max_values[$direction]->{ids}} ];
-    }
-
-    return @max_values_now;
+    return @path_parts_now;
 }
 
 # On success, this returns two paths, the first one is to be reversed and the second one has to go as written.
@@ -632,78 +605,18 @@ sub rule_lowest_numbered_locants_new
 {
     my( $tree, @path_parts ) = @_;
 
-    my $length = scalar @{$path_parts[0]->[0]}; # all paths are equal in length
-    my @min_values_forward;
-    my @min_values_backward;
-    for my $direction (0..$#path_parts) {
-        my( $min_value_forward, $min_id_forward, $min_count_forward );
-        my( $min_value_backward, $min_id_backward, $min_count_backward );
+    my @sorted_values_forward  = sort { $a->locant_positions_forward <=>
+                                        $b->locant_positions_forward } @path_parts;
+    my @sorted_values_backward = sort { $a->locant_positions_backward <=>
+                                        $b->locant_positions_backward } @path_parts;
 
-        for my $path (0..$#{$path_parts[$direction]}) {
-            my @locants = tree_branch_positions( $tree, @{$path_parts[$direction]->[$path]} );
-            my $value_forward  =  $length    * @locants + sum0 @locants;
-            my $value_backward = ($length+1) * @locants - sum0 @locants;
+    # TODO: Check if two or more groups are present
 
-            if( !defined $min_id_forward || $min_value_forward > $value_forward ) {
-                $min_value_forward = $value_forward;
-                $min_id_forward = $path;
-                $min_count_forward = 1;
-            } elsif( $min_value_forward == $value_forward ) {
-                $min_count_forward++;
-            }
+    my @path_parts_now =
+        ( grep { $_->locant_positions_forward  == $sorted_values_forward[0]  } @path_parts ),
+        ( grep { $_->locant_positions_backward == $sorted_values_backward[0] } @path_parts );
 
-            if( !defined $min_id_backward || $min_value_backward > $value_backward ) {
-                $min_value_backward = $value_backward;
-                $min_id_backward = $path;
-                $min_count_backward = 1;
-            } elsif( $min_value_backward == $value_backward ) {
-                $min_count_backward++;
-            }
-        }
-
-        push @min_values_forward,  [ $min_value_forward,  $min_id_forward,  $min_count_forward ];
-        push @min_values_backward, [ $min_value_backward, $min_id_backward, $min_count_backward ];
-    }
-
-    # Sort the best values for each direction
-    my @forward_sorted  = sort { $min_values_forward[$a]->[0]  <=>
-                                 $min_values_forward[$b]->[0] }  0..$#min_values_forward;
-    my @backward_sorted = sort { $min_values_backward[$a]->[0] <=>
-                                 $min_values_backward[$b]->[0] } 0..$#min_values_backward;
-
-    # Taking the best forward value, find the best backward value from a different branch
-    my $min_sum_by_forward;
-    my $best_backward;
-    if( $min_values_forward[$forward_sorted[0]]->[2] == 1 ) {
-        ( $best_backward ) = grep { $_ != $forward_sorted[0] } @backward_sorted;
-        if( $min_values_backward[$best_backward]->[2] == 1 ) {
-            $min_sum_by_forward = $min_values_forward[$forward_sorted[0]]->[0] +
-                                  $min_values_backward[$best_backward]->[0];
-        }
-    }
-
-    # Taking the best backward value, find the best forward value from a different branch
-    my $min_sum_by_backward;
-    my $best_forward;
-    if( $min_values_backward[$backward_sorted[0]]->[2] == 1 ) {
-        ( $best_forward ) = grep { $_ != $backward_sorted[0] } @forward_sorted;
-        if( $min_values_forward[$best_forward]->[2] == 1 ) {
-            $min_sum_by_backward = $min_values_backward[$backward_sorted[0]]->[0] +
-                                   $min_values_forward[$best_forward]->[0];
-        }
-    }
-
-    if( !defined $min_sum_by_forward && !defined $min_sum_by_backward ) {
-        return;
-    } elsif( !defined $min_sum_by_backward || $min_sum_by_forward  < $min_sum_by_backward ) {
-        return $path_parts[$best_backward]->[$min_values_backward[$best_backward]->[1]],
-               $path_parts[$forward_sorted[0]]->[$min_values_forward[$forward_sorted[0]]->[1]];
-    } elsif( !defined $min_sum_by_forward  || $min_sum_by_backward < $min_sum_by_forward  ) {
-        return $path_parts[$backward_sorted[0]]->[$min_values_backward[$backward_sorted[0]]->[1]],
-               $path_parts[$best_forward]->[$min_values_forward[$best_forward]->[1]];
-    } else {
-        return; # Equal: cannot say anything
-    }
+    return @path_parts_now;
 }
 
 sub rule_most_carbon_in_side_chains_new
