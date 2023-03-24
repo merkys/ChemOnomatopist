@@ -147,7 +147,7 @@ sub graph_longest_paths_from_vertex
 
     my @furthest_leaves;
     my $furthest_distance = 0;
-    for my $vertex ( sort $graph->vertices ) {
+    for my $vertex ( $graph->vertices ) {
         next unless exists $length{$vertex}; # May happen in disconnected graphs
         if(      $length{$vertex} < $furthest_distance ) {
             next;
@@ -162,7 +162,7 @@ sub graph_longest_paths_from_vertex
     # Backtrack starting from the furthest leaves to collect the longest
     # paths. In the returned result path, starting vertex is the first.
     my @longest_paths;
-    for my $vertex ( sort @furthest_leaves ) {
+    for my $vertex ( @furthest_leaves ) {
         my @path;
         while( defined $vertex ) {
             push @path, $vertex;
