@@ -540,7 +540,7 @@ sub select_main_chain_new
     if( @center == 1 ) {
         # Longest path has odd length
         my $longest_paths = {};
-        for my $path (graph_longest_paths_from_vertex( $tree, $center[0] )) {
+        for my $path ( graph_longest_paths_from_vertex( $tree, $center[0] ) ) {
             $longest_paths->{$path->[1]} = [] unless $longest_paths->{$path->[1]};
             push @{$longest_paths->{$path->[1]}}, $path;
         }
