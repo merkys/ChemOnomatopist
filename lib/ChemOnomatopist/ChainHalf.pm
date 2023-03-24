@@ -24,7 +24,7 @@ sub branch_positions()
 sub length()
 {
     my( $self ) = @_;
-    return scalar @{$self->{vertices};
+    return scalar @{$self->{vertices}};
 }
 
 sub locant_positions_forward()
