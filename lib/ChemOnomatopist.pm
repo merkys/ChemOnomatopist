@@ -1142,10 +1142,8 @@ sub rule_pick_chain_from_valid
 {
     my( $graph, $chains, @trees ) = @_;
 
-    my $chosen_chains =
-        pick_chain_with_lowest_attachments_alphabetically( $graph, $chains, @trees );
-
-    my( $chain ) = sort compare_arrays @$chosen_chains;
+    my( $chain ) = sort compare_arrays
+                        pick_chain_with_lowest_attachments_alphabetically( $graph, $chains, @trees );
     return $chain;
 }
 
@@ -1203,7 +1201,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
     my @correct_chains_all = grep { join( ',', @{$_->[1]} ) eq
                                     join( ',', @{$best->[1]} ) }
                                   @attachments;
-    return [ map { $_->[0] } @correct_chains_all ];
+    return map { $_->[0] } @correct_chains_all;
 }
 
 # Returns array that contains numbers of vertices that are in main chain
@@ -1393,20 +1391,20 @@ sub compare_only_aphabetical {
 
 # Sorts given names only based on alphabetical part of the name
 sub sort_attachments {
-    my @first  = @{$a->[1]};
-    my @second = @{$b->[1]};
+    my @a = @{$a->[1]};
+    my @b = @{$b->[1]};
 
-    for (0..$#first) {
-        my $first_alpha  = $first[$_];
-        my $second_alpha = $second[$_];
+    for (0..$#a) {
+        my $a_alpha = $a[$_];
+        my $b_alpha = $b[$_];
 
-        $first_alpha  =~ s/[^a-zA-Z]+//g;
-        $second_alpha =~ s/[^a-zA-Z]+//g;
+        $a_alpha =~ s/[^a-zA-Z]+//g;
+        $b_alpha =~ s/[^a-zA-Z]+//g;
 
-        $first_alpha  = 'butyl' if $first_alpha  eq 'tertbutyl';
-        $second_alpha = 'butyl' if $second_alpha eq 'tertbutyl';
+        $a_alpha = 'butyl' if $a_alpha eq 'tertbutyl';
+        $b_alpha = 'butyl' if $b_alpha eq 'tertbutyl';
 
-        return $second_alpha cmp $first_alpha if $second_alpha cmp $first_alpha;
+        return $b_alpha cmp $a_alpha if $b_alpha cmp $a_alpha;
     }
 
     return 0;
