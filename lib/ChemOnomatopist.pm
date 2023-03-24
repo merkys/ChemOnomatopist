@@ -6,6 +6,7 @@ use warnings;
 # ABSTRACT: Give molecule a name
 # VERSION
 
+use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
@@ -541,14 +542,22 @@ sub select_main_chain_new
         # Longest path has odd length
         my $longest_paths = {};
         for my $path ( graph_longest_paths_from_vertex( $tree, $center[0] ) ) {
+            push @path_parts,
+                 ChemOnomatopist::ChainHalf->new( $tree, $path->[1], $path );
             $longest_paths->{$path->[1]} = [] unless $longest_paths->{$path->[1]};
             push @{$longest_paths->{$path->[1]}}, $path;
         }
+        @path_parts = (); # For now
         @path_parts = map { $longest_paths->{$_} } sort keys %$longest_paths;
     } else {
         # Longest path has even length
         my $tree = $tree->copy;
         $tree->delete_edge( @center );
+        for my $vertex ( @center ) {
+            push @path_parts,
+                 map { ChemOnomatopist::ChainHalf->new( $tree, $vertex, $_ ) }
+                     graph_longest_paths_from_vertex( $tree, $vertex );
+        }
         @path_parts = map { [ graph_longest_paths_from_vertex( $tree, $_ ) ] }
                           @center;
     }
