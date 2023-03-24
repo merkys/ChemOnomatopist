@@ -23,7 +23,7 @@ use Clone qw( clone );
 use Graph::Nauty qw( canonical_order );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
-use List::Util qw( any max sum0 uniq );
+use List::Util qw( all any max sum0 uniq );
 use Scalar::Util qw( blessed );
 
 no warnings 'recursion';
@@ -554,14 +554,15 @@ sub select_main_chain_new
                           @center;
     }
 
-    for my $rule ( \&rule_greatest_number_of_side_chains_new,
+    for my $rule ( sub { return @_[1..$#_] },
+                   \&rule_greatest_number_of_side_chains_new,
                    # \&rule_lowest_numbered_locants_new, # Too difficult to rewrite right now
                    \&rule_most_carbon_in_side_chains_new,
                    \&rule_least_branched_side_chains_new ) {
         my @path_parts_now = $rule->( $tree, @path_parts );
 
         # CHECK: Can a rule cause disappearance of parts?
-        next unless @path_parts_now < 2;
+        next if @path_parts_now < 2;
 
         @path_parts = @path_parts_now; # Narrow down the selection
 
