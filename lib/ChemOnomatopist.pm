@@ -555,12 +555,20 @@ sub select_main_chain_new
     }
 
     for my $rule ( \&rule_greatest_number_of_side_chains_new,
-                   \&rule_lowest_numbered_locants_new,
+                   # \&rule_lowest_numbered_locants_new, # Too difficult to rewrite right now
                    \&rule_most_carbon_in_side_chains_new,
-                   \&rule_least_branched_side_chains_new,
-                   \&rule_no_ambiguity ) {
-        my @paths = $rule->( $tree, @path_parts );
-        next unless @paths;
+                   \&rule_least_branched_side_chains_new ) {
+        my @path_parts_now = $rule->( $tree, @path_parts );
+
+        # CHECK: Can a rule cause disappearance of parts?
+        next unless @path_parts_now < 2;
+
+        @path_parts = @path_parts_now; # Narrow down the selection
+
+        next unless @path_parts == 2;
+        next unless all { scalar( @$_ ) == 1 } @path_parts;
+
+        my @paths = map { $_->[0] } @path_parts; # Extract paths
 
         # If longest path has odd length, the center center atom appears in all chains
         shift @{$paths[0]} if @center == 1;
@@ -577,32 +585,35 @@ sub rule_greatest_number_of_side_chains_new
 
     my @max_values;
     for my $direction (0..$#path_parts) {
-        my( $max_value, $max_id, $max_count );
+        my( $max_value, @max_ids );
         for my $path (0..$#{$path_parts[$direction]}) {
             my $branches = tree_number_of_branches( $tree, @{$path_parts[$direction]->[$path]} );
-            if( !defined $max_id || $max_value < $branches ) {
+            if( !@max_ids || $max_value < $branches ) {
                 $max_value = $branches;
-                $max_id = $path;
-                $max_count = 1;
+                @max_ids = ( $path );
             } elsif( $max_value == $branches ) {
-                $max_count++;
+                push @max_ids, $path;
             }
         }
-        push @max_values, [ $max_value, $max_id, $max_count ];
+        push @max_values, { value => $max_value, ids => \@max_ids };
     }
-    return if @max_values < 2;
 
-    my( $A, $B, $C ) = sort { $max_values[$b]->[0] <=> $max_values[$a]->[0] }
-                            0..$#max_values;
+    # Selecting one or at most two largest values and pooling them together
+    my @sorted_values = reverse sort map { $_->{value} } @max_values;
+    my @best_directions;
+    for my $value (@sorted_values) {
+        last if @best_directions >= 2;
+        push @best_directions,
+             grep { $max_values[$_]->{value} == $value } 0..$#max_values;
+    }
 
-    # The first two options have to differ from the third option
-    return if $C && $max_values[$B]->[0] == $max_values[$C]->[0];
+    my @max_values_now;
+    for my $direction (sort @best_directions) { # Not sure if sort is needed
+        push @max_values_now, [ map { $path_parts[$direction]->[$_] }
+                                    @{$max_values[$direction]->{ids}} ];
+    }
 
-    # The first two options have to contain a single choice
-    return if any { $max_values[$_]->[2] > 1 } ( $A, $B );
-
-    return $path_parts[$A]->[$max_values[$A]->[1]],
-           $path_parts[$B]->[$max_values[$B]->[1]];
+    return @max_values_now;
 }
 
 # On success, this returns two paths, the first one is to be reversed and the second one has to go as written.
@@ -694,36 +705,39 @@ sub rule_most_carbon_in_side_chains_new
 
     my @max_values;
     for my $direction (0..$#path_parts) {
-        my( $max_value, $max_id, $max_count );
+        my( $max_value, @max_ids );
         for my $path (0..$#{$path_parts[$direction]}) {
             my $C = # grep { is_element( $_, 'C' ) } # FIXME: Will not work in tests, have to enable later.
                     map  { Graph::Traversal::DFS->new( $copy, start => $_ )->dfs }
                     grep { $copy->has_vertex( $_ ) }
                     map  { $tree->neighbours( $_ ) }
                          @{$path_parts[$direction]->[$path]};
-            if( !defined $max_id || $max_value < $C ) {
+            if( !@max_ids || $max_value < $C ) {
                 $max_value = $C;
-                $max_id = $path;
-                $max_count = 1;
+                @max_ids = ( $path );
             } elsif( $max_value == $C ) {
-                $max_count++;
+                push @max_ids, $path;
             }
         }
-        push @max_values, [ $max_value, $max_id, $max_count ];
+        push @max_values, { value => $max_value, ids => \@max_ids };
     }
-    return if @max_values < 2;
 
-    my( $A, $B, $C ) = sort { $max_values[$b]->[0] <=> $max_values[$a]->[0] }
-                            0..$#max_values;
+    # Selecting one or at most two largest values and pooling them together
+    my @sorted_values = reverse sort map { $_->{value} } @max_values;
+    my @best_directions;
+    for my $value (@sorted_values) {
+        last if @best_directions >= 2;
+        push @best_directions,
+             grep { $max_values[$_]->{value} == $value } 0..$#max_values;
+    }
 
-    # The first two options have to differ from the third option
-    return if $C && $max_values[$B]->[0] == $max_values[$C]->[0];
+    my @max_values_now;
+    for my $direction (sort @best_directions) { # Not sure if sort is needed
+        push @max_values_now, [ map { $path_parts[$direction]->[$_] }
+                                    @{$max_values[$direction]->{ids}} ];
+    }
 
-    # The first two options have to contain a single choice
-    return if any { $max_values[$_]->[2] > 1 } ( $A, $B );
-
-    return $path_parts[$A]->[$max_values[$A]->[1]],
-           $path_parts[$B]->[$max_values[$B]->[1]];
+    return @max_values_now;
 }
 
 sub rule_least_branched_side_chains_new
@@ -736,7 +750,7 @@ sub rule_least_branched_side_chains_new
 
     my @min_values;
     for my $direction (0..$#path_parts) {
-        my( $min_value, $min_id, $min_count );
+        my( $min_value, @min_ids );
         for my $path (0..$#{$path_parts[$direction]}) {
             my $branches = sum0 map  { $_ > 2 ? $_ - 2 : 0 }
                                 map  { $copy->degree( $_ ) }
@@ -744,29 +758,32 @@ sub rule_least_branched_side_chains_new
                                 grep { $copy->has_vertex( $_ ) }
                                 map  { $tree->neighbours( $_ ) }
                                      @{$path_parts[$direction]->[$path]};
-            if( !defined $min_id || $min_value > $branches ) {
+            if( !@min_ids || $min_value > $branches ) {
                 $min_value = $branches;
-                $min_id = $path;
-                $min_count = 1;
+                @min_ids = ( $path );
             } elsif( $min_value == $branches ) {
-                $min_count++;
+                push @min_ids, $path;
             }
         }
-        push @min_values, [ $min_value, $min_id, $min_count ];
+        push @min_values, { value => $min_value, ids => \@min_ids };
     }
-    return if @min_values < 2;
 
-    my( $A, $B, $C ) = sort { $min_values[$a]->[0] <=> $min_values[$b]->[0] }
-                            0..$#min_values;
+    # Selecting one or at most two least values and pooling them together
+    my @sorted_values = sort map { $_->{value} } @min_values;
+    my @best_directions;
+    for my $value (@sorted_values) {
+        last if @best_directions >= 2;
+        push @best_directions,
+             grep { $min_values[$_]->{value} == $value } 0..$#min_values;
+    }
 
-    # The first two options have to differ from the third option
-    return if $C && $min_values[$B]->[0] == $min_values[$C]->[0];
+    my @min_values_now;
+    for my $direction (sort @best_directions) { # Not sure if sort is needed
+        push @min_values_now, [ map { $path_parts[$direction]->[$_] }
+                                    @{$min_values[$direction]->{ids}} ];
+    }
 
-    # The first two options have to contain a single choice
-    return if any { $min_values[$_]->[2] > 1 } ( $A, $B );
-
-    return $path_parts[$A]->[$min_values[$A]->[1]],
-           $path_parts[$B]->[$min_values[$B]->[1]];
+    return @min_values_now;
 }
 
 # This is not an official rule, just a fallback when there is no ambiguity.
