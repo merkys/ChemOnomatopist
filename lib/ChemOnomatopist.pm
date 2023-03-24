@@ -557,7 +557,8 @@ sub select_main_chain_new
                    \&rule_greatest_number_of_side_chains_new,
                    # \&rule_lowest_numbered_locants_new, # Too difficult to rewrite right now
                    \&rule_most_carbon_in_side_chains_new,
-                   \&rule_least_branched_side_chains_new ) {
+                   \&rule_least_branched_side_chains_new,
+                   \&pick_chain_with_lowest_attachments_alphabetically_new ) {
         my @path_parts_now = $rule->( $tree, @path_parts );
 
         # CHECK: Can a rule cause disappearance of parts?
@@ -796,10 +797,11 @@ sub rule_no_ambiguity
     return $path_parts[0]->[0], $path_parts[1]->[0];
 }
 
+# FIXME: This rule is dumb now: it just returns the first two path parts it gets
 sub pick_chain_with_lowest_attachments_alphabetically_new
 {
     my( $tree, @path_parts ) = @_;
-    # ...
+    return map { [ $path_parts[$_]->[0] ] } (0..1);
 }
 
 # Creating tree like structure for all the longest paths in molecule

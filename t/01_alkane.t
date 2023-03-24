@@ -18,7 +18,7 @@ my %SMILES_cases = (
     'C(C)C(CC(C)C)CC' => '4-ethyl-2-methylhexane',
     'C(C)C(C(CC)(C)C)CCC' => '4-ethyl-3,3-dimethylheptane',
     'C(C)C(C(CCC)C)(C(CCCC)C)C' => '5-ethyl-4,5,6-trimethyldecane',
-    'C(C)C(C(CC)C)C(C(CCC)(C)C)(CC)CC' => '4,5,5-triethyl-3,6,6-trimethylnonane',
+    'C(C)C(C(CC)C)C(C(CCC)(C)C)(CC)CC' => '4,5,5-triethyl-3,6,6-trimethylnonane', # FIXME: This is unstable in 'new' method
     'C(C)C(C(C(CCC)C)(CCC)CCC)(CCCC)CCC' => '6-ethyl-4-methyl-5,5,6-tripropyldecane',
     'C(C)C(C(CCC)(C)C)(C(C(CCC)(C)CC)CCC)CCC' => '5,7-diethyl-4,4,7-trimethyl-5,6-dipropyldecane',
     'CCCCCCCCCCCCCCCCCCCCCCC' => 'tricosane',
@@ -28,14 +28,10 @@ my %SMILES_cases = (
 );
 
 my @new_method_exclude = qw(
-    CC(C)C
-    CC(C)CC(CCC(C)C)C
     C(C)C(CCC(CCC(C)C)(C)C)C
     C(C)C(C(CC)(C)C)CCC
     C(C)C(CC(C)C)CC
-    C(C)C(C(CC)C)C(C(CCC)(C)C)(CC)CC
     C(C)C(C(C(CCC)C)(CCC)CCC)(CCCC)CCC
-    CC(C(CCC)C)C(CC(CCCC)CC)CCCCCC
 );
 
 plan tests => 2 * scalar( keys %SMILES_cases ) - @new_method_exclude;
