@@ -787,16 +787,6 @@ sub rule_least_branched_side_chains_new
     return @min_values_now;
 }
 
-# This is not an official rule, just a fallback when there is no ambiguity.
-sub rule_no_ambiguity
-{
-    my( $tree, @path_parts ) = @_;
-
-    return if @path_parts != 2;
-    return if any { scalar( @$_ ) != 1 } @path_parts;
-    return $path_parts[0]->[0], $path_parts[1]->[0];
-}
-
 # FIXME: This rule is dumb now: it just returns the first two path parts it gets
 sub pick_chain_with_lowest_attachments_alphabetically_new
 {

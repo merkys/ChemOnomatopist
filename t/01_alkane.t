@@ -24,7 +24,7 @@ my %SMILES_cases = (
     'CCCCCCCCCCCCCCCCCCCCCCC' => 'tricosane',
     #'CC(CC(CCC)CCC)C' => '4-(2-methylpropyl)heptane' inconsistent results
     #'CC(CC(CC(CC(CC)CC)C)(CC(CC(CC)C)C)CC(CC(CC)C)C)CC(CC)C' => '7,7-di(2,4-dimethylhexyl)-3-ethyl-5,9,11-trimethyltridecane' inconsistent results
-    'CC(C(CCC)C)C(CC(CCCC)CC)CCCCCC' => '7-(1,2-dimethylpentyl)-5-ethyltridecane'
+    'CC(C(CCC)C)C(CC(CCCC)CC)CCCCCC' => '7-(1,2-dimethylpentyl)-5-ethyltridecane', # FIXME: This is unstable in 'new' method
 );
 
 my @new_method_exclude = qw(
