@@ -566,6 +566,7 @@ sub select_main_chain_new
 
         @path_parts = @path_parts_now; # Narrow down the selection
 
+        # If two chains cannot be chosen now, pass on to the next rule
         next unless @path_parts == 2;
         next unless all { scalar( @$_ ) == 1 } @path_parts;
 
