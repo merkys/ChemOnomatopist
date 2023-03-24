@@ -1197,7 +1197,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
     }
 
     # All chains that have the same - alpabetically lowest attachments selected
-    my( $best ) = sort sort_attachments @attachments;
+    my( $best ) = sort { cmp_attachments( $a->[1], $b->[1] ) } @attachments;
     my @correct_chains_all = grep { join( ',', @{$_->[1]} ) eq
                                     join( ',', @{$best->[1]} ) }
                                   @attachments;
@@ -1390,9 +1390,11 @@ sub compare_only_aphabetical {
 }
 
 # Sorts given names only based on alphabetical part of the name
-sub sort_attachments {
-    my @a = @{$a->[1]};
-    my @b = @{$b->[1]};
+sub cmp_attachments
+{
+    my( $a, $b ) = @_;
+    my @a = @{$a};
+    my @b = @{$b};
 
     for (0..$#a) {
         my $a_alpha = $a[$_];
