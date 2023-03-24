@@ -576,7 +576,7 @@ sub select_main_chain_new
         return reverse( @{$paths[0]} ), @{$paths[1]};
     }
 
-    # TODO: Handle the case when all rules do not single out a chain.
+    # TODO: Handle the case when none of the rules select proper chains
     return ();
 }
 
