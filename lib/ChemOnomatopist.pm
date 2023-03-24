@@ -525,7 +525,6 @@ sub select_main_chain
 }
 
 # Selects the main chain by evaluating its parts
-# FIXME: The current code is incorrect in that it should narrow down the set of best possible chains until only one is left.
 sub select_main_chain_new
 {
     my( $tree ) = @_;
