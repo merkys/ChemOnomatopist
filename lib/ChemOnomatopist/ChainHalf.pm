@@ -40,7 +40,7 @@ sub vertices()
 sub length()
 {
     my( $self ) = @_;
-    return scalar @{$self->{vertices}};
+    return scalar $self->vertices;
 }
 
 sub locant_positions_forward()
@@ -63,14 +63,14 @@ sub number_of_branches_in_sidechains()
 
     # Make a copy with all atoms from candidate chains removed.
     my $copy = $self->{graph}->copy;
-    $copy->delete_vertices( @{$self->{vertices}} );
+    $copy->delete_vertices( $self->vertices );
 
     return sum0 map  { $_ > 2 ? $_ - 2 : 0 }
                 map  { $copy->degree( $_ ) }
                 map  { Graph::Traversal::DFS->new( $copy, start => $_ )->dfs }
                 grep { $copy->has_vertex( $_ ) }
                 map  { $self->{graph}->neighbours( $_ ) }
-                     @{$self->{vertices}};
+                     $self->vertices;
 }
 
 sub number_of_carbons()
@@ -85,7 +85,7 @@ sub number_of_carbons()
             map  { Graph::Traversal::DFS->new( $copy, start => $_ )->dfs }
             grep { $copy->has_vertex( $_ ) }
             map  { $self->{graph}->neighbours( $_ ) }
-                 @{$self->{vertices}};
+                 $self->vertices;
 
     return $C;
 }
