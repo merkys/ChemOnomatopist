@@ -587,12 +587,12 @@ sub rule_greatest_number_of_side_chains_new
 {
     my( $tree, @path_parts ) = @_;
 
-    my @sorted_values = sort { $b->number_of_branches <=>
-                               $a->number_of_branches } @path_parts;
+    my @sorted_values = sort { $b <=> $a }
+                        uniq map { $_->number_of_branches } @path_parts;
 
     my @path_parts_now;
     for my $value (@sorted_values) {
-        last if uniq map { $_->group } @path_parts_now >= 2;
+        last if uniq( map { $_->group } @path_parts_now ) >= 2;
         push @path_parts_now,
              grep { $_->number_of_branches == $value } @path_parts;
     }
@@ -605,10 +605,12 @@ sub rule_lowest_numbered_locants_new
 {
     my( $tree, @path_parts ) = @_;
 
-    my @sorted_values_forward  = sort { $a->locant_positions_forward <=>
-                                        $b->locant_positions_forward } @path_parts;
-    my @sorted_values_backward = sort { $a->locant_positions_backward <=>
-                                        $b->locant_positions_backward } @path_parts;
+    my @sorted_values_forward  = sort { $a <=> $b }
+                                 uniq map { $_->locant_positions_forward }
+                                          @path_parts;
+    my @sorted_values_backward = sort { $a <=> $b }
+                                 uniq map { $_->locant_positions_backward }
+                                          @path_parts;
 
     # TODO: Check if two or more groups are present
 
@@ -640,19 +642,20 @@ sub rule_least_branched_side_chains_new
 {
     my( $tree, @path_parts ) = @_;
 
-    my @sorted_values = sort { $a->number_of_branches_in_sidechains <=>
-                               $b->number_of_branches_in_sidechains }
+    my @sorted_values = sort { $a <=> $b }
+                        uniq map { $_->number_of_branches_in_sidechains }
                              @path_parts;
 
     # Make a copy with all atoms from candidate chains removed.
+    # TODO: Check why a copy is needed?
     my $copy = $tree->copy;
     $copy->delete_vertices( map { map { @$_ } @$_ } @path_parts );
 
     my @path_parts_now;
     for my $value (@sorted_values) {
-        last if uniq map { $_->group } @path_parts_now >= 2;
+        last if uniq( map { $_->group } @path_parts_now ) >= 2;
         push @path_parts_now,
-             grep { $_->number_of_branches == $value } @path_parts;
+             grep { $_->number_of_branches_in_sidechains == $value } @path_parts;
     }
 
     return @path_parts_now;
