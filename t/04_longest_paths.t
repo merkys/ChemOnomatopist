@@ -58,7 +58,7 @@ is scalar @paths, 2;
                                                                    chainO( $graph, 'B', 'A', 'A1' ),
                                                                    chainO( $graph, 'B', 'A', 'A2' ),
                                                                    chainO( $graph, 'B', 'C', 'C1' ) );
-is scalar @paths, 2;
+is scalar @paths, 3;
 
 # Elongated X-shaped graph with an even-numbered longest path
 $graph = Graph::Undirected->new;
@@ -78,7 +78,7 @@ is scalar @paths, 2;
                                                                    chainE( $graph, 'B', 'A', 'A1' ),
                                                                    chainE( $graph, 'B', 'A', 'A2' ),
                                                                    chainE( $graph, 'C', 'D', 'D1' ) );
-is scalar @paths, 2;
+is scalar @paths, 3;
 
 # Elongated Y-shaped graph with an even-numbered longest path
 $graph = Graph::Undirected->new;
