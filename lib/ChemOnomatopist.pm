@@ -614,9 +614,9 @@ sub rule_lowest_numbered_locants_new
 
     # TODO: Check if two or more groups are present
 
-    my @path_parts_now =
-        ( grep { $_->locant_positions_forward  == $sorted_values_forward[0]  } @path_parts ),
-        ( grep { $_->locant_positions_backward == $sorted_values_backward[0] } @path_parts );
+    my @path_parts_now;
+    push @path_parts_now, grep { $_->locant_positions_forward  == $sorted_values_forward[0]  } @path_parts;
+    push @path_parts_now, grep { $_->locant_positions_backward == $sorted_values_backward[0] } @path_parts;
 
     return @path_parts_now;
 }
