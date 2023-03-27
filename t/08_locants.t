@@ -4,8 +4,15 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
+use ChemOnomatopist::ChainHalf;
 use Graph::Undirected;
 use Test::More;
+
+sub chain($@)
+{
+    my( $graph, @vertices ) = @_;
+    return ChemOnomatopist::ChainHalf->new( $graph, $vertices[1], @vertices );
+}
 
 plan tests => 5;
 
@@ -23,9 +30,9 @@ $graph->add_edge( map { $atoms[$_] } ( 11, 18 ) );
 $graph->add_edge( map { $atoms[$_] } ( 25, 28 ) );
 $graph->add_edge( map { $atoms[$_] } ( 32, 38 ) );
 
-@paths = ChemOnomatopist::rule_lowest_numbered_locants_new( $graph, [ [ map { $atoms[$_] } ( 0, 11..17 ) ] ],
-                                                                    [ [ map { $atoms[$_] } ( 0, 1, 22..27 ) ],
-                                                                      [ map { $atoms[$_] } ( 0, 1, 32..37 ) ] ] );
+@paths = ChemOnomatopist::rule_lowest_numbered_locants_new( $graph, chain( $graph, map { $atoms[$_] } ( 0, 11..17 ) ),
+                                                                    chain( $graph, map { $atoms[$_] } ( 0, 1, 22..27 ) ),
+                                                                    chain( $graph, map { $atoms[$_] } ( 0, 1, 32..37 ) ) );
 is scalar( @paths ), 2;
 is join( ',', map { $_->{number} } @{$paths[0]} ), '0,1,22,23,24,25,26,27';
 is join( ',', map { $_->{number} } @{$paths[1]} ), '0,11,12,13,14,15,16,17';
@@ -42,7 +49,7 @@ $graph->add_path( 'D', 'I'..'K' );
 $graph->add_path( 'J', 'L' );
 $graph->add_path( 'E', 'M' );
 
-@paths = ChemOnomatopist::rule_lowest_numbered_locants_new( $graph, [ [ reverse 'A'..'D' ] ],
-                                                                    [ [ 'D'..'G' ] ],
-                                                                    [ [ 'D', 'I'..'K' ] ] );
+@paths = ChemOnomatopist::rule_lowest_numbered_locants_new( $graph, chain( $graph, reverse 'A'..'D' ),
+                                                                    chain( $graph, 'D'..'G' ),
+                                                                    chain( $graph, 'D', 'I'..'K' ) );
 is scalar( @paths ), 0;
