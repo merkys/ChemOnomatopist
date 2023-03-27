@@ -589,8 +589,8 @@ sub rule_greatest_number_of_side_chains_new
 
     my @sorted_values = sort { $b->number_of_branches <=>
                                $a->number_of_branches } @path_parts;
-    my @path_parts_now;
 
+    my @path_parts_now;
     for my $value (@sorted_values) {
         last if uniq map { $_->group } @path_parts_now >= 2;
         push @path_parts_now,
@@ -623,45 +623,17 @@ sub rule_most_carbon_in_side_chains_new
 {
     my( $tree, @path_parts ) = @_;
 
-    # Make a copy with all atoms from candidate chains removed.
-    my $copy = $tree->copy;
-    $copy->delete_vertices( map { map { @$_ } @$_ } @path_parts );
+    my @sorted_values = sort { $b->number_of_carbons <=>
+                               $a->number_of_carbons } @path_parts;
 
-    my @max_values;
-    for my $direction (0..$#path_parts) {
-        my( $max_value, @max_ids );
-        for my $path (0..$#{$path_parts[$direction]}) {
-            my $C = # grep { is_element( $_, 'C' ) } # FIXME: Will not work in tests, have to enable later.
-                    map  { Graph::Traversal::DFS->new( $copy, start => $_ )->dfs }
-                    grep { $copy->has_vertex( $_ ) }
-                    map  { $tree->neighbours( $_ ) }
-                         @{$path_parts[$direction]->[$path]};
-            if( !@max_ids || $max_value < $C ) {
-                $max_value = $C;
-                @max_ids = ( $path );
-            } elsif( $max_value == $C ) {
-                push @max_ids, $path;
-            }
-        }
-        push @max_values, { value => $max_value, ids => \@max_ids };
-    }
-
-    # Selecting one or at most two largest values and pooling them together
-    my @sorted_values = reverse sort map { $_->{value} } @max_values;
-    my @best_directions;
+    my @path_parts_now;
     for my $value (@sorted_values) {
-        last if @best_directions >= 2;
-        push @best_directions,
-             grep { $max_values[$_]->{value} == $value } 0..$#max_values;
+        last if uniq map { $_->group } @path_parts_now >= 2;
+        push @path_parts_now,
+             grep { $_->number_of_branches == $value } @path_parts;
     }
 
-    my @max_values_now;
-    for my $direction (sort @best_directions) { # Not sure if sort is needed
-        push @max_values_now, [ map { $path_parts[$direction]->[$_] }
-                                    @{$max_values[$direction]->{ids}} ];
-    }
-
-    return @max_values_now;
+    return @path_parts_now;
 }
 
 sub rule_least_branched_side_chains_new

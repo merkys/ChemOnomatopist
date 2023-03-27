@@ -3,6 +3,7 @@ package ChemOnomatopist::ChainHalf;
 use strict;
 use warnings;
 
+use Graph::Traversal::DFS;
 use List::Util qw( sum0 );
 
 # ABSTRACT: Half of a longest chain
@@ -45,6 +46,23 @@ sub locant_positions_backward()
     my( $self ) = @_;
     my @locants = $self->branch_positions;
     return ($self->length + 1) * @locants - sum0 @locants;
+}
+
+sub number_of_carbons()
+{
+    my( $self ) = @_;
+
+    # Make a copy with all atoms from candidate chains removed.
+    my $copy = $self->{graph}->copy;
+    $copy->delete_vertices( @{$self->{vertices}} );
+
+    my $C = # grep { is_element( $_, 'C' ) } # FIXME: Will not work in tests, have to enable later.
+            map  { Graph::Traversal::DFS->new( $copy, start => $_ )->dfs }
+            grep { $copy->has_vertex( $_ ) }
+            map  { $self->{graph}->neighbours( $_ ) }
+                 @{$self->{vertices}};
+
+    return $C;
 }
 
 sub number_of_branches()
