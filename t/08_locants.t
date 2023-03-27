@@ -34,8 +34,8 @@ $graph->add_edge( map { $atoms[$_] } ( 32, 38 ) );
                                                                     chain( $graph, map { $atoms[$_] } ( 0, 1, 22..27 ) ),
                                                                     chain( $graph, map { $atoms[$_] } ( 0, 1, 32..37 ) ) );
 is scalar( @paths ), 2;
-is join( ',', map { $_->{number} } $paths[0]->vertices ), '0,1,22,23,24,25,26,27';
-is join( ',', map { $_->{number} } $paths[1]->vertices ), '0,11,12,13,14,15,16,17';
+is join( ',', map { $_->{number} } $paths[0]->vertices ), '0,11,12,13,14,15,16,17';
+is join( ',', map { $_->{number} } $paths[1]->vertices ), '0,1,22,23,24,25,26,27';
 
 @chain = ChemOnomatopist::select_main_chain_new( $graph );
 is join( ',', map { $_->{number} } @chain ), '27,26,25,24,23,22,1,0,11,12,13,14,15,16,17';

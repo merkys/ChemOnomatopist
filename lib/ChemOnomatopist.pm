@@ -600,26 +600,32 @@ sub rule_greatest_number_of_side_chains_new
     return @path_parts_now;
 }
 
-# On success, this returns two paths, the first one is to be reversed and the second one has to go as written.
 sub rule_lowest_numbered_locants_new
 {
     my( $tree, @path_parts ) = @_;
 
-    my @sorted_values_forward  = sort { $a <=> $b }
-                                 uniq map { $_->locant_positions_forward }
-                                          @path_parts;
-    my @sorted_values_backward = sort { $a <=> $b }
-                                 uniq map { $_->locant_positions_backward }
-                                          @path_parts;
+    my @paths;
+    my $min_value;
 
-    # TODO: Check if two or more groups are present
-    # TODO: Essentially we have to compare all possible pairs of forward and backward halves choosing the least valued pair - maybe via graph?
+    for my $part1 (@path_parts) {
+        for my $part2 (@path_parts) {
+            next if $part1->group eq $part2->group;
+            my $value = $part1->locant_positions_forward + $part2->locant_positions_backward;
+            if( @paths ) {
+                if( $value < $min_value ) {
+                    @paths = ( [ $part1, $part2 ] );
+                    $min_value = $value;
+                } elsif( $value == $min_value ) {
+                    push @paths, [ $part1, $part2 ];
+                }
+            } else {
+                push @paths, [ $part1, $part2 ];
+                $min_value = $value;
+            }
+        }
+    }
 
-    my @path_parts_now;
-    push @path_parts_now, grep { $_->locant_positions_forward  == $sorted_values_forward[0]  } @path_parts;
-    push @path_parts_now, grep { $_->locant_positions_backward == $sorted_values_backward[0] } @path_parts;
-
-    return @path_parts_now;
+    return uniq map { @$_ } @paths;
 }
 
 sub rule_most_carbon_in_side_chains_new
