@@ -640,46 +640,22 @@ sub rule_least_branched_side_chains_new
 {
     my( $tree, @path_parts ) = @_;
 
+    my @sorted_values = sort { $a->number_of_branches_in_sidechains <=>
+                               $b->number_of_branches_in_sidechains }
+                             @path_parts;
+
     # Make a copy with all atoms from candidate chains removed.
     my $copy = $tree->copy;
     $copy->delete_vertices( map { map { @$_ } @$_ } @path_parts );
 
-    my @min_values;
-    for my $direction (0..$#path_parts) {
-        my( $min_value, @min_ids );
-        for my $path (0..$#{$path_parts[$direction]}) {
-            my $branches = sum0 map  { $_ > 2 ? $_ - 2 : 0 }
-                                map  { $copy->degree( $_ ) }
-                                map  { Graph::Traversal::DFS->new( $copy, start => $_ )->dfs }
-                                grep { $copy->has_vertex( $_ ) }
-                                map  { $tree->neighbours( $_ ) }
-                                     @{$path_parts[$direction]->[$path]};
-            if( !@min_ids || $min_value > $branches ) {
-                $min_value = $branches;
-                @min_ids = ( $path );
-            } elsif( $min_value == $branches ) {
-                push @min_ids, $path;
-            }
-        }
-        push @min_values, { value => $min_value, ids => \@min_ids };
-    }
-
-    # Selecting one or at most two least values and pooling them together
-    my @sorted_values = sort map { $_->{value} } @min_values;
-    my @best_directions;
+    my @path_parts_now;
     for my $value (@sorted_values) {
-        last if @best_directions >= 2;
-        push @best_directions,
-             grep { $min_values[$_]->{value} == $value } 0..$#min_values;
+        last if uniq map { $_->group } @path_parts_now >= 2;
+        push @path_parts_now,
+             grep { $_->number_of_branches == $value } @path_parts;
     }
 
-    my @min_values_now;
-    for my $direction (sort @best_directions) { # Not sure if sort is needed
-        push @min_values_now, [ map { $path_parts[$direction]->[$_] }
-                                    @{$min_values[$direction]->{ids}} ];
-    }
-
-    return @min_values_now;
+    return @path_parts_now;
 }
 
 # FIXME: This rule is dumb now: it just returns the first two path parts it gets
