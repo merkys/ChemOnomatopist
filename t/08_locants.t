@@ -52,4 +52,4 @@ $graph->add_path( 'E', 'M' );
 @paths = ChemOnomatopist::rule_lowest_numbered_locants_new( $graph, chain( $graph, reverse 'A'..'D' ),
                                                                     chain( $graph, 'D'..'G' ),
                                                                     chain( $graph, 'D', 'I'..'K' ) );
-is scalar( @paths ), 0;
+is scalar( @paths ), 3;
