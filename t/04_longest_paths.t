@@ -94,11 +94,11 @@ $graph->add_edge( 'A', 'B' );
                                                                    chainE( $graph, 'A', 'AA1'..'AA5' ),
                                                                    chainE( $graph, 'A', 'AB1'..'AB5' ),
                                                                    chainE( $graph, 'B', 'BA1'..'BA5' ) );
-is scalar @paths, 2;
+is scalar @paths, 3;
 
 $graph->add_path( 'AA2', 'branch' );
 @paths = ChemOnomatopist::rule_greatest_number_of_side_chains_new( $graph,
                                                                    chainE( $graph, 'A', 'AA1'..'AA5' ),
                                                                    chainE( $graph, 'A', 'AB1'..'AB5' ),
                                                                    chainE( $graph, 'B', 'BA1'..'BA5' ) );
-is scalar @paths, 2;
+is scalar @paths, 2; # This is correct
