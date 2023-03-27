@@ -649,7 +649,7 @@ sub rule_least_branched_side_chains_new
     # Make a copy with all atoms from candidate chains removed.
     # TODO: Check why a copy is needed?
     my $copy = $tree->copy;
-    $copy->delete_vertices( map { map { @$_ } @$_ } @path_parts );
+    $copy->delete_vertices( map { $_->vertices } @path_parts );
 
     my @path_parts_now;
     for my $value (@sorted_values) {
@@ -665,7 +665,7 @@ sub rule_least_branched_side_chains_new
 sub pick_chain_with_lowest_attachments_alphabetically_new
 {
     my( $tree, @path_parts ) = @_;
-    return map { [ $path_parts[$_]->[0] ] } (0..1);
+    return @path_parts[0..1];
 }
 
 # Creating tree like structure for all the longest paths in molecule
