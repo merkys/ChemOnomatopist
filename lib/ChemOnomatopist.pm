@@ -636,14 +636,15 @@ sub rule_most_carbon_in_side_chains_new
 {
     my( $tree, @path_parts ) = @_;
 
-    my @sorted_values = sort { $b <=> $a }
-                        uniq map { $_->number_of_carbons } @path_parts;
+    my @sorted_values = sort uniq map { $_->number_of_carbons } @path_parts;
 
     my @path_parts_now;
-    for my $value (@sorted_values) {
-        last if uniq( map { $_->group } @path_parts_now ) >= 2;
+    my $seen_groups = set();
+    for my $value (reverse @sorted_values) {
+        last if $seen_groups->size >= 2;
         push @path_parts_now,
              grep { $_->number_of_carbons == $value } @path_parts;
+        $seen_groups = set( map { $_->group } @path_parts_now );
     }
 
     return @path_parts_now;
@@ -653,9 +654,8 @@ sub rule_least_branched_side_chains_new
 {
     my( $tree, @path_parts ) = @_;
 
-    my @sorted_values = sort { $a <=> $b }
-                        uniq map { $_->number_of_branches_in_sidechains }
-                             @path_parts;
+    my @sorted_values = sort uniq map { $_->number_of_branches_in_sidechains }
+                                      @path_parts;
 
     # Make a copy with all atoms from candidate chains removed.
     # TODO: Check why a copy is needed?
@@ -663,10 +663,12 @@ sub rule_least_branched_side_chains_new
     $copy->delete_vertices( map { $_->vertices } @path_parts );
 
     my @path_parts_now;
+    my $seen_groups = set();
     for my $value (@sorted_values) {
-        last if uniq( map { $_->group } @path_parts_now ) >= 2;
+        last if $seen_groups->size >= 2;
         push @path_parts_now,
              grep { $_->number_of_branches_in_sidechains == $value } @path_parts;
+        $seen_groups = set( map { $_->group } @path_parts_now );
     }
 
     return @path_parts_now;
