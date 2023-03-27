@@ -3,6 +3,9 @@ package ChemOnomatopist::ChainHalf;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Util::Graph qw(
+    tree_branch_positions
+);
 use Graph::Traversal::DFS;
 use List::Util qw( sum0 );
 
@@ -26,6 +29,12 @@ sub group()
 {
     my( $self ) = @_;
     return $self->{group};
+}
+
+sub vertices()
+{
+    my( $self ) = @_;
+    return @{$self->{vertices}};
 }
 
 sub length()

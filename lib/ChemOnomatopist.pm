@@ -570,13 +570,13 @@ sub select_main_chain_new
 
         # If two chains cannot be chosen now, pass on to the next rule
         next unless @path_parts == 2;
-        next unless all { scalar( @$_ ) == 1 } @path_parts;
-
-        my @paths = map { $_->[0] } @path_parts; # Extract paths
+        next unless $path_parts[0] ne $path_parts[1];
 
         # If longest path has odd length, the center center atom appears in all chains
-        shift @{$paths[0]} if @center == 1;
-        return reverse( @{$paths[0]} ), @{$paths[1]};
+        my @vertices = $path_parts[0]->vertices;
+        shift @vertices if @center == 1;
+        unshift @vertices, reverse $path_parts[1]->vertices;
+        return @vertices;
     }
 
     # TODO: Handle the case when none of the rules select proper chains
