@@ -613,6 +613,7 @@ sub rule_lowest_numbered_locants_new
                                           @path_parts;
 
     # TODO: Check if two or more groups are present
+    # TODO: Essentially we have to compare all possible pairs of forward and backward halves choosing the least valued pair - maybe via graph?
 
     my @path_parts_now;
     push @path_parts_now, grep { $_->locant_positions_forward  == $sorted_values_forward[0]  } @path_parts;
