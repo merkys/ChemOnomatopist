@@ -623,14 +623,14 @@ sub rule_most_carbon_in_side_chains_new
 {
     my( $tree, @path_parts ) = @_;
 
-    my @sorted_values = sort { $b->number_of_carbons <=>
-                               $a->number_of_carbons } @path_parts;
+    my @sorted_values = sort { $b <=> $a }
+                        uniq map { $_->number_of_carbons } @path_parts;
 
     my @path_parts_now;
     for my $value (@sorted_values) {
-        last if uniq map { $_->group } @path_parts_now >= 2;
+        last if uniq( map { $_->group } @path_parts_now ) >= 2;
         push @path_parts_now,
-             grep { $_->number_of_branches == $value } @path_parts;
+             grep { $_->number_of_carbons == $value } @path_parts;
     }
 
     return @path_parts_now;
