@@ -19,11 +19,7 @@ sub new
     return bless $self, $class;
 }
 
-sub branch_positions()
-{
-    my( $self ) = @_;
-    return tree_branch_positions( $self->{graph}, @{$self->{vertices}} );
-}
+# Accessors
 
 sub group()
 {
@@ -35,6 +31,14 @@ sub vertices()
 {
     my( $self ) = @_;
     return @{$self->{vertices}};
+}
+
+# Properties
+
+sub branch_positions()
+{
+    my( $self ) = @_;
+    return tree_branch_positions( $self->{graph}, $self->vertices );
 }
 
 sub length()
@@ -79,7 +83,7 @@ sub number_of_carbons()
 
     # Make a copy with all atoms from candidate chains removed.
     my $copy = $self->{graph}->copy;
-    $copy->delete_vertices( @{$self->{vertices}} );
+    $copy->delete_vertices( $self->vertices );
 
     my $C = # grep { is_element( $_, 'C' ) } # FIXME: Will not work in tests, have to enable later.
             map  { Graph::Traversal::DFS->new( $copy, start => $_ )->dfs }
