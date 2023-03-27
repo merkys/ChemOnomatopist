@@ -31,7 +31,7 @@ $graph->add_path( 22, 26, 27 );
                                                                        chain( $graph, 0, 21..25 ),
                                                                        chain( $graph, 0, 31..35 ),
                                                                        chain( $graph, 0, 41..45 ) );
-is scalar( @paths ), 2;
+is scalar( @paths ), 4;
 
 is join( ',', $paths[0]->vertices ), '0,11,12,13,14,15';
 is join( ',', $paths[1]->vertices ), '0,21,22,23,24,25';
