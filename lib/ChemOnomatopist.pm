@@ -548,10 +548,13 @@ sub select_main_chain_new
         }
     } else {
         # Longest path has even length
+        # Graph copy is needed as it has to be modified to find the longest paths from both centers.
+        my $copy = $tree->copy;
+        $copy->delete_edge( @center );
         for my $vertex ( @center ) {
             push @path_parts,
                  map { ChemOnomatopist::ChainHalf->new( $tree, scalar @center, @$_ ) }
-                     graph_longest_paths_from_vertex( $tree, $vertex );
+                     graph_longest_paths_from_vertex( $copy, $vertex );
         }
     }
 
