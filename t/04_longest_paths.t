@@ -12,16 +12,16 @@ use ChemOnomatopist::Util::Graph qw(
 use Graph::Undirected;
 use Test::More;
 
-sub chainE($@)
-{
-    my( $graph, @vertices ) = @_;
-    return ChemOnomatopist::ChainHalf->new( $graph, $vertices[0], @vertices );
-}
-
 sub chainO($@)
 {
     my( $graph, @vertices ) = @_;
-    return ChemOnomatopist::ChainHalf->new( $graph, $vertices[1], @vertices );
+    return ChemOnomatopist::ChainHalf->new( $graph, 1, @vertices );
+}
+
+sub chainE($@)
+{
+    my( $graph, @vertices ) = @_;
+    return ChemOnomatopist::ChainHalf->new( $graph, 2, @vertices );
 }
 
 plan tests => 12;

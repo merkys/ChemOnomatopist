@@ -14,17 +14,19 @@ use List::Util qw( sum0 );
 
 sub new
 {
-    my( $class, $graph, $group, @vertices ) = @_;
-    my $self = { vertices => \@vertices, graph => $graph, group => $group };
+    my( $class, $graph, $number_of_centers, @vertices ) = @_;
+    my $self = { vertices => \@vertices, graph => $graph, number_of_centers => $number_of_centers };
     return bless $self, $class;
 }
 
 # Accessors
 
+# Groups are used to check which halves of a chain can be combined together.
+# If a graph contains single center, all halves will share the center.
 sub group()
 {
     my( $self ) = @_;
-    return $self->{group};
+    return $self->{vertices}[2-$self->{number_of_centers}];
 }
 
 sub vertices()

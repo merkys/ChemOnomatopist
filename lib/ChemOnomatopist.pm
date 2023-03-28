@@ -544,7 +544,7 @@ sub select_main_chain_new
         # Longest path has odd length
         for my $path ( graph_longest_paths_from_vertex( $tree, $center[0] ) ) {
             push @path_parts,
-                 ChemOnomatopist::ChainHalf->new( $tree, $path->[1], @$path );
+                 ChemOnomatopist::ChainHalf->new( $tree, scalar @center, @$path );
         }
     } else {
         # Longest path has even length
@@ -552,7 +552,7 @@ sub select_main_chain_new
         $tree->delete_edge( @center );
         for my $vertex ( @center ) {
             push @path_parts,
-                 map { ChemOnomatopist::ChainHalf->new( $tree, $vertex, @$_ ) }
+                 map { ChemOnomatopist::ChainHalf->new( $tree, scalar @center, @$_ ) }
                      graph_longest_paths_from_vertex( $tree, $vertex );
         }
     }
