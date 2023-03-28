@@ -27,18 +27,9 @@ my %SMILES_cases = (
     'CC(C(CCC)C)C(CC(CCCC)CC)CCCCCC' => '7-(1,2-dimethylpentyl)-5-ethyltridecane', # FIXME: This is unstable in 'new' method
 );
 
-my @new_method_exclude = qw(
-    C(C)C(CCC(CCC(C)C)(C)C)C
-    C(C)C(C(CC)(C)C)CCC
-    C(C)C(CC(C)C)CC
-    C(C)C(C(C(CCC)C)(CCC)CCC)(CCCC)CCC
-);
-
-plan tests => 2 * scalar( keys %SMILES_cases ) - @new_method_exclude;
+plan tests => 2 * scalar( keys %SMILES_cases );
 
 for my $case (sort keys %SMILES_cases) {
     is ChemOnomatopist::get_name( $case ), $SMILES_cases{$case}, 'old';
-    if( all { $_ ne $case } @new_method_exclude ) {
-        is ChemOnomatopist::get_name( $case, 1 ), $SMILES_cases{$case}, 'new';
-    }
+    is ChemOnomatopist::get_name( $case, 1 ), $SMILES_cases{$case}, 'new';
 }
