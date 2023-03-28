@@ -574,10 +574,10 @@ sub select_main_chain_new
         next unless @path_parts == 2;
         next unless $path_parts[0] ne $path_parts[1];
 
-        return ChemOnomatopist::Chain->new( @center == 1, @path_parts )->vertices;
+        return ChemOnomatopist::Chain->new( @path_parts )->vertices;
     }
 
-    # my @chains = rule_lowest_numbered_locants_new( $tree, @path_parts );
+    my @chains = rule_lowest_numbered_locants_new( $tree, @path_parts );
 
     # TODO: Handle the case when none of the rules select proper chains
     return ();
@@ -607,28 +607,29 @@ sub rule_lowest_numbered_locants_new
 {
     my( $tree, @path_parts ) = @_;
 
-    my @paths;
+    my @chains;
     my $min_value;
 
     for my $part1 (@path_parts) {
         for my $part2 (@path_parts) {
             next if $part1->group eq $part2->group;
-            my $value = $part1->locant_positions_forward + $part2->locant_positions_backward;
-            if( @paths ) {
+            my $chain = ChemOnomatopist::Chain->new( $part1, $part2 );
+            my $value = $chain->locant_positions;
+            if( @chains ) {
                 if( $value < $min_value ) {
-                    @paths = ( [ $part1, $part2 ] );
+                    @chains = ( $chain );
                     $min_value = $value;
                 } elsif( $value == $min_value ) {
-                    push @paths, [ $part1, $part2 ];
+                    push @chains, $chain;
                 }
             } else {
-                push @paths, [ $part1, $part2 ];
+                push @chains, $chain;
                 $min_value = $value;
             }
         }
     }
 
-    return uniq map { @$_ } @paths;
+    return @chains;
 }
 
 sub rule_most_carbon_in_side_chains_new

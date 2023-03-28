@@ -22,8 +22,8 @@ sub AUTOLOAD {
 
 sub new
 {
-    my( $class, $is_center_single, @halves ) = @_;
-    return bless { halves => \@halves, is_center_single => $is_center_single }, $class;
+    my( $class, @halves ) = @_;
+    return bless { halves => \@halves }, $class;
 }
 
 sub locant_positions()
@@ -36,11 +36,11 @@ sub locant_positions()
 sub vertices()
 {
     my( $self ) = @_;
-    my @vertices = reverse $self->{halves}[0]->vertices;
+    my @half1 = $self->{halves}[0]->vertices;
+    my @half2 = $self->{halves}[1]->vertices;
     # If longest path has odd length, the center atom appears in all chains
-    pop @vertices if $self->{is_center_single};
-    push @vertices, $self->{halves}[1]->vertices;
-    return @vertices;
+    shift @half1 if $half1[0] eq $half2[0];
+    return reverse( @half1 ), @half2;
 }
 
 1;
