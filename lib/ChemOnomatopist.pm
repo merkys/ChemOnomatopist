@@ -558,11 +558,7 @@ sub select_main_chain_new
     }
 
     for my $rule ( sub { return @_[1..$#_] },
-                   \&rule_greatest_number_of_side_chains_new,
-                   \&rule_lowest_numbered_locants_new,
-                   \&rule_most_carbon_in_side_chains_new,
-                   \&rule_least_branched_side_chains_new,
-                   \&pick_chain_with_lowest_attachments_alphabetically_new ) {
+                   \&rule_greatest_number_of_side_chains_new ) {
         my @path_parts_now = $rule->( $tree, @path_parts );
 
         # CHECK: Can a rule cause disappearance of parts?
@@ -578,6 +574,23 @@ sub select_main_chain_new
     }
 
     my @chains = rule_lowest_numbered_locants_new( $tree, @path_parts );
+
+    for my $rule ( sub { return @_ },
+                   \&rule_most_carbon_in_side_chains_new,
+                   \&rule_least_branched_side_chains_new,
+                   \&pick_chain_with_lowest_attachments_alphabetically_new ) {
+        my @chains_now = $rule->( @chains );
+
+        # CHECK: Can a rule cause disappearance of all chains?
+        next unless @chains_now;
+
+        @chains = @chains_now; # Narrow down the selection
+
+        # If a single chain cannot be chosen now, pass on to the next rule
+        next unless @chains == 1;
+
+        return $chains[0]->vertices;
+    }
 
     # TODO: Handle the case when none of the rules select proper chains
     return ();
@@ -634,51 +647,24 @@ sub rule_lowest_numbered_locants_new
 
 sub rule_most_carbon_in_side_chains_new
 {
-    my( $tree, @path_parts ) = @_;
+    my( @chains ) = @_;
 
-    my @sorted_values = sort uniq map { $_->number_of_carbons } @path_parts;
-
-    my @path_parts_now;
-    my $seen_groups = set();
-    for my $value (reverse @sorted_values) {
-        last if $seen_groups->size >= 2;
-        push @path_parts_now,
-             grep { $_->number_of_carbons == $value } @path_parts;
-        $seen_groups = set( map { $_->group } @path_parts_now );
-    }
-
-    return @path_parts_now;
+    my( $max_value ) = reverse sort uniq map { $_->number_of_carbons } @chains;
+    return grep { $_->number_of_carbons == $max_value } @chains;
 }
 
 sub rule_least_branched_side_chains_new
 {
-    my( $tree, @path_parts ) = @_;
+    my( @chains ) = @_;
 
-    my @sorted_values = sort uniq map { $_->number_of_branches_in_sidechains }
-                                      @path_parts;
-
-    # Make a copy with all atoms from candidate chains removed.
-    # TODO: Check why a copy is needed?
-    my $copy = $tree->copy;
-    $copy->delete_vertices( map { $_->vertices } @path_parts );
-
-    my @path_parts_now;
-    my $seen_groups = set();
-    for my $value (@sorted_values) {
-        last if $seen_groups->size >= 2;
-        push @path_parts_now,
-             grep { $_->number_of_branches_in_sidechains == $value } @path_parts;
-        $seen_groups = set( map { $_->group } @path_parts_now );
-    }
-
-    return @path_parts_now;
+    my( $min_value ) = sort uniq map { $_->number_of_branches_in_sidechains } @chains;
+    return grep { $_->number_of_branches_in_sidechains == $min_value } @chains;
 }
 
-# FIXME: This rule is dumb now: it just returns the first two path parts it gets
+# FIXME: This rule is dumb now: it just returns the first chain it gets
 sub pick_chain_with_lowest_attachments_alphabetically_new
 {
-    my( $tree, @path_parts ) = @_;
-    return @path_parts[0..1];
+    return $_[0];
 }
 
 # Creating tree like structure for all the longest paths in molecule
