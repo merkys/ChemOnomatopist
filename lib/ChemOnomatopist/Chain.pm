@@ -26,4 +26,11 @@ sub new
     return bless $class, { halves => \@halves };
 }
 
+sub locant_positions()
+{
+    my( $self ) = @_;
+    return $self->{halves}[0]->locant_positions_backward +
+           $self->{halves}[1]->locant_positions_forward;
+}
+
 1;
