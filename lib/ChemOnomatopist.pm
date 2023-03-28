@@ -548,8 +548,6 @@ sub select_main_chain_new
         }
     } else {
         # Longest path has even length
-        my $tree = $tree->copy;
-        $tree->delete_edge( @center );
         for my $vertex ( @center ) {
             push @path_parts,
                  map { ChemOnomatopist::ChainHalf->new( $tree, scalar @center, @$_ ) }

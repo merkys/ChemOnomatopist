@@ -23,9 +23,6 @@ my @atoms = map { { symbol => 'C', number => $_ } } 0..99;
 my $graph = Graph::Undirected->new( refvertexed => 1 );
 $graph->add_path( map { $atoms[$_] } ( 1..8 ) );
 
-# Edge between centers has to be severed
-$graph->delete_edge( map { $atoms[$_] } (4, 5) );
-
 my $A = chain( $graph, map { $atoms[$_] } reverse 1..4 );
 my $B = chain( $graph, map { $atoms[$_] } 5..8 );
 

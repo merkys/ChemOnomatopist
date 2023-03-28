@@ -53,14 +53,14 @@ sub locant_positions_forward()
 {
     my( $self ) = @_;
     my @locants = $self->branch_positions;
-    return $self->length * @locants + sum0 @locants;
+    return ($self->length + ($self->{number_of_centers} == 2)) * @locants + sum0 @locants;
 }
 
 sub locant_positions_backward()
 {
     my( $self ) = @_;
     my @locants = $self->branch_positions;
-    return ($self->length + 1) * @locants - sum0 @locants;
+    return $self->length * @locants - sum0 @locants;
 }
 
 sub number_of_branches_in_sidechains()
