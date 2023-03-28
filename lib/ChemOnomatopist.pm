@@ -557,9 +557,9 @@ sub select_main_chain_new
         }
     }
 
-    for my $rule ( sub { return @_[1..$#_] },
+    for my $rule ( sub { return @_ },
                    \&rule_greatest_number_of_side_chains_new ) {
-        my @path_parts_now = $rule->( $tree, @path_parts );
+        my @path_parts_now = $rule->( @path_parts );
 
         # CHECK: Can a rule cause disappearance of parts?
         next if @path_parts_now < 2;
@@ -573,7 +573,7 @@ sub select_main_chain_new
         return ChemOnomatopist::Chain->new( @path_parts )->vertices;
     }
 
-    my @chains = rule_lowest_numbered_locants_new( $tree, @path_parts );
+    my @chains = rule_lowest_numbered_locants_new( @path_parts );
 
     for my $rule ( sub { return @_ },
                    \&rule_most_carbon_in_side_chains_new,
@@ -598,10 +598,9 @@ sub select_main_chain_new
 
 sub rule_greatest_number_of_side_chains_new
 {
-    my( $tree, @path_parts ) = @_;
+    my( @path_parts ) = @_;
 
-    my @sorted_values = sort uniq map { $_->number_of_branches }
-                                      @path_parts;
+    my @sorted_values = sort uniq map { $_->number_of_branches } @path_parts;
 
     my @path_parts_now;
     my $seen_groups = set();
@@ -618,7 +617,7 @@ sub rule_greatest_number_of_side_chains_new
 
 sub rule_lowest_numbered_locants_new
 {
-    my( $tree, @path_parts ) = @_;
+    my( @path_parts ) = @_;
 
     my @chains;
     my $min_value;
