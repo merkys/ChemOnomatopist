@@ -6,6 +6,7 @@ use warnings;
 # ABSTRACT: Give molecule a name
 # VERSION
 
+use ChemOnomatopist::Chain;
 use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Carbonyl;
@@ -573,12 +574,10 @@ sub select_main_chain_new
         next unless @path_parts == 2;
         next unless $path_parts[0] ne $path_parts[1];
 
-        # If longest path has odd length, the center center atom appears in all chains
-        my @vertices = $path_parts[0]->vertices;
-        shift @vertices if @center == 1;
-        unshift @vertices, reverse $path_parts[1]->vertices;
-        return @vertices;
+        return ChemOnomatopist::Chain->new( @center == 1, @path_parts )->vertices;
     }
+
+    # my @chains = rule_lowest_numbered_locants_new( $tree, @path_parts );
 
     # TODO: Handle the case when none of the rules select proper chains
     return ();
