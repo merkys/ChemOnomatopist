@@ -14,7 +14,7 @@ sub AUTOLOAD {
     $call =~ s/.*:://;
     return if $call eq 'DESTROY';
     if( $call =~ /^number_/ ) {
-        return sum0 map { $_->can( $call )->() } @{$_[0]->{halves}};
+        return sum0 map { $_->can( $call )->( $_ ) } @{$_[0]->{halves}};
     } else {
         return;
     }
