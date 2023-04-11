@@ -571,7 +571,9 @@ sub select_main_chain_new
         next unless @path_parts == 2;
         next unless $path_parts[0] ne $path_parts[1];
 
-        return ChemOnomatopist::Chain->new( @path_parts )->vertices;
+        # FIXME: There should be a nicer way to do this...
+        my @chains = rule_lowest_numbered_locants_new( @path_parts );
+        return $chains[0]->vertices;
     }
 
     my @chains = rule_lowest_numbered_locants_new( @path_parts );
