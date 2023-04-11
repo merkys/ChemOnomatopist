@@ -30,7 +30,7 @@ sub length()
 {
     my( $self ) = @_;
     my( $A, $B ) = @{$self->{halves}};
-    return $A->length + $B->length - ($A->number_of_centers == 1);
+    return $A->length + $B->length - ($A->{number_of_centers} == 1);
 }
 
 sub branch_positions()
@@ -57,7 +57,7 @@ sub vertices()
     my @half1 = $self->{halves}[0]->vertices;
     my @half2 = $self->{halves}[1]->vertices;
     # If longest path has odd length, the center atom appears in all chains
-    shift @half1 if $half1[0] eq $half2[0];
+    shift @half1 if $self->length % 2;
     return reverse( @half1 ), @half2;
 }
 
