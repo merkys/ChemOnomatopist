@@ -168,11 +168,11 @@ sub get_chain
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
             $graph->delete_edge( $atom, $neighbour );
-            unless (is_element( $neighbour, 'H' )){
-                $attachment_name = get_chain( $graph, $neighbour );
-                my $prefix = ($attachment_name =~ /^\(/) ? 'yl)' : 'yl';
-                push @{$attachments{$attachment_name . $prefix}}, $i;
-             }
+            next if is_element( $neighbour, 'H' );
+
+            $attachment_name = get_chain( $graph, $neighbour );
+            my $prefix = ($attachment_name =~ /^\(/) ? 'yl)' : 'yl';
+            push @{$attachments{$attachment_name . $prefix}}, $i;
         }
     }
 
