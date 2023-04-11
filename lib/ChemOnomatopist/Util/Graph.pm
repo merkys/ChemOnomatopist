@@ -182,6 +182,7 @@ sub tree_number_of_branches
     return sum0( map { $tree->degree( $_ ) } @vertices ) - 2 * (scalar @vertices - 1);
 }
 
+# Returns a list of 0-based indices of branch positions.
 sub tree_branch_positions
 {
     my( $tree, @vertices ) = @_;
