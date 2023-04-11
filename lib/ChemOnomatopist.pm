@@ -563,6 +563,7 @@ sub select_main_chain_new
         my @path_parts_now = $rule->( @path_parts );
 
         # CHECK: Can a rule cause disappearance of parts?
+        # FIXME: Methane will have a single part
         next if @path_parts_now < 2;
 
         @path_parts = @path_parts_now; # Narrow down the selection
@@ -572,6 +573,7 @@ sub select_main_chain_new
         next unless $path_parts[0] ne $path_parts[1];
 
         # FIXME: There should be a nicer way to do this...
+        # FIXME: rule_lowest_numbered_locants_new() may return more than one chain, need to sort them by attachment names
         my @chains = rule_lowest_numbered_locants_new( @path_parts );
         return $chains[0]->vertices;
     }
