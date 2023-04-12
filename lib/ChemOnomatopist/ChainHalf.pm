@@ -3,6 +3,7 @@ package ChemOnomatopist::ChainHalf;
 use strict;
 use warnings;
 
+use ChemOnomatopist;
 use ChemOnomatopist::Util::Graph qw(
     tree_branch_positions
 );
@@ -47,6 +48,26 @@ sub length()
 {
     my( $self ) = @_;
     return scalar $self->vertices;
+}
+
+sub locant_names()
+{
+    my( $self ) = @_;
+
+    my $graph = $self->{graph}->copy;
+    $graph->delete_path( $self->vertices );
+
+    my @locants;
+    for my $vertex ($self->vertices) {
+        my @current_locants;
+        for my $neighbour ($graph->neighbours( $vertex )) {
+            $graph->delete_edge( $vertex, $neighbour );
+            push @current_locants, ChemOnomatopist::get_chain( $graph, $neighbour );
+        }
+        push @locants, \@current_locants;
+    }
+
+    return @locants;
 }
 
 sub locant_positions_forward()

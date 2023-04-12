@@ -578,6 +578,8 @@ sub select_main_chain_new
         return $chains[0]->vertices;
     }
 
+    # At this point we are left with a set of longest chains all having the same number of side chains
+
     my @chains = rule_lowest_numbered_locants_new( @path_parts );
 
     for my $rule ( sub { return @_ },
