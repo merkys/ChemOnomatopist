@@ -126,7 +126,9 @@ sub get_name
                         { choose_direction => 1 } ) . 'ane';
 }
 
-sub get_chain
+# get_sidechain_name() receives a graph and a position to start the chain in it.
+# From that position it finds the longest chain and returns the constructed name.
+sub get_sidechain_name
 {
     my( $graph, $start, $options ) = @_;
 
@@ -161,7 +163,7 @@ sub get_chain
 
     # Examine the attachments to the main chain: delete the edges
     # connecting them to the main chain, at the same time giving them
-    # names according to their lengths via calls to get_chain()
+    # names according to their lengths via calls to get_sidechain_name()
     my %attachments;
     my $attachment_name;
     for my $i (0..$#chain) {
@@ -170,7 +172,7 @@ sub get_chain
             $graph->delete_edge( $atom, $neighbour );
             next if is_element( $neighbour, 'H' );
 
-            $attachment_name = get_chain( $graph, $neighbour );
+            $attachment_name = get_sidechain_name( $graph, $neighbour );
             my $prefix = ($attachment_name =~ /^\(/) ? 'yl)' : 'yl';
             push @{$attachments{$attachment_name . $prefix}}, $i;
         }
@@ -209,7 +211,7 @@ sub get_chain_2
 
     # Examine the attachments to the main chain: delete the edges
     # connecting them to the main chain, at the same time giving them
-    # names according to their lengths via calls to get_chain()
+    # names according to their lengths via calls to get_sidechain_name()
     my %attachments;
     my $attachment_name;
     for my $i (0..$#chain) {
@@ -217,7 +219,7 @@ sub get_chain_2
         for my $neighbour ($graph->neighbours( $atom )) {
             $graph->delete_edge( $atom, $neighbour );
             unless (is_element( $neighbour, 'H' )) {
-                $attachment_name = get_chain( $graph, $neighbour );
+                $attachment_name = get_sidechain_name( $graph, $neighbour );
                 my $prefix = ($attachment_name =~ /^\(/) ? 'yl)' : 'yl';
                 push @{$attachments{$attachment_name . $prefix}}, $i;
              }
@@ -1051,7 +1053,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
                     # Find the name for a sidechain
                     my $graph_copy = $graph->copy;
                     $graph_copy->delete_edge( $vertex, $neighbour );
-                    my $attachment_name = get_chain( $graph_copy, $neighbour );
+                    my $attachment_name = get_sidechain_name( $graph_copy, $neighbour );
                     $attachment_name .= $attachment_name =~ /^\(/ ? 'yl)' : 'yl';
 
                     # Replace systematic IUPAC attachment names with their preferrable ones

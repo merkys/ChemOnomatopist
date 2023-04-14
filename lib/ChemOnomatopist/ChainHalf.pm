@@ -62,7 +62,7 @@ sub locant_names()
         my @current_locants;
         for my $neighbour ($graph->neighbours( $vertex )) {
             $graph->delete_edge( $vertex, $neighbour );
-            push @current_locants, ChemOnomatopist::get_chain( $graph, $neighbour );
+            push @current_locants, ChemOnomatopist::get_sidechain_name( $graph, $neighbour );
         }
         push @locants, \@current_locants;
     }
