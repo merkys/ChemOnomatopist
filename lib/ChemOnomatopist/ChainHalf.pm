@@ -27,7 +27,7 @@ sub new
 sub group()
 {
     my( $self ) = @_;
-    return $self->{vertices}[2-$self->{number_of_centers}];
+    return $self->{vertices}[1 - defined $self->{other_center}];
 }
 
 sub vertices()
@@ -74,7 +74,7 @@ sub locant_positions_forward()
 {
     my( $self ) = @_;
     my @locants = $self->branch_positions;
-    return ($self->length + ($self->{number_of_centers} == 2)) * @locants + sum0 @locants;
+    return ($self->length + (defined $self->{other_center})) * @locants + sum0 @locants;
 }
 
 sub locant_positions_backward()

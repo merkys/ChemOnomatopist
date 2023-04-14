@@ -30,7 +30,7 @@ sub length()
 {
     my( $self ) = @_;
     my( $A ) = @{$self->{halves}};
-    return 2 * $A->length - ($A->{number_of_centers} == 1);
+    return 2 * $A->length - !defined $A->{other_center};
 }
 
 sub branch_positions()
