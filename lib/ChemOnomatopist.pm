@@ -188,9 +188,9 @@ sub get_sidechain_name
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) .
                  '-' . $number . $attachment_name;
     }
+
     my $bracket =
         ($options->{choose_direction} || $name !~ /^[0-9]/) ? '' : '(';
-
     return $bracket . $name . alkane_chain_name( scalar @chain );
 }
 
@@ -218,11 +218,11 @@ sub get_chain_2
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
             $graph->delete_edge( $atom, $neighbour );
-            unless (is_element( $neighbour, 'H' )) {
-                $attachment_name = get_sidechain_name( $graph, $neighbour );
-                my $prefix = ($attachment_name =~ /^\(/) ? 'yl)' : 'yl';
-                push @{$attachments{$attachment_name . $prefix}}, $i;
-             }
+            next if is_element( $neighbour, 'H' );
+
+            $attachment_name = get_sidechain_name( $graph, $neighbour );
+            my $prefix = ($attachment_name =~ /^\(/) ? 'yl)' : 'yl';
+            push @{$attachments{$attachment_name . $prefix}}, $i;
         }
     }
 
