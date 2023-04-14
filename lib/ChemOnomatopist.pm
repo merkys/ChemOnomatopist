@@ -207,20 +207,21 @@ sub get_chain_2
         push @chain, $vertex;
     }
 
+    # Disconnect the main chain: this way every main chain atom remains
+    # connected only to the side chains.
     $graph->delete_path( @chain );
 
     # Examine the attachments to the main chain: delete the edges
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_sidechain_name()
     my %attachments;
-    my $attachment_name;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
             $graph->delete_edge( $atom, $neighbour );
             next if is_element( $neighbour, 'H' );
 
-            $attachment_name = get_sidechain_name( $graph, $neighbour );
+            my $attachment_name = get_sidechain_name( $graph, $neighbour );
             my $prefix = ($attachment_name =~ /^\(/) ? 'yl)' : 'yl';
             push @{$attachments{$attachment_name . $prefix}}, $i;
         }
@@ -236,11 +237,10 @@ sub get_chain_2
         # If there is more than one of the same attachment
         # so complete name would start with the prefix, brackets
         # should be added to the name
-        if( scalar @{$attachments{$preferrable_names{$att_name}}} > 1 ) {
-            $attachments{'(' . $preferrable_names{$att_name} . ')'} =
-                            $attachments{$preferrable_names{$att_name}};
-            delete $attachments{$preferrable_names{$att_name}};
-        }
+        next unless @{$attachments{$preferrable_names{$att_name}}} > 1;
+        $attachments{'(' . $preferrable_names{$att_name} . ')'} =
+                        $attachments{$preferrable_names{$att_name}};
+        delete $attachments{$preferrable_names{$att_name}};
     }
 
     # Collecting names of all the attachments
