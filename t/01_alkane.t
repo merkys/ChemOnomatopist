@@ -24,9 +24,10 @@ my %SMILES_cases = (
     'CCC(CC)C(C)C' => '3-ethyl-2-methylpentane', # fails on new method due to dumb pick_chain_with_lowest_attachments_alphabetically_new()
     'CCCCCCCCCCCCCCCCCCCCCCC' => 'tricosane',
     'CC(CC(CCC)CCC)C' => '4-(2-methylpropyl)heptane', # incorrect results for old method
-    'CC(CC(CC(CC(CC)CC)C)(CC(CC(CC)C)C)CC(CC(CC)C)C)CC(CC)C' => '7,7-di(2,4-dimethylhexyl)-3-ethyl-5,9,11-trimethyltridecane', # incorrect results for both methods
+    'CC(CC(CC(CC(CC)CC)C)(CC(CC(CC)C)C)CC(CC(CC)C)C)CC(CC)C' => '7,7-bis(2,4-dimethylhexyl)-3-ethyl-5,9,11-trimethyltridecane',
     'CC(C(CCC)C)C(CC(CCCC)CC)CCCCCC' => '7-(1,2-dimethylpentyl)-5-ethyltridecane',
     # 'CCC(CC)CCC(CCC(CC)CC)CCC(CCC(CCC(CC)CC)CCC(CC)CC)CCC(CCC(CC)CC)CCC(CC)CC' => '3,15-diethyl-9-[6-ethyl-3-(3-ethylpentyl)octyl]-6,12-bis(3-ethylpentyl)heptadecane', # different order
+    'CC(C)CC(CC(C)C)CC(CC(C)C)CC(C)C' => '2,8-dimethyl-4,6-bis(2-methylpropyl)nonane',
 );
 
 plan tests => 2 * scalar( keys %SMILES_cases );
