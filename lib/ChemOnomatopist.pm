@@ -171,7 +171,7 @@ sub get_sidechain_name
             next if is_element( $neighbour, 'H' );
 
             my $attachment_name = get_sidechain_name( $graph, $neighbour ) . 'yl';
-            $attachment_name .= ')' if $attachment_name =~ /^\(/;
+            $attachment_name = "($attachment_name)" if $attachment_name =~ /^[0-9]/;
             push @{$attachments{$attachment_name}}, $i;
         }
     }
@@ -186,13 +186,8 @@ sub get_sidechain_name
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) .
                  '-' . $number . $attachment_name;
     }
-    $name .= alkane_chain_name( scalar @chain );
 
-    if( !$options->{choose_direction} && $name =~ /^[0-9]/ ) {
-        $name = '(' . $name;
-    }
-
-    return $name;
+    return $name . alkane_chain_name( scalar @chain );
 }
 
 sub get_chain_2
@@ -223,7 +218,7 @@ sub get_chain_2
             next if is_element( $neighbour, 'H' );
 
             my $attachment_name = get_sidechain_name( $graph, $neighbour ) . 'yl';
-            $attachment_name .= ')' if $attachment_name =~ /^\(/;
+            $attachment_name = "($attachment_name)" if $attachment_name =~ /^[0-9]/;
             push @{$attachments{$attachment_name}}, $i;
         }
     }
@@ -1057,8 +1052,8 @@ sub pick_chain_with_lowest_attachments_alphabetically
                     # Find the name for a sidechain
                     my $graph_copy = $graph->copy;
                     $graph_copy->delete_edge( $vertex, $neighbour );
-                    my $attachment_name = get_sidechain_name( $graph_copy, $neighbour );
-                    $attachment_name .= $attachment_name =~ /^\(/ ? 'yl)' : 'yl';
+                    my $attachment_name = get_sidechain_name( $graph_copy, $neighbour ) . 'yl';
+                    $attachment_name = "($attachment_name)" if $attachment_name =~ /^[0-9]/;
 
                     # Replace systematic IUPAC attachment names with their preferrable ones
                     if( exists $preferrable_names{$attachment_name} ) {
