@@ -108,7 +108,7 @@ sub number_of_carbons()
     my $copy = $self->{graph}->copy;
     $copy->delete_vertices( $self->vertices );
 
-    my $C = # grep { is_element( $_, 'C' ) } # FIXME: Will not work in tests, have to enable later.
+    my $C = grep { ChemOnomatopist::is_element( $_, 'C' ) }
             map  { Graph::Traversal::DFS->new( $copy, start => $_ )->dfs }
             grep { $copy->has_vertex( $_ ) }
             map  { $self->{graph}->neighbours( $_ ) }
