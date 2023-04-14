@@ -17,6 +17,10 @@ my %SMILES_cases = (
     'C(C)C(CCC(CCC(C)C)(C)C)C' => '2,5,5,8-tetramethyldecane',
     'C(C)C(CC(C)C)CC' => '4-ethyl-2-methylhexane',
     'C(C)C(C(CC)(C)C)CCC' => '4-ethyl-3,3-dimethylheptane',
+
+    'CCCC(CCC)(C(C)C)C(C)C' => '4,4-di(propan-2-yl)heptane',
+    'CCCC(CCC)C(C)C' => '4-propan-2-ylheptane',
+
     'C(C)C(C(CCC)C)(C(CCCC)C)C' => '5-ethyl-4,5,6-trimethyldecane',
     'C(C)C(C(CC)C)C(C(CCC)(C)C)(CC)CC' => '4,5,5-triethyl-3,6,6-trimethylnonane',
     'C(C)C(C(C(CCC)C)(CCC)CCC)(CCCC)CCC' => '6-ethyl-4-methyl-5,5,6-tripropyldecane',
