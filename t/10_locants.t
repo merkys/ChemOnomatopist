@@ -9,10 +9,10 @@ use ChemOnomatopist::ChainHalf;
 use Graph::Undirected;
 use Test::More;
 
-sub chain($$@)
+sub chain
 {
     my( $graph, $other_center, @vertices ) = @_;
-    return ChemOnomatopist::ChainHalf->new( $graph, 2, $other_center, @vertices );
+    return ChemOnomatopist::ChainHalf->new( $graph, $other_center, @vertices );
 }
 
 plan tests => 10;
@@ -23,8 +23,8 @@ my @atoms = map { { symbol => 'C', number => $_ } } 0..99;
 my $graph = Graph::Undirected->new( refvertexed => 1 );
 $graph->add_path( map { $atoms[$_] } ( 1..8 ) );
 
-my $A = chain $graph, 5, map { $atoms[$_] } reverse 1..4;
-my $B = chain $graph, 4, map { $atoms[$_] } 5..8;
+my $A = chain( $graph, map { $atoms[$_] } 5, reverse 1..4 );
+my $B = chain( $graph, map { $atoms[$_] } 4, 5..8 );
 
 is $A->locant_positions_forward, 0;
 is $A->locant_positions_backward, 0;

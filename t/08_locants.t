@@ -8,10 +8,10 @@ use ChemOnomatopist::ChainHalf;
 use Graph::Undirected;
 use Test::More;
 
-sub chain($@)
+sub chain
 {
     my( $graph, @vertices ) = @_;
-    return ChemOnomatopist::ChainHalf->new( $graph, 1, undef, @vertices );
+    return ChemOnomatopist::ChainHalf->new( $graph, undef, @vertices );
 }
 
 plan tests => 4;

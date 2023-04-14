@@ -15,8 +15,8 @@ use List::Util qw( sum0 );
 
 sub new
 {
-    my( $class, $graph, $number_of_centers, $other_center, @vertices ) = @_;
-    my $self = { vertices => \@vertices, graph => $graph, number_of_centers => $number_of_centers, other_center => $other_center };
+    my( $class, $graph, $other_center, @vertices ) = @_;
+    my $self = { vertices => \@vertices, graph => $graph, other_center => $other_center };
     return bless $self, $class;
 }
 
