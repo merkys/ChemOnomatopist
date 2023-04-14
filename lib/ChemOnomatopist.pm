@@ -165,16 +165,15 @@ sub get_sidechain_name
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_sidechain_name()
     my %attachments;
-    my $attachment_name;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
             $graph->delete_edge( $atom, $neighbour );
             next if is_element( $neighbour, 'H' );
 
-            $attachment_name = get_sidechain_name( $graph, $neighbour );
-            my $prefix = ($attachment_name =~ /^\(/) ? 'yl)' : 'yl';
-            push @{$attachments{$attachment_name . $prefix}}, $i;
+            my $attachment_name = get_sidechain_name( $graph, $neighbour ) . 'yl';
+            $attachment_name .= ')' if $attachment_name =~ /^\(/;
+            push @{$attachments{$attachment_name}}, $i;
         }
     }
 
