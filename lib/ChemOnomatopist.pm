@@ -171,7 +171,7 @@ sub get_sidechain_name
             next if is_element( $neighbour, 'H' );
 
             my $attachment_name = get_sidechain_name( $graph, $neighbour ) . 'yl';
-            $attachment_name = "($attachment_name)" if $attachment_name =~ /^[0-9]/;
+            $attachment_name = bracket( $attachment_name ) if $attachment_name =~ /^[0-9]/;
             push @{$attachments{$attachment_name}}, $i;
         }
     }
@@ -218,7 +218,7 @@ sub get_chain_2
             next if is_element( $neighbour, 'H' );
 
             my $attachment_name = get_sidechain_name( $graph, $neighbour ) . 'yl';
-            $attachment_name = "($attachment_name)" if $attachment_name =~ /^[0-9]/;
+            $attachment_name = bracket( $attachment_name ) if $attachment_name =~ /^[0-9]/;
             push @{$attachments{$attachment_name}}, $i;
         }
     }
@@ -1354,6 +1354,12 @@ sub alkane_chain_name
 
     return $names[$N] if $N < @names;
     return IUPAC_numerical_multiplier( $N );
+}
+
+sub bracket
+{
+    my( $name ) = @_;
+    return $name =~ /\(/ ? "[$name]" : "($name)";
 }
 
 1;
