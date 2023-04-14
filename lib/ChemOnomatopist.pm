@@ -147,7 +147,7 @@ sub get_sidechain_name
     my $end = pop @order;
     my @chain;
     while( $end ) {
-        push @chain, $end;
+        unshift @chain, $end;
 
         my $min = $end;
         for my $neighbour ($graph->neighbours( $end )) {
@@ -158,7 +158,6 @@ sub get_sidechain_name
         last if $min eq $end;
         $end = $min;
     }
-    @chain = reverse @chain;
     $graph->delete_path( @chain );
 
     # Examine the attachments to the main chain: delete the edges
@@ -187,10 +186,13 @@ sub get_sidechain_name
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) .
                  '-' . $number . $attachment_name;
     }
+    $name .= alkane_chain_name( scalar @chain );
 
-    my $bracket =
-        ($options->{choose_direction} || $name !~ /^[0-9]/) ? '' : '(';
-    return $bracket . $name . alkane_chain_name( scalar @chain );
+    if( !$options->{choose_direction} && $name =~ /^[0-9]/ ) {
+        $name = '(' . $name;
+    }
+
+    return $name;
 }
 
 sub get_chain_2
@@ -220,9 +222,9 @@ sub get_chain_2
             $graph->delete_edge( $atom, $neighbour );
             next if is_element( $neighbour, 'H' );
 
-            my $attachment_name = get_sidechain_name( $graph, $neighbour );
-            my $prefix = ($attachment_name =~ /^\(/) ? 'yl)' : 'yl';
-            push @{$attachments{$attachment_name . $prefix}}, $i;
+            my $attachment_name = get_sidechain_name( $graph, $neighbour ) . 'yl';
+            $attachment_name .= ')' if $attachment_name =~ /^\(/;
+            push @{$attachments{$attachment_name}}, $i;
         }
     }
 
@@ -257,10 +259,13 @@ sub get_chain_2
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) .
                  '-' . $number . $attachment_name;
     }
+    $name .= alkane_chain_name( scalar @chain );
 
-    my $bracket =
-        ($options->{choose_direction} || $name !~ /^[0-9]/) ? '' : '(';
-    return $bracket . $name . alkane_chain_name( scalar @chain );
+    if( !$options->{choose_direction} && $name =~ /^[0-9]/ ) {
+        $name = '(' . $name;
+    }
+
+    return $name;
 }
 
 # FIXME: not used in the main code yet
