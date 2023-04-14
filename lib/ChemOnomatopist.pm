@@ -254,13 +254,8 @@ sub get_chain_2
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) .
                  '-' . $number . $attachment_name;
     }
-    $name .= alkane_chain_name( scalar @chain );
 
-    if( !$options->{choose_direction} && $name =~ /^[0-9]/ ) {
-        $name = '(' . $name;
-    }
-
-    return $name;
+    return $name . alkane_chain_name( scalar @chain );
 }
 
 # FIXME: not used in the main code yet
