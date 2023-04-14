@@ -11,7 +11,7 @@ use Test::More;
 sub chain($@)
 {
     my( $graph, @vertices ) = @_;
-    return ChemOnomatopist::ChainHalf->new( $graph, 1, @vertices );
+    return ChemOnomatopist::ChainHalf->new( $graph, 1, undef, @vertices );
 }
 
 plan tests => 4;
