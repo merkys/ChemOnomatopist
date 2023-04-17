@@ -96,16 +96,14 @@ sub number_of_branches_in_sidechains()
 {
     my( $self ) = @_;
 
-    # Make a copy with all atoms from candidate chains removed.
-    my $copy = $self->{graph}->copy;
-    $copy->delete_vertices( $self->vertices );
+    my $graph = $self->_disconnected_chain_graph;
+    my @vertex_neighbours = map { $graph->neighbours( $_ ) } $self->vertices;
+    $graph->delete_vertices( $self->vertices );
 
-    return sum0 map  { $_ > 2 ? $_ - 2 : 0 }
-                map  { $copy->degree( $_ ) }
-                map  { Graph::Traversal::DFS->new( $copy, start => $_ )->dfs }
-                grep { $copy->has_vertex( $_ ) }
-                map  { $self->{graph}->neighbours( $_ ) }
-                     $self->vertices;
+    return sum0 map { $_ > 2 ? $_ - 2 : 0 }
+                map { $graph->degree( $_ ) }
+                map { Graph::Traversal::DFS->new( $graph, start => $_ )->dfs }
+                    @vertex_neighbours;
 }
 
 sub number_of_carbons()
