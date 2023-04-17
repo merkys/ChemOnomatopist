@@ -42,19 +42,8 @@ sub branch_positions()
 {
     my( $self ) = @_;
 
-    my $graph = $self->{graph}->copy;
+    my $graph = $self->_disconnected_chain_graph;
     my @vertices = $self->vertices;
-
-    if( $self->{other_center} ) {
-        # Cut the edge to the other center
-        $graph->delete_edge( $vertices[0], $self->{other_center} );
-    } else {
-        # Cut the edges to the other candidates
-        for ($graph->neighbours( $vertices[0] )) {
-            $graph->delete_edge( $vertices[0], $_ );
-        }
-    }
-    $graph->delete_path( @vertices );
 
     return map  { ( $_ ) x $graph->degree( $vertices[$_] ) }
            grep { $graph->degree( $vertices[$_] ) }
@@ -123,23 +112,41 @@ sub number_of_carbons()
 {
     my( $self ) = @_;
 
-    # Make a copy with all atoms from candidate chains removed.
-    my $copy = $self->{graph}->copy;
-    $copy->delete_vertices( $self->vertices );
+    my $graph = $self->_disconnected_chain_graph;
 
     my $C = grep { ChemOnomatopist::is_element( $_, 'C' ) }
-            map  { Graph::Traversal::DFS->new( $copy, start => $_ )->dfs }
-            grep { $copy->has_vertex( $_ ) }
-            map  { $self->{graph}->neighbours( $_ ) }
+            map  { Graph::Traversal::DFS->new( $graph, start => $_ )->dfs }
                  $self->vertices;
 
-    return $C;
+    # Since main chain carbons are included in the count, they have to be subtracted.
+    return $C - $self->length;
 }
 
 sub number_of_branches()
 {
     my( $self ) = @_;
     return scalar $self->branch_positions;
+}
+
+sub _disconnected_chain_graph()
+{
+    my( $self ) = @_;
+
+    my $graph = $self->{graph}->copy;
+    my @vertices = $self->vertices;
+
+    if( $self->{other_center} ) {
+        # Cut the edge to the other center
+        $graph->delete_edge( $vertices[0], $self->{other_center} );
+    } else {
+        # Cut the edges to the other candidates
+        for ($graph->neighbours( $vertices[0] )) {
+            $graph->delete_edge( $vertices[0], $_ );
+        }
+    }
+    $graph->delete_path( @vertices );
+
+    return $graph;
 }
 
 1;
