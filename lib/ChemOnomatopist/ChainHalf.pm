@@ -41,7 +41,24 @@ sub vertices()
 sub branch_positions()
 {
     my( $self ) = @_;
-    return tree_branch_positions( $self->{graph}, $self->vertices );
+
+    my $graph = $self->{graph}->copy;
+    my @vertices = $self->vertices;
+
+    if( $self->{other_center} ) {
+        # Cut the edge to the other center
+        $graph->delete_edge( $vertices[0], $self->{other_center} );
+    } else {
+        # Cut the edges to the other candidates
+        for ($graph->neighbours( $vertices[0] )) {
+            $graph->delete_edge( $vertices[0], $_ );
+        }
+    }
+    $graph->delete_path( @vertices );
+
+    return map  { ( $_ ) x $graph->degree( $vertices[$_] ) }
+           grep { $graph->degree( $vertices[$_] ) }
+                0..$#vertices;
 }
 
 sub length()
@@ -70,6 +87,7 @@ sub locant_names()
     return @locants;
 }
 
+# Sum of locant positions (1-based) as calculated as if this chain half is terminal.
 sub locant_positions_forward()
 {
     my( $self ) = @_;
@@ -77,6 +95,7 @@ sub locant_positions_forward()
     return ($self->length + (defined $self->{other_center})) * @locants + sum0 @locants;
 }
 
+# Sum of locant positions (1-based) as calculated as if this chain half is the first part.
 sub locant_positions_backward()
 {
     my( $self ) = @_;
