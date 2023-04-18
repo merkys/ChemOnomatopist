@@ -10,7 +10,7 @@ use Test::More;
 my %SMILES_cases = (
     'CCCC'   => 'butane',
     'CCCCC'  => 'pentane',
-    'CC(C)C' => '2-methylpropane', # FIXME: 'methylpropane'
+    'CC(C)C' => 'methylpropane',
     'C1CCC1' => 'cyclobutane',
     'c1ccccccccccccc1' => 'cyclotetradecaheptaene',
     'CC(C)CC(CCC(C)C)C' => '2,4,7-trimethyloctane',

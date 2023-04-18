@@ -251,8 +251,12 @@ sub get_chain_2
             $number = '' if $number eq 'mono';
             $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
         }
-        $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) .
-                 '-' . $number . $attachment_name;
+
+        if( @chain > 3 ) {
+            # As propane cannot have other attachment site but 2, the site is usually omitted
+            $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
+        }
+        $name .= $number . $attachment_name;
     }
 
     return $name . alkane_chain_name( scalar @chain );
