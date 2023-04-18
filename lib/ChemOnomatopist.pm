@@ -618,6 +618,7 @@ sub rule_greatest_number_of_side_chains_new
     return @path_parts_now;
 }
 
+# Construct chains (ChemOnomatopist::Chain) having least sums of locant positions.
 sub rule_lowest_numbered_locants_new
 {
     my( @path_parts ) = @_;
