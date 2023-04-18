@@ -603,11 +603,13 @@ sub rule_greatest_number_of_side_chains_new
 {
     my( @path_parts ) = @_;
 
-    my @sorted_values = sort uniq map { $_->number_of_branches } @path_parts;
+    my @sorted_values = sort { $b <=> $a }
+                        uniq map { $_->number_of_branches }
+                                 @path_parts;
 
     my @path_parts_now;
     my $seen_groups = set();
-    for my $value (reverse @sorted_values) {
+    for my $value (@sorted_values) {
         last if $seen_groups->size >= 2;
         push @path_parts_now,
              grep { $_->number_of_branches == $value &&
@@ -652,7 +654,9 @@ sub rule_most_carbon_in_side_chains_new
 {
     my( @chains ) = @_;
 
-    my( $max_value ) = reverse sort uniq map { $_->number_of_carbons } @chains;
+    my( $max_value ) = sort { $b <=> $a }
+                       uniq map { $_->number_of_carbons }
+                                @chains;
     return grep { $_->number_of_carbons == $max_value } @chains;
 }
 
