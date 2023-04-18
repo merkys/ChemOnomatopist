@@ -60,8 +60,7 @@ sub locant_names()
 {
     my( $self ) = @_;
 
-    my $graph = $self->{graph}->copy;
-    $graph->delete_path( $self->vertices );
+    my $graph = $self->_disconnected_chain_graph;
 
     my @locants;
     for my $vertex ($self->vertices) {
