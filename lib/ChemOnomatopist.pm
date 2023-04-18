@@ -544,8 +544,7 @@ sub select_main_chain_new
         }
     } else {
         # Longest path has even length
-        # Graph copy is needed as it has to be modified to find the longest paths from both centers.
-        # FIXME: This should no longer happen: ChemOnomatopist::ChainHalf knows about this bond and has to cut it by itself
+        # Graph copy without center edge is required by graph_longest_paths_from_vertex()
         my $copy = $tree->copy;
         $copy->delete_edge( @center );
         for my $vertex ( @center ) {
