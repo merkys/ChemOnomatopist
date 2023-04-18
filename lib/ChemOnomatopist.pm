@@ -603,16 +603,21 @@ sub rule_greatest_number_of_side_chains_new
 {
     my( @path_parts ) = @_;
 
-    my @sorted_values = sort uniq map { $_->number_of_branches } @path_parts;
+    my @sorted_values = sort { $b <=> $a }
+                        uniq map { $_->number_of_branches }
+                                 @path_parts;
 
     my @path_parts_now;
     my $seen_groups = set();
-    for my $value (reverse @sorted_values) {
+    for my $value (@sorted_values) {
+        for my $path (@path_parts) {
+            next if $path->number_of_branches != $value;
+            next if $seen_groups->has( $path->group );
+            push @path_parts_now, $path;
+            $seen_groups->insert( $path->group );
+            last if $seen_groups->size >= 2;
+        }
         last if $seen_groups->size >= 2;
-        push @path_parts_now,
-             grep { $_->number_of_branches == $value &&
-                    !$seen_groups->has( $_->group ) } @path_parts;
-        $seen_groups = set( map { $_->group } @path_parts_now );
     }
 
     return @path_parts_now;
