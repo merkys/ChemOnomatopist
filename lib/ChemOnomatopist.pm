@@ -554,31 +554,19 @@ sub select_main_chain_new
         }
     }
 
-    for my $rule ( sub { return @_ },
-                   \&rule_greatest_number_of_side_chains_new ) {
-        my @path_parts_now = $rule->( @path_parts );
-
-        # CHECK: Can a rule cause disappearance of parts?
-        # FIXME: Methane will have a single part
-        next if @path_parts_now < 2;
-
-        @path_parts = @path_parts_now; # Narrow down the selection
-
-        # If two chains cannot be chosen now, pass on to the next rule
-        next unless @path_parts == 2;
-        next unless $path_parts[0] ne $path_parts[1];
-
-        # FIXME: There should be a nicer way to do this...
-        # FIXME: rule_lowest_numbered_locants_new() may return more than one chain, need to sort them by attachment names
-        my @chains = rule_lowest_numbered_locants_new( @path_parts );
-        return $chains[0]->vertices;
+    # Generate all possible chains.
+    # FIXME: This needs optimisation.
+    my @chains;
+    for my $part1 (@path_parts) {
+        for my $part2 (@path_parts) {
+            next if $part1->group eq $part2->group;
+            push @chains, ChemOnomatopist::Chain->new( $part1, $part2 );
+        }
     }
 
-    # At this point we are left with a set of longest chains all having the same number of side chains
-
-    my @chains = rule_lowest_numbered_locants_new( @path_parts );
-
     for my $rule ( sub { return @_ },
+                   \&rule_greatest_number_of_side_chains_new, # After this rule we are left with a set of longest chains all having the same number of side chains
+                   \&rule_lowest_numbered_locants_new,
                    \&rule_most_carbon_in_side_chains_new,
                    \&rule_least_branched_side_chains_new,
                    \&pick_chain_with_lowest_attachments_alphabetically_new ) {
@@ -601,53 +589,37 @@ sub select_main_chain_new
 
 sub rule_greatest_number_of_side_chains_new
 {
-    my( @path_parts ) = @_;
+    my( @chains ) = @_;
 
-    my @sorted_values = sort { $b <=> $a }
-                        uniq map { $_->number_of_branches }
-                                 @path_parts;
-
-    my @path_parts_now;
-    my $seen_groups = set();
-    for my $value (@sorted_values) {
-        last if $seen_groups->size >= 2;
-        push @path_parts_now,
-             grep { $_->number_of_branches == $value &&
-                    !$seen_groups->has( $_->group ) } @path_parts;
-        $seen_groups = set( map { $_->group } @path_parts_now );
-    }
-
-    return @path_parts_now;
+    my( $max_value ) = sort { $b <=> $a }
+                       uniq map { $_->number_of_branches }
+                                @chains;
+    return grep { $_->number_of_carbons == $max_value } @chains;
 }
 
-# Construct chains (ChemOnomatopist::Chain) having least sums of locant positions.
 sub rule_lowest_numbered_locants_new
 {
-    my( @path_parts ) = @_;
+    my( @chains ) = @_;
 
-    my @chains;
+    my @chains_now;
     my $min_value;
 
-    for my $part1 (@path_parts) {
-        for my $part2 (@path_parts) {
-            next if $part1->group eq $part2->group;
-            my $chain = ChemOnomatopist::Chain->new( $part1, $part2 );
-            my $value = $chain->locant_positions;
-            if( @chains ) {
-                if( $value < $min_value ) {
-                    @chains = ( $chain );
-                    $min_value = $value;
-                } elsif( $value == $min_value ) {
-                    push @chains, $chain;
-                }
-            } else {
-                push @chains, $chain;
+    for my $chain (@chains) {
+        my $value = $chain->locant_positions;
+        if( @chains_now ) {
+            if( $value < $min_value ) {
+                @chains_now = ( $chain );
                 $min_value = $value;
+            } elsif( $value == $min_value ) {
+                push @chains_now, $chain;
             }
+        } else {
+            push @chains_now, $chain;
+            $min_value = $value;
         }
     }
 
-    return @chains;
+    return @chains_now;
 }
 
 sub rule_most_carbon_in_side_chains_new
