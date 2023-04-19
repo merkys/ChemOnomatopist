@@ -19,6 +19,15 @@ use List::Util qw( all any max min sum0 uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
+# There must be a nicer way to handle calls to parent...
+sub AUTOLOAD {
+    our $AUTOLOAD;
+    my $call = $AUTOLOAD;
+    $call =~ s/.*:://;
+    return if $call eq 'DESTROY';
+    return ChemOnomatopist->can( $call )->( @_ );
+}
+
 no warnings 'recursion';
 
 my @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
@@ -114,11 +123,6 @@ sub get_name
     return get_mainchain_name( $graph->copy, $order ) . 'ane';
 }
 
-sub get_sidechain_name { &ChemOnomatopist::get_sidechain_name }
-sub get_mainchain_name { &ChemOnomatopist::get_mainchain_name }
-
-sub is_element { &ChemOnomatopist::is_element }
-
 # Subroutine gets an graph, removes all vertices that do not have C as their element.
 # Performs BFS on that chain. During BFS, distance from start is calculated to each vertice
 sub BFS_order_carbons_only_return_lengths
@@ -145,8 +149,6 @@ sub BFS_order_carbons_only_return_lengths
 
     return \%lengths, $bfs->bfs;
 }
-
-sub BFS_order_carbons_only { &ChemOnomatopist::BFS_order_carbons_only }
 
 # Returns main (parental) chain to be used during the naming
 sub select_main_chain
@@ -813,9 +815,6 @@ sub compare_locant_placings {
     return 0;
 }
 
-sub compare_only_aphabetical { &ChemOnomatopist::cmp_attachments }
-sub cmp_attachments { &ChemOnomatopist::cmp_attachments }
-
 # Sorts arrays from lowest to biggest by values
 sub compare_arrays {
     my @first  = @$a;
@@ -828,7 +827,5 @@ sub compare_arrays {
 
     return 0;
 }
-
-sub alkane_chain_name { &ChemOnomatopist::alkane_chain_name }
 
 1;
