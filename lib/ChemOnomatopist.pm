@@ -20,9 +20,7 @@ use ChemOnomatopist::Util::Graph qw(
     tree_branch_positions
     tree_number_of_branches
 );
-use Chemistry::OpenSMILES::Writer qw( write_SMILES );
 use Clone qw( clone );
-use Graph::Nauty qw( canonical_order );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
 use List::Util qw( all any max min sum0 uniq );
