@@ -44,6 +44,13 @@ sub branch_positions()
            ( map { $self->{halves}[1]->length + $_ }             @half1_positions );
 }
 
+sub locant_names()
+{
+    my( $self ) = @_;
+    return reverse( $self->{halves}[0]->locant_names ),
+           $self->{halves}[1]->locant_names;
+}
+
 sub locant_positions()
 {
     my( $self ) = @_;

@@ -521,7 +521,7 @@ sub select_main_chain_new
         }
     }
 
-    return @{$path_parts[0]} if @path_parts == 1; # methane
+    return $path_parts[0]->vertices if @path_parts == 1; # methane
 
     # Generate all possible chains.
     # FIXME: This needs optimisation.
@@ -609,10 +609,14 @@ sub rule_least_branched_side_chains_new
     return grep { $_->number_of_branches_in_sidechains == $min_value } @chains;
 }
 
-# FIXME: This rule is dumb now: it just returns the first chain it gets
 sub pick_chain_with_lowest_attachments_alphabetically_new
 {
-    return $_[0];
+    my( @chains ) = @_;
+
+    my @locant_names = map { [ $_->locant_names ] } @chains;
+    my @sorted = sort { cmp_attachments( $locant_names[$a], $locant_names[$b] ) }
+                      0..$#locant_names;
+    return $chains[$sorted[0]];
 }
 
 # Creating tree like structure for all the longest paths in molecule
@@ -1231,7 +1235,7 @@ sub compare_arrays {
     my @second = @$b;
     my @index  = (0..scalar @first-1);
 
-    foreach( @index ){
+    foreach( @index ) {
         return $first[$_] <=> $second[$_] if $first[$_] <=> $second[$_];
     }
 
