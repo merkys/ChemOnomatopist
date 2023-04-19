@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Old;
 use List::Util qw( all );
 use Test::More;
 
@@ -39,5 +40,5 @@ plan tests => 2 * scalar( keys %SMILES_cases );
 
 for my $case (sort keys %SMILES_cases) {
     is ChemOnomatopist::get_name( $case ), $SMILES_cases{$case}, 'new';
-    is ChemOnomatopist::get_name( $case, 1 ), $SMILES_cases{$case}, 'old';
+    is ChemOnomatopist::Old::get_name( $case ), $SMILES_cases{$case}, 'old';
 }
