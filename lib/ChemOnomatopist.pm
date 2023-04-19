@@ -28,21 +28,21 @@ use Set::Object qw( set );
 
 no warnings 'recursion';
 
-my @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
-                'hexa', 'hepta', 'octa', 'nona', 'deca',
-                'undeca', 'dodeca', 'trideca', 'tetradeca',
-                'pentadeca', 'hexadeca', 'heptadeca', 'octadeca', 'nonadeca',
-                'icosa', 'henicosa', 'docosa', 'tricosa',
-                'tetracosa', 'pentacosa', 'hexacosa',
-                'heptacosa', 'octacosa', 'nonacosa', 'triaconta',
-                'hentriaconta', 'dotriaconta', 'tritriaconta', 'tetratriaconta',
-                'pentatriaconta', 'hexatriaconta', 'heptatriaconta',
-                'octatriaconta', 'nonatriaconta', 'tetraconta' );
+our @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
+                 'hexa', 'hepta', 'octa', 'nona', 'deca',
+                 'undeca', 'dodeca', 'trideca', 'tetradeca',
+                 'pentadeca', 'hexadeca', 'heptadeca', 'octadeca', 'nonadeca',
+                 'icosa', 'henicosa', 'docosa', 'tricosa',
+                 'tetracosa', 'pentacosa', 'hexacosa',
+                 'heptacosa', 'octacosa', 'nonacosa', 'triaconta',
+                 'hentriaconta', 'dotriaconta', 'tritriaconta', 'tetratriaconta',
+                 'pentatriaconta', 'hexatriaconta', 'heptatriaconta',
+                 'octatriaconta', 'nonatriaconta', 'tetraconta' );
 
-my @numberskis = ( '?', '', 'bis', 'tris', 'tetrakis', 'pentakis',
-                   'hexakis', 'heptakis', 'octakis', 'nonakis', 'decakis' );
+our @numberskis = ( '?', '', 'bis', 'tris', 'tetrakis', 'pentakis',
+                    'hexakis', 'heptakis', 'octakis', 'nonakis', 'decakis' );
 
-my %preferrable_names = ( 
+our %preferrable_names = (
                 '(1-methylethyl)' => 'propan-2-yl',
                 '(1-ethyl-1-methylpropyl)' => '(3-methylpentan-3-yl)',
                 '(1,1-dimethylethyl)' => 'tert-butyl',
