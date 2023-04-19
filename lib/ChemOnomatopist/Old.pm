@@ -12,7 +12,6 @@ use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
 );
-use Chemistry::OpenSMILES::Writer qw( write_SMILES );
 use Clone qw( clone );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
