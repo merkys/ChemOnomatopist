@@ -20,9 +20,7 @@ use ChemOnomatopist::Util::Graph qw(
     tree_branch_positions
     tree_number_of_branches
 );
-use Chemistry::OpenSMILES::Writer qw( write_SMILES );
 use Clone qw( clone );
-use Graph::Nauty qw( canonical_order );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
 use List::Util qw( all any max min sum0 uniq );
@@ -43,7 +41,7 @@ my @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
                 'octatriaconta', 'nonatriaconta', 'tetraconta' );
 
 my @numberskis = ( '?', '', 'bis', 'tris', 'tetrakis', 'pentakis',
-                'hexakis', 'heptakis', 'octakis', 'nonakis', 'decakis' );
+                   'hexakis', 'heptakis', 'octakis', 'nonakis', 'decakis' );
 
 my %preferrable_names = ( 
                 '(1-methylethyl)' => 'propan-2-yl',
