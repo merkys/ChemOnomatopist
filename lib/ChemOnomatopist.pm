@@ -25,7 +25,7 @@ use Clone qw( clone );
 use Graph::Nauty qw( canonical_order );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
-use List::Util qw( all any max sum0 uniq );
+use List::Util qw( all any max min sum0 uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
@@ -614,8 +614,8 @@ sub pick_chain_with_lowest_attachments_alphabetically_new
     my( @chains ) = @_;
 
     my @locant_names = map { [ $_->locant_names ] } @chains;
-    my @sorted = sort { cmp_attachments( $locant_names[$a], $locant_names[$b] ) }
-                      0..$#locant_names;
+    my @sorted = reverse sort { cmp_attachments( $locant_names[$a], $locant_names[$b] ) }
+                              0..$#locant_names;
     return $chains[$sorted[0]];
 }
 
@@ -1217,13 +1217,21 @@ sub cmp_attachments
         my $a_alpha = $a[$_];
         my $b_alpha = $b[$_];
 
-        $a_alpha =~ s/[^a-zA-Z]+//g;
-        $b_alpha =~ s/[^a-zA-Z]+//g;
+        my @A = ref $a_alpha ? sort @$a_alpha : ( $a_alpha );
+        my @B = ref $b_alpha ? sort @$b_alpha : ( $b_alpha );
 
-        $a_alpha = 'butyl' if $a_alpha eq 'tertbutyl';
-        $b_alpha = 'butyl' if $b_alpha eq 'tertbutyl';
+        for (0..min( scalar( @A ), scalar( @B ) )-1) {
+            my $a_alpha = $A[$_];
+            my $b_alpha = $B[$_];
 
-        return $b_alpha cmp $a_alpha if $b_alpha cmp $a_alpha;
+            $a_alpha =~ s/[^a-zA-Z]+//g;
+            $b_alpha =~ s/[^a-zA-Z]+//g;
+
+            $a_alpha = 'butyl' if $a_alpha eq 'tertbutyl';
+            $b_alpha = 'butyl' if $b_alpha eq 'tertbutyl';
+
+            return $b_alpha cmp $a_alpha if $b_alpha cmp $a_alpha;
+        }
     }
 
     return 0;
