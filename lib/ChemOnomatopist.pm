@@ -537,19 +537,6 @@ sub cmp_attachments
     return 0;
 }
 
-# Sorts arrays from lowest to biggest by values
-sub compare_arrays {
-    my @first  = @$a;
-    my @second = @$b;
-    my @index  = (0..scalar @first-1);
-
-    foreach( @index ) {
-        return $first[$_] <=> $second[$_] if $first[$_] <=> $second[$_];
-    }
-
-    return 0;
-}
-
 # According to https://en.wikipedia.org/wiki/IUPAC_numerical_multiplier
 sub IUPAC_numerical_multiplier
 {

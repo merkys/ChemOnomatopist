@@ -813,24 +813,7 @@ sub compare_locant_placings {
     return 0;
 }
 
-# Sorts given names only based on alphabetical part of the name
-sub compare_only_aphabetical {
-    my $a_alpha = $a;
-    my $b_alpha = $b;
-    $a_alpha =~ s/[^a-zA-Z]+//g;
-    $b_alpha =~ s/[^a-zA-Z]+//g;
-
-    # FIXME: Not sure how to sort 'butyl' and 'tertbutyl', but stable
-    # order is important.
-    unless( grep( { $_ eq 'butyl'     } ( $a_alpha, $b_alpha ) ) &&
-            grep( { $_ eq 'tertbutyl' } ( $a_alpha, $b_alpha ) ) ) {
-        $a_alpha = 'butyl' if $a_alpha eq 'tertbutyl';
-        $b_alpha = 'butyl' if $b_alpha eq 'tertbutyl';
-    }
-
-    return $a_alpha cmp $b_alpha;
-}
-
+sub compare_only_aphabetical { &ChemOnomatopist::cmp_attachments }
 sub cmp_attachments { &ChemOnomatopist::cmp_attachments }
 
 # Sorts arrays from lowest to biggest by values
