@@ -8,23 +8,12 @@ use warnings;
 
 use parent ChemOnomatopist::;
 
-use ChemOnomatopist::Chain;
-use ChemOnomatopist::ChainHalf;
-use ChemOnomatopist::Group;
-use ChemOnomatopist::Group::Carbonyl;
-use ChemOnomatopist::Group::Carboxyl;
-use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
-    graph_center
-    graph_longest_paths_from_vertex
-    tree_branch_positions
-    tree_number_of_branches
 );
 use Chemistry::OpenSMILES::Writer qw( write_SMILES );
 use Clone qw( clone );
-use Graph::Nauty qw( canonical_order );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
 use List::Util qw( all any max min sum0 uniq );
@@ -158,23 +147,7 @@ sub BFS_order_carbons_only_return_lengths
     return \%lengths, $bfs->bfs;
 }
 
-# BFS is performed for the given graph after all vertices that are not carbons
-# removed
-sub BFS_order_carbons_only
-{
-    my( $graph, $start ) = @_;
-
-    my $carbon_graph = $graph->copy;
-    $carbon_graph->delete_vertices( grep { !is_element( $_, 'C' ) } $carbon_graph->vertices );
-
-    my $bfs;
-    if( $start ) {
-        $bfs = Graph::Traversal::BFS->new( $carbon_graph, start => $start );
-    } else {
-        $bfs = Graph::Traversal::BFS->new( $carbon_graph );
-    }
-    return $bfs->bfs;
-}
+sub BFS_order_carbons_only { &ChemOnomatopist::BFS_order_carbons_only }
 
 # Returns main (parental) chain to be used during the naming
 sub select_main_chain
