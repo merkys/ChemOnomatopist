@@ -598,7 +598,7 @@ sub rule_greatest_number_of_side_chains_new
     my( $max_value ) = sort { $b <=> $a }
                        uniq map { $_->number_of_branches }
                                 @chains;
-    return grep { $_->number_of_carbons == $max_value } @chains;
+    return grep { $_->number_of_branches == $max_value } @chains;
 }
 
 sub rule_lowest_numbered_locants_new
