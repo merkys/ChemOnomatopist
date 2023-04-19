@@ -89,24 +89,29 @@ sub get_name
     die "nothing supplied for get_name()\n" unless $graph;
 
     # Check if graph is a tree as trees are easy to process
-    if( scalar $graph->edges != $graph->vertices - 1 ) {
+    if( $graph->edges != $graph->vertices - 1 ) {
         # If it is not a tree, than the graph has cycles, and we have to
         # do our best to recognise them. To make it easier, hydrogen atoms
         # are removed here for now.
         $graph->delete_vertices( grep { $_->{symbol} eq 'H' } $graph->vertices );
-        my $smiles = canonical_SMILES( $graph );
-        while( $smiles =~ s/\(([^\()]+)\)\)/$1)/ ) {}; # need to simplify SMILES
-        if( $smiles =~ /^C1\((C+)1\)$/ ) {
+        if( $graph->edges != $graph->vertices ) {
+            die "cannot handle cycles with attachments for now\n";
+        }
+        if( any { uc $_->{symbol} ne 'C' } $graph->vertices ) {
+            die "cannot handle heterocycles for now\n";
+        }
+        if( all { $_->{symbol} eq 'C' } $graph->vertices ) {
             # Cycloalkane detected
             return 'cyclo' . alkane_chain_name( scalar $graph->vertices ) . 'ane';
-        } elsif( $smiles =~ /^c:1\(:c((:c)+):1\)$/ &&
-                 ( length( $1 ) / 2 ) =~ /^(4|6|8|10|12|14|16)$/ ) {
+        }
+        if( ( all { $_->{symbol} eq 'c' } $graph->vertices ) &&
+            ( scalar $graph->vertices ) =~ /^(4|6|8|10|12|14|16)$/ ) {
             # Annulene detected
             return 'cyclo' . $numbers[scalar $graph->vertices] .
                    $numbers[scalar $graph->vertices / 2] . 'ene';
         }
         # No other types of graphs with cycles can be processed for now
-        die "cannot handle graphs with cycles for now\n";
+        die "only limited set of homocycles is supported for now\n";
     }
 
     # Check for unsupported elements.
@@ -318,46 +323,6 @@ sub find_groups
     }
 
     return;
-}
-
-# Original source:
-# URL: svn+ssh://saulius-grazulis.lt/home/andrius/svn-repositories/cod-smi-generation/trunk/bin/isomorphism.pl
-# Relative URL: ^/trunk/bin/isomorphism.pl
-# Repository Root: svn+ssh://saulius-grazulis.lt/home/andrius/svn-repositories/cod-smi-generation
-# Repository UUID: 389e3913-ab09-4cbd-b281-3fb5d633c480
-# Revision: 570
-sub canonical_SMILES
-{
-    my( $graph, $color_sub ) = @_;
-
-    my @order = canonical_order( $graph, $color_sub );
-    my %order;
-    for (0..$#order) {
-        $order{$order[$_]} = $_;
-    }
-
-    # Ignoring most likely harmless warning emitted by Set::Object
-    local $SIG{__WARN__} = sub {
-        return if $_[0] =~ /^Reference found where even-sized list expected at \S+\/Set\/Object\.pm line [0-9]+\.\n$/;
-        print STDERR $_[0];
-    };
-
-    my $smiles = write_SMILES(
-        $graph,
-        sub {
-            my @sorted = sort { $order{$a} <=> $order{$b} }
-                              keys %{$_[0]};
-            return $_[0]->{shift @sorted};
-        } );
-
-    # In a SMILES descriptor, one can substitute all '/' with '\'
-    # and vice versa, retaining correct cis/trans settings.
-    # Similar rule is explained in O'Boyle, 2012, Rule H.
-    if( $smiles =~ /([\/\\])/ && $1 eq '\\' ) {
-        $smiles =~ tr/\/\\/\\\//;
-    }
-
-    return $smiles;
 }
 
 # Check if an object or Perl hash is of certain chemical element
