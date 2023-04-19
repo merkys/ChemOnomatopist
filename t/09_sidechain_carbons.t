@@ -36,7 +36,7 @@ $graph->add_path( 22, 26, 27 );
                          chain( $graph, 0, 31..35 ),
                          chain( $graph, 0, 41..45 ) ], 2;
 
-@chains = ChemOnomatopist::rule_most_carbon_in_side_chains_new( @chains );
+@chains = ChemOnomatopist::rule_most_carbon_in_side_chains( @chains );
 
 is scalar( @chains ), 6;
 
@@ -46,6 +46,6 @@ is scalar( @chains ), 6;
                          chain( $graph, 0, 31..35 ),
                          chain( $graph, 0, 41..45 ) ], 2;
 
-@chains = ChemOnomatopist::rule_most_carbon_in_side_chains_new( @chains );
+@chains = ChemOnomatopist::rule_most_carbon_in_side_chains( @chains );
 
 is scalar( @chains ), 3;

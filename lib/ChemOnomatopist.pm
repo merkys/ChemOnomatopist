@@ -20,7 +20,6 @@ use ChemOnomatopist::Util::Graph qw(
     tree_branch_positions
     tree_number_of_branches
 );
-use Clone qw( clone );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
 use List::Util qw( all any max min sum0 uniq );
@@ -404,11 +403,11 @@ sub select_main_chain
     }
 
     for my $rule ( sub { return @_ },
-                   \&rule_greatest_number_of_side_chains_new, # After this rule we are left with a set of longest chains all having the same number of side chains
-                   \&rule_lowest_numbered_locants_new,
-                   \&rule_most_carbon_in_side_chains_new,
-                   \&rule_least_branched_side_chains_new,
-                   \&pick_chain_with_lowest_attachments_alphabetically_new ) {
+                   \&rule_greatest_number_of_side_chains, # After this rule we are left with a set of longest chains all having the same number of side chains
+                   \&rule_lowest_numbered_locants,
+                   \&rule_most_carbon_in_side_chains,
+                   \&rule_least_branched_side_chains,
+                   \&pick_chain_with_lowest_attachments_alphabetically ) {
         my @chains_now = $rule->( @chains );
 
         # CHECK: Can a rule cause disappearance of all chains?
@@ -426,7 +425,7 @@ sub select_main_chain
     return ();
 }
 
-sub rule_greatest_number_of_side_chains_new
+sub rule_greatest_number_of_side_chains
 {
     my( @chains ) = @_;
 
@@ -436,7 +435,7 @@ sub rule_greatest_number_of_side_chains_new
     return grep { $_->number_of_branches == $max_value } @chains;
 }
 
-sub rule_lowest_numbered_locants_new
+sub rule_lowest_numbered_locants
 {
     my( @chains ) = @_;
 
@@ -461,7 +460,7 @@ sub rule_lowest_numbered_locants_new
     return @chains_now;
 }
 
-sub rule_most_carbon_in_side_chains_new
+sub rule_most_carbon_in_side_chains
 {
     my( @chains ) = @_;
 
@@ -471,7 +470,7 @@ sub rule_most_carbon_in_side_chains_new
     return grep { $_->number_of_carbons == $max_value } @chains;
 }
 
-sub rule_least_branched_side_chains_new
+sub rule_least_branched_side_chains
 {
     my( @chains ) = @_;
 
@@ -479,7 +478,7 @@ sub rule_least_branched_side_chains_new
     return grep { $_->number_of_branches_in_sidechains == $min_value } @chains;
 }
 
-sub pick_chain_with_lowest_attachments_alphabetically_new
+sub pick_chain_with_lowest_attachments_alphabetically
 {
     my( @chains ) = @_;
 
