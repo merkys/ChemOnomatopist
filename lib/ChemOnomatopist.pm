@@ -41,7 +41,7 @@ my @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
                 'octatriaconta', 'nonatriaconta', 'tetraconta' );
 
 my @numberskis = ( '?', '', 'bis', 'tris', 'tetrakis', 'pentakis',
-                'hexakis', 'heptakis', 'octakis', 'nonakis', 'decakis' );
+                   'hexakis', 'heptakis', 'octakis', 'nonakis', 'decakis' );
 
 my %preferrable_names = ( 
                 '(1-methylethyl)' => 'propan-2-yl',
