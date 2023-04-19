@@ -126,9 +126,7 @@ sub get_name
     } else {
         ( $order ) = select_main_chain( $graph->copy );
     }
-    return get_mainchain_name( $graph->copy,
-                        $order,
-                        { choose_direction => 1 } ) . 'ane';
+    return get_mainchain_name( $graph->copy, $order ) . 'ane';
 }
 
 # get_sidechain_name() receives a graph and a position to start the chain in it.
