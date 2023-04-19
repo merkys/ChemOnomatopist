@@ -76,7 +76,7 @@ my %preferrable_names = (
 
 sub get_name
 {
-    my( $what, $use_old_method ) = @_;
+    my( $what ) = @_;
 
     # Detect the type of the input data
     my( $graph );
@@ -129,31 +129,7 @@ sub get_name
 sub get_sidechain_name { &ChemOnomatopist::get_sidechain_name }
 sub get_mainchain_name { &ChemOnomatopist::get_mainchain_name }
 
-# Check if an object or Perl hash is of certain chemical element
-sub is_element
-{
-    my( $atom, $element ) = @_;
-
-    return unless ref $atom;
-
-    if( blessed $atom ) {
-        if( $atom->isa( ChemOnomatopist::Group:: ) ) {
-            if(      $element eq 'C' ) {
-                return $atom->is_carbon;
-            } elsif( $element eq 'O' ) {
-                return $atom->is_oxygen;
-            }
-            warn "cannot say whether $atom is $element\n";
-        } elsif( $atom->isa( 'Chemistry::Atom' ) ) {
-            return $atom->symbol eq $element;
-        }
-        return '';
-    }
-
-    return ref $atom eq 'HASH' &&
-           exists $atom->{symbol} &&
-           $atom->{symbol} eq $element;
-}
+sub is_element { &ChemOnomatopist::is_element }
 
 # Subroutine gets an graph, removes all vertices that do not have C as their element.
 # Performs BFS on that chain. During BFS, distance from start is calculated to each vertice
@@ -883,36 +859,7 @@ sub compare_only_aphabetical {
     return $a_alpha cmp $b_alpha;
 }
 
-# Sorts given names only based on alphabetical part of the name
-sub cmp_attachments
-{
-    my( $a, $b ) = @_;
-    my @a = @{$a};
-    my @b = @{$b};
-
-    for (0..$#a) {
-        my $a_alpha = $a[$_];
-        my $b_alpha = $b[$_];
-
-        my @A = ref $a_alpha ? sort @$a_alpha : ( $a_alpha );
-        my @B = ref $b_alpha ? sort @$b_alpha : ( $b_alpha );
-
-        for (0..min( scalar( @A ), scalar( @B ) )-1) {
-            my $a_alpha = $A[$_];
-            my $b_alpha = $B[$_];
-
-            $a_alpha =~ s/[^a-zA-Z]+//g;
-            $b_alpha =~ s/[^a-zA-Z]+//g;
-
-            $a_alpha = 'butyl' if $a_alpha eq 'tertbutyl';
-            $b_alpha = 'butyl' if $b_alpha eq 'tertbutyl';
-
-            return $b_alpha cmp $a_alpha if $b_alpha cmp $a_alpha;
-        }
-    }
-
-    return 0;
-}
+sub cmp_attachments { &ChemOnomatopist::cmp_attachments }
 
 # Sorts arrays from lowest to biggest by values
 sub compare_arrays {

@@ -74,7 +74,7 @@ my %preferrable_names = (
 
 sub get_name
 {
-    my( $what, $use_old_method ) = @_;
+    my( $what ) = @_;
 
     # Detect the type of the input data
     my( $graph );
@@ -120,12 +120,7 @@ sub get_name
         die "cannot handle atoms other than C and H now\n";
     }
 
-    my $order;
-    if( $use_old_method ) {
-        ( $order ) = select_main_chain( $graph->copy );
-    } else {
-        $order = [ map { $_->{number} } select_main_chain_new( $graph->copy ) ];
-    }
+    my $order = [ map { $_->{number} } select_main_chain_new( $graph->copy ) ];
     return get_mainchain_name( $graph->copy, $order ) . 'ane';
 }
 
@@ -392,102 +387,6 @@ sub BFS_order_carbons_only
         $bfs = Graph::Traversal::BFS->new( $carbon_graph );
     }
     return $bfs->bfs;
-}
-
-# Returns main (parental) chain to be used during the naming
-sub select_main_chain
-{
-    my( $graph ) = @_;
-    my @order = BFS_order_carbons_only( $graph );
-
-    my $start = $order[-1];
-
-    my( $lengths, @second_order ) =
-        BFS_order_carbons_only_return_lengths( $graph, $start );
-
-    my $end = $second_order[-1];
-
-    # Finding all farthest vertices from the starting point
-    my @farthest = grep { $lengths->{$_} eq $lengths->{$end->{number}} }
-                        keys %$lengths;
-
-    # Also adding the first vertice to the array since it is farthest from other
-    # ones
-    push @farthest, $start->{number};
-
-    # Make a carbon-only graph
-    my $carbon_graph = $graph->copy;
-    $carbon_graph->delete_vertices( grep { !is_element( $_, 'C' ) } $carbon_graph->vertices );
-
-    # Going through every vertice in "farthest" array and creating tree-like structures
-    my @all_trees;
-    for (my $i = 0; $i < scalar @farthest; $i++) {
-        my %tree = ( $farthest[$i] => [ $farthest[$i], 0 ] );
-
-        my( $vertex ) = grep { $_->{number} eq $farthest[$i] } $carbon_graph->vertices;
-        # Start creation of the tree from all the starting vertices
-        push @all_trees, \%{create_tree( $carbon_graph->copy, $vertex, \%tree )};
-    }
-
-    my $trees;
-
-    # Extracts arrays of all longest chains with numbers of vertices (in order)
-    # from each tree-like structure
-    my @main_chains = prepare_paths( @all_trees );
-
-    # From all possible main chains in tree-like structures, subroutine returns
-    # the ones that has the greatest number of side chains. Also returns only the
-    # trees that still have some possible main chains after selection
-    ( $trees, @main_chains ) = rule_greatest_number_of_side_chains(
-                                    $carbon_graph->copy,
-                                    \@main_chains,
-                                    @all_trees,
-                               );
-    return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
-
-    # If more than one chain is left, second rule is applied.
-    # From all main chains left, subroutine selects all that have the
-    # lowest numbered locants. Also the trees that have possible main
-    # chains returned
-    ( $trees, @main_chains ) = rule_lowest_numbered_locants(
-                                    $carbon_graph->copy,
-                                    @main_chains,
-                                    @$trees,
-                               );
-    return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
-
-    # If more than one chain is left, third rule is applied.
-    # From all main chains left, subroutine selects all that have the
-    # most carbons in side chains. Also the trees that have possible main
-    # chains returned
-    ( $trees, @main_chains ) = rule_most_carbon_in_side_chains(
-                                    $carbon_graph->copy,
-                                    @main_chains,
-                                    @$trees,
-                               );
-    return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
-
-    # If more than one chain is left, fourth rule is applied.
-    # From all main chains left, subroutine selects all that have
-    # the least branched side chains. Also the trees that have
-    # possible main chains returned
-    ( $trees, @main_chains ) = rule_least_branched_side_chains(
-                                    $carbon_graph->copy,
-                                    @main_chains,
-                                    @$trees,
-                               );
-    return @{$main_chains[0]} if scalar @{$main_chains[0]} == 1;
-
-    # If more than one chain is left, program states that there are
-    # few chains that are identical by all the rules and selects
-    # one from all that are left.
-    # One main chain is picked from all that are left
-    my $main_chain = rule_pick_chain_from_valid(
-                        $carbon_graph->copy,
-                        @main_chains,
-                        @$trees,
-                     );
-    return $main_chain;
 }
 
 # Selects the main chain by evaluating its parts
