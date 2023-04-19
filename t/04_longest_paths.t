@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Chain;
 use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Util::Graph qw(
     graph_longest_paths
@@ -12,10 +13,20 @@ use ChemOnomatopist::Util::Graph qw(
 use Graph::Undirected;
 use Test::More;
 
-sub chainO($@)
+sub chains_odd($@)
 {
-    my( $graph, @vertices ) = @_;
-    return ChemOnomatopist::ChainHalf->new( $graph, undef, @vertices );
+    my( $graph, @halves ) = @_;
+    @halves = map { ChemOnomatopist::ChainHalf->new( $graph, undef, @$_ ) } @halves;
+
+    my @chains;
+    for my $half1 (@halves) {
+        for my $half2 (@halves) {
+            next if $half1 == $half2;
+            push @chains, ChemOnomatopist::Chain->new( $half1, $half2 );
+        }
+    }
+
+    return @chains;
 }
 
 sub chainE($$@)
@@ -49,14 +60,16 @@ $graph->add_edge( 'C', 'C1' );
 $graph->add_edge( 'C', 'C2' );
 
 is scalar graph_longest_paths( $graph ), 4;
-@paths = ChemOnomatopist::rule_greatest_number_of_side_chains( chainO( $graph, 'B', 'A', 'A1' ),
-                                                               chainO( $graph, 'B', 'C', 'C1' ) );
+@paths = ChemOnomatopist::rule_greatest_number_of_side_chains( chains_odd $graph,
+                                                                          [ 'B', 'A', 'A1' ],
+                                                                          [ 'B', 'C', 'C1' ] );
 is scalar @paths, 2;
 
-@paths = ChemOnomatopist::rule_greatest_number_of_side_chains( chainO( $graph, 'B', 'A', 'A1' ),
-                                                               chainO( $graph, 'B', 'A', 'A2' ),
-                                                               chainO( $graph, 'B', 'C', 'C1' ) );
-is scalar @paths, 3;
+@paths = ChemOnomatopist::rule_greatest_number_of_side_chains( chains_odd $graph,
+                                                                          [ 'B', 'A', 'A1' ],
+                                                                          [ 'B', 'A', 'A2' ],
+                                                                          [ 'B', 'C', 'C1' ] );
+is scalar @paths, 6;
 
 # Elongated X-shaped graph with an even-numbered longest path
 $graph = Graph::Undirected->new;
