@@ -120,7 +120,7 @@ sub get_name
         die "cannot handle atoms other than C and H now\n";
     }
 
-    my $order = [ map { $_->{number} } select_main_chain_new( $graph->copy ) ];
+    my $order = [ map { $_->{number} } select_main_chain( $graph->copy ) ];
     return get_mainchain_name( $graph->copy, $order ) . 'ane';
 }
 
@@ -390,7 +390,7 @@ sub BFS_order_carbons_only
 }
 
 # Selects the main chain by evaluating its parts
-sub select_main_chain_new
+sub select_main_chain
 {
     my( $tree ) = @_;
 
