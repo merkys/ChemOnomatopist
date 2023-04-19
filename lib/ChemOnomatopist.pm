@@ -521,6 +521,8 @@ sub select_main_chain_new
         }
     }
 
+    return @{$path_parts[0]} if @path_parts == 1; # methane
+
     # Generate all possible chains.
     # FIXME: This needs optimisation.
     my @chains;
