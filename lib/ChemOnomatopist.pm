@@ -126,7 +126,7 @@ sub get_name
     } else {
         ( $order ) = select_main_chain( $graph->copy );
     }
-    return get_chain_2( $graph->copy,
+    return get_mainchain_name( $graph->copy,
                         $order,
                         { choose_direction => 1 } ) . 'ane';
 }
@@ -195,7 +195,7 @@ sub get_sidechain_name
     return $name . alkane_chain_name( scalar @chain );
 }
 
-sub get_chain_2
+sub get_mainchain_name
 {
     my( $graph, $main_chain, $options ) = @_;
 
