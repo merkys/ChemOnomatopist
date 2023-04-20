@@ -78,22 +78,6 @@ sub locant_names()
     return @locants;
 }
 
-# Sum of locant positions (1-based) as calculated as if this chain half is terminal.
-sub locant_positions_forward()
-{
-    my( $self ) = @_;
-    my @locants = $self->branch_positions;
-    return ($self->length + (defined $self->{other_center})) * @locants + sum0 @locants;
-}
-
-# Sum of locant positions (1-based) as calculated as if this chain half is the first part.
-sub locant_positions_backward()
-{
-    my( $self ) = @_;
-    my @locants = $self->branch_positions;
-    return $self->length * @locants - sum0 @locants;
-}
-
 sub number_of_branches_in_sidechains()
 {
     my( $self ) = @_;

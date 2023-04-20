@@ -51,13 +51,6 @@ sub locant_names()
            $self->{halves}[1]->locant_names;
 }
 
-sub locant_positions()
-{
-    my( $self ) = @_;
-    return $self->{halves}[0]->locant_positions_backward +
-           $self->{halves}[1]->locant_positions_forward;
-}
-
 sub vertices()
 {
     my( $self ) = @_;
