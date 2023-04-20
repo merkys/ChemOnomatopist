@@ -548,7 +548,7 @@ sub rule_pick_chain_from_valid
 {
     my( $graph, $chains, @trees ) = @_;
 
-    my( $chain ) = sort compare_arrays
+    my( $chain ) = sort { compare_arrays( $a, $b ) }
                         pick_chain_with_lowest_attachments_alphabetically( $graph, $chains, @trees );
     return $chain;
 }
@@ -778,7 +778,9 @@ sub compare_locant_placings {
 }
 
 # Sorts arrays from lowest to biggest by values
-sub compare_arrays {
+sub compare_arrays
+{
+    my( $a, $b ) = @_;
     my @first  = @$a;
     my @second = @$b;
     my @index  = (0..scalar @first-1);
