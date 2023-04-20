@@ -14,7 +14,7 @@ use Memoize;
 # ABSTRACT: Half of a longest chain
 # VERSION
 
-memoize( 'branch_positions' );
+# memoize( 'branch_positions' );
 
 sub new
 {
