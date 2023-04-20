@@ -14,7 +14,7 @@ sub AUTOLOAD {
     $call =~ s/.*:://;
     return if $call eq 'DESTROY';
     if( $call =~ /^number_/ ) {
-        return sum0 map { $_->can( $call )->( $_ ) } @{$_[0]->{halves}};
+        return int sum0 map { $_->can( $call )->( $_ ) } @{$_[0]->{halves}};
     } else {
         return;
     }
@@ -39,9 +39,9 @@ sub branch_positions()
     my @half0_positions = $self->{halves}[0]->branch_positions;
     my @half1_positions = $self->{halves}[1]->branch_positions;
     # If longest path has odd length, the center atom appears in all chains
-    @half1_positions = grep @half1_positions if $self->length % 2;
-    return ( map { $self->{halves}[0]->length - $_ - 1 } reverse @half0_positions ),
-           ( map { $self->{halves}[1]->length + $_ }             @half1_positions );
+    @half1_positions = grep { $_ } @half1_positions if $self->length % 2;
+    return ( map { $self->{halves}[0]->length - $_ - 1 }         reverse @half0_positions ),
+           ( map { $self->{halves}[1]->length + $_ - $self->length % 2 } @half1_positions );
 }
 
 sub locant_names()

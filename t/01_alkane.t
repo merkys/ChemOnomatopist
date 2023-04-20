@@ -16,6 +16,7 @@ my %SMILES_cases = (
     'C1CCC1' => 'cyclobutane',
     'c1ccccccccccccc1' => 'cyclotetradecaheptaene',
 
+    'CCCCCCCCCCC(C)CCCC' => '5-methylpentadecane',
     'CC(C)CC(CCC(C)C)C' => '2,4,7-trimethyloctane',
     'CCC(C)(C)CCCCCC(C)C' => '2,8,8-trimethyldecane',
     'C(C)C(CCC(CCC(C)C)(C)C)C' => '2,5,5,8-tetramethyldecane',

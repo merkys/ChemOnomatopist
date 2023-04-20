@@ -439,25 +439,12 @@ sub rule_lowest_numbered_locants
 {
     my( @chains ) = @_;
 
-    my @chains_now;
-    my $min_value;
-
-    for my $chain (@chains) {
-        my $value = $chain->locant_positions;
-        if( @chains_now ) {
-            if( $value < $min_value ) {
-                @chains_now = ( $chain );
-                $min_value = $value;
-            } elsif( $value == $min_value ) {
-                push @chains_now, $chain;
-            }
-        } else {
-            push @chains_now, $chain;
-            $min_value = $value;
-        }
-    }
-
-    return @chains_now;
+    my( $max_value ) = sort { cmp_arrays( [ $a->branch_positions ],
+                                          [ $b->branch_positions ] ) }
+                            @chains;
+    return grep { !cmp_arrays( [ $_->branch_positions ],
+                               [ $max_value->branch_positions ] ) }
+                @chains;
 }
 
 sub rule_most_carbon_in_side_chains
@@ -504,6 +491,21 @@ sub compare_only_aphabetical {
     }
 
     return $a_alpha cmp $b_alpha;
+}
+
+# Sorts arrays from lowest to biggest by values
+sub cmp_arrays
+{
+    my( $a, $b ) = @_;
+    my @first  = @$a;
+    my @second = @$b;
+    my @index  = (0..scalar @first-1);
+
+    foreach( @index ) {
+        return $first[$_] <=> $second[$_] if $first[$_] <=> $second[$_];
+    }
+
+    return 0;
 }
 
 # Sorts given names only based on alphabetical part of the name
