@@ -12,9 +12,12 @@ my %SMILES_cases = (
     'CCCC'   => 'butane',
     'CCCCC'  => 'pentane',
     'CC(C)C' => 'methylpropane',
+
     'C1CCC1' => 'cyclobutane',
     'c1ccccccccccccc1' => 'cyclotetradecaheptaene',
+
     'CC(C)CC(CCC(C)C)C' => '2,4,7-trimethyloctane',
+    'CCC(C)(C)CCCCCC(C)C' => '2,8,8-trimethyldecane',
     'C(C)C(CCC(CCC(C)C)(C)C)C' => '2,5,5,8-tetramethyldecane',
     'C(C)C(CC(C)C)CC' => '4-ethyl-2-methylhexane',
     'C(C)C(C(CC)(C)C)CCC' => '4-ethyl-3,3-dimethylheptane',
