@@ -119,7 +119,7 @@ sub get_sidechain_name
             $graph_copy->delete_edge( $start, $neighbour );
             for my $path ( graph_longest_paths_from_vertex( $graph_copy, $neighbour ) ) {
                 push @path_parts,
-                     ChemOnomatopist::ChainHalf->new( $graph, undef, $start, @$path );
+                     ChemOnomatopist::ChainHalf->new( $graph_copy, undef, $start, @$path );
             }
         }
 
