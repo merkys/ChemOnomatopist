@@ -129,6 +129,9 @@ sub get_sidechain_name
 
     $options = {} unless $options;
 
+    # FIXME: If the chain branches at $start, it should instead be named separately
+    # and then marked as attached to the parent chain on this atom.
+
     # As per https://www.geeksforgeeks.org/longest-path-undirected-tree/,
     # two BFSes are needed to find the longest path in a tree
     my @order = BFS_order_carbons_only( $graph, $start );
