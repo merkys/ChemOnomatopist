@@ -347,14 +347,14 @@ sub BFS_order_carbons_only
 {
     my( $graph, $start ) = @_;
 
-    my $carbon_graph = $graph->copy;
-    $carbon_graph->delete_vertices( grep { !is_element( $_, 'C' ) } $carbon_graph->vertices );
+    $graph = $graph->copy;
+    $graph->delete_vertices( grep { !is_element( $_, 'C' ) } $graph->vertices );
 
     my $bfs;
     if( $start ) {
-        $bfs = Graph::Traversal::BFS->new( $carbon_graph, start => $start );
+        $bfs = Graph::Traversal::BFS->new( $graph, start => $start );
     } else {
-        $bfs = Graph::Traversal::BFS->new( $carbon_graph );
+        $bfs = Graph::Traversal::BFS->new( $graph );
     }
     return $bfs->bfs;
 }
