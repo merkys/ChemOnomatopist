@@ -161,9 +161,36 @@ sub get_sidechain_name
             }
         }
 
+        # From BBv2 P-29.2
+        my $rule_lowest_free_valence = sub {
+            my( @chains ) = @_;
+
+            my @chains_now;
+            my $lowest_locant;
+
+            for my $chain (@chains) {
+                my @vertices = $chain->vertices;
+                my( $locant ) = grep { $vertices[$_] == $start } 0..$#vertices;
+                if( @chains_now ) {
+                    if( $lowest_locant > $locant ) {
+                        @chains_now = ( $chain );
+                        $lowest_locant = $locant;
+                    } elsif( $lowest_locant == $locant ) {
+                        push @chains_now, $chain;
+                    }
+                } else {
+                    @chains_now = ( $chain );
+                    $lowest_locant = $locant;
+                }
+            }
+
+            return @chains_now;
+        };
+
         for my $rule ( sub { return @_ },
                        \&rule_longest_chains,
                        \&rule_greatest_number_of_side_chains, # After this rule we are left with a set of longest chains all having the same number of side chains
+                       $rule_lowest_free_valence,
                        \&rule_lowest_numbered_locants,
                        \&rule_most_carbon_in_side_chains,
                        \&rule_least_branched_side_chains,
