@@ -341,6 +341,11 @@ sub get_mainchain_name
             # As propane cannot have other attachment site but 2, the site is usually omitted
             $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
         }
+
+        if( $number && $attachment_name =~ /[0-9]-yl$/ ) {
+            $attachment_name = bracket( $attachment_name );
+        }
+
         $name .= $number . $attachment_name;
     }
 
