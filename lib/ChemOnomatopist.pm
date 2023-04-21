@@ -42,33 +42,6 @@ our @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
 our @numberskis = ( '?', '', 'bis', 'tris', 'tetrakis', 'pentakis',
                     'hexakis', 'heptakis', 'octakis', 'nonakis', 'decakis' );
 
-our %preferrable_names = (
-                '(1-methylethyl)' => 'propan-2-yl',
-                '(1-ethyl-1-methylpropyl)' => '(3-methylpentan-3-yl)',
-                '(1,1-dimethylethyl)' => 'tert-butyl',
-                '(1,3,3-trimethylbutyl)' => '(4,4-dimethylpentan-2-yl)',
-                '(1-methylpropyl)' => 'butan-2-yl',
-                '(1-ethylbutyl)' => 'hexan-3-yl',
-                '(1-butylheptyl)' => 'undecan-5-yl',
-                '(1-methyloctadecyl)' => 'nonadecan-2-yl',
-                '(1-methylbutyl)' => 'pentan-2-yl',
-                '(1-propylbutyl)' => 'heptan-4-yl',
-                '(1-ethylpropyl)' =>  'pentan-3-yl',
-                '(1-methylheptyl)' => 'octan-2-yl',
-                '(1-methylpentyl)' => 'hexan-2-yl',
-                '(1,2-dimethylpropyl)' => '(3-methylbutan-2-yl)',
-                '(1,2-dimethylbutyl)' => '(3-methylpentan-2-yl)',
-                '(1,1-dimethyldecyl)' => '(2-methylundecan-2-yl)',
-                '(1,1-dimethylpentyl)' => '(2-methylhexan-2-yl)',
-                '(1,1-dimethylbutyl)' => '(2-methylpentan-2-yl)',
-                '(1-propylpentyl)' => 'octan-4-yl',
-                '(1-ethyl-2-methylpropyl)' => '(2-methylpentan-3-yl)',
-                '(1-butylhexyl)' => 'decan-5-yl',
-                '(1-butylpentyl)' => 'nonan-5-yl',
-                '(1,1-dimethylpropyl)' => '(2-methylbutan-2-yl)',
-                '(1-(1-methylethyl)-2-methylpropyl)' => '(2,4-dimethylpentan-3-yl)',
-                '(1-ethylpentyl)' => 'heptan-3-yl' );
-
 sub get_name
 {
     my( $what ) = @_;
@@ -306,22 +279,6 @@ sub get_mainchain_name
             $attachment_name = bracket( $attachment_name ) if $attachment_name =~ /^[0-9]/;
             push @{$attachments{$attachment_name}}, $i;
         }
-    }
-
-    # Replacing systematic IUPAC attachment names with their preferred ones
-    for my $att_name (keys %attachments) {
-        next unless exists $preferrable_names{$att_name};
-        $attachments{$preferrable_names{$att_name}} = $attachments{$att_name};
-        delete $attachments{$att_name};
-        next unless $preferrable_names{$att_name} =~ /^[a-z0-9\-]+$/;
-
-        # If there is more than one of the same attachment
-        # so complete name would start with the prefix, brackets
-        # should be added to the name
-        next unless @{$attachments{$preferrable_names{$att_name}}} > 1;
-        $attachments{'(' . $preferrable_names{$att_name} . ')'} =
-                        $attachments{$preferrable_names{$att_name}};
-        delete $attachments{$preferrable_names{$att_name}};
     }
 
     # Collecting names of all the attachments

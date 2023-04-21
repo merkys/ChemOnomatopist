@@ -31,7 +31,6 @@ no warnings 'recursion';
 
 our @numbers = @ChemOnomatopist::numbers;
 our @numberskis = @ChemOnomatopist::numberskis;
-our %preferrable_names = %ChemOnomatopist::preferrable_names;
 
 sub get_name
 {
@@ -588,11 +587,6 @@ sub pick_chain_with_lowest_attachments_alphabetically
                     $graph_copy->delete_edge( $vertex, $neighbour );
                     my $attachment_name = get_sidechain_name( $graph_copy, $neighbour ) . 'yl';
                     $attachment_name = "($attachment_name)" if $attachment_name =~ /^[0-9]/;
-
-                    # Replace systematic IUPAC attachment names with their preferrable ones
-                    if( exists $preferrable_names{$attachment_name} ) {
-                        $attachment_name = $preferrable_names{$attachment_name};
-                    }
 
                     push @attachments_only, $attachment_name;
                 }
