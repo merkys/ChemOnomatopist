@@ -300,7 +300,7 @@ sub get_mainchain_name
             $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
         }
 
-        if( $number && $attachment_name =~ /[0-9]-yl$/ ) {
+        if( $number && ( $attachment_name =~ /[0-9]-yl$/ || $attachment_name eq 'tert-butyl' ) ) {
             $attachment_name = bracket( $attachment_name );
         }
 
