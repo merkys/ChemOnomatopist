@@ -245,6 +245,8 @@ sub get_sidechain_name
         $name .= 'an-' . ($branch_point + 1) . '-';
     }
 
+    $name = 'tert-but' if $name eq '2-methylpropan-2-';
+
     return $name;
 }
 
@@ -276,7 +278,6 @@ sub get_mainchain_name
             next if is_element( $neighbour, 'H' );
 
             my $attachment_name = get_sidechain_name( $graph, $neighbour ) . 'yl';
-            $attachment_name = 'tert-butyl' if $attachment_name eq '2-methylpropan-2-yl';
             $attachment_name = bracket( $attachment_name ) if $attachment_name =~ /^[0-9]/;
             push @{$attachments{$attachment_name}}, $i;
         }
@@ -592,8 +593,8 @@ sub cmp_attachments
             $a_alpha =~ s/[^a-zA-Z]+//g;
             $b_alpha =~ s/[^a-zA-Z]+//g;
 
-            $a_alpha = 'butyl' if $a_alpha eq 'tertbutyl';
-            $b_alpha = 'butyl' if $b_alpha eq 'tertbutyl';
+            $a_alpha =~ s/^tertbut(yl)?$/butyl/;
+            $b_alpha =~ s/^tertbut(yl)?$/butyl/;
 
             return $b_alpha cmp $a_alpha if $b_alpha cmp $a_alpha;
         }
