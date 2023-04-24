@@ -38,9 +38,9 @@ my %SMILES_cases = (
     'CC(CC(CC(CC(CC)CC)C)(CC(CC(CC)C)C)CC(CC(CC)C)C)CC(CC)C' => '7,7-bis(2,4-dimethylhexyl)-3-ethyl-5,9,11-trimethyltridecane',
     'CC(C(CCC)C)C(CC(CCCC)CC)CCCCCC' => '5-ethyl-7-(3-methylhexan-2-yl)tridecane',
     # 'CCC(CC)CCC(CCC(CC)CC)CCC(CCC(CCC(CC)CC)CCC(CC)CC)CCC(CCC(CC)CC)CCC(CC)CC' => '3,15-diethyl-9-[6-ethyl-3-(3-ethylpentyl)octyl]-6,12-bis(3-ethylpentyl)heptadecane', # different order
-    'CC(C)CC(CC(C)C)CC(CC(C)C)CC(C)C' => '2,8-dimethyl-4,6-bis(2-methylpropyl)nonane', # fails for old method
+    'CC(C)CC(CC(C)C)CC(CC(C)C)CC(C)C' => '2,8-dimethyl-4,6-bis(2-methylpropyl)nonane',
 
-    'CCCCC(CC)C(CCCC)C(C)(C)C' => '5-tert-butyl-6-ethyldecane',
+    'CCCCC(CC)C(CCCC)C(C)(C)C' => '5-tert-butyl-6-ethyldecane', # fails for old method
 );
 
 plan tests => 2 * scalar( keys %SMILES_cases );
