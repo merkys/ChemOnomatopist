@@ -276,6 +276,7 @@ sub get_mainchain_name
             next if is_element( $neighbour, 'H' );
 
             my $attachment_name = get_sidechain_name( $graph, $neighbour ) . 'yl';
+            $attachment_name = 'tert-butyl' if $attachment_name eq '2-methylpropan-2-yl';
             $attachment_name = bracket( $attachment_name ) if $attachment_name =~ /^[0-9]/;
             push @{$attachments{$attachment_name}}, $i;
         }
