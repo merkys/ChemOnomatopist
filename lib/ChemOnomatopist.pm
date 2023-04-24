@@ -222,7 +222,7 @@ sub get_sidechain_name
             $graph->delete_edge( $atom, $neighbour );
             next if is_element( $neighbour, 'H' );
 
-            my $attachment_name = get_sidechain_name( $graph, $neighbour ) . 'yl';
+            my $attachment_name = get_sidechain_name( $graph, $neighbour );
             $attachment_name = bracket( $attachment_name ) if $attachment_name =~ /^[0-9]/;
             push @{$attachments{$attachment_name}}, $i;
         }
@@ -247,7 +247,7 @@ sub get_sidechain_name
 
     $name = 'tert-but' if $name eq '2-methylpropan-2-';
 
-    return $name;
+    return $name . 'yl';
 }
 
 sub get_mainchain_name
@@ -277,7 +277,7 @@ sub get_mainchain_name
             $graph->delete_edge( $atom, $neighbour );
             next if is_element( $neighbour, 'H' );
 
-            my $attachment_name = get_sidechain_name( $graph, $neighbour ) . 'yl';
+            my $attachment_name = get_sidechain_name( $graph, $neighbour );
             $attachment_name = bracket( $attachment_name ) if $attachment_name =~ /^[0-9]/;
             push @{$attachments{$attachment_name}}, $i;
         }
@@ -593,8 +593,8 @@ sub cmp_attachments
             $a_alpha =~ s/[^a-zA-Z]+//g;
             $b_alpha =~ s/[^a-zA-Z]+//g;
 
-            $a_alpha =~ s/^tertbut(yl)?$/butyl/;
-            $b_alpha =~ s/^tertbut(yl)?$/butyl/;
+            $a_alpha =~ s/^tert(butyl)$/$1/;
+            $b_alpha =~ s/^tert(butyl)$/$1/;
 
             return $b_alpha cmp $a_alpha if $b_alpha cmp $a_alpha;
         }
