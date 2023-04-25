@@ -40,6 +40,7 @@ my %SMILES_cases = (
     # 'CCC(CC)CCC(CCC(CC)CC)CCC(CCC(CCC(CC)CC)CCC(CC)CC)CCC(CCC(CC)CC)CCC(CC)CC' => '3,15-diethyl-9-[6-ethyl-3-(3-ethylpentyl)octyl]-6,12-bis(3-ethylpentyl)heptadecane', # different order
     'CC(C)CC(CC(C)C)CC(CC(C)C)CC(C)C' => '2,8-dimethyl-4,6-bis(2-methylpropyl)nonane',
 
+    'CCCCCCCCCC(CCCC)(CCCC)C(C)(C)C' => '5-butyl-5-tert-butyltetradecane',
     'CCCCC(CC)C(CCCC)C(C)(C)C' => '5-tert-butyl-6-ethyldecane', # fails for old method
     'CCCCC(CCCC)CCCCCCCC(C(C)CCC)C(C)(C)C' => '5-tert-butyl-13-butyl-4-methylheptadecane',
 );
