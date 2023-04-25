@@ -284,11 +284,8 @@ sub get_mainchain_name
     }
 
     # Collecting names of all the attachments
-    # FIXME: Now only the first locants are compared (->[0]), but according to BBv2 P-14.5.4 all of them should.
     my $name = '';
-    for my $attachment_name (sort { cmp_only_aphabetical( $a, $b ) ||
-                                    $attachments{$a}->[0] <=> $attachments{$b}->[0] ||
-                                    $a cmp $b }
+    for my $attachment_name (sort { cmp_only_aphabetical( $a, $b ) || $a cmp $b }
                                   keys %attachments) {
         $name = $name ? $name . '-' : $name;
         my $number;
@@ -544,7 +541,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
 }
 
 # Sorts given names only based on alphabetical part of the name.
-# Butyl and tert-butyl are ordered as the same and the establishment of deterministic order between them is left to the caller.
+# tert compounds are ordered according to BBv2 P-14.5.3.
 sub cmp_only_aphabetical
 {
     my( $a, $b ) = @_;
@@ -552,10 +549,11 @@ sub cmp_only_aphabetical
     $a =~ s/[^a-zA-Z]+//g;
     $b =~ s/[^a-zA-Z]+//g;
 
-    $a =~ s/^tert(butyl)$/$1/;
-    $b =~ s/^tert(butyl)$/$1/;
+    my $a_has_tert = $a =~ s/^tert(butyl)$/$1/;
+    my $b_has_tert = $b =~ s/^tert(butyl)$/$1/;
 
-    return $a cmp $b;
+    return $a cmp $b if $a cmp $b;
+    return $b_has_tert <=> $a_has_tert;
 }
 
 # Sorts arrays from lowest to biggest by values
@@ -594,10 +592,11 @@ sub cmp_attachments
             $a_alpha =~ s/[^a-zA-Z]+//g;
             $b_alpha =~ s/[^a-zA-Z]+//g;
 
-            $a_alpha =~ s/^tert(butyl)$/$1/;
-            $b_alpha =~ s/^tert(butyl)$/$1/;
+            my $a_has_tert = $a_alpha =~ s/^tert(butyl)$/$1/;
+            my $b_has_tert = $b_alpha =~ s/^tert(butyl)$/$1/;
 
             return $b_alpha cmp $a_alpha if $b_alpha cmp $a_alpha;
+            return $b_has_tert <=> $a_has_tert if $b_has_tert <=> $a_has_tert;
         }
     }
 
