@@ -84,6 +84,8 @@ sub get_name
         die "only limited set of homocycles is supported for now\n";
     }
 
+    find_groups( $graph );
+
     # Check for unsupported elements.
     if( any { !is_element( $_, 'C' ) && !is_element( $_, 'H' ) }
             $graph->vertices ) {
@@ -312,7 +314,6 @@ sub get_mainchain_name
     return $name . alkane_chain_name( scalar @chain );
 }
 
-# FIXME: not used in the main code yet
 sub find_groups
 {
     my( $graph ) = @_;
