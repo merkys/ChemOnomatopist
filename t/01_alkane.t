@@ -41,6 +41,7 @@ my %SMILES_cases = (
     'CC(C)CC(CC(C)C)CC(CC(C)C)CC(C)C' => '2,8-dimethyl-4,6-bis(2-methylpropyl)nonane',
 
     'CCCCC(CC)C(CCCC)C(C)(C)C' => '5-tert-butyl-6-ethyldecane', # fails for old method
+    'CCCCC(CCCC)CCCCCCCC(C(C)CCC)C(C)(C)C' => '5-tert-butyl-13-butyl-4-methylheptadecane',
 );
 
 plan tests => 2 * scalar( keys %SMILES_cases );
