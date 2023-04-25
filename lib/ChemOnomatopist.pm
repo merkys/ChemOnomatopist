@@ -286,7 +286,8 @@ sub get_mainchain_name
     # Collecting names of all the attachments
     my $name = '';
     for my $attachment_name (sort { cmp_only_aphabetical( $a, $b ) ||
-                                    $attachments{$a}->[0] <=> $attachments{$b}->[0] }
+                                    $attachments{$a}->[0] <=> $attachments{$b}->[0] ||
+                                    $a cmp $b }
                                   keys %attachments) {
         $name = $name ? $name . '-' : $name;
         my $number;
