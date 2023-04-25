@@ -285,7 +285,9 @@ sub get_mainchain_name
 
     # Collecting names of all the attachments
     my $name = '';
-    for my $attachment_name (sort compare_only_aphabetical keys %attachments) {
+    for my $attachment_name (sort { cmp_only_aphabetical( $a, $b ) ||
+                                    $attachments{$a}->[0] <=> $attachments{$b}->[0] }
+                                  keys %attachments) {
         $name = $name ? $name . '-' : $name;
         my $number;
         if( $attachment_name =~ /^[\(\[\{][0-9]/ ) {
@@ -539,22 +541,19 @@ sub pick_chain_with_lowest_attachments_alphabetically
     return $chains[$sorted[0]];
 }
 
-# Sorts given names only based on alphabetical part of the name
-sub compare_only_aphabetical {
-    my $a_alpha = $a;
-    my $b_alpha = $b;
-    $a_alpha =~ s/[^a-zA-Z]+//g;
-    $b_alpha =~ s/[^a-zA-Z]+//g;
+# Sorts given names only based on alphabetical part of the name.
+# Butyl and tert-butyl are ordered as the same and the establishment of deterministic order between them is left to the caller.
+sub cmp_only_aphabetical
+{
+    my( $a, $b ) = @_;
 
-    # FIXME: Not sure how to sort 'butyl' and 'tertbutyl', but stable
-    # order is important.
-    unless( grep( { $_ eq 'butyl'     } ( $a_alpha, $b_alpha ) ) &&
-            grep( { $_ eq 'tertbutyl' } ( $a_alpha, $b_alpha ) ) ) {
-        $a_alpha = 'butyl' if $a_alpha eq 'tertbutyl';
-        $b_alpha = 'butyl' if $b_alpha eq 'tertbutyl';
-    }
+    $a =~ s/[^a-zA-Z]+//g;
+    $b =~ s/[^a-zA-Z]+//g;
 
-    return $a_alpha cmp $b_alpha;
+    $a =~ s/^tert(butyl)$/$1/;
+    $b =~ s/^tert(butyl)$/$1/;
+
+    return $a cmp $b;
 }
 
 # Sorts arrays from lowest to biggest by values
