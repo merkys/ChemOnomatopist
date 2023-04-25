@@ -23,7 +23,7 @@ plan tests => scalar @cases;
 
 for my $case (@cases) {
     # Minor regularizations for PubChem names:
-    $case->{iupac} =~ s/(di|tetra)(tert-butyl)/$1\($2\)/g;
+    $case->{iupac} =~ s/(di|tri|tetra|penta|hepta)(tert-butyl)/$1\($2\)/g;
     $case->{iupac} =~ s/di\((non|heptadec|hentriacont|undec|tridec|docos|icos|tetradec|pentadec)yl\)/di$1yl/g;
     $case->{iupac} =~ s/tetra\(tridecyl\)/tetratridecyl/g;
 
