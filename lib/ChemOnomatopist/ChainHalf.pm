@@ -45,12 +45,18 @@ sub branch_positions()
 {
     my( $self ) = @_;
 
+    return @{$self->{branch_positions}} if $self->{branch_positions};
+
     my $graph = $self->_disconnected_chain_graph;
     my @vertices = $self->vertices;
 
-    return map  { ( $_ ) x $graph->degree( $vertices[$_] ) }
-           grep { $graph->degree( $vertices[$_] ) }
-                0..$#vertices;
+    my @branch_positions =
+        map { ( $_ ) x $graph->degree( $vertices[$_] ) }
+            grep { $graph->degree( $vertices[$_] ) }
+                 0..$#vertices;
+
+    $self->{branch_positions} = \@branch_positions;
+    return @{$self->{branch_positions}};
 }
 
 sub length()
@@ -62,6 +68,8 @@ sub length()
 sub locant_names()
 {
     my( $self ) = @_;
+
+    return @{$self->{locant_names}} if $self->{locant_names};
 
     my $graph = $self->_disconnected_chain_graph;
 
@@ -75,7 +83,8 @@ sub locant_names()
         push @locants, \@current_locants;
     }
 
-    return @locants;
+    $self->{locant_names} = \@locants;
+    return @{$self->{locant_names}};
 }
 
 sub number_of_branches_in_sidechains()
