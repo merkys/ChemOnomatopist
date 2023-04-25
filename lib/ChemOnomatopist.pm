@@ -284,6 +284,7 @@ sub get_mainchain_name
     }
 
     # Collecting names of all the attachments
+    # FIXME: Now only the first locants are compared (->[0]), but according to BBv2 P-14.5.4 all of them should.
     my $name = '';
     for my $attachment_name (sort { cmp_only_aphabetical( $a, $b ) ||
                                     $attachments{$a}->[0] <=> $attachments{$b}->[0] ||
