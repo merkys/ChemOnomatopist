@@ -87,13 +87,16 @@ sub get_name
     find_groups( $graph );
 
     # Check for unsupported elements.
-    if( any { !is_element( $_, 'C' ) && !is_element( $_, 'H' ) }
+    if( any { !is_element( $_, 'C' ) && !is_element( $_, 'H' ) && !is_element( $_, 'O' ) }
             $graph->vertices ) {
-        die "cannot handle atoms other than C and H now\n";
+        die "cannot handle atoms other than C, H and O now\n";
     }
 
     if( any { blessed $_ && $_->isa( ChemOnomatopist::Group::Carbonyl:: ) } $graph->vertices ) {
         return get_name_ketone( $graph );
+    }
+    if( any { blessed $_ && $_->isa( ChemOnomatopist::Group::Hydroxy:: ) } $graph->vertices ) {
+        return get_name_hydroxy( $graph );
     }
 
     my $order = [ map { $_->{number} } select_main_chain( $graph->copy ) ];
@@ -324,6 +327,19 @@ sub get_mainchain_name
     return $name;
 }
 
+sub get_name_hydroxy
+{
+    my( $graph ) = @_;
+
+    my( $hydroxy ) = grep { blessed( $_ ) && $_->isa( ChemOnomatopist::Group::Hydroxy:: ) }
+                          $graph->vertices;
+    my( $C ) = $graph->neighbours( $hydroxy );
+    my $name = get_sidechain_name( $graph, $C );
+    $name =~ s/yl$//;
+    $name .= 'an' unless $name =~ /-$/;
+    return $name .= 'ol';
+}
+
 sub get_name_ketone
 {
     my( $graph ) = @_;
@@ -342,6 +358,7 @@ sub find_groups
 
     for my $atom ($graph->vertices) {
         my @neighbours = $graph->neighbours( $atom );
+        my @H = grep { is_element( $_, 'H' ) } @neighbours;
 
         # Detecting carbonyl
         if( is_element( $atom, 'O' ) &&
@@ -355,16 +372,13 @@ sub find_groups
 
             # Carbonyl derivatives should be detected here
         # Detecting hydroxy
-        } elsif( is_element( $atom, 'O' ) &&
-                 scalar @neighbours == 2 &&
-                 any { is_element( $_, 'H' ) == 1 } @neighbours ) {
-            my $hydroxy  = ChemOnomatopist::Group::Hydroxy->new( $atom );
-            my $hydrogen = any { is_element( $_, 'H' ) } @neighbours;
+        } elsif( is_element( $atom, 'O' ) && scalar @neighbours == 2 && @H == 1 ) {
+            my $hydroxy = ChemOnomatopist::Group::Hydroxy->new;
             for (@neighbours) {
                 $graph->add_edge( $_, $hydroxy );
                 $graph->delete_edge( $_, $atom );
             }
-            $graph->delete_vertex( $hydrogen );
+            $graph->delete_vertices( $atom, @H );
         }
     }
 
@@ -405,6 +419,8 @@ sub is_element
                 return $atom->is_carbon;
             } elsif( $element eq 'O' ) {
                 return $atom->is_oxygen;
+            } elsif( $element eq 'H' ) {
+                return '';
             }
             warn "cannot say whether $atom is $element\n";
         } elsif( $atom->isa( 'Chemistry::Atom' ) ) {
