@@ -92,6 +92,10 @@ sub get_name
         die "cannot handle atoms other than C and H now\n";
     }
 
+    if( any { blessed $_ && $_->isa( ChemOnomatopist::Group::Carbonyl:: ) } $graph->vertices ) {
+        return get_name_ketone( $graph );
+    }
+
     my $order = [ map { $_->{number} } select_main_chain( $graph->copy ) ];
     return get_mainchain_name( $graph->copy, $order ) . 'ane';
 }
@@ -314,6 +318,16 @@ sub get_mainchain_name
     return $name . alkane_chain_name( scalar @chain );
 }
 
+sub get_name_ketone
+{
+    my( $graph ) = @_;
+
+    my( $ketone ) = grep { blessed( $_ ) && $_->isa( ChemOnomatopist::Group::Carbonyl:: ) }
+                         $graph->vertices;
+    my $name = get_sidechain_name( $graph, $ketone );
+    return $name;
+}
+
 sub find_groups
 {
     my( $graph ) = @_;
@@ -328,9 +342,8 @@ sub find_groups
             my $carbonyl = ChemOnomatopist::Group::Carbonyl->new( $neighbours[0] );
             for ($graph->neighbours( $neighbours[0] )) {
                 $graph->add_edge( $_, $carbonyl );
-                $graph->delete_edge( $_, $neighbours[0] );
             }
-            $graph->delete_vertex( $atom );
+            $graph->delete_vertices( $atom, $neighbours[0] );
 
             # Carbonyl derivatives should be detected here
         # Detecting hydroxy
