@@ -331,8 +331,9 @@ sub get_name_ketone
     my( $ketone ) = grep { blessed( $_ ) && $_->isa( ChemOnomatopist::Group::Carbonyl:: ) }
                          $graph->vertices;
     my $name = get_sidechain_name( $graph, $ketone );
-    $name =~ s/yl$/anol/;
-    return $name;
+    $name =~ s/yl$//;
+    $name .= 'an-1-' unless $name =~ /-$/;
+    return $name . 'one';
 }
 
 sub find_groups

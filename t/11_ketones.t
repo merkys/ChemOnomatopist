@@ -8,8 +8,8 @@ use List::Util qw( all );
 use Test::More;
 
 my %SMILES_cases = (
-    'CCCC=O'   => 'butanol',
-    'CC(=O)CC' => 'butan-2-anol',
+    'CCCC=O'   => 'butan-1-one',
+    'CC(=O)CC' => 'butan-2-one',
 );
 
 plan tests => scalar( keys %SMILES_cases );
