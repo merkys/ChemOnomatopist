@@ -81,7 +81,7 @@ sub get_name
     }
 
     my( $order ) = select_main_chain( $graph->copy );
-    return get_mainchain_name( $graph->copy, $order ) . 'ane';
+    return get_mainchain_name( $graph->copy, $order );
 }
 
 # Subroutine gets an graph, removes all vertices that do not have C as their element.

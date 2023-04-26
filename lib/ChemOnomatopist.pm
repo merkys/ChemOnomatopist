@@ -97,7 +97,7 @@ sub get_name
     }
 
     my $order = [ map { $_->{number} } select_main_chain( $graph->copy ) ];
-    return get_mainchain_name( $graph->copy, $order ) . 'ane';
+    return get_mainchain_name( $graph->copy, $order );
 }
 
 # get_sidechain_name() receives a graph and a position to start the chain in it.
@@ -315,7 +315,13 @@ sub get_mainchain_name
         $name .= $number . $attachment_name;
     }
 
-    return $name . alkane_chain_name( scalar @chain );
+    $name .= alkane_chain_name( scalar @chain );
+
+    if( all { !blessed $_ || !$_->isa( ChemOnomatopist::Group:: ) } @chain ) {
+        $name .= 'ane';
+    }
+
+    return $name;
 }
 
 sub get_name_ketone
