@@ -7,7 +7,7 @@ use ChemOnomatopist;
 use Test::More;
 
 my %unsupported = (
-    'C=N' => 'cannot handle atoms other than C and H now',
+    'C=N' => 'cannot handle atoms other than C, H and O now',
     'c1ccccoc1' => 'cannot handle heterocycles for now',
 );
 
