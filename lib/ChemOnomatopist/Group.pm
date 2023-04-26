@@ -9,6 +9,7 @@ use warnings;
 sub new
 {
     my( $class, $self ) = @_;
+    $self = {} unless $self;
     return bless $self, $class;
 }
 

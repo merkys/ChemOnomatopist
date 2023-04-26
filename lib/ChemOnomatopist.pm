@@ -331,6 +331,7 @@ sub get_name_ketone
     my( $ketone ) = grep { blessed( $_ ) && $_->isa( ChemOnomatopist::Group::Carbonyl:: ) }
                          $graph->vertices;
     my $name = get_sidechain_name( $graph, $ketone );
+    $name =~ s/yl$/anol/;
     return $name;
 }
 
@@ -345,7 +346,7 @@ sub find_groups
         if( is_element( $atom, 'O' ) &&
             scalar @neighbours == 1 &&
             is_element( $neighbours[0], 'C' ) ) {
-            my $carbonyl = ChemOnomatopist::Group::Carbonyl->new( $neighbours[0] );
+            my $carbonyl = ChemOnomatopist::Group::Carbonyl->new;
             for ($graph->neighbours( $neighbours[0] )) {
                 $graph->add_edge( $_, $carbonyl );
             }
