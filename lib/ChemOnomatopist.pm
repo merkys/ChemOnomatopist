@@ -334,9 +334,12 @@ sub get_name_hydroxy
     my( $hydroxy ) = grep { blessed( $_ ) && $_->isa( ChemOnomatopist::Group::Hydroxy:: ) }
                           $graph->vertices;
     my( $C ) = $graph->neighbours( $hydroxy );
+    $graph->delete_vertex( $hydroxy );
+
     my $name = get_sidechain_name( $graph, $C );
     $name =~ s/yl$//;
     $name .= 'an' unless $name =~ /-$/;
+    $name = '2-methylpropan-2-' if $name eq 'tert-butan';
     return $name .= 'ol';
 }
 
