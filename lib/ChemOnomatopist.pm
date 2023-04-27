@@ -94,10 +94,10 @@ sub get_name
         last;
     }
 
-    # Check for unsupported elements.
-    if( any { !is_element( $_, 'C' ) && !is_element( $_, 'H' ) && !is_element( $_, 'O' ) }
-            $graph->vertices ) {
-        die "cannot handle atoms other than C, H and O now\n";
+    # Check for unsupported elements and unknown compounds
+    if( any { !is_element( $_, 'C' ) && !is_element( $_, 'H' ) }
+            grep { !blessed $_ } $graph->vertices ) {
+        die "cannot handle such compounds for now\n";
     }
 
     if( any { blessed $_ && $_->isa( ChemOnomatopist::Group::Carbonyl:: ) } $graph->vertices ) {
