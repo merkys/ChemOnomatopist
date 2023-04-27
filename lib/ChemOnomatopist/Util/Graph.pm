@@ -19,6 +19,7 @@ our @EXPORT_OK = qw(
     graph_has_cycle
     graph_longest_paths
     graph_longest_paths_from_vertex
+    graph_path_between_vertices
     tree_branch_positions
     tree_number_of_branches
 );

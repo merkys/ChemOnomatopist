@@ -12,7 +12,7 @@ use Scalar::Util qw( blessed );
 
 sub is_carbon { return 1 }
 
-sub get_mainchain_name
+sub get_name
 {
     my( $class, $graph ) = @_;
 
