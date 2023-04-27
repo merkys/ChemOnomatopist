@@ -85,6 +85,7 @@ sub get_name
             }
         }
 
+        # FIXME: Special atoms should not be deleted. Otherwise they will not get into the names.
         $graph->delete_vertices( @hydroxy );
         my $name = ChemOnomatopist::get_mainchain_name( $graph, [ ChemOnomatopist::filter_chains( @chains ) ] );
         $name .= '-' . ChemOnomatopist::IUPAC_numerical_multiplier( scalar @hydroxy ) . 'ol';
