@@ -58,6 +58,7 @@ sub get_name
         for my $path (@paths) {
             my $copy = $graph->copy;
             $copy->delete_path( @$path );
+            $copy->delete_vertices( grep { !ChemOnomatopist::is_element( $_, 'C' ) } $copy->vertices );
 
             my $A = shift @$path;
             my $B = pop @$path;
@@ -85,7 +86,9 @@ sub get_name
         }
 
         $graph->delete_vertices( @hydroxy );
-        return ChemOnomatopist::get_mainchain_name( $graph, [ ChemOnomatopist::filter_chains( @chains ) ] );
+        my $name = ChemOnomatopist::get_mainchain_name( $graph, [ ChemOnomatopist::filter_chains( @chains ) ] );
+        $name .= '-' . ChemOnomatopist::IUPAC_numerical_multiplier( scalar @hydroxy ) . 'ol';
+        return $name;
     }
 }
 
