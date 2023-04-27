@@ -84,8 +84,8 @@ sub get_name
             }
         }
 
-        die "multiple possibilities, do not know what to do\n" if @paths > 1;
-        die "not implemented\n";
+        $graph->delete_vertices( @hydroxy );
+        return ChemOnomatopist::get_mainchain_name( $graph, [ ChemOnomatopist::filter_chains( @chains ) ] );
     }
 }
 
