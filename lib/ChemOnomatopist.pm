@@ -108,7 +108,7 @@ sub get_name
     if( $most_senior_group ) {
         return $most_senior_group->get_name( $graph );
     } else {
-        return get_mainchain_name( $graph->copy, [ select_main_chain( $graph->copy ) ] );
+        return get_mainchain_name( $graph, [ select_main_chain( $graph ) ] );
     }
 }
 
@@ -277,6 +277,7 @@ sub get_mainchain_name
 
     # Disconnect the main chain: this way every main chain atom remains
     # connected only to the side chains.
+    $graph = $graph->copy;
     $graph->delete_path( @chain );
 
     # Examine the attachments to the main chain: delete the edges
