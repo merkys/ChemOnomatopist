@@ -108,8 +108,7 @@ sub get_name
     if( $most_senior_group ) {
         return $most_senior_group->get_name( $graph );
     } else {
-        my $order = [ map { $_->{number} } select_main_chain( $graph->copy ) ];
-        return get_mainchain_name( $graph->copy, $order );
+        return get_mainchain_name( $graph->copy, [ select_main_chain( $graph->copy ) ] );
     }
 }
 
@@ -271,16 +270,10 @@ sub get_sidechain_name
 
 sub get_mainchain_name
 {
-    my( $graph, $main_chain, $options ) = @_;
+    my( $graph, $chain, $options ) = @_;
 
     my @vertices = $graph->vertices;
-    my @chain;
-
-    # Recreate main chain order by the array in $main_chain
-    for my $curr_vertex (@$main_chain) {
-        my( $vertex ) = grep { $_->{number} == $curr_vertex } @vertices;
-        push @chain, $vertex;
-    }
+    my @chain = @$chain;
 
     # Disconnect the main chain: this way every main chain atom remains
     # connected only to the side chains.

@@ -81,7 +81,12 @@ sub get_name
     }
 
     my( $order ) = select_main_chain( $graph->copy );
-    return get_mainchain_name( $graph->copy, $order );
+    my @chain;
+    for my $curr_vertex (@$order) {
+        my( $vertex ) = grep { $_->{number} == $curr_vertex } $graph->vertices;
+        push @chain, $vertex;
+    }
+    return get_mainchain_name( $graph->copy, \@chain );
 }
 
 # Subroutine gets an graph, removes all vertices that do not have C as their element.
