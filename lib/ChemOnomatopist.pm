@@ -473,6 +473,13 @@ sub select_main_chain
         }
     }
 
+    return filter_chains( @chains );
+}
+
+sub filter_chains
+{
+    my( @chains ) = @_;
+
     for my $rule ( sub { return @_ },
                    \&rule_greatest_number_of_side_chains, # After this rule we are left with a set of longest chains all having the same number of side chains
                    \&rule_lowest_numbered_locants,
