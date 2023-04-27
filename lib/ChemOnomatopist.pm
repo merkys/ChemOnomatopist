@@ -280,15 +280,20 @@ sub get_mainchain_name
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_sidechain_name()
     my %attachments;
+    my @senior_group_attachments;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
             $graph->delete_edge( $atom, $neighbour );
             next if is_element( $neighbour, 'H' );
 
-            my $attachment_name = get_sidechain_name( $graph, $neighbour );
-            $attachment_name = bracket( $attachment_name ) if $attachment_name =~ /^[0-9]/;
-            push @{$attachments{$attachment_name}}, $i;
+            if( $most_senior_group && $neighbour->isa( $most_senior_group ) ) {
+                push @senior_group_attachments, $i;
+            } else {
+                my $attachment_name = get_sidechain_name( $graph, $neighbour );
+                $attachment_name = bracket( $attachment_name ) if $attachment_name =~ /^[0-9]/;
+                push @{$attachments{$attachment_name}}, $i;
+            }
         }
     }
 
@@ -319,7 +324,14 @@ sub get_mainchain_name
     }
 
     $name .= alkane_chain_name( scalar @chain );
-    $name .= $most_senior_group ? $most_senior_group->suffix : 'ane';
+    if( !@senior_group_attachments || @senior_group_attachments > 1 ) {
+        $name .= 'ane';
+    }
+    if( @senior_group_attachments ) {
+        $name .= '-' . join( ',', map { $_ + 1 } sort @senior_group_attachments ) . '-' .
+                 IUPAC_numerical_multiplier( scalar @senior_group_attachments ) .
+                 $most_senior_group->suffix;
+    }
 
     return $name;
 }
