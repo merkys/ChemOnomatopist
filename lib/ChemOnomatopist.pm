@@ -87,6 +87,13 @@ sub get_name
 
     find_groups( $graph );
 
+    my $most_senior_group;
+    for my $group (@ChemOnomatopist::Group::order) {
+        next unless any { blessed $_ && $_->isa( $group ) } $graph->vertices;
+        $most_senior_group = $group;
+        last;
+    }
+
     # Check for unsupported elements.
     if( any { !is_element( $_, 'C' ) && !is_element( $_, 'H' ) && !is_element( $_, 'O' ) }
             $graph->vertices ) {
