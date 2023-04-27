@@ -23,4 +23,6 @@ sub get_name
     return $name . 'one';
 }
 
+sub suffix { return 'one' };
+
 1;

@@ -93,4 +93,6 @@ sub get_name
     }
 }
 
+sub suffix { return 'ol' }
+
 1;

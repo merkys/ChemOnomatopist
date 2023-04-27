@@ -98,12 +98,7 @@ sub get_name
     }
 
     # Find the most senior group, undefined if alkane
-    my $most_senior_group;
-    for my $group (@ChemOnomatopist::Group::order) {
-        next unless any { blessed $_ && $_->isa( $group ) } $graph->vertices;
-        $most_senior_group = $group;
-        last;
-    }
+    my $most_senior_group = most_senior_group( $graph );
 
     if( $most_senior_group ) {
         return $most_senior_group->get_name( $graph );
@@ -274,6 +269,7 @@ sub get_mainchain_name
 
     my @vertices = $graph->vertices;
     my @chain = @$chain;
+    my $most_senior_group = most_senior_group( $graph );
 
     # Disconnect the main chain: this way every main chain atom remains
     # connected only to the side chains.
@@ -323,10 +319,7 @@ sub get_mainchain_name
     }
 
     $name .= alkane_chain_name( scalar @chain );
-
-    if( all { !blessed $_ || !$_->isa( ChemOnomatopist::Group:: ) } @chain ) {
-        $name .= 'ane';
-    }
+    $name .= $most_senior_group ? $most_senior_group->suffix : 'ane';
 
     return $name;
 }
@@ -562,6 +555,24 @@ sub pick_chain_with_lowest_attachments_alphabetically
     my @sorted = reverse sort { cmp_attachments( $locant_names[$a], $locant_names[$b] ) }
                               0..$#locant_names;
     return $chains[$sorted[0]];
+}
+
+sub most_senior_group
+{
+    my( @vertices ) = @_;
+
+    if( @vertices == 1 && blessed $vertices[0] && $vertices[0]->isa( Graph::Undirected:: ) ) {
+        # Graph given instead of an array of vertices
+        @vertices = $vertices[0]->vertices;
+    }
+
+    # Find the most senior group, undefined if alkane
+    for my $group (@ChemOnomatopist::Group::order) {
+        next unless any { blessed $_ && $_->isa( $group ) } @vertices;
+        return $group;
+    }
+
+    return;
 }
 
 # Sorts given names only based on alphabetical part of the name.
