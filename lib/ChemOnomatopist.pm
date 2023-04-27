@@ -105,8 +105,9 @@ sub get_name
         last;
     }
 
-    # Process alkanes early
-    if( !$most_senior_group ) {
+    if( $most_senior_group ) {
+        return $most_senior_group->get_name( $graph );
+    } else {
         my $order = [ map { $_->{number} } select_main_chain( $graph->copy ) ];
         return get_mainchain_name( $graph->copy, $order );
     }
@@ -346,34 +347,6 @@ sub get_mainchain_name
     }
 
     return $name;
-}
-
-sub get_name_hydroxy
-{
-    my( $graph ) = @_;
-
-    my( $hydroxy ) = grep { blessed( $_ ) && $_->isa( ChemOnomatopist::Group::Hydroxy:: ) }
-                          $graph->vertices;
-    my( $C ) = $graph->neighbours( $hydroxy );
-    $graph->delete_vertex( $hydroxy );
-
-    my $name = get_sidechain_name( $graph, $C );
-    $name =~ s/yl$//;
-    $name .= 'an' unless $name =~ /-$/;
-    $name = '2-methylpropan-2-' if $name eq 'tert-butan';
-    return $name .= 'ol';
-}
-
-sub get_name_ketone
-{
-    my( $graph ) = @_;
-
-    my( $ketone ) = grep { blessed( $_ ) && $_->isa( ChemOnomatopist::Group::Carbonyl:: ) }
-                         $graph->vertices;
-    my $name = get_sidechain_name( $graph, $ketone );
-    $name =~ s/yl$//;
-    $name .= 'an-1-' unless $name =~ /-$/;
-    return $name . 'one';
 }
 
 sub find_groups

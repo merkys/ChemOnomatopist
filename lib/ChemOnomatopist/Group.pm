@@ -6,6 +6,7 @@ use warnings;
 use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Hydroxy;
+use Scalar::Util qw( blessed );
 
 # ABSTRACT: Chemical group
 # VERSION
@@ -47,5 +48,15 @@ sub new
 # Neither of these by default
 sub is_carbon { return '' }
 sub is_oxygen { return '' }
+
+sub get_name
+{
+    my( $class, $graph ) = @_;
+
+    my @groups = grep { blessed $_ && $_->isa( $class ) } $graph->vertices;
+
+    die "cannot handle multiple instances of the same group\n" if @groups > 1;
+    return $class->get_mainchain_name( $graph );
+}
 
 1;
