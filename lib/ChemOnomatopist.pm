@@ -87,6 +87,17 @@ sub get_name
 
     find_groups( $graph );
 
+    # TODO: At this point it should be safe to delete the hydrogen atoms,
+    # as their role is either being a part of some group, or being "special"
+    # in some other way (worth inclusion in the IUPAC name)
+
+    # Check for unsupported elements and unknown compounds
+    if( any { !is_element( $_, 'C' ) && !is_element( $_, 'H' ) }
+            grep { !blessed $_ } $graph->vertices ) {
+        die "cannot handle such compounds for now\n";
+    }
+
+    # Find the most senior group, undefined if alkane
     my $most_senior_group;
     for my $group (@ChemOnomatopist::Group::order) {
         next unless any { blessed $_ && $_->isa( $group ) } $graph->vertices;
@@ -94,11 +105,14 @@ sub get_name
         last;
     }
 
-    # Check for unsupported elements and unknown compounds
-    if( any { !is_element( $_, 'C' ) && !is_element( $_, 'H' ) }
-            grep { !blessed $_ } $graph->vertices ) {
-        die "cannot handle such compounds for now\n";
+    # Process alkanes early
+    if( !$most_senior_group ) {
+        my $order = [ map { $_->{number} } select_main_chain( $graph->copy ) ];
+        return get_mainchain_name( $graph->copy, $order );
     }
+
+    # Find all senior groups
+    my @groups = grep { blessed $_ && $_->isa( $most_senior_group ) } $graph->vertices;
 
     if( any { blessed $_ && $_->isa( ChemOnomatopist::Group::Carbonyl:: ) } $graph->vertices ) {
         return get_name_ketone( $graph );
@@ -107,8 +121,7 @@ sub get_name
         return get_name_hydroxy( $graph );
     }
 
-    my $order = [ map { $_->{number} } select_main_chain( $graph->copy ) ];
-    return get_mainchain_name( $graph->copy, $order );
+    die "cannot generate name...\n"; # Catch-all
 }
 
 # get_sidechain_name() receives a graph and a position to start the chain in it.
