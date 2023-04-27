@@ -111,18 +111,6 @@ sub get_name
         my $order = [ map { $_->{number} } select_main_chain( $graph->copy ) ];
         return get_mainchain_name( $graph->copy, $order );
     }
-
-    # Find all senior groups
-    my @groups = grep { blessed $_ && $_->isa( $most_senior_group ) } $graph->vertices;
-
-    if( any { blessed $_ && $_->isa( ChemOnomatopist::Group::Carbonyl:: ) } $graph->vertices ) {
-        return get_name_ketone( $graph );
-    }
-    if( any { blessed $_ && $_->isa( ChemOnomatopist::Group::Hydroxy:: ) } $graph->vertices ) {
-        return get_name_hydroxy( $graph );
-    }
-
-    die "cannot generate name...\n"; # Catch-all
 }
 
 # get_sidechain_name() receives a graph and a position to start the chain in it.
