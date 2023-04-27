@@ -16,6 +16,7 @@ our @EXPORT_OK = qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
     graph_center
+    graph_has_cycle
     graph_longest_paths
     graph_longest_paths_from_vertex
     tree_branch_positions
@@ -82,6 +83,12 @@ sub graph_center
         $nvertices = $nvertices_now;
     }
     return $graph->vertices;
+}
+
+sub graph_has_cycle
+{
+    my( $graph ) = @_;
+    return $graph->edges != $graph->vertices - 1;
 }
 
 # Finds longest paths in a tree graph.
@@ -189,6 +196,32 @@ sub tree_branch_positions
     return map  { ( $_ ) x ( $tree->degree( $vertices[$_] ) - 2 ) }
            grep { $tree->degree( $vertices[$_] ) > 2 }
                 0..$#vertices;
+}
+
+# Find a path between two vertices in an acyclic graph.
+sub graph_path_between_vertices
+{
+    my( $graph, $A, $B ) = @_;
+
+    if( graph_has_cycle( $graph ) ) {
+        die "cannot call graph_path_between_vertices() on graph with cycles\n";
+    }
+
+    $graph = $graph->copy;
+    while( my @leaves = grep { $graph->degree( $_ ) == 1 && $_ != $A && $_ != $B } $graph->vertices ) {
+        $graph->delete_vertices( @leaves );
+    }
+
+    my @path;
+    my $vertex = $A;
+    while( $vertex ) {
+        push @path, $vertex;
+        my( $vertex_now ) = $graph->neighbours( $vertex );
+        $graph->delete_vertex( $vertex );
+        $vertex = $vertex_now;
+    }
+
+    return @path;
 }
 
 1;

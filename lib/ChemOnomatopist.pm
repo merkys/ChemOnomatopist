@@ -16,6 +16,7 @@ use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
     graph_center
+    graph_has_cycle
     graph_longest_paths_from_vertex
     tree_branch_positions
     tree_number_of_branches
@@ -59,7 +60,7 @@ sub get_name
     die "nothing supplied for get_name()\n" unless $graph;
 
     # Check if graph is a tree as trees are easy to process
-    if( $graph->edges != $graph->vertices - 1 ) {
+    if( graph_has_cycle( $graph ) ) {
         # If it is not a tree, than the graph has cycles, and we have to
         # do our best to recognise them. To make it easier, hydrogen atoms
         # are removed here for now.
