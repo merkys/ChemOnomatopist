@@ -343,9 +343,9 @@ sub select_main_chain
         my @carbons = map { $_->C } @groups; # FIXME: Maybe uniq is needed?
 
         if( @carbons == 1 ) {
-            # TODO: Select the best chain containing this one group
-
-            return '';
+            # As the starting position is known, it is enough to take the "side chain"
+            # containing this particular carbon:
+            return select_side_chain( $tree, @carbons );
         } else {
             my @paths;
             my $max_value;
