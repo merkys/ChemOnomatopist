@@ -647,12 +647,9 @@ sub cmp_only_aphabetical
 sub cmp_arrays
 {
     my( $a, $b ) = @_;
-    my @first  = @$a;
-    my @second = @$b;
-    my @index  = (0..scalar @first-1);
 
-    foreach( @index ) {
-        return $first[$_] <=> $second[$_] if $first[$_] <=> $second[$_];
+    for (0..min( scalar( @$a ), scalar( @$b ) )-1) {
+        return $a->[$_] <=> $b->[$_] if $a->[$_] <=> $b->[$_];
     }
 
     return 0;
