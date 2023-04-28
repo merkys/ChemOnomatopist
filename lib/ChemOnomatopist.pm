@@ -182,7 +182,7 @@ sub get_mainchain_name
             $graph->delete_edge( $atom, $neighbour );
             next if is_element( $neighbour, 'H' );
 
-            if( $most_senior_group && $neighbour->isa( $most_senior_group ) ) {
+            if( $most_senior_group && blessed $neighbour && $neighbour->isa( $most_senior_group ) ) {
                 push @senior_group_attachments, $i;
             } else {
                 my $attachment_name = get_sidechain_name( $graph, $neighbour );
