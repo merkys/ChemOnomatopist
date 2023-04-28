@@ -111,86 +111,9 @@ sub get_sidechain_name
 
     $options = {} unless $options;
 
-    my $branches_at_start = scalar( grep { !is_element( $_, 'H' ) } $graph->neighbours( $start ) ) > 1;
+    my $branches_at_start = scalar grep { !is_element( $_, 'H' ) } $graph->neighbours( $start );
 
-    my $C_graph = $graph->copy;
-    $C_graph->delete_vertices( grep { !is_element( $_, 'C' ) } $C_graph->vertices );
-
-    my @path_parts;
-    for my $neighbour ($C_graph->neighbours( $start )) {
-        my $graph_copy = $C_graph->copy;
-        $graph_copy->delete_edge( $start, $neighbour );
-        for my $path ( graph_longest_paths_from_vertex( $graph_copy, $neighbour ) ) {
-            push @path_parts,
-                 ChemOnomatopist::ChainHalf->new( $C_graph, undef, $start, @$path );
-        }
-    }
-
-    my @chains;
-    if(      $C_graph->degree( $start ) > 1 ) {
-        # FIXME: Deduplicate: copied from select_main_chain()
-        # Generate all possible chains.
-        # FIXME: This needs optimisation.
-        for my $part1 (@path_parts) {
-            for my $part2 (@path_parts) {
-                next if $part1->group eq $part2->group;
-                push @chains, ChemOnomatopist::Chain->new( $part1, $part2 );
-            }
-        }
-    } elsif( $C_graph->degree( $start ) == 1 ) {
-        @chains = map { ChemOnomatopist::Chain::VertexArray->new( $graph, $_->vertices ) } @path_parts;
-    } else {
-        return 'methyl'; # CHECK: Do we need this?
-    }
-
-    # From BBv2 P-29.2
-    my $rule_lowest_free_valence = sub {
-        my( @chains ) = @_;
-
-        my @chains_now;
-        my $lowest_locant;
-
-        for my $chain (@chains) {
-            my @vertices = $chain->vertices;
-            my( $locant ) = grep { $vertices[$_] == $start } 0..$#vertices;
-            if( @chains_now ) {
-                if( $lowest_locant > $locant ) {
-                    @chains_now = ( $chain );
-                    $lowest_locant = $locant;
-                } elsif( $lowest_locant == $locant ) {
-                    push @chains_now, $chain;
-                }
-            } else {
-                @chains_now = ( $chain );
-                $lowest_locant = $locant;
-            }
-        }
-
-        return @chains_now;
-    };
-
-    my @chain;
-    for my $rule ( sub { return @_ },
-                   \&rule_longest_chains,
-                   \&rule_greatest_number_of_side_chains, # After this rule we are left with a set of longest chains all having the same number of side chains
-                   $rule_lowest_free_valence,
-                   \&rule_lowest_numbered_locants,
-                   \&rule_most_carbon_in_side_chains,
-                   \&rule_least_branched_side_chains,
-                   \&pick_chain_with_lowest_attachments_alphabetically ) {
-        my @chains_now = $rule->( @chains );
-
-        # CHECK: Can a rule cause disappearance of all chains?
-        next unless @chains_now;
-
-        @chains = @chains_now; # Narrow down the selection
-
-        # If a single chain cannot be chosen now, pass on to the next rule
-        next unless @chains == 1;
-
-        @chain = $chains[0]->vertices;
-        last;
-    }
+    my @chain = select_side_chain( $graph, $start );
 
     # TODO: Handle the case when none of the rules select proper chains
     die "could not select a chain\n" unless @chain;
@@ -225,7 +148,7 @@ sub get_sidechain_name
     }
     $name .= alkane_chain_name( scalar @chain );
 
-    if( $branches_at_start ) {
+    if( $branches_at_start > 1 ) {
         my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
         $name .= 'an-' . ($branch_point + 1) . '-';
     }
@@ -511,6 +434,93 @@ sub select_main_chain
     }
 
     return filter_chains( @chains );
+}
+
+# Selects the best side chain
+sub select_side_chain
+{
+    my( $graph, $start ) = @_;
+
+    my $C_graph = $graph->copy;
+    $C_graph->delete_vertices( grep { !is_element( $_, 'C' ) } $C_graph->vertices );
+
+    my @path_parts;
+    for my $neighbour ($C_graph->neighbours( $start )) {
+        my $graph_copy = $C_graph->copy;
+        $graph_copy->delete_edge( $start, $neighbour );
+        for my $path ( graph_longest_paths_from_vertex( $graph_copy, $neighbour ) ) {
+            push @path_parts,
+                 ChemOnomatopist::ChainHalf->new( $C_graph, undef, $start, @$path );
+        }
+    }
+
+    my @chains;
+    if(      $C_graph->degree( $start ) > 1 ) {
+        # FIXME: Deduplicate: copied from select_main_chain()
+        # Generate all possible chains.
+        # FIXME: This needs optimisation.
+        for my $part1 (@path_parts) {
+            for my $part2 (@path_parts) {
+                next if $part1->group eq $part2->group;
+                push @chains, ChemOnomatopist::Chain->new( $part1, $part2 );
+            }
+        }
+    } elsif( $C_graph->degree( $start ) == 1 ) {
+        @chains = map { ChemOnomatopist::Chain::VertexArray->new( $graph, $_->vertices ) } @path_parts;
+    } else {
+        return 'methyl'; # CHECK: Do we need this?
+    }
+
+    # From BBv2 P-29.2
+    my $rule_lowest_free_valence = sub {
+        my( @chains ) = @_;
+
+        my @chains_now;
+        my $lowest_locant;
+
+        for my $chain (@chains) {
+            my @vertices = $chain->vertices;
+            my( $locant ) = grep { $vertices[$_] == $start } 0..$#vertices;
+            if( @chains_now ) {
+                if( $lowest_locant > $locant ) {
+                    @chains_now = ( $chain );
+                    $lowest_locant = $locant;
+                } elsif( $lowest_locant == $locant ) {
+                    push @chains_now, $chain;
+                }
+            } else {
+                @chains_now = ( $chain );
+                $lowest_locant = $locant;
+            }
+        }
+
+        return @chains_now;
+    };
+
+    for my $rule ( sub { return @_ },
+                   \&rule_longest_chains,
+                   \&rule_greatest_number_of_side_chains, # After this rule we are left with a set of longest chains all having the same number of side chains
+                   $rule_lowest_free_valence,
+                   \&rule_lowest_numbered_locants,
+                   \&rule_most_carbon_in_side_chains,
+                   \&rule_least_branched_side_chains,
+                   \&pick_chain_with_lowest_attachments_alphabetically ) {
+        my @chains_now = $rule->( @chains );
+
+        # CHECK: Can a rule cause disappearance of all chains?
+        next unless @chains_now;
+
+        @chains = @chains_now; # Narrow down the selection
+
+        # If a single chain cannot be chosen now, pass on to the next rule
+        next unless @chains == 1;
+
+        return $chains[0]->vertices;
+        last;
+    }
+
+    # TODO: Handle the case when none of the rules select proper chains
+    return ();
 }
 
 sub filter_chains
