@@ -223,8 +223,9 @@ sub get_mainchain_name
         $name .= 'ane';
     }
     if( @senior_group_attachments ) {
-        $name .= '-' . join( ',', map { $_ + 1 } sort @senior_group_attachments ) . '-' .
-                 IUPAC_numerical_multiplier( scalar @senior_group_attachments ) .
+        my $number = IUPAC_numerical_multiplier( scalar @senior_group_attachments );
+        $name .= 'an-' . join( ',', map { $_ + 1 } sort @senior_group_attachments ) . '-' .
+                 ($number eq 'mono' ? '' : $number) .
                  $most_senior_group->suffix;
     }
 
@@ -448,7 +449,7 @@ sub select_side_chain
         $graph_copy->delete_edge( $start, $neighbour );
         for my $path ( graph_longest_paths_from_vertex( $graph_copy, $neighbour ) ) {
             push @path_parts,
-                 ChemOnomatopist::ChainHalf->new( $C_graph, undef, $start, @$path );
+                 ChemOnomatopist::ChainHalf->new( $graph, undef, $start, @$path );
         }
     }
 
@@ -466,7 +467,7 @@ sub select_side_chain
     } elsif( $C_graph->degree( $start ) == 1 ) {
         @chains = map { ChemOnomatopist::Chain::VertexArray->new( $graph, $_->vertices ) } @path_parts;
     } else {
-        return 'methyl'; # CHECK: Do we need this?
+        return ( $start );
     }
 
     # From BBv2 P-29.2
