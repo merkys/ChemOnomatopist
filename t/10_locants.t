@@ -23,16 +23,21 @@ my @atoms = map { { symbol => 'C', number => $_ } } 0..99;
 my $graph = Graph::Undirected->new( refvertexed => 1 );
 $graph->add_path( map { $atoms[$_] } ( 1..8 ) );
 
-my $A = chain( $graph, map { $atoms[$_] } ( 5, reverse 1..4 ) );
-my $B = chain( $graph, map { $atoms[$_] } ( 4, 5..8 ) );
+my( $A, $B );
 
-is( ChemOnomatopist::Chain->new( $A, $B )->locant_positions, 0 );
-is( ChemOnomatopist::Chain->new( $B, $A )->locant_positions, 0 );
+$A = chain( $graph, map { $atoms[$_] } ( 5, reverse 1..4 ) );
+$B = chain( $graph, map { $atoms[$_] } ( 4, 5..8 ) );
+
+is( ChemOnomatopist::Chain->new( $A, $B )->branch_positions, 0 );
+is( ChemOnomatopist::Chain->new( $B, $A )->branch_positions, 0 );
 
 # The following additions transform the graph to 2,4,7-trimethyloctane
 $graph->add_edge( map { $atoms[$_] } ( 2, 12 ) );
 $graph->add_edge( map { $atoms[$_] } ( 4, 42 ) );
 $graph->add_edge( map { $atoms[$_] } ( 7, 72 ) );
 
-is( ChemOnomatopist::Chain->new( $A, $B )->locant_positions, 13 );
-is( ChemOnomatopist::Chain->new( $B, $A )->locant_positions, 14 );
+$A = chain( $graph, map { $atoms[$_] } ( 5, reverse 1..4 ) );
+$B = chain( $graph, map { $atoms[$_] } ( 4, 5..8 ) );
+
+is join( ',', ChemOnomatopist::Chain->new( $A, $B )->branch_positions ), '1,3,6';
+is join( ',', ChemOnomatopist::Chain->new( $B, $A )->branch_positions ), '1,4,6';
