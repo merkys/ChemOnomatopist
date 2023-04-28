@@ -7,6 +7,7 @@ use warnings;
 # VERSION
 
 use ChemOnomatopist::Chain;
+use ChemOnomatopist::Chain::VertexArray;;
 use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Carbonyl;
