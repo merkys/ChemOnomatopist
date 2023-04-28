@@ -652,7 +652,7 @@ sub cmp_arrays
         return $a->[$_] <=> $b->[$_] if $a->[$_] <=> $b->[$_];
     }
 
-    return 0;
+    return @$a <=> @$b;
 }
 
 # Sorts given names only based on alphabetical part of the name
