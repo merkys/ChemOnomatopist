@@ -99,14 +99,8 @@ sub get_name
         die "cannot handle such compounds for now\n";
     }
 
-    # Find the most senior group, undefined if alkane
-    my $most_senior_group = most_senior_group( $graph );
-
-    if( $most_senior_group ) {
-        return $most_senior_group->get_name( $graph );
-    } else {
-        return get_mainchain_name( $graph, [ select_main_chain( $graph ) ] );
-    }
+    my @main_chain = select_main_chain( $graph );
+    return get_mainchain_name( $graph, \@main_chain );
 }
 
 # get_sidechain_name() receives a graph and a position to start the chain in it.
@@ -124,8 +118,6 @@ sub get_sidechain_name
 
     my @chain;
     if( $branches_at_start ) {
-        $branches_at_start = 1;
-
         my $graph_copy = $graph->copy;
         $graph_copy->delete_vertices( grep { !is_element( $_, 'C' ) } $graph_copy->vertices );
 
@@ -451,6 +443,8 @@ sub select_main_chain
 
         if( @carbons == 1 ) {
             # TODO: Select the best chain containing this one group
+
+            return '';
         } else {
             my @paths;
             my $max_value;

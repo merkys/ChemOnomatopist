@@ -6,6 +6,8 @@ use warnings;
 # ABSTRACT: Chain built upon an array of vertices
 # VERSION
 
+use ChemOnomatopist::ChainHalf; # FIXME: Not sure why it is needed
+
 use parent ChemOnomatopist::ChainHalf::;
 
 use List::Util qw( sum0 );
