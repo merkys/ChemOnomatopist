@@ -39,9 +39,8 @@ our @order = (
 
 sub new
 {
-    my( $class, $self ) = @_;
-    $self = {} unless $self;
-    return bless $self, $class;
+    my( $class, $carbon ) = @_;
+    return bless { C => $carbon }, $class;
 }
 
 # Neither of these by default
@@ -50,5 +49,11 @@ sub is_oxygen { return '' }
 
 sub get_name { die "not implemented in the base class\n" }
 sub suffix { return '' }
+
+# Return the attached carbon
+sub C {
+    my( $self ) = @_;
+    return $self->{C};
+}
 
 1;
