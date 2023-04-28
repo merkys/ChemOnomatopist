@@ -441,41 +441,48 @@ sub select_main_chain
 {
     my( $tree ) = @_;
 
-    # Remove non-carbon atoms
-    $tree = $tree->copy;
-    $tree->delete_vertices( grep { !is_element( $_, 'C' ) } $tree->vertices );
+    # Find the most senior group, undefined if alkane
+    my $most_senior_group = most_senior_group( $tree );
 
-    # Here the candidate halves for the longest (and "best") path are placed in @path_parts.
-    # Each of candidate halves start with center atom.
-    my @center = graph_center( $tree );
-    my @path_parts;
-    if( @center == 1 ) {
-        # Longest path has odd length
-        for my $path ( graph_longest_paths_from_vertex( $tree, $center[0] ) ) {
-            push @path_parts,
-                 ChemOnomatopist::ChainHalf->new( $tree, undef, @$path );
-        }
-    } else {
-        # Longest path has even length
-        # Graph copy without center edge is required by graph_longest_paths_from_vertex()
-        my $copy = $tree->copy;
-        $copy->delete_edge( @center );
-        for my $vertex ( @center ) {
-            push @path_parts,
-                 map { ChemOnomatopist::ChainHalf->new( $tree, (grep { $_ ne $vertex } @center), @$_ ) }
-                     graph_longest_paths_from_vertex( $copy, $vertex );
-        }
-    }
-
-    return $path_parts[0]->vertices if @path_parts == 1; # methane
-
-    # Generate all possible chains.
-    # FIXME: This needs optimisation.
     my @chains;
-    for my $part1 (@path_parts) {
-        for my $part2 (@path_parts) {
-            next if $part1->group eq $part2->group;
-            push @chains, ChemOnomatopist::Chain->new( $part1, $part2 );
+    if( $most_senior_group ) {
+        # TODO: Select a chain containing most of the senior groups
+    } else {
+        # Remove non-carbon atoms
+        $tree = $tree->copy;
+        $tree->delete_vertices( grep { !is_element( $_, 'C' ) } $tree->vertices );
+
+        # Here the candidate halves for the longest (and "best") path are placed in @path_parts.
+        # Each of candidate halves start with center atom.
+        my @center = graph_center( $tree );
+        my @path_parts;
+        if( @center == 1 ) {
+            # Longest path has odd length
+            for my $path ( graph_longest_paths_from_vertex( $tree, $center[0] ) ) {
+                push @path_parts,
+                     ChemOnomatopist::ChainHalf->new( $tree, undef, @$path );
+            }
+        } else {
+            # Longest path has even length
+            # Graph copy without center edge is required by graph_longest_paths_from_vertex()
+            my $copy = $tree->copy;
+            $copy->delete_edge( @center );
+            for my $vertex ( @center ) {
+                push @path_parts,
+                     map { ChemOnomatopist::ChainHalf->new( $tree, (grep { $_ ne $vertex } @center), @$_ ) }
+                         graph_longest_paths_from_vertex( $copy, $vertex );
+            }
+        }
+
+        return $path_parts[0]->vertices if @path_parts == 1; # methane
+
+        # Generate all possible chains.
+        # FIXME: This needs optimisation.
+        for my $part1 (@path_parts) {
+            for my $part2 (@path_parts) {
+                next if $part1->group eq $part2->group;
+                push @chains, ChemOnomatopist::Chain->new( $part1, $part2 );
+            }
         }
     }
 
