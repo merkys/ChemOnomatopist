@@ -221,7 +221,7 @@ sub get_mainchain_name
     }
     if( @senior_group_attachments ) {
         my $number = IUPAC_numerical_multiplier( scalar @senior_group_attachments );
-        $name .= 'an';
+        $name .= 'an' unless $name =~ /ane$/;
         if( $name ne 'methan' ) {
             $name .= '-' . join( ',', map { $_ + 1 } sort @senior_group_attachments ) . '-';
         }
@@ -255,6 +255,8 @@ sub find_groups
         }
     }
 
+    return;
+
     # Second pass is needed to build on top of these trivial groups
     for my $atom ($graph->vertices) {
         my @neighbours = $graph->neighbours( $atom );
@@ -262,7 +264,7 @@ sub find_groups
         # Detecting carboxyl
         if( blessed $atom &&
             $atom->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
-            scalar @neighbours == 1 &&
+            @neighbours == 1 &&
             blessed $neighbours[0] &&
             $neighbours[0]->isa( ChemOnomatopist::Group::Carbonyl:: ) ) {
             my( $hydroxy, $carbonyl ) = ( $atom, @neighbours );
