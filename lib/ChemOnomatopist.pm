@@ -255,26 +255,20 @@ sub find_groups
     # Hydrogen atoms are no longer important
     $graph->delete_vertices( grep { is_element( $_, 'H' ) } $graph->vertices );
 
-    return;
-
     # Second pass is needed to build on top of these trivial groups
     for my $atom ($graph->vertices) {
         my @neighbours = $graph->neighbours( $atom );
+        my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) }
+                          @neighbours;
 
         # Detecting carboxyl
-        if( blessed $atom &&
-            $atom->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
-            @neighbours == 1 &&
-            blessed $neighbours[0] &&
-            $neighbours[0]->isa( ChemOnomatopist::Group::Carbonyl:: ) ) {
-            my( $hydroxy, $carbonyl ) = ( $atom, @neighbours );
-            my $carboxyl = ChemOnomatopist::Group::Carboxyl->new( $carbonyl );
-            for ($graph->neighbours( $carbonyl )) {
-                $graph->add_edge( $_, $carboxyl );
-                $graph->delete_edge( $_, $carbonyl );
-            }
-            $graph->delete_vertex( $carboxyl );
-            $graph->delete_vertex( $hydroxy );
+        if( is_element( $atom, 'C' ) &&
+            (any { $_->isa( ChemOnomatopist::Group::Carbonyl:: ) } @groups) &&
+            (any { $_->isa( ChemOnomatopist::Group::Hydroxy::  ) } @groups) ) {
+            my $carboxyl = ChemOnomatopist::Group::Carboxyl->new( $atom );
+            $graph->delete_vertices( @groups ); # FIXME: Be careful!
+            $graph->add_edges( map { $carboxyl, $_ } $graph->neighbours( $atom ) );
+            $graph->delete_vertex( $atom );
         }
     }
 

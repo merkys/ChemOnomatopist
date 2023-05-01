@@ -53,7 +53,7 @@ sub suffix { return '' }
 # Return the attached carbon
 sub C {
     my( $self ) = @_;
-    return $self->{C};
+    return $self->is_carbon ? $self : $self->{C};
 }
 
 1;
