@@ -78,7 +78,7 @@ sub locant_names()
         my @current_locants;
         for my $neighbour ($graph->neighbours( $vertex )) {
             $graph->delete_edge( $vertex, $neighbour );
-            next if ChemOnomatopist::is_element( $neighbour, 'H' );
+            next unless ChemOnomatopist::is_element( $neighbour, 'C' );
             push @current_locants, ChemOnomatopist::get_sidechain_name( $graph, $neighbour );
         }
         push @locants, \@current_locants;
