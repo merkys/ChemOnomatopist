@@ -224,9 +224,11 @@ sub get_mainchain_name
     }
     if( @senior_group_attachments ) {
         my $number = IUPAC_numerical_multiplier( scalar @senior_group_attachments );
-        $name .= 'an-' . join( ',', map { $_ + 1 } sort @senior_group_attachments ) . '-' .
-                 ($number eq 'mono' ? '' : $number) .
-                 $most_senior_group->suffix;
+        $name .= 'an';
+        if( $name ne 'methan' ) {
+            $name .= '-' . join( ',', map { $_ + 1 } sort @senior_group_attachments ) . '-';
+        }
+        $name .= ($number eq 'mono' ? '' : $number) . $most_senior_group->suffix;
     }
 
     return $name;
