@@ -80,7 +80,7 @@ sub get_name
         die "cannot handle atoms other than C and H now\n";
     }
 
-    my( $order ) = select_main_chain( $graph->copy );
+    my( $order ) = select_mainchain( $graph->copy );
     my @chain;
     for my $curr_vertex (@$order) {
         my( $vertex ) = grep { $_->{number} == $curr_vertex } $graph->vertices;
@@ -117,7 +117,7 @@ sub BFS_order_carbons_only_return_lengths
 }
 
 # Returns main (parental) chain to be used during the naming
-sub select_main_chain
+sub select_mainchain
 {
     my( $graph ) = @_;
     my @order = BFS_order_carbons_only( $graph );

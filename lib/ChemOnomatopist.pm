@@ -99,7 +99,7 @@ sub get_name
         die "cannot handle such compounds for now\n";
     }
 
-    my @main_chain = select_main_chain( $graph );
+    my @main_chain = select_mainchain( $graph );
     return get_mainchain_name( $graph, \@main_chain );
 }
 
@@ -113,7 +113,7 @@ sub get_sidechain_name
 
     my $branches_at_start = scalar grep { !is_element( $_, 'H' ) } $graph->neighbours( $start );
 
-    my @chain = select_side_chain( $graph, $start );
+    my @chain = select_sidechain( $graph, $start );
 
     # TODO: Handle the case when none of the rules select proper chains
     die "could not select a chain\n" unless @chain;
@@ -327,7 +327,7 @@ sub BFS_order_carbons_only
 }
 
 # Selects the main chain by evaluating its parts
-sub select_main_chain
+sub select_mainchain
 {
     my( $tree ) = @_;
 
@@ -342,7 +342,7 @@ sub select_main_chain
 
         # As the starting position is known, it is enough to take the "side chain"
         # containing this particular carbon:
-        return select_side_chain( $tree, @carbons ) if @carbons == 1;
+        return select_sidechain( $tree, @carbons ) if @carbons == 1;
 
         my @paths;
         my $max_value;
@@ -433,7 +433,7 @@ sub select_main_chain
 }
 
 # Selects the best side chain
-sub select_side_chain
+sub select_sidechain
 {
     my( $graph, $start ) = @_;
 
@@ -452,7 +452,7 @@ sub select_side_chain
 
     my @chains;
     if(      $C_graph->degree( $start ) > 1 ) {
-        # FIXME: Deduplicate: copied from select_main_chain()
+        # FIXME: Deduplicate: copied from select_mainchain()
         # Generate all possible chains.
         # FIXME: This needs optimisation.
         for my $part1 (@path_parts) {
