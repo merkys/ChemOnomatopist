@@ -74,9 +74,11 @@ sub get_name
         die "only limited set of homocycles is supported for now\n";
     }
 
+    # Hydrogen atoms are no longer important
+    $graph->delete_vertices( grep { is_element( $_, 'H' ) } $graph->vertices );
+
     # Check for unsupported elements.
-    if( any { !is_element( $_, 'C' ) && !is_element( $_, 'H' ) }
-            $graph->vertices ) {
+    if( any { !is_element( $_, 'C' ) } $graph->vertices ) {
         die "cannot handle atoms other than C and H now\n";
     }
 

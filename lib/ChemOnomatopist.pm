@@ -94,8 +94,7 @@ sub get_name
     # in some other way (worth inclusion in the IUPAC name)
 
     # Check for unsupported elements and unknown compounds
-    if( any { !is_element( $_, 'C' ) && !is_element( $_, 'H' ) }
-            grep { !blessed $_ } $graph->vertices ) {
+    if( any { !is_element( $_, 'C' ) } grep { !blessed $_ } $graph->vertices ) {
         die "cannot handle such compounds for now\n";
     }
 
@@ -111,7 +110,7 @@ sub get_sidechain_name
 
     $options = {} unless $options;
 
-    my $branches_at_start = scalar grep { !is_element( $_, 'H' ) } $graph->neighbours( $start );
+    my $branches_at_start = $graph->degree( $start );
 
     my @chain = select_sidechain( $graph, $start );
 
@@ -128,7 +127,6 @@ sub get_sidechain_name
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
             $graph->delete_edge( $atom, $neighbour );
-            next if is_element( $neighbour, 'H' );
 
             my $attachment_name = get_sidechain_name( $graph, $neighbour );
             $attachment_name = bracket( $attachment_name ) if $attachment_name =~ /^[0-9]/;
@@ -180,7 +178,6 @@ sub get_mainchain_name
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
             $graph->delete_edge( $atom, $neighbour );
-            next if is_element( $neighbour, 'H' );
 
             if( $most_senior_group && blessed $neighbour && $neighbour->isa( $most_senior_group ) ) {
                 push @senior_group_attachments, $i;
@@ -254,6 +251,9 @@ sub find_groups
             $graph->delete_vertices( $atom, @H );
         }
     }
+
+    # Hydrogen atoms are no longer important
+    $graph->delete_vertices( grep { is_element( $_, 'H' ) } $graph->vertices );
 
     return;
 
