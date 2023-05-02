@@ -9,6 +9,7 @@ use ChemOnomatopist::Util::Graph qw(
 );
 use Graph::Traversal::DFS;
 use List::Util qw( sum0 );
+use Scalar::Util qw( blessed );
 
 # ABSTRACT: Half of a longest chain
 # VERSION
@@ -54,6 +55,24 @@ sub branch_positions()
 
     $self->{branch_positions} = \@branch_positions;
     return @{$self->{branch_positions}};
+}
+
+sub group_positions
+{
+    my( $self, $class ) = @_;
+
+    my $graph = $self->_disconnected_chain_graph;
+    my @vertices = $self->vertices;
+
+    my @group_positions;
+    for (0..$#vertices) {
+        my $groups = grep { blessed $_ && $_->isa( $class ) }
+                          $graph->neighbours( $vertices[$_] );
+        next unless $groups;
+        push @group_positions, ( $_ ) x $groups;
+    }
+
+    return @group_positions;
 }
 
 sub length()
@@ -117,6 +136,12 @@ sub number_of_branches()
 {
     my( $self ) = @_;
     return scalar $self->branch_positions;
+}
+
+sub number_of_groups
+{
+    my( $self, $class ) = @_;
+    return scalar $self->group_positions( $class );
 }
 
 sub _disconnected_chain_graph()

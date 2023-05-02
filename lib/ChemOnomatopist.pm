@@ -390,6 +390,9 @@ sub select_mainchain
                 }
             }
         }
+
+        @chains = rule_most_groups( $most_senior_group, @chains );
+        @chains = rule_lowest_numbered_groups( $most_senior_group, @chains );
     } else {
         # Remove non-carbon atoms
         $tree = $tree->copy;
@@ -547,6 +550,26 @@ sub filter_chains
 
     # TODO: Handle the case when none of the rules select proper chains
     return ();
+}
+
+sub rule_most_groups
+{
+    my( $class, @chains ) = @_;
+
+    my( $max_value ) = sort { $b <=> $a }
+                       map { $_->number_of_groups( $class ) } @chains;
+    return grep { $_->number_of_groups( $class ) == $max_value } @chains;
+}
+
+sub rule_lowest_numbered_groups
+{
+    my( $class, @chains ) = @_;
+    my( $max_value ) = sort { cmp_arrays( [ $a->group_positions( $class ) ],
+                                          [ $b->group_positions( $class ) ] ) }
+                            @chains;
+    return grep { !cmp_arrays( [ $_->group_positions( $class ) ],
+                               [ $max_value->group_positions( $class ) ] ) }
+                @chains;
 }
 
 # This rule is employed only if longest chains are not already preselected
