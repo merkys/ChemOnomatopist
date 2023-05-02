@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
-use List::Util qw( all );
 use Test::More;
 
 my %SMILES_cases = (
