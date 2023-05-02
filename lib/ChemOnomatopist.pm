@@ -222,10 +222,21 @@ sub get_mainchain_name
     if( !$most_senior_group || @senior_group_attachments > 1 ) {
         $name .= 'ane';
     }
+
     if( $most_senior_group ) {
+        if( $most_senior_group->is_carbon ) {
+            # Most senior group is carbon, thus it is in the chain as well
+            my @senior_group_positions =
+                grep { blessed $chain[$_] && $chain[$_]->isa( $most_senior_group ) }
+                     0..$#chain;
+            @senior_group_attachments = sort { $a <=> $b } @senior_group_attachments,
+                                                           @senior_group_positions;
+        }
+
         my $number = IUPAC_numerical_multiplier( scalar @senior_group_attachments );
         $name .= 'an' unless $name =~ /ane$/;
-        if( @senior_group_attachments && $name !~ /^methane?/ ) {
+        if( @senior_group_attachments && $name !~ /^methane?/ &&
+            (!$most_senior_group->is_carbon || %attachments || @senior_group_attachments > 2) ) {
             $name .= '-' . join( ',', map { $_ + 1 } @senior_group_attachments ) . '-';
         }
         $name .= ($number eq 'mono' ? '' : $number) . $most_senior_group->suffix;
