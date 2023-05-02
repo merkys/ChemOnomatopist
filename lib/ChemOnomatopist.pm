@@ -235,6 +235,9 @@ sub get_mainchain_name
         }
 
         my $number = IUPAC_numerical_multiplier( scalar @senior_group_attachments );
+        $number = '' if $number eq 'mono';
+        $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
+
         $name .= 'an' unless $name =~ /ane$/;
 
         # Terminal locants are not cited for 1 or 2 senior group attachments according to BBv2 P-14.3.4.1
