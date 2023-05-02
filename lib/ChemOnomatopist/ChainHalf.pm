@@ -9,12 +9,9 @@ use ChemOnomatopist::Util::Graph qw(
 );
 use Graph::Traversal::DFS;
 use List::Util qw( sum0 );
-use Memoize;
 
 # ABSTRACT: Half of a longest chain
 # VERSION
-
-# memoize( 'branch_positions' );
 
 sub new
 {
