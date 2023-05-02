@@ -239,7 +239,8 @@ sub get_mainchain_name
             (!$most_senior_group->is_carbon || %attachments || @senior_group_attachments > 2) ) {
             $name .= '-' . join( ',', map { $_ + 1 } @senior_group_attachments ) . '-';
         }
-        $name .= ($number eq 'mono' ? '' : $number) . $most_senior_group->suffix;
+        $name .= ($number eq 'mono' ? '' : $number) .
+                 ( @senior_group_attachments > 2 ? $most_senior_group->multisuffix : $most_senior_group->suffix );
     }
 
     return $name;
