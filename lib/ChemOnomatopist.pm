@@ -841,7 +841,7 @@ sub wjoin(@)
     my( @parts ) = grep { $_ ne '' } @_;
 
     for (0..(@parts-2)) {
-        next if $parts[$_] eq 'di';
+        next if $parts[$_] eq 'di' || $parts[$_] eq 'tri';
         $parts[$_] =~ s/[aeiou](-[0-9,]+-|)$/$1/ if $parts[$_ + 1] =~ /^[aeiou]/;
     }
 
