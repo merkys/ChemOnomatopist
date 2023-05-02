@@ -10,6 +10,7 @@ use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::VertexArray;;
 use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Group;
+use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Hydroperoxide;
@@ -282,9 +283,17 @@ sub find_groups
         my @neighbours = $graph->neighbours( $atom );
         my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) }
                           @neighbours;
+        my @H = grep { is_element( $_, 'H' ) } @neighbours;
 
+        # Detecting aldehyde
+        if( is_element( $atom, 'C' ) && @groups == 1 && @H == 1 &&
+            $groups[0]->isa( ChemOnomatopist::Group::Carbonyl:: ) ) {
+            my $aldehyde = ChemOnomatopist::Group::Carboxyl->new( $atom );
+            $graph->delete_vertices( @groups, @H ); # FIXME: Be careful!
+            $graph->add_edges( map { $aldehyde, $_ } $graph->neighbours( $atom ) );
+            $graph->delete_vertex( $atom );
         # Detecting carboxyl
-        if( is_element( $atom, 'C' ) &&
+        } elsif( is_element( $atom, 'C' ) &&
             (any { $_->isa( ChemOnomatopist::Group::Carbonyl:: ) } @groups) &&
             (any { $_->isa( ChemOnomatopist::Group::Hydroxy::  ) } @groups) ) {
             my $carboxyl = ChemOnomatopist::Group::Carboxyl->new( $atom );

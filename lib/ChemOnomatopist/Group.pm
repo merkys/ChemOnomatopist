@@ -3,6 +3,7 @@ package ChemOnomatopist::Group;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Hydroperoxide;
@@ -28,7 +29,7 @@ our @order = (
     # Hydrazides
     # Imides
     # Nitriles
-    # Aldehydes and chalcogen analogues
+    ChemOnomatopist::Group::Aldehyde::,
     ChemOnomatopist::Group::Carbonyl::,
     ChemOnomatopist::Group::Hydroxy::,
     ChemOnomatopist::Group::Hydroperoxide::,
