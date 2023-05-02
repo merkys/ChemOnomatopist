@@ -47,6 +47,8 @@ our @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
 our @numberskis = ( '?', '', 'bis', 'tris', 'tetrakis', 'pentakis',
                     'hexakis', 'heptakis', 'octakis', 'nonakis', 'decakis' );
 
+sub wjoin(@);
+
 sub get_name
 {
     my( $what ) = @_;
@@ -228,10 +230,7 @@ sub get_mainchain_name
         $name .= $number . $attachment_name;
     }
 
-    $name .= alkane_chain_name( scalar @chain );
-    if( !$most_senior_group || @senior_group_attachments > 1 ) {
-        $name .= 'ane';
-    }
+    $name .= alkane_chain_name( scalar @chain ) . 'ane';
 
     if( $most_senior_group ) {
         if( $most_senior_group->is_carbon ) {
@@ -247,15 +246,14 @@ sub get_mainchain_name
         $number = '' if $number eq 'mono';
         $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
 
-        $name .= 'an' unless $name =~ /ane$/;
-
         # Terminal locants are not cited for 1 or 2 senior group attachments according to BBv2 P-14.3.4.1
         if( @senior_group_attachments && $name !~ /^methane?/ &&
             (!$most_senior_group->is_carbon || @senior_group_attachments > 2) ) {
             $name .= '-' . join( ',', map { $_ + 1 } @senior_group_attachments ) . '-';
         }
-        $name .= ($number eq 'mono' ? '' : $number) .
-                 ( @senior_group_attachments > 2 ? $most_senior_group->multisuffix : $most_senior_group->suffix );
+        $name = wjoin $name,
+                      $number,
+                      ( @senior_group_attachments > 2 ? $most_senior_group->multisuffix : $most_senior_group->suffix );
     }
 
     return $name;
@@ -836,6 +834,18 @@ sub bracket
     return "{$name}" if $name =~ /\[/;
     return "[$name]" if $name =~ /\(/;
     return "($name)";
+}
+
+sub wjoin(@)
+{
+    my( @parts ) = grep { $_ ne '' } @_;
+
+    for (0..(@parts-2)) {
+        next if $parts[$_] eq 'di';
+        $parts[$_] =~ s/[aeiou](-[0-9,]+-|)$/$1/ if $parts[$_ + 1] =~ /^[aeiou]/;
+    }
+
+    return join '', @parts;
 }
 
 1;
