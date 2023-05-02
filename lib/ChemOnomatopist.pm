@@ -12,6 +12,7 @@ use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
+use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
@@ -241,19 +242,26 @@ sub find_groups
         my @neighbours = $graph->neighbours( $atom );
         my @C = grep { is_element( $_, 'C' ) } @neighbours;
         my @H = grep { is_element( $_, 'H' ) } @neighbours;
+        my @O = grep { is_element( $_, 'O' ) } @neighbours;
 
         # Detecting carbonyl
         if(      is_element( $atom, 'O' ) && @neighbours == 1 && @C == 1 ) {
             my $carbonyl = ChemOnomatopist::Group::Carbonyl->new( @C );
             $graph->add_edge( @C, $carbonyl );
             $graph->delete_vertices( $atom );
-
-            # Carbonyl derivatives should be detected here
         # Detecting hydroxy
         } elsif( is_element( $atom, 'O' ) && @neighbours == 2 && @C == 1 && @H == 1 ) {
             my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C );
             $graph->add_edge( @C, $hydroxy );
             $graph->delete_vertices( $atom, @H );
+        # Detecting hydroperoxide
+        } elsif( is_element( $atom, 'O' ) && @neighbours == 2 && @H == 1 && @O == 1 ) {
+            my @C = grep { is_element( $_, 'C' ) } $graph->neighbours( @O );
+            if( @C == 1 ) {
+                my $hydroperoxide = ChemOnomatopist::Group::Hydroperoxide->new( @C );
+                $graph->add_edge( @C, $hydroperoxide );
+                $graph->delete_vertices( $atom, @H, @O );
+            }
         }
     }
 

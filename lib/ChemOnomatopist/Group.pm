@@ -5,6 +5,7 @@ use warnings;
 
 use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
+use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 
 # ABSTRACT: Chemical group
@@ -30,7 +31,7 @@ our @order = (
     # Aldehydes and chalcogen analogues
     ChemOnomatopist::Group::Carbonyl::,
     ChemOnomatopist::Group::Hydroxy::,
-    # Hydroperoxides
+    ChemOnomatopist::Group::Hydroperoxide::,
     # Amines
     # Imines
 
