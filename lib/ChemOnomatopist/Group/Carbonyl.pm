@@ -12,6 +12,7 @@ use Scalar::Util qw( blessed );
 
 sub is_oxygen { return 1 }
 
+sub prefix { return 'oxo' };
 sub suffix { return 'one' };
 
 1;
