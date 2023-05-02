@@ -10,4 +10,7 @@ use parent ChemOnomatopist::Group::;
 
 sub is_carbon { return 1 }
 
+sub prefix { return 'carboxy' }
+sub suffix { return 'oic acid' }
+
 1;

@@ -219,13 +219,13 @@ sub get_mainchain_name
     }
 
     $name .= alkane_chain_name( scalar @chain );
-    if( !@senior_group_attachments || @senior_group_attachments > 1 ) {
+    if( !$most_senior_group || @senior_group_attachments > 1 ) {
         $name .= 'ane';
     }
-    if( @senior_group_attachments ) {
+    if( $most_senior_group ) {
         my $number = IUPAC_numerical_multiplier( scalar @senior_group_attachments );
         $name .= 'an' unless $name =~ /ane$/;
-        if( $name !~ /^methane?/ ) {
+        if( @senior_group_attachments && $name !~ /^methane?/ ) {
             $name .= '-' . join( ',', map { $_ + 1 } @senior_group_attachments ) . '-';
         }
         $name .= ($number eq 'mono' ? '' : $number) . $most_senior_group->suffix;
@@ -265,9 +265,6 @@ sub find_groups
         }
     }
 
-    # Hydrogen atoms are no longer important
-    $graph->delete_vertices( grep { is_element( $_, 'H' ) } $graph->vertices );
-
     # Second pass is needed to build on top of these trivial groups
     for my $atom ($graph->vertices) {
         my @neighbours = $graph->neighbours( $atom );
@@ -284,6 +281,9 @@ sub find_groups
             $graph->delete_vertex( $atom );
         }
     }
+
+    # Hydrogen atoms are no longer important
+    $graph->delete_vertices( grep { is_element( $_, 'H' ) } $graph->vertices );
 
     return;
 }
