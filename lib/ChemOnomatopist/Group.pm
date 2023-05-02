@@ -49,8 +49,6 @@ sub new
 sub is_carbon { return '' }
 sub is_oxygen { return '' }
 
-sub get_name { die "not implemented in the base class\n" }
-
 sub prefix { return '' }
 sub suffix { return '' }
 sub multisuffix { return $_[0]->suffix }
