@@ -176,10 +176,19 @@ sub get_mainchain_name
     $graph = $graph->copy;
     $graph->delete_path( @chain );
 
+    my %attachments;
+
+    # Examine the main chain
+    for my $i (0..$#chain) {
+        my $atom = $chain[$i];
+        next unless blessed $atom;
+        next if $most_senior_group && $atom->isa( $most_senior_group );
+        push @{$attachments{$atom->prefix}}, $i;
+    }
+
     # Examine the attachments to the main chain: delete the edges
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_sidechain_name()
-    my %attachments;
     my @senior_group_attachments;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
