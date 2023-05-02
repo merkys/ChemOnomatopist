@@ -11,7 +11,7 @@ my %SMILES_cases = (
     'CC(C)C(CCC(C)O)CCC(=O)C' => '8-hydroxy-5-propan-2-ylnonan-2-one',
 
     'OOCC(=O)C' => '1-hydroperoxypropan-2-one', # Unchecked
-    'OOCCO' => '2-hydroperoxyethan-1-ol',
+    'OOCCO' => '2-hydroperoxyethan-1-ol', # BBv2 P-63.4.2.2
 );
 
 plan tests => scalar( keys %SMILES_cases );
