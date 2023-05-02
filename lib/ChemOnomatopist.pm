@@ -451,7 +451,18 @@ sub select_mainchain
         }
     }
 
-    return filter_chains( @chains );
+    my @chain = filter_chains( @chains );
+
+    # If there is at least one of carbon-based senior group attachment,
+    # it means both ends are already senior, prompting to follow the
+    # exception of three or more carbon-based groups.
+    if( $most_senior_group && $most_senior_group->is_carbon &&
+        ChemOnomatopist::Chain::VertexArray->new( $tree, @chain )->number_of_groups( $most_senior_group ) ) {
+        shift @chain;
+        pop @chain;
+    }
+
+    return @chain;
 }
 
 # Selects the best side chain
