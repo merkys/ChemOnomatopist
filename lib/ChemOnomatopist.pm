@@ -224,7 +224,7 @@ sub get_mainchain_name
     if( @senior_group_attachments ) {
         my $number = IUPAC_numerical_multiplier( scalar @senior_group_attachments );
         $name .= 'an' unless $name =~ /ane$/;
-        if( $name ne 'methan' ) {
+        if( $name !~ /^methane?/ ) {
             $name .= '-' . join( ',', map { $_ + 1 } @senior_group_attachments ) . '-';
         }
         $name .= ($number eq 'mono' ? '' : $number) . $most_senior_group->suffix;
@@ -338,7 +338,7 @@ sub select_mainchain
     if( $most_senior_group ) {
         # TODO: Select a chain containing most of the senior groups
         my @groups = grep { blessed( $_ ) && $_->isa( $most_senior_group ) } $tree->vertices;
-        my @carbons = map { $_->C } @groups; # FIXME: Maybe uniq is needed?
+        my @carbons = uniq map { $_->C } @groups; # FIXME: Carbons with the most attachments should be preferred
 
         # As the starting position is known, it is enough to take the "side chain"
         # containing this particular carbon:

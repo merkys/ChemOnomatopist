@@ -9,6 +9,7 @@ use Test::More;
 
 my %SMILES_cases = (
     'CO'          => 'methanol',
+    'C(O)O'       => 'methanediol',
     'C(C)(C)(C)O' => '2-methylpropan-2-ol',
     'CC(O)CCO'    => 'butane-1,3-diol',
 );
