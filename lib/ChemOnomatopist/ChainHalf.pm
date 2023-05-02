@@ -94,8 +94,11 @@ sub locant_names()
         my @current_locants;
         for my $neighbour ($graph->neighbours( $vertex )) {
             $graph->delete_edge( $vertex, $neighbour );
-            next unless ChemOnomatopist::is_element( $neighbour, 'C' );
-            push @current_locants, ChemOnomatopist::get_sidechain_name( $graph, $neighbour );
+            if( ChemOnomatopist::is_element( $neighbour, 'C' ) ) {
+                push @current_locants, ChemOnomatopist::get_sidechain_name( $graph, $neighbour );
+            } elsif( blessed $neighbour ) {
+                push @current_locants, $neighbour->prefix;
+            }
         }
         push @locants, \@current_locants;
     }
