@@ -18,6 +18,7 @@ use Set::Object;
 
 sub is_oxygen { return 1 }
 
+sub prefix { return 'hydroxy' }
 sub suffix { return 'ol' }
 
 1;

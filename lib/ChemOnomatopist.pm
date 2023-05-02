@@ -117,6 +117,11 @@ sub get_sidechain_name
     # TODO: Handle the case when none of the rules select proper chains
     die "could not select a chain\n" unless @chain;
 
+    # Handle non-carbon substituents
+    if( @chain == 1 && !is_element( $chain[0], 'C' ) && blessed $chain[0] ) {
+        return $chain[0]->prefix;
+    }
+
     $graph->delete_path( @chain );
 
     # Examine the attachments to the main chain: delete the edges
@@ -431,6 +436,9 @@ sub select_mainchain
 sub select_sidechain
 {
     my( $graph, $start ) = @_;
+
+    # Do this for non-carbons for now in order to represent attachments
+    return $start unless is_element( $start, 'C' );
 
     my $C_graph = $graph->copy;
     $C_graph->delete_vertices( grep { !is_element( $_, 'C' ) } $C_graph->vertices );

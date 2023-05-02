@@ -48,6 +48,7 @@ sub is_carbon { return '' }
 sub is_oxygen { return '' }
 
 sub get_name { die "not implemented in the base class\n" }
+sub prefix { return '' }
 sub suffix { return '' }
 
 # Return the attached carbon
