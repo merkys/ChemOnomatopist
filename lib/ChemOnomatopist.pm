@@ -236,8 +236,10 @@ sub get_mainchain_name
 
         my $number = IUPAC_numerical_multiplier( scalar @senior_group_attachments );
         $name .= 'an' unless $name =~ /ane$/;
+
+        # Terminal locants are not cited for 1 or 2 senior group attachments according to BBv2 P-14.3.4.1
         if( @senior_group_attachments && $name !~ /^methane?/ &&
-            (!$most_senior_group->is_carbon || %attachments || @senior_group_attachments > 2) ) {
+            (!$most_senior_group->is_carbon || @senior_group_attachments > 2) ) {
             $name .= '-' . join( ',', map { $_ + 1 } @senior_group_attachments ) . '-';
         }
         $name .= ($number eq 'mono' ? '' : $number) .
