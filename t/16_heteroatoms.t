@@ -16,6 +16,10 @@ my %SMILES_cases = (
     # From BBv2 P-15.4.3.2.1
     'C[Si]C[Si]C[Si]CSCC' => '8-thia-2,4,6-trisiladecane',
     'C[Si]C[Si]C[Si]COC' => '2-oxa-4,6,8-trisilanonane',
+
+    # From BBv2 P-15.4.3.2.3
+    'C[Si]C[Si]C[Si]C[Si]C(=O)O' => '2,4,6,8-tetrasilanonan-1-oic acid',
+    'C[Si]C[Si]C[Si]C[Si]CCO' => '2,4,6,8-tetrasiladecan-10-ol',
 );
 
 plan tests => scalar( keys %SMILES_cases );
