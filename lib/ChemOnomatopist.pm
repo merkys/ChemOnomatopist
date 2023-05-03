@@ -590,6 +590,8 @@ sub filter_chains
                    \&rule_lowest_numbered_locants,
                    \&rule_most_carbon_in_side_chains,
                    \&rule_least_branched_side_chains,
+                   \&rule_most_heteroatoms, # FIXME: Is this the right order?
+                   \&rule_lowest_numbered_heteroatoms, # FIXME: Is this the right order?
                    \&pick_chain_with_lowest_attachments_alphabetically ) {
         my @chains_now = $rule->( @chains );
 
@@ -676,6 +678,27 @@ sub rule_least_branched_side_chains
 
     my( $min_value ) = sort uniq map { $_->number_of_branches_in_sidechains } @chains;
     return grep { $_->number_of_branches_in_sidechains == $min_value } @chains;
+}
+
+sub rule_most_heteroatoms
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { $b <=> $a }
+                       map { $_->number_of_heteroatoms } @chains;
+    return grep { $_->number_of_heteroatoms == $max_value } @chains;
+}
+
+sub rule_lowest_numbered_heteroatoms
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { cmp_arrays( [ $a->heteroatom_positions ],
+                                          [ $b->heteroatom_positions ] ) }
+                            @chains;
+    return grep { !cmp_arrays( [ $_->heteroatom_positions ],
+                               [ $max_value->heteroatom_positions ] ) }
+                @chains;
 }
 
 sub pick_chain_with_lowest_attachments_alphabetically

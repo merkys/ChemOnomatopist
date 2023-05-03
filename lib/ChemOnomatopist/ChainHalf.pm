@@ -75,6 +75,21 @@ sub group_positions
     return @group_positions;
 }
 
+sub heteroatom_positions()
+{
+    my( $self ) = @_;
+
+    my @vertices = $self->vertices;
+    my @heteroatom_positions;
+    for (0..$#vertices) {
+        next if blessed $vertices[$_];
+        next if ChemOnomatopist::is_element( $vertices[$_], 'C' );
+        push @heteroatom_positions, $_;
+    }
+
+    return @heteroatom_positions;
+}
+
 sub length()
 {
     my( $self ) = @_;
@@ -145,6 +160,12 @@ sub number_of_groups
 {
     my( $self, $class ) = @_;
     return scalar $self->group_positions( $class );
+}
+
+sub number_of_heteroatoms()
+{
+    my( $self ) = @_;
+    return scalar $self->heteroatom_positions;
 }
 
 sub _disconnected_chain_graph()
