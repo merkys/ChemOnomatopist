@@ -405,7 +405,7 @@ sub select_mainchain
         for my $path (@paths) {
             my $copy = $tree->copy;
             $copy->delete_path( @$path );
-            $copy->delete_vertices( grep { !is_element( $_, 'C' ) } $copy->vertices );
+            $copy->delete_vertices( grep { blessed $_ && !is_element( $_, 'C' ) } $copy->vertices );
 
             my $A = shift @$path;
             my $B = pop @$path;
@@ -435,10 +435,6 @@ sub select_mainchain
         @chains = rule_most_groups( $most_senior_group, @chains );
         @chains = rule_lowest_numbered_groups( $most_senior_group, @chains );
     } else {
-        # Remove non-carbon atoms
-        $tree = $tree->copy;
-        $tree->delete_vertices( grep { !is_element( $_, 'C' ) } $tree->vertices );
-
         # Here the candidate halves for the longest (and "best") path are placed in @path_parts.
         # Each of candidate halves start with center atom.
         my @center = graph_center( $tree );
