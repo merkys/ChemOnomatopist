@@ -94,16 +94,6 @@ sub get_name
 
     find_groups( $graph );
 
-    # TODO: At this point it should be safe to delete the hydrogen atoms,
-    # as their role is either being a part of some group, or being "special"
-    # in some other way (worth inclusion in the IUPAC name)
-
-    # Check for unsupported elements and unknown compounds
-    if( any { !is_element( $_, 'C' ) && !is_element( $_, 'O' ) }
-            grep { !blessed $_ } $graph->vertices ) {
-        die "cannot handle such compounds for now\n";
-    }
-
     my @main_chain = select_mainchain( $graph );
     return get_mainchain_name( $graph, \@main_chain );
 }
