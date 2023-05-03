@@ -490,7 +490,7 @@ sub select_sidechain
     return $start unless is_element( $start, 'C' );
 
     my $C_graph = $graph->copy;
-    $C_graph->delete_vertices( grep { !is_element( $_, 'C' ) } $C_graph->vertices );
+    $C_graph->delete_vertices( grep { blessed $_ && !is_element( $_, 'C' ) } $C_graph->vertices );
 
     my @path_parts;
     for my $neighbour ($C_graph->neighbours( $start )) {
