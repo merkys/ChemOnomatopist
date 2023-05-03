@@ -184,9 +184,12 @@ sub get_mainchain_name
     # Examine the main chain
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
-        next unless blessed $atom;
-        next if $most_senior_group && $atom->isa( $most_senior_group );
-        push @{$attachments{$atom->prefix}}, $i;
+        if( blessed $atom ) {
+            next if $most_senior_group && $atom->isa( $most_senior_group );
+            push @{$attachments{$atom->prefix}}, $i;
+        } elsif( is_element( $atom, 'O' ) ) {
+            push @{$attachments{'oxa'}}, $i;
+        }
     }
 
     # Examine the attachments to the main chain: delete the edges
