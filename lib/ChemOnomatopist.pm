@@ -187,8 +187,12 @@ sub get_mainchain_name
         if( blessed $atom ) {
             next if $most_senior_group && $atom->isa( $most_senior_group );
             push @{$attachments{$atom->prefix}}, $i;
+        } elsif( is_element( $atom, 'N' ) ) {
+            push @{$attachments{'aza'}}, $i;
         } elsif( is_element( $atom, 'O' ) ) {
             push @{$attachments{'oxa'}}, $i;
+        } elsif( is_element( $atom, 'S' ) ) {
+            push @{$attachments{'thia'}}, $i;
         }
     }
 
