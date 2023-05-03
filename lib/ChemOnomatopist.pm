@@ -705,6 +705,22 @@ sub pick_chain_with_lowest_attachments_alphabetically
     return $chains[$sorted[0]];
 }
 
+# Reverse chain if needed
+sub order
+{
+    my( $chainA ) = @_;
+    my $chainB = $chainA->reversed;
+
+    for my $rule ( \&rule_lowest_numbered_heteroatoms,
+                   \&rule_lowest_numbered_locants,
+                   \&pick_chain_with_lowest_attachments_alphabetically ) {
+        my @chains = $rule->( $chainA, $chainB );
+        return shift @chains if @chains == 1;
+    }
+
+    die "order cannot be established\n";
+}
+
 sub most_senior_group
 {
     my( @vertices ) = @_;

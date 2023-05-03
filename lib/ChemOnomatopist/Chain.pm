@@ -72,4 +72,13 @@ sub vertices()
     return reverse( @A ), @B;
 }
 
+# Generators
+
+sub reversed()
+{
+    my( $self ) = @_;
+
+    return ChemOnomatopist::Chain->new( reverse @{$self->{halves}} );
+}
+
 1;
