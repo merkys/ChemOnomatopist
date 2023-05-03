@@ -94,6 +94,10 @@ sub get_name
 
     find_groups( $graph );
 
+    if( any { $graph->has_edge_attributes( @$_ ) } $graph->edges ) {
+        die "cannot handle such compounds for now\n";
+    }
+
     my @main_chain = select_mainchain( $graph );
     return get_mainchain_name( $graph, \@main_chain );
 }
