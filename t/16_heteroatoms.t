@@ -8,9 +8,7 @@ use Test::More;
 
 my %SMILES_cases = (
     'COCCOCCOCCOCC' => '2,5,8,11-tetraoxatridecane', # BBv2 P-12.1
-
-    # From BBv2 P-14.3.4.5
-    'C(F)(F)(F)C(F)(F)CO' => '2,2,3,3,3-pentafluoropropan-1-ol',
+    'C(F)(F)(F)C(F)(F)CO' => '2,2,3,3,3-pentafluoropropan-1-ol', # BBv2 P-14.3.4.5
 
     # From BBv2 P-15.4.3.1
     'COCSSCCOCC[Se]C' => '2,8-dioxa-4,5-dithia-11-selenadodecane',

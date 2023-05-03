@@ -495,8 +495,12 @@ sub select_sidechain
     # Do this for non-carbons for now in order to represent attachments
     return $start unless is_element( $start, 'C' );
 
+    # Cleaning the graph from the heteroatom leaves
     my $C_graph = $graph->copy;
     $C_graph->delete_vertices( grep { blessed $_ && !is_element( $_, 'C' ) } $C_graph->vertices );
+    while( my @leaves = grep { !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 } $C_graph->vertices ) {
+        $C_graph->delete_vertices( @leaves );
+    }
 
     my @path_parts;
     for my $neighbour ($C_graph->neighbours( $start )) {
