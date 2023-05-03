@@ -471,18 +471,20 @@ sub select_mainchain
         }
     }
 
-    my @chain = filter_chains( @chains );
+    my $chain = filter_chains( @chains );
+    my @vertices = $chain->vertices;
 
     # If there is at least one of carbon-based senior group attachment,
     # it means both ends are already senior, prompting to follow the
     # exception of three or more carbon-based groups.
-    if( $most_senior_group && $most_senior_group->is_carbon &&
-        ChemOnomatopist::Chain::VertexArray->new( $tree, @chain )->number_of_groups( $most_senior_group ) ) {
-        shift @chain;
-        pop @chain;
+    if( $most_senior_group &&
+        $most_senior_group->is_carbon &&
+        $chain->number_of_groups( $most_senior_group ) ) {
+        shift @vertices;
+        pop @vertices;
     }
 
-    return @chain;
+    return @vertices;
 }
 
 # Selects the best side chain
@@ -595,9 +597,7 @@ sub filter_chains
         @chains = @chains_now; # Narrow down the selection
 
         # If a single chain cannot be chosen now, pass on to the next rule
-        next unless @chains == 1;
-
-        return $chains[0]->vertices;
+        return shift @chains if @chains == 1;
     }
 
     # TODO: Handle the case when none of the rules select proper chains
