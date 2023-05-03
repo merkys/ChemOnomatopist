@@ -712,6 +712,7 @@ sub order
     my $chainB = $chainA->reversed;
 
     for my $rule ( \&rule_lowest_numbered_heteroatoms,
+                   # TODO: lowest numbered groups should be here as well
                    \&rule_lowest_numbered_locants,
                    \&pick_chain_with_lowest_attachments_alphabetically ) {
         my @chains = $rule->( $chainA, $chainB );
