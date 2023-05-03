@@ -98,7 +98,8 @@ sub get_name
     # in some other way (worth inclusion in the IUPAC name)
 
     # Check for unsupported elements and unknown compounds
-    if( any { !is_element( $_, 'C' ) } grep { !blessed $_ } $graph->vertices ) {
+    if( any { !is_element( $_, 'C' ) && !is_element( $_, 'O' ) }
+            grep { !blessed $_ } $graph->vertices ) {
         die "cannot handle such compounds for now\n";
     }
 
