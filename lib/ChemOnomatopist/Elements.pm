@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 # Replacement prefixes taken from BBv2 P-15.4.1.1
+# Seniorities taken from BBv2 P-15.4.1.2
 
 our %elements = (
     B => {
