@@ -19,6 +19,8 @@ my %SMILES_cases = (
     'C(=O)(O)C(O)C(C(=O)O)C(=O)C(=O)O' => '1-hydroxy-3-oxopropane-1,2,3-tricarboxylic acid',
 
     'O=CCCC(=O)O' => '4-oxobutanoic acid', # BBv2 P-66.6.1.3
+
+    'CCCCCCCCC(C=O)C(CC)O' => '2-(1-hydroxypropyl)decanal',
 );
 
 plan tests => scalar( keys %SMILES_cases );
