@@ -10,9 +10,12 @@ use ChemOnomatopist::Util::Graph qw(
 use Graph::Traversal::DFS;
 use List::Util qw( sum0 );
 use Scalar::Util qw( blessed );
+use Set::Object qw( set );
 
 # ABSTRACT: Half of a longest chain
 # VERSION
+
+sub vertices();
 
 sub new
 {
@@ -29,6 +32,23 @@ sub group()
 {
     my( $self ) = @_;
     return $self->{vertices}[1 - defined $self->{other_center}];
+}
+
+sub substituents()
+{
+    my( $self ) = @_;
+
+    my $vertices = set( $self->vertices );
+
+    my @substituents;
+    for my $vertex ($self->vertices) {
+        for my $neighbour ($self->{graph}->neighbours( $vertex )) {
+            next if $vertices->has( $neighbour );
+            push @substituents, $neighbour;
+        }
+    }
+
+    return @substituents;
 }
 
 sub vertices()
