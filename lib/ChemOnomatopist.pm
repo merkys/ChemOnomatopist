@@ -118,8 +118,12 @@ sub get_sidechain_name
     die "could not select a chain\n" unless @chain;
 
     # Handle non-carbon substituents
-    if( @chain == 1 && !is_element( $chain[0], 'C' ) && blessed $chain[0] ) {
-        return $chain[0]->prefix;
+    if( @chain == 1 && !is_element( $chain[0], 'C' ) ) {
+        if( blessed $chain[0] ) {
+            return $chain[0]->prefix;
+        } elsif( exists $ChemOnomatopist::Elements::elements{$chain[0]->{symbol}} ) {
+            return $ChemOnomatopist::Elements::elements{$chain[0]->{symbol}}->{prefix};
+        }
     }
 
     $graph->delete_path( @chain );
