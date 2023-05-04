@@ -592,7 +592,7 @@ sub filter_chains
 
     for my $rule ( sub { return @_ },
                    # TODO: P-44.1.1: Maximum number of substituents of principal characteristic group
-                   # TODO: P-44.1.2: I do not get it...
+                   # TODO: P-44.1.2: Concerns rings
 
                    # TODO: P-44.3.1: Maximum number of heteroatoms of any kind
                    # TODO: P-44.3.2: Maximum number of skeletal atoms
@@ -610,6 +610,15 @@ sub filter_chains
                    # TODO: P-44.4.1.10: Lowest locants for prefixes/suffixes expressing degrees of hydrogenation
                    # TODO: P-44.4.1.11: Concerns isotopes
                    # TODO: P-44.4.1.12: Concerns stereogenic centers
+
+                   # TODO: P-45.1: Multiplication of identical senior parent structures
+                   # TODO: P-45.2.1: Maximum number of prefix substituents
+                   # TODO: P-45.2.2: Lowest locants for prefix substituents
+                   # TODO: P-45.2.3: Lowest locants for prefix substituents in their order of citation in the name
+                   # TODO: P-45.3: Nonstandard bond numbers
+                   # TODO: P-45.4: Concerns isotopes
+                   # TODO: P-45.5: Alphanumerical order of names (maybe covered by P-45.2.3 already?)
+                   # TODO: P-45.6: Concerns stereochemistry
 
                    \&rule_greatest_number_of_side_chains, # After this rule we are left with a set of longest chains all having the same number of side chains
                    \&rule_lowest_numbered_locants,
