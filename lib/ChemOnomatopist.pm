@@ -110,8 +110,9 @@ sub get_sidechain_name
 
     $options = {} unless $options;
 
-    # FIXME: Groups that cannot be included in the chain should be excluded
-    my $branches_at_start = $graph->degree( $start );
+    # Groups that cannot be included in the chain do not matter
+    my $branches_at_start = grep { !blessed $_ || $_->is_carbon }
+                                 $graph->neighbours( $start );
 
     my @chain = select_sidechain( $graph, $start );
 
