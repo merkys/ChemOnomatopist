@@ -90,6 +90,12 @@ sub heteroatom_positions()
     return @heteroatom_positions;
 }
 
+sub heteroatoms()
+{
+    my( $self ) = @_;
+    return map { $self->{vertices}[$_]{symbol} } $self->heteroatom_positions;
+}
+
 sub length()
 {
     my( $self ) = @_;

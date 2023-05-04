@@ -599,6 +599,7 @@ sub filter_chains
                    # TODO: P-44.3.2: Maximum number of skeletal atoms
                    \&rule_longest_chains,
                    # TODO: P-44.3.3: Maximum number of the most senior heteroatom
+                   \&rule_most_senior_heteroatoms,
 
                    # TODO: P-44.4.1.1: Maximum number of multiple bonds
                    # TODO: P-44.4.1.2: Maximum number of double bonds
@@ -723,6 +724,15 @@ sub rule_most_heteroatoms
     return grep { $_->number_of_heteroatoms == $max_value } @chains;
 }
 
+sub rule_most_senior_heteroatoms
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { cmp_heteroatoms( $a, $b ) }
+                       map  { $_->heteroatoms } @chains;
+    return grep { !cmp_heteroatoms( $_->heteroatoms, $max_value ) } @chains;
+}
+
 sub rule_lowest_numbered_heteroatoms
 {
     my( @chains ) = @_;
@@ -778,6 +788,29 @@ sub most_senior_group
     }
 
     return;
+}
+
+# Given two lists of heteroatoms, return the one with the most senior ones
+sub cmp_heteroatoms
+{
+    my( $A, $B ) = @_;
+
+    my( %A, %B );
+    for (@$A) { $A{$_}++ }
+    for (@$B) { $B{$_}++ }
+
+    my %elements = %ChemOnomatopist::Elements::elements;
+    my @elements = sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
+                   grep { $elements{$_}->{seniority} >= 5 } # O and after
+                        keys %elements;
+    for (@elements) {
+        $A{$_} = 0 unless $A{$_};
+        $B{$_} = 0 unless $B{$_};
+
+        return $B{$_} <=> $A{$_} if $B{$_} <=> $A{$_};
+    }
+
+    return 0;
 }
 
 # Sorts given names only based on alphabetical part of the name.
