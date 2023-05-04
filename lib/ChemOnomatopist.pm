@@ -595,7 +595,9 @@ sub filter_chains
                    # TODO: P-44.1.2: Concerns rings
 
                    # TODO: P-44.3.1: Maximum number of heteroatoms of any kind
+                   \&rule_most_heteroatoms,
                    # TODO: P-44.3.2: Maximum number of skeletal atoms
+                   \&rule_longest_chains,
                    # TODO: P-44.3.3: Maximum number of the most senior heteroatom
 
                    # TODO: P-44.4.1.1: Maximum number of multiple bonds
@@ -603,6 +605,7 @@ sub filter_chains
                    # TODO: P-44.4.1.3: Nonstandard bonding numbers
                    # TODO: P-44.4.1.4: Concerns rings
                    # TODO: P-44.4.1.5: Lowest locants for heteroatoms in skeletal chain
+                   \&rule_lowest_numbered_heteroatoms,
                    # TODO: P-44.4.1.6: Lowest locants for heteroatoms in skeletal chain according to heteroatom seniority
                    # TODO: P-44.4.1.7: Concerns rings
                    # TODO: P-44.4.1.8: Lowest locants for suffix groups
@@ -624,8 +627,6 @@ sub filter_chains
                    \&rule_lowest_numbered_locants,
                    \&rule_most_carbon_in_side_chains,
                    \&rule_least_branched_side_chains,
-                   \&rule_most_heteroatoms, # FIXME: Is this the right order?
-                   \&rule_lowest_numbered_heteroatoms, # FIXME: Is this the right order?
                    \&pick_chain_with_lowest_attachments_alphabetically ) {
         my @chains_now = $rule->( @chains );
 
