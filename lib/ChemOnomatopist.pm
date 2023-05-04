@@ -623,6 +623,7 @@ sub filter_chains
                    # TODO: P-45.5: Alphanumerical order of names (maybe covered by P-45.2.3 already?)
                    # TODO: P-45.6: Concerns stereochemistry
 
+                   # TODO: Put these in correct order:
                    \&rule_greatest_number_of_side_chains, # After this rule we are left with a set of longest chains all having the same number of side chains
                    \&rule_lowest_numbered_locants,
                    \&rule_most_carbon_in_side_chains,
