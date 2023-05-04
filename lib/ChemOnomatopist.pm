@@ -222,7 +222,7 @@ sub get_mainchain_name
                                   keys %attachments) {
         $name = $name ? $name . '-' : $name;
         my $number;
-        if( $attachment_name =~ /^[\(\[\{][0-9]/ ) {
+        if( $attachment_name =~ /^[\(\[\{]/ ) {
             $number = $numberskis[scalar @{$attachments{$attachment_name}}];
         } else {
             $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
