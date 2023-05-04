@@ -149,9 +149,11 @@ sub get_sidechain_name
         my $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
         $number = '' if $number eq 'mono';
         $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
-        $name = $name ? $name . '-' : $name;
-        $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) .
-                 '-' . $number . $attachment_name;
+        if( @chain > 1 ) {
+            $name = $name ? $name . '-' : $name;
+            $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
+        }
+        $name .= $number . $attachment_name;
     }
     $name .= alkane_chain_name( scalar @chain );
 
