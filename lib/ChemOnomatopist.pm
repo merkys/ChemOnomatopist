@@ -585,11 +585,32 @@ sub select_sidechain
     return ();
 }
 
+# TODO: Should reflect the order described in BBv2 P-44
 sub filter_chains
 {
     my( @chains ) = @_;
 
     for my $rule ( sub { return @_ },
+                   # TODO: P-44.1.1: Maximum number of substituents of principal characteristic group
+                   # TODO: P-44.1.2: I do not get it...
+
+                   # TODO: P-44.3.1: Maximum number of heteroatoms of any kind
+                   # TODO: P-44.3.2: Maximum number of skeletal atoms
+                   # TODO: P-44.3.3: Maximum number of the most senior heteroatom
+
+                   # TODO: P-44.4.1.1: Maximum number of multiple bonds
+                   # TODO: P-44.4.1.2: Maximum number of double bonds
+                   # TODO: P-44.4.1.3: Nonstandard bonding numbers
+                   # TODO: P-44.4.1.4: Concerns rings
+                   # TODO: P-44.4.1.5: Lowest locants for heteroatoms in skeletal chain
+                   # TODO: P-44.4.1.6: Lowest locants for heteroatoms in skeletal chain according to heteroatom seniority
+                   # TODO: P-44.4.1.7: Concerns rings
+                   # TODO: P-44.4.1.8: Lowest locants for suffix groups
+                   # TODO: P-44.4.1.9: Concerns rings
+                   # TODO: P-44.4.1.10: Lowest locants for prefixes/suffixes expressing degrees of hydrogenation
+                   # TODO: P-44.4.1.11: Concerns isotopes
+                   # TODO: P-44.4.1.12: Concerns stereogenic centers
+
                    \&rule_greatest_number_of_side_chains, # After this rule we are left with a set of longest chains all having the same number of side chains
                    \&rule_lowest_numbered_locants,
                    \&rule_most_carbon_in_side_chains,
