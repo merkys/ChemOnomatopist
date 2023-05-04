@@ -611,22 +611,22 @@ sub filter_chains
 
                    # TODO: P-44.1.2: Concerns rings
 
-                   # TODO: P-44.3.1: Maximum number of heteroatoms of any kind
+                   # P-44.3.1: Maximum number of heteroatoms of any kind
                    \&rule_most_heteroatoms,
-                   # TODO: P-44.3.2: Maximum number of skeletal atoms
+                   # P-44.3.2: Maximum number of skeletal atoms
                    \&rule_longest_chains,
-                   # TODO: P-44.3.3: Maximum number of the most senior heteroatom
+                   # P-44.3.3: Maximum number of the most senior heteroatom
                    \&rule_most_senior_heteroatoms,
 
                    # TODO: P-44.4.1.1: Maximum number of multiple bonds
                    # TODO: P-44.4.1.2: Maximum number of double bonds
                    # TODO: P-44.4.1.3: Nonstandard bonding numbers
                    # TODO: P-44.4.1.4: Concerns rings
-                   # TODO: P-44.4.1.5: Lowest locants for heteroatoms in skeletal chain
+                   # P-44.4.1.5: Lowest locants for heteroatoms in skeletal chain
                    \&rule_lowest_numbered_heteroatoms,
                    # TODO: P-44.4.1.6: Lowest locants for heteroatoms in skeletal chain according to heteroatom seniority
                    # TODO: P-44.4.1.7: Concerns rings
-                   # TODO: P-44.4.1.8: Lowest locants for suffix groups
+                   # P-44.4.1.8: Lowest locants for suffix groups
                    \&rule_lowest_numbered_senior_groups,
                    # TODO: P-44.4.1.9: Concerns rings
                    # TODO: P-44.4.1.10: Lowest locants for prefixes/suffixes expressing degrees of hydrogenation
@@ -634,6 +634,7 @@ sub filter_chains
                    # TODO: P-44.4.1.12: Concerns stereogenic centers
 
                    # TODO: P-45.1: Multiplication of identical senior parent structures
+
                    # P-45.2.1: Maximum number of prefix substituents
                    #           FIXME: This includes suffix substituents now
                    \&rule_greatest_number_of_side_chains,
