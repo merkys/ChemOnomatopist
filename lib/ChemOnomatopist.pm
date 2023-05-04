@@ -179,7 +179,7 @@ sub get_mainchain_name
     $graph->delete_path( @chain );
 
     my %attachments;
-
+    my %heteroatoms;
     # Examine the main chain
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
@@ -189,8 +189,7 @@ sub get_mainchain_name
         } elsif( !is_element( $atom, 'C' ) &&
                  exists $atom->{symbol} &&
                  exists  $ChemOnomatopist::Elements::elements{$atom->{symbol}} ) {
-            my $prefix = $ChemOnomatopist::Elements::elements{$atom->{symbol}}->{prefix};
-            push @{$attachments{$prefix}}, $i;
+            push @{$heteroatoms{$atom->{symbol}}}, $i;
         }
     }
 
@@ -234,6 +233,19 @@ sub get_mainchain_name
         }
 
         $name .= $number . $attachment_name;
+    }
+
+    # Collecting names of all heteroatoms
+    for my $element (sort { $ChemOnomatopist::Elements::elements{$a}->{seniority} <=>
+                            $ChemOnomatopist::Elements::elements{$b}->{seniority} }
+                          keys %heteroatoms) {
+        $name = $name ? $name . '-' : $name;
+        my $number = IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} );
+        $number = '' if $number eq 'mono';
+        $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
+        $name .= join( ',', map { $_ + 1 } @{$heteroatoms{$element}} ) . '-' .
+                 $number .
+                 $ChemOnomatopist::Elements::elements{$element}->{prefix};
     }
 
     $name .= alkane_chain_name( scalar @chain ) . 'ane';
