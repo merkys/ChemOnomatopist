@@ -439,7 +439,6 @@ sub select_mainchain
         }
 
         @chains = rule_most_groups( $most_senior_group, @chains );
-        @chains = rule_lowest_numbered_groups( $most_senior_group, @chains ); # FIXME: Remove in favor of rules in filter_chains()
     } else {
         # Here the candidate halves for the longest (and "best") path are placed in @path_parts.
         # Each of candidate halves start with center atom.
@@ -591,7 +590,9 @@ sub filter_chains
     my( @chains ) = @_;
 
     for my $rule ( sub { return @_ },
-                   # TODO: P-44.1.1: Maximum number of substituents of principal characteristic group
+                   # P-44.1.1: Maximum number of substituents of principal characteristic group.
+                   #           This is not needed as select_mainchain() returns such chains.
+
                    # TODO: P-44.1.2: Concerns rings
 
                    # TODO: P-44.3.1: Maximum number of heteroatoms of any kind
@@ -653,17 +654,6 @@ sub rule_most_groups
     my( $max_value ) = sort { $b <=> $a }
                        map { $_->number_of_groups( $class ) } @chains;
     return grep { $_->number_of_groups( $class ) == $max_value } @chains;
-}
-
-sub rule_lowest_numbered_groups
-{
-    my( $class, @chains ) = @_;
-    my( $max_value ) = sort { cmp_arrays( [ $a->group_positions( $class ) ],
-                                          [ $b->group_positions( $class ) ] ) }
-                            @chains;
-    return grep { !cmp_arrays( [ $_->group_positions( $class ) ],
-                               [ $max_value->group_positions( $class ) ] ) }
-                @chains;
 }
 
 sub rule_lowest_numbered_senior_groups

@@ -110,12 +110,27 @@ sub heteroatom_positions()
     return @heteroatom_positions;
 }
 
-# FIXME: This should pay attention to substituents, not the chain
 sub most_senior_group_positions()
 {
     my( $self ) = @_;
-    my $class = ChemOnomatopist::most_senior_group( $self->vertices );
-    return $class ? $self->group_positions( $class ) : ();
+    my $class = ChemOnomatopist::most_senior_group( $self->vertices, $self->substituents );
+    return () unless $class;
+
+    my @vertices = $self->vertices;
+    my $vertices = set( @vertices );
+    my @positions;
+    for (0..$#vertices) {
+        my $vertex = $vertices[$_];
+        push @positions, $_ if blessed $vertex && $vertex->isa( $class );
+        for my $neighbour ($self->{graph}->neighbours( $vertex )) {
+            next if $vertices->has( $neighbour );
+            next unless blessed $neighbour;
+            next unless $neighbour->isa( $class );
+            push @positions, $_;
+        }
+    }
+
+    return @positions;
 }
 
 sub heteroatoms()
