@@ -29,8 +29,6 @@ sub AUTOLOAD {
 
 no warnings 'recursion';
 
-our @numberskis = @ChemOnomatopist::numberskis;
-
 sub get_name
 {
     my( $what ) = @_;

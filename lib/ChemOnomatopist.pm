@@ -34,9 +34,6 @@ use Set::Object qw( set );
 
 no warnings 'recursion';
 
-our @numberskis = ( '?', '', 'bis', 'tris', 'tetrakis', 'pentakis',
-                    'hexakis', 'heptakis', 'octakis', 'nonakis', 'decakis' );
-
 sub wjoin(@);
 
 sub get_name
@@ -215,7 +212,7 @@ sub get_mainchain_name
         $name = $name ? $name . '-' : $name;
         my $number;
         if( $attachment_name =~ /^[\(\[\{]/ ) {
-            $number = $numberskis[scalar @{$attachments{$attachment_name}}];
+            $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
         } else {
             $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
             $number = '' if $number eq 'mono';
@@ -945,10 +942,19 @@ sub IUPAC_numerical_multiplier
 
     return 'trihect' if $N == 103;
     return IUPAC_numerical_multiplier( int( $tens . $ones ), 1 ) . 'hect' if $N < 200;
-    return IUPAC_numerical_multiplier( int( $tens . $ones ), 1 ) . $prefix[$hundreds] . 'ct' . ($is_middle ? 'a' : '') if $N <  1000;
+    return IUPAC_numerical_multiplier( int( $tens . $ones ), 1 ) . $prefix[$hundreds] . 'ct' . ($is_middle ? 'a' : '') if $N < 1000;
     return IUPAC_numerical_multiplier( int( $hundreds . $tens . $ones ), 1 ) . 'kili'                     if $N <  2000;
     return IUPAC_numerical_multiplier( int( $hundreds . $tens . $ones ), 1 ) . $prefix[$thousands] . 'li' if $N < 10000;
     die "cannot generate IUPAC numerical multiplier for $N\n";
+}
+
+sub IUPAC_complex_numerical_multiplier
+{
+    my( $N ) = @_;
+
+    my @multipliers = ( undef, '', 'bis', 'tris' );
+    return $multipliers[$N] if $N < @multipliers;
+    return IUPAC_numerical_multiplier( $N, 1 ) . 'kis';
 }
 
 sub alkane_chain_name
