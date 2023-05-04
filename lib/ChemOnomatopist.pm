@@ -387,58 +387,62 @@ sub select_mainchain
         my @groups = grep { blessed( $_ ) && $_->isa( $most_senior_group ) } $tree->vertices;
         my @carbons = uniq map { $_->C } @groups; # FIXME: Carbons with the most attachments should be preferred
 
-        # As the starting position is known, it is enough to take the "side chain"
-        # containing this particular carbon:
-        return select_sidechain( $tree, @carbons ) if @carbons == 1;
-
-        my @paths;
-        my $max_value;
-        for my $i (0..$#carbons) {
-            for my $j (($i+1)..$#carbons) {
-                my @path = graph_path_between_vertices( $tree, $carbons[$i], $carbons[$j] );
-                my $value = (set( @carbons ) * set( @path ))->size;
-                if(      !defined $max_value || $max_value < $value ) {
-                    @paths = ( \@path );
-                    $max_value = $value;
-                } elsif( $max_value == $value ) {
-                    push @paths, \@path;
+        if( @carbons == 1 ) {
+            # As the starting position is known, it is enough to take the "side chain"
+            # containing this particular carbon:
+            my @vertices = select_sidechain( $tree, @carbons );
+            push @chains, ChemOnomatopist::Chain::VertexArray->new( $tree, @vertices ),
+                          ChemOnomatopist::Chain::VertexArray->new( $tree, reverse @vertices );
+        } else {
+            my @paths;
+            my $max_value;
+            for my $i (0..$#carbons) {
+                for my $j (($i+1)..$#carbons) {
+                    my @path = graph_path_between_vertices( $tree, $carbons[$i], $carbons[$j] );
+                    my $value = (set( @carbons ) * set( @path ))->size;
+                    if(      !defined $max_value || $max_value < $value ) {
+                        @paths = ( \@path );
+                        $max_value = $value;
+                    } elsif( $max_value == $value ) {
+                        push @paths, \@path;
+                    }
                 }
             }
-        }
 
-        # Construct all chains having all possible extensions to both sides of the selected path
-        my %longest_paths;
-        for my $path (@paths) {
-            my $copy = $tree->copy;
-            $copy->delete_path( @$path );
-            $copy->delete_vertices( grep { blessed $_ && !is_element( $_, 'C' ) } $copy->vertices );
+            # Construct all chains having all possible extensions to both sides of the selected path
+            my %longest_paths;
+            for my $path (@paths) {
+                my $copy = $tree->copy;
+                $copy->delete_path( @$path );
+                $copy->delete_vertices( grep { blessed $_ && !is_element( $_, 'C' ) } $copy->vertices );
 
-            my $A = shift @$path;
-            my $B = pop @$path;
+                my $A = shift @$path;
+                my $B = pop @$path;
 
-            if( !exists $longest_paths{$A} ) {
-                $longest_paths{$A} = [ graph_longest_paths_from_vertex( $copy, $A ) ];
-            }
-            if( !exists $longest_paths{$B} ) {
-                $longest_paths{$B} = [ graph_longest_paths_from_vertex( $copy, $B ) ];
-            }
+                if( !exists $longest_paths{$A} ) {
+                    $longest_paths{$A} = [ graph_longest_paths_from_vertex( $copy, $A ) ];
+                }
+                if( !exists $longest_paths{$B} ) {
+                    $longest_paths{$B} = [ graph_longest_paths_from_vertex( $copy, $B ) ];
+                }
 
-            for my $i (0..$#{$longest_paths{$A}}) {
-                for my $j (0..$#{$longest_paths{$B}}) {
-                    push @chains,
-                         ChemOnomatopist::Chain::VertexArray->new( $tree,
-                                                                   reverse( @{$longest_paths{$A}->[$i]} ),
-                                                                   @$path,
-                                                                   @{$longest_paths{$B}->[$j]} ),
-                         ChemOnomatopist::Chain::VertexArray->new( $tree,
-                                                                   reverse( @{$longest_paths{$B}->[$j]} ),
-                                                                   reverse( @$path ),
-                                                                   @{$longest_paths{$A}->[$j]} );
+                for my $i (0..$#{$longest_paths{$A}}) {
+                    for my $j (0..$#{$longest_paths{$B}}) {
+                        push @chains,
+                             ChemOnomatopist::Chain::VertexArray->new( $tree,
+                                                                       reverse( @{$longest_paths{$A}->[$i]} ),
+                                                                       @$path,
+                                                                       @{$longest_paths{$B}->[$j]} ),
+                             ChemOnomatopist::Chain::VertexArray->new( $tree,
+                                                                       reverse( @{$longest_paths{$B}->[$j]} ),
+                                                                       reverse( @$path ),
+                                                                       @{$longest_paths{$A}->[$j]} );
+                    }
                 }
             }
-        }
 
-        @chains = rule_most_groups( $most_senior_group, @chains );
+            @chains = rule_most_groups( $most_senior_group, @chains );
+        }
     } else {
         # Here the candidate halves for the longest (and "best") path are placed in @path_parts.
         # Each of candidate halves start with center atom.
@@ -731,8 +735,8 @@ sub rule_most_senior_heteroatoms
     my( @chains ) = @_;
 
     my( $max_value ) = sort { cmp_heteroatoms( $a, $b ) }
-                       map  { $_->heteroatoms } @chains;
-    return grep { !cmp_heteroatoms( $_->heteroatoms, $max_value ) } @chains;
+                       map  { [ $_->heteroatoms ] } @chains;
+    return grep { !cmp_heteroatoms( [ $_->heteroatoms ], $max_value ) } @chains;
 }
 
 sub rule_lowest_numbered_heteroatoms
