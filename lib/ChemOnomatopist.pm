@@ -34,17 +34,6 @@ use Set::Object qw( set );
 
 no warnings 'recursion';
 
-our @numbers = ( '?', '', 'di', 'tri', 'tetra', 'penta',
-                 'hexa', 'hepta', 'octa', 'nona', 'deca',
-                 'undeca', 'dodeca', 'trideca', 'tetradeca',
-                 'pentadeca', 'hexadeca', 'heptadeca', 'octadeca', 'nonadeca',
-                 'icosa', 'henicosa', 'docosa', 'tricosa',
-                 'tetracosa', 'pentacosa', 'hexacosa',
-                 'heptacosa', 'octacosa', 'nonacosa', 'triaconta',
-                 'hentriaconta', 'dotriaconta', 'tritriaconta', 'tetratriaconta',
-                 'pentatriaconta', 'hexatriaconta', 'heptatriaconta',
-                 'octatriaconta', 'nonatriaconta', 'tetraconta' );
-
 our @numberskis = ( '?', '', 'bis', 'tris', 'tetrakis', 'pentakis',
                     'hexakis', 'heptakis', 'octakis', 'nonakis', 'decakis' );
 
@@ -85,8 +74,9 @@ sub get_name
         if( ( all { $_->{symbol} eq 'c' } $graph->vertices ) &&
             ( scalar $graph->vertices ) =~ /^(4|6|8|10|12|14|16)$/ ) {
             # Annulene detected
-            return 'cyclo' . $numbers[scalar $graph->vertices] .
-                   $numbers[scalar $graph->vertices / 2] . 'ene';
+            return 'cyclo' .
+                   IUPAC_numerical_multiplier( scalar $graph->vertices, 1 ) .
+                   IUPAC_numerical_multiplier( scalar $graph->vertices / 2, 1 ) . 'ene';
         }
         # No other types of graphs with cycles can be processed for now
         die "only limited set of homocycles is supported for now\n";
@@ -166,7 +156,7 @@ sub get_sidechain_name
 
     $name = 'tert-but' if $name eq '2-methylpropan-2-';
     $name .= 'yl';
-    $name = bracket( $name ) if $name eq 'hydroxymethyl'; # FIXME: Ugly fix
+    $name = bracket( $name ) if $name =~ /hydroxymethyl$/; # FIXME: Ugly fix
 
     return $name;
 }

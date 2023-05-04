@@ -29,7 +29,6 @@ sub AUTOLOAD {
 
 no warnings 'recursion';
 
-our @numbers = @ChemOnomatopist::numbers;
 our @numberskis = @ChemOnomatopist::numberskis;
 
 sub get_name
@@ -67,8 +66,9 @@ sub get_name
         if( ( all { $_->{symbol} eq 'c' } $graph->vertices ) &&
             ( scalar $graph->vertices ) =~ /^(4|6|8|10|12|14|16)$/ ) {
             # Annulene detected
-            return 'cyclo' . $numbers[scalar $graph->vertices] .
-                   $numbers[scalar $graph->vertices / 2] . 'ene';
+            return 'cyclo' .
+                   IUPAC_numerical_multiplier( scalar $graph->vertices, 1 ) .
+                   IUPAC_numerical_multiplier( scalar $graph->vertices / 2, 1 ) . 'ene';
         }
         # No other types of graphs with cycles can be processed for now
         die "only limited set of homocycles is supported for now\n";
