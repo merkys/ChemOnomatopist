@@ -110,6 +110,7 @@ sub get_sidechain_name
 
     $options = {} unless $options;
 
+    # FIXME: Groups that cannot be included in the chain should be excluded
     my $branches_at_start = $graph->degree( $start );
 
     my @chain = select_sidechain( $graph, $start );
@@ -247,8 +248,10 @@ sub get_mainchain_name
         my $number = IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} );
         $number = '' if $number eq 'mono';
         $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
-        $name .= join( ',', map { $_ + 1 } @{$heteroatoms{$element}} ) . '-' .
-                 $number .
+        if( @chain > 1 ) {
+            $name .= join( ',', map { $_ + 1 } @{$heteroatoms{$element}} ) . '-';
+        }
+        $name .= $number .
                  $ChemOnomatopist::Elements::elements{$element}->{prefix};
     }
 
