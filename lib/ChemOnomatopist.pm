@@ -163,8 +163,10 @@ sub get_sidechain_name
     }
 
     $name = 'tert-but' if $name eq '2-methylpropan-2-';
+    $name .= 'yl';
+    $name = bracket( $name ) if $name eq 'hydroxymethyl'; # FIXME: Ugly fix
 
-    return $name . 'yl';
+    return $name;
 }
 
 sub get_mainchain_name
