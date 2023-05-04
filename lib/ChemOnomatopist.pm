@@ -265,7 +265,7 @@ sub get_mainchain_name
         $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
 
         # Terminal locants are not cited for 1 or 2 senior group attachments according to BBv2 P-14.3.4.1
-        if( @senior_group_attachments && $name !~ /^methane?/ &&
+        if( @senior_group_attachments && @chain > 1 &&
             (!$most_senior_group->is_carbon || @senior_group_attachments > 2) ) {
             $name .= '-' . join( ',', map { $_ + 1 } @senior_group_attachments ) . '-';
         }
