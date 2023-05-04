@@ -650,6 +650,11 @@ sub filter_chains
                    \&pick_chain_with_lowest_attachments_alphabetically ) {
         my @chains_now = $rule->( @chains );
 
+        if( 0 ) {
+            require Sub::Identify;
+            print STDERR '>>> ', Sub::Identify::sub_name( $rule ), "\n";
+        }
+
         # CHECK: Can a rule cause disappearance of all chains?
         next unless @chains_now;
 
