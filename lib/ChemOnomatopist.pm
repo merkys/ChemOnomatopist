@@ -439,7 +439,7 @@ sub select_mainchain
         }
 
         @chains = rule_most_groups( $most_senior_group, @chains );
-        @chains = rule_lowest_numbered_groups( $most_senior_group, @chains );
+        @chains = rule_lowest_numbered_groups( $most_senior_group, @chains ); # FIXME: Remove in favor of rules in filter_chains()
     } else {
         # Here the candidate halves for the longest (and "best") path are placed in @path_parts.
         # Each of candidate halves start with center atom.
@@ -610,6 +610,7 @@ sub filter_chains
                    # TODO: P-44.4.1.6: Lowest locants for heteroatoms in skeletal chain according to heteroatom seniority
                    # TODO: P-44.4.1.7: Concerns rings
                    # TODO: P-44.4.1.8: Lowest locants for suffix groups
+                   \&rule_lowest_numbered_senior_groups,
                    # TODO: P-44.4.1.9: Concerns rings
                    # TODO: P-44.4.1.10: Lowest locants for prefixes/suffixes expressing degrees of hydrogenation
                    # TODO: P-44.4.1.11: Concerns isotopes
@@ -662,6 +663,17 @@ sub rule_lowest_numbered_groups
                             @chains;
     return grep { !cmp_arrays( [ $_->group_positions( $class ) ],
                                [ $max_value->group_positions( $class ) ] ) }
+                @chains;
+}
+
+sub rule_lowest_numbered_senior_groups
+{
+    my( @chains ) = @_;
+    my( $max_value ) = sort { cmp_arrays( [ $a->most_senior_group_positions ],
+                                          [ $b->most_senior_group_positions ] ) }
+                            @chains;
+    return grep { !cmp_arrays( [ $_->most_senior_group_positions ],
+                               [ $max_value->most_senior_group_positions ] ) }
                 @chains;
 }
 

@@ -90,6 +90,14 @@ sub heteroatom_positions()
     return @heteroatom_positions;
 }
 
+# FIXME: This should pay attention to substituents, not the chain
+sub most_senior_group_positions()
+{
+    my( $self ) = @_;
+    my $class = ChemOnomatopist::most_senior_group( $self->vertices );
+    return $class ? $self->group_positions( $class ) : ();
+}
+
 sub heteroatoms()
 {
     my( $self ) = @_;
