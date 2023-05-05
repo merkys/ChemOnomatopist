@@ -13,6 +13,12 @@ use Memoize;
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
+memoize 'branch_positions';
+memoize 'group_positions';
+memoize 'locant_names';
+memoize 'number_of_branches_in_sidechains';
+memoize 'number_of_carbons';
+
 # ABSTRACT: Half of a longest chain
 # VERSION
 
@@ -22,14 +28,6 @@ sub new
 {
     my( $class, $graph, $other_center, @vertices ) = @_;
     my $self = { vertices => \@vertices, graph => $graph, other_center => $other_center, cache => {} };
-
-    memoize 'branch_positions',  LIST_CACHE => [ HASH => $self->{cache} ];
-    memoize 'group_positions',   LIST_CACHE => [ HASH => $self->{cache} ];
-    # memoize 'locant_names',      LIST_CACHE => [ HASH => $self->{cache} ]; # FIXME: This somewhy fails?
-
-    memoize 'number_of_branches_in_sidechains', SCALAR_CACHE => [ HASH => $self->{cache} ];
-    memoize 'number_of_carbons',                SCALAR_CACHE => [ HASH => $self->{cache} ];
-
     return bless $self, $class;
 }
 
@@ -158,8 +156,6 @@ sub locant_names()
 {
     my( $self ) = @_;
 
-    return @{$self->{locant_names}} if $self->{locant_names};
-
     my $graph = $self->_disconnected_chain_graph;
 
     my @locants;
@@ -176,8 +172,7 @@ sub locant_names()
         push @locants, \@current_locants;
     }
 
-    $self->{locant_names} = \@locants;
-    return @{$self->{locant_names}};
+    return @locants;
 }
 
 sub number_of_branches_in_sidechains()
