@@ -15,6 +15,7 @@ use Set::Object qw( set );
 
 memoize 'branch_positions';
 memoize 'group_positions';
+memoize 'heteroatom_positions';
 memoize 'locant_names';
 memoize 'number_of_branches_in_sidechains';
 memoize 'number_of_carbons';
