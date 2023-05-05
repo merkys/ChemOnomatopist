@@ -9,6 +9,7 @@ use ChemOnomatopist::Util::Graph qw(
 );
 use Graph::Traversal::DFS;
 use List::Util qw( sum0 );
+use Memoize;
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
@@ -20,7 +21,15 @@ sub vertices();
 sub new
 {
     my( $class, $graph, $other_center, @vertices ) = @_;
-    my $self = { vertices => \@vertices, graph => $graph, other_center => $other_center };
+    my $self = { vertices => \@vertices, graph => $graph, other_center => $other_center, cache => {} };
+
+    memoize 'branch_positions',  LIST_CACHE => [ HASH => $self->{cache} ];
+    memoize 'group_positions',   LIST_CACHE => [ HASH => $self->{cache} ];
+    # memoize 'locant_names',      LIST_CACHE => [ HASH => $self->{cache} ]; # FIXME: This somewhy fails?
+
+    memoize 'number_of_branches_in_sidechains', SCALAR_CACHE => [ HASH => $self->{cache} ];
+    memoize 'number_of_carbons',                SCALAR_CACHE => [ HASH => $self->{cache} ];
+
     return bless $self, $class;
 }
 
