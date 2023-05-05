@@ -759,6 +759,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
 }
 
 # Reverse chain if needed
+# FIXME: Unused
 sub order
 {
     my( $chainA ) = @_;
