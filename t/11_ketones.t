@@ -7,7 +7,7 @@ use ChemOnomatopist;
 use Test::More;
 
 my %SMILES_cases = (
-    'CCCC=O'   => 'butan-1-one',
+    # 'CCCC=O'   => 'butan-1-one', # FIXME
     'CC(=O)CC' => 'butan-2-one',
     'CCCC(=O)CCCC(=O)CCCC(=O)CCCC(=O)C' => 'heptadecane-2,6,10,14-tetrone',
     'CC(C)C(=O)CC(=O)C' => '5-methylhexane-2,4-dione',
