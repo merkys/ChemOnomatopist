@@ -362,24 +362,6 @@ sub is_element
            $atom->{symbol} eq $element;
 }
 
-# BFS is performed for the given graph after all vertices that are not carbons
-# removed
-sub BFS_order_carbons_only
-{
-    my( $graph, $start ) = @_;
-
-    $graph = $graph->copy;
-    $graph->delete_vertices( grep { !is_element( $_, 'C' ) } $graph->vertices );
-
-    my $bfs;
-    if( $start ) {
-        $bfs = Graph::Traversal::BFS->new( $graph, start => $start );
-    } else {
-        $bfs = Graph::Traversal::BFS->new( $graph );
-    }
-    return $bfs->bfs;
-}
-
 # Selects the main chain by evaluating its parts
 sub select_mainchain
 {

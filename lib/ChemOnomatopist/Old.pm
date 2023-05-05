@@ -89,6 +89,24 @@ sub get_name
     return get_mainchain_name( $graph->copy, \@chain );
 }
 
+# BFS is performed for the given graph after all vertices that are not carbons
+# removed
+sub BFS_order_carbons_only
+{
+    my( $graph, $start ) = @_;
+
+    $graph = $graph->copy;
+    $graph->delete_vertices( grep { !is_element( $_, 'C' ) } $graph->vertices );
+
+    my $bfs;
+    if( $start ) {
+        $bfs = Graph::Traversal::BFS->new( $graph, start => $start );
+    } else {
+        $bfs = Graph::Traversal::BFS->new( $graph );
+    }
+    return $bfs->bfs;
+}
+
 # Subroutine gets an graph, removes all vertices that do not have C as their element.
 # Performs BFS on that chain. During BFS, distance from start is calculated to each vertice
 sub BFS_order_carbons_only_return_lengths
