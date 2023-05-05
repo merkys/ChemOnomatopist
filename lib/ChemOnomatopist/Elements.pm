@@ -3,6 +3,9 @@ package ChemOnomatopist::Elements;
 use strict;
 use warnings;
 
+# ABSTRACT: Element properties from IUPAC Blue Book
+# VERSION
+
 use parent Exporter::;
 our @EXPORT_OK = qw( %elements );
 
