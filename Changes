@@ -1,0 +1,12 @@
+0.3.0 unreleased
+
+    - ...
+
+0.2.0 2022-05-25
+
+    - 97.5% correctness rate for unbranched and branched saturated acyclic
+      hydrocarbons for PubChem database downloaded on 2022-04-21.
+
+0.1.0 2022-01-18
+
+    - Initial release.
