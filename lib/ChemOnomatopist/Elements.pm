@@ -3,6 +3,9 @@ package ChemOnomatopist::Elements;
 use strict;
 use warnings;
 
+use parent Exporter::;
+our @EXPORT_OK = qw( %elements );
+
 # Replacement prefixes taken from BBv2 P-15.4.1.1
 # Seniorities taken from BBv2 P-15.4.1.2
 

@@ -9,7 +9,7 @@ use warnings;
 use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::VertexArray;;
 use ChemOnomatopist::ChainHalf;
-use ChemOnomatopist::Elements;
+use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Carbonyl;
@@ -110,8 +110,8 @@ sub get_sidechain_name
     if( @chain == 1 && !is_element( $chain[0], 'C' ) ) {
         if( blessed $chain[0] ) {
             return $chain[0]->prefix;
-        } elsif( exists $ChemOnomatopist::Elements::elements{$chain[0]->{symbol}} ) {
-            return $ChemOnomatopist::Elements::elements{$chain[0]->{symbol}}->{prefix};
+        } elsif( exists $elements{$chain[0]->{symbol}} ) {
+            return $elements{$chain[0]->{symbol}}->{prefix};
         }
     }
 
@@ -181,7 +181,7 @@ sub get_mainchain_name
             push @{$attachments{$atom->prefix}}, $i;
         } elsif( !is_element( $atom, 'C' ) &&
                  exists $atom->{symbol} &&
-                 exists  $ChemOnomatopist::Elements::elements{$atom->{symbol}} ) {
+                 exists $elements{$atom->{symbol}} ) {
             push @{$heteroatoms{$atom->{symbol}}}, $i;
         }
     }
@@ -229,8 +229,7 @@ sub get_mainchain_name
     }
 
     # Collecting names of all heteroatoms
-    for my $element (sort { $ChemOnomatopist::Elements::elements{$a}->{seniority} <=>
-                            $ChemOnomatopist::Elements::elements{$b}->{seniority} }
+    for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
                           keys %heteroatoms) {
         $name = $name ? $name . '-' : $name;
         my $number = IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} );
@@ -239,8 +238,7 @@ sub get_mainchain_name
         if( @chain > 1 ) {
             $name .= join( ',', map { $_ + 1 } @{$heteroatoms{$element}} ) . '-';
         }
-        $name .= $number .
-                 $ChemOnomatopist::Elements::elements{$element}->{prefix};
+        $name .= $number . $elements{$element}->{prefix};
     }
 
     $name .= alkane_chain_name( scalar @chain ) . 'ane';
@@ -803,7 +801,6 @@ sub cmp_heteroatoms
     for (@$A) { $A{$_}++ }
     for (@$B) { $B{$_}++ }
 
-    my %elements = %ChemOnomatopist::Elements::elements;
     my @elements = sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
                    grep { $elements{$_}->{seniority} >= 5 } # O and after
                         keys %elements;
