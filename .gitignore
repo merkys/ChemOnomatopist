@@ -1,4 +1,5 @@
 .build
 ChemOnomatopist-*
+container.sif
 nytprof
 nytprof.out
