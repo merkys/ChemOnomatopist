@@ -9,16 +9,8 @@ use ChemOnomatopist::Util::Graph qw(
 );
 use Graph::Traversal::DFS;
 use List::Util qw( sum0 );
-use Memoize;
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
-
-memoize 'branch_positions';
-memoize 'group_positions';
-memoize 'heteroatom_positions';
-memoize 'locant_names';
-memoize 'number_of_branches_in_sidechains';
-memoize 'number_of_carbons';
 
 # ABSTRACT: Half of a longest chain
 # VERSION
@@ -82,12 +74,14 @@ sub branch_positions()
                  0..$#vertices;
 
     $self->{branch_positions} = \@branch_positions;
-    return @{$self->{branch_positions}};
+    return @branch_positions;
 }
 
 sub group_positions
 {
     my( $self, $class ) = @_;
+
+    return @{$self->{group_positions}{$class}} if $self->{group_positions}{$class};
 
     my $graph = $self->_disconnected_chain_graph;
     my @vertices = $self->vertices;
@@ -100,12 +94,15 @@ sub group_positions
         push @group_positions, ( $_ ) x $groups;
     }
 
+    $self->{group_positions}{$class} = \@group_positions;
     return @group_positions;
 }
 
 sub heteroatom_positions()
 {
     my( $self ) = @_;
+
+    return @{$self->{heteroatom_positions}} if $self->{heteroatom_positions};
 
     my @vertices = $self->vertices;
     my @heteroatom_positions;
@@ -115,12 +112,16 @@ sub heteroatom_positions()
         push @heteroatom_positions, $_;
     }
 
+    $self->{heteroatom_positions} = \@heteroatom_positions;
     return @heteroatom_positions;
 }
 
 sub most_senior_group_positions()
 {
     my( $self ) = @_;
+
+    return @{$self->{most_senior_group_positions}} if $self->{most_senior_group_positions};
+
     my $class = ChemOnomatopist::most_senior_group( $self->vertices, $self->substituents );
     return () unless $class;
 
@@ -138,6 +139,7 @@ sub most_senior_group_positions()
         }
     }
 
+    $self->{most_senior_group_positions} = \@positions;
     return @positions;
 }
 
@@ -157,6 +159,8 @@ sub locant_names()
 {
     my( $self ) = @_;
 
+    return @{$self->{locant_names}} if $self->{locant_names};
+
     my $graph = $self->_disconnected_chain_graph;
 
     my @locants;
@@ -173,6 +177,7 @@ sub locant_names()
         push @locants, \@current_locants;
     }
 
+    $self->{locant_names} = \@locants;
     return @locants;
 }
 
@@ -180,19 +185,26 @@ sub number_of_branches_in_sidechains()
 {
     my( $self ) = @_;
 
+    return $self->{number_of_branches_in_sidechains} if exists $self->{number_of_branches_in_sidechains};
+
     my $graph = $self->_disconnected_chain_graph;
     my @vertex_neighbours = map { $graph->neighbours( $_ ) } $self->vertices;
     $graph->delete_vertices( $self->vertices );
 
-    return sum0 map { $_ > 2 ? $_ - 2 : 0 }
-                map { $graph->degree( $_ ) }
-                map { Graph::Traversal::DFS->new( $graph, start => $_ )->dfs }
-                    @vertex_neighbours;
+    my $number = sum0 map { $_ > 2 ? $_ - 2 : 0 }
+                          map { $graph->degree( $_ ) }
+                          map { Graph::Traversal::DFS->new( $graph, start => $_ )->dfs }
+                              @vertex_neighbours;
+
+    $self->{number_of_branches_in_sidechains} = $number;
+    return $number;
 }
 
 sub number_of_carbons()
 {
     my( $self ) = @_;
+
+    return $self->{number_of_carbons} if exists $self->{number_of_carbons};
 
     my $graph = $self->_disconnected_chain_graph;
 
@@ -201,7 +213,10 @@ sub number_of_carbons()
                  $self->vertices;
 
     # Since main chain carbons are included in the count, they have to be subtracted.
-    return $C - $self->length;
+    $C -= $self->length;
+
+    $self->{number_of_carbons} = $C;
+    return $C;
 }
 
 sub number_of_branches()
