@@ -4,9 +4,6 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
-use ChemOnomatopist::Util::Graph qw(
-    tree_branch_positions
-);
 use Graph::Traversal::DFS;
 use List::Util qw( sum0 );
 use Scalar::Util qw( blessed );
@@ -161,7 +158,7 @@ sub locant_names()
 
     return @{$self->{locant_names}} if $self->{locant_names};
 
-    my $graph = $self->_disconnected_chain_graph;
+    my $graph = $self->_disconnected_chain_graph->copy;
 
     my @locants;
     for my $vertex ($self->vertices) {
@@ -187,7 +184,7 @@ sub number_of_branches_in_sidechains()
 
     return $self->{number_of_branches_in_sidechains} if exists $self->{number_of_branches_in_sidechains};
 
-    my $graph = $self->_disconnected_chain_graph;
+    my $graph = $self->_disconnected_chain_graph->copy;
     my @vertex_neighbours = map { $graph->neighbours( $_ ) } $self->vertices;
     $graph->delete_vertices( $self->vertices );
 
@@ -241,6 +238,8 @@ sub _disconnected_chain_graph()
 {
     my( $self ) = @_;
 
+    return $self->{_disconnected_chain_graph} if $self->{_disconnected_chain_graph};
+
     my $graph = $self->{graph}->copy;
     my @vertices = $self->vertices;
 
@@ -255,6 +254,7 @@ sub _disconnected_chain_graph()
     }
     $graph->delete_path( @vertices );
 
+    $self->{_disconnected_chain_graph} = $graph;
     return $graph;
 }
 
