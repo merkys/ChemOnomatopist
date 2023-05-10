@@ -10,3 +10,7 @@ Story for the name of the project:
 BSc thesis of Miglė Urbonaitė on ChemOnomatopist (in Lithuanian):
 
 * https://www.lvb.lt/permalink/f/8og6ah/ELABAETD146240727
+
+Blue Book v2 (BBv2):
+
+* https://iupac.qmul.ac.uk/BlueBook/PDF/BlueBookV2.pdf
