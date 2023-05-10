@@ -1,6 +1,9 @@
-0.3.0 unreleased
+0.3.0 2023-05-10
 
-    - ...
+    - 99.6% correctness rate for unbranched and branched saturated acyclic
+      hydrocarbons for PubChem database downloaded on 2022-04-21.
+    - Implement support for some compound classes having oxygen atoms.
+    - Implement support for heteroatoms.
 
 0.2.0 2022-05-25
 
