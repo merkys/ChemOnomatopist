@@ -875,6 +875,7 @@ sub cmp_attachments
 }
 
 # According to https://en.wikipedia.org/wiki/IUPAC_numerical_multiplier
+# FIXME: henihectane and henidictane should instead be s/^heni/hen/
 sub IUPAC_numerical_multiplier
 {
     my( $N, $is_middle ) = @_;
