@@ -27,6 +27,10 @@ for my $case (@cases) {
     $case->{iupac} =~ s/di\((non|heptadec|hentriacont|undec|tridec|docos|icos|tetradec|pentadec)yl\)/di$1yl/g;
     $case->{iupac} =~ s/tetra\(tridecyl\)/tetratridecyl/g;
 
+    # The following multiplicative prefixes were simplified by BBv2
+    $case->{iupac} =~ s/-tris-/-tri/g;
+    $case->{iupac} =~ s/-(tetra|hexa)kis-/-$1/g;
+
     is( ChemOnomatopist::get_name( $case->{smiles} ),
         $case->{iupac},
         'ID ' . $case->{id} );
