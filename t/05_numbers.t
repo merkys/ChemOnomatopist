@@ -210,17 +210,20 @@ my @prefixes = qw(
     nonanonacontahect
 );
 
-# Taken from:
-# https://en.wikipedia.org/w/index.php?title=IUPAC_numerical_multiplier&oldid=1086173027
 my %cases = (
+    # Taken from:
+    # https://en.wikipedia.org/w/index.php?title=IUPAC_numerical_multiplier&oldid=1086173027
      241 => 'hentetracontadict',
      411 => 'undecatetract',
      548 => 'octatetracontapentact',
     9267 => 'heptahexacontadictanonali',
+
+    # Taken from BBv2 P-14.2.1.2
+     363 => 'trihexacontatrict',
+     486 => 'hexaoctacontatetract',
 );
 
-plan tests => scalar( @prefixes ) +
-              scalar keys %cases;
+plan tests => scalar( @prefixes ) + scalar keys %cases;
 
 for (0..$#prefixes) {
     is( ChemOnomatopist::alkane_chain_name( $_ ),
