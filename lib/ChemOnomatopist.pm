@@ -875,7 +875,6 @@ sub cmp_attachments
 }
 
 # According to https://en.wikipedia.org/wiki/IUPAC_numerical_multiplier
-# FIXME: henihectane and henidictane should instead be s/^heni/hen/
 sub IUPAC_numerical_multiplier
 {
     my( $N, $is_middle ) = @_;
@@ -922,8 +921,13 @@ sub IUPAC_numerical_multiplier
     }
 
     return 'trihect' if $N == 103;
-    return IUPAC_numerical_multiplier( int( $tens . $ones ), 1 ) . 'hect' if $N < 200;
-    return IUPAC_numerical_multiplier( int( $tens . $ones ), 1 ) . $prefix[$hundreds] . 'ct' . ($is_middle ? 'a' : '') if $N < 1000;
+
+    if( $N < 1000 ) {
+        my $prefix = int( $tens . $ones ) == 1 ? 'hen' : IUPAC_numerical_multiplier( int( $tens . $ones ), 1 );
+        return $prefix . 'hect' if $N < 200;
+        return $prefix . $prefix[$hundreds] . 'ct' . ($is_middle ? 'a' : '');
+    }
+
     return IUPAC_numerical_multiplier( int( $hundreds . $tens . $ones ), 1 ) . 'kili'                     if $N <  2000;
     return IUPAC_numerical_multiplier( int( $hundreds . $tens . $ones ), 1 ) . $prefix[$thousands] . 'li' if $N < 10000;
     die "cannot generate IUPAC numerical multiplier for $N\n";

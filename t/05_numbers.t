@@ -109,7 +109,7 @@ my @prefixes = qw(
     octanonacont
     nonanonacont
     hect
-    henihect
+    henhect
     dohect
     trihect
     tetrahect
