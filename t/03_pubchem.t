@@ -17,6 +17,12 @@ open( my $inp, '<', 't/PubChemData' ) or die;
 my @cases;
 while (<$inp>) {
     my( $id, $iupac, $smiles ) = split /\t/, $_;
+
+    # TODO: The following compounds are not properly named yet
+    next if $iupac =~ /edial$/;
+    next if $iupac =~ / /;
+    next if $iupac =~ /acetyl/;
+
     push @cases, { id => $id, iupac => $iupac, smiles => $smiles };
 }
 close $inp;
@@ -24,10 +30,6 @@ close $inp;
 plan tests => scalar @cases;
 
 for my $case (@cases) {
-    next if $case->{iupac}  =~ /edial$/;
-    next if $case->{iupac}  =~ / /;
-    next if $case->{iupac}  =~ /acetyl/;
-
     # Minor regularizations for PubChem names:
     $case->{iupac} =~ s/(di|tri|tetra|penta|hepta)(tert-butyl)/$1\($2\)/g;
     $case->{iupac} =~ s/di\((non|heptadec|hentriacont|undec|tridec|docos|icos|tetradec|pentadec)yl\)/di$1yl/g;
