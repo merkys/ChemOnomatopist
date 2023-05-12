@@ -15,9 +15,9 @@ if( !$ENV{EXTENDED_TESTING} ) {
 open( my $inp, '<', 't/PubChemData' ) or die;
 
 my @cases;
-while (my $line = <$inp>) {
-    my @fields = split /\t/, $line;
-    push @cases, { id => $fields[0], iupac => $fields[1], smiles => $fields[2] };
+while (<$inp>) {
+    my( $id, $iupac, $smiles ) = split /\t/, $_;
+    push @cases, { id => $id, iupac => $iupac, smiles => $smiles };
 }
 close $inp;
 
