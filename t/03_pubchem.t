@@ -23,7 +23,25 @@ while (<$inp>) {
     next if $iupac =~ / /;
     next if $iupac =~ /acetyl/;
 
-    push @cases, { id => $id, iupac => $iupac, smiles => $smiles };
+    next if $smiles =~ /[\[\]=\$\#]/; # TODO: Cannot process these
+
+    my $parser = Chemistry::OpenSMILES::Parser->new;
+    my( @graphs ) = $parser->parse( $smiles );
+
+    next if @graphs > 1;
+    my $graph = shift @graphs;
+
+    # TODO: Cannot yet process double, triple, ... bonds between carbon atoms
+    #~ next if any { $_->[0]{symbol} eq 'C' && $_->[1]{symbol} eq 'C' }
+            #~ grep { $graph->has_edge_attributes( @$_ ) }
+            #~ $graph->edges;
+
+    #~ next if any { join( '', sort map { $_->{symbol} } $graph->neighbours( $_ ) ) =~ /^(CC|OO)$/ }
+            #~ grep { $graph->degree( $_ ) == 2 }
+            #~ grep { $_->{symbol} eq 'O' }
+            #~ $graph->vertices;
+
+    push @cases, { id => $id, iupac => $iupac, graph => $graph };
 }
 close $inp;
 
@@ -39,32 +57,11 @@ for my $case (@cases) {
     $case->{iupac} =~ s/-tris-/-tri/g;
     $case->{iupac} =~ s/-(tetra|hexa)kis-/-$1/g;
 
-    is( ChemOnomatopist::get_name( $case->{smiles} ),
-        $case->{iupac},
-        'ID ' . $case->{id} );
-}
-
-if( 0 ) {
-    my $parser = Chemistry::OpenSMILES::Parser->new;
-    my( $graph ) = $parser->parse( $case->{smiles} ); # Taking only the first graph
-
-    # Cannot yet process double, triple, ... bonds between carbon atoms
-    next if any { $_->[0]{symbol} eq 'C' && $_->[1]{symbol} eq 'C' }
-            grep { $graph->has_edge_attributes( @$_ ) }
-            $graph->edges;
-
-    next if any { join( '', sort map { $_->{symbol} } $graph->neighbours( $_ ) ) =~ /^(CC|OO)$/ }
-            grep { $graph->degree( $_ ) == 2 }
-            grep { $_->{symbol} eq 'O' }
-            $graph->vertices;
-
     my $name;
-    eval {
-        $name = ChemOnomatopist::get_name( $graph );
-    };
+    eval { $name = ChemOnomatopist::get_name( $case->{graph} ); };
     if( $@ ) {
         $@ =~ s/\n$//;
-        ok 1, 'ID ' . $case->{id} . " skipped: $@";
+        fail 'ID ' . $case->{id} . " failed: $@";
     } else {
         is $name, $case->{iupac}, 'ID ' . $case->{id};
     }
