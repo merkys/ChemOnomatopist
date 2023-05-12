@@ -23,7 +23,7 @@ while (<$inp>) {
     next if $iupac =~ / /;
     next if $iupac =~ /acetyl/;
 
-    next if $smiles =~ /[\[\]=\$\#]/; # TODO: Cannot process these
+    next if $smiles =~ /[\[\]\\\/]/; # TODO: Cannot process these
 
     my $parser = Chemistry::OpenSMILES::Parser->new;
     my( @graphs ) = $parser->parse( $smiles );
@@ -32,14 +32,15 @@ while (<$inp>) {
     my $graph = shift @graphs;
 
     # TODO: Cannot yet process double, triple, ... bonds between carbon atoms
-    #~ next if any { $_->[0]{symbol} eq 'C' && $_->[1]{symbol} eq 'C' }
-            #~ grep { $graph->has_edge_attributes( @$_ ) }
-            #~ $graph->edges;
+    next if any { $_->[0]{symbol} eq 'C' && $_->[1]{symbol} eq 'C' }
+            grep { $graph->has_edge_attributes( @$_ ) }
+            $graph->edges;
 
-    #~ next if any { join( '', sort map { $_->{symbol} } $graph->neighbours( $_ ) ) =~ /^(CC|OO)$/ }
-            #~ grep { $graph->degree( $_ ) == 2 }
-            #~ grep { $_->{symbol} eq 'O' }
-            #~ $graph->vertices;
+    # TODO: Cannot process the following oxygen compounds
+    next if any { join( '', sort map { $_->{symbol} } $graph->neighbours( $_ ) ) =~ /^(CC|OO)$/ }
+            grep { $graph->degree( $_ ) == 2 }
+            grep { $_->{symbol} eq 'O' }
+            $graph->vertices;
 
     push @cases, { id => $id, iupac => $iupac, graph => $graph };
 }
