@@ -10,6 +10,7 @@ use ChemOnomatopist::ChainHalf; # FIXME: Not sure why it is needed
 
 use parent ChemOnomatopist::ChainHalf::;
 
+# From BBv2 P-22.2.1
 our %names = (
     OCNCC => '1,3-oxazolidine',
     ONCCC => '1,2-oxazolidine',
