@@ -218,7 +218,7 @@ sub get_mainchain_name
         $name .= $number . $elements{$element}->{prefix};
     }
 
-    if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
+    if( blessed $chain && $chain->can( 'name' ) ) {
         $name .= $chain->name;
     } else {
         $name .= alkane_chain_name( scalar @chain ) . 'ane';
