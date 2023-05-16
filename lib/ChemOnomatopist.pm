@@ -12,6 +12,7 @@ use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Aldehyde;
+use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Hydroperoxide;
@@ -279,6 +280,13 @@ sub find_groups
         my @C = grep { is_element( $_, 'C' ) } @neighbours;
         my @H = grep { is_element( $_, 'H' ) } @neighbours;
         my @O = grep { is_element( $_, 'O' ) } @neighbours;
+
+        # Detecting amino
+        if( is_element( $atom, 'N' ) && @neighbours == 3 && @C == 1 && @H == 2 ) {
+            my $amino = ChemOnomatopist::Group::Amino->new( @C );
+            $graph->add_edge( @C, $amino );
+            $graph->delete_vertices( $atom, @H );
+        }
 
         # Detecting carbonyl
         if(      is_element( $atom, 'O' ) && @neighbours == 1 && @C == 1 ) {
