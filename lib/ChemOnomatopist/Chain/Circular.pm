@@ -8,6 +8,7 @@ use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::ChainHalf; # FIXME: Not sure why it is needed
+use List::Util qw( all any );
 
 use parent ChemOnomatopist::ChainHalf::;
 
@@ -77,7 +78,7 @@ sub name()
 
     my $graph = $self->{graph};
 
-    if( any { $_->degree( $_ ) > 2 } $self->vertices ) {
+    if( any { $graph->degree( $_ ) > 2 } $self->vertices ) {
         die "cannot handle cycles with attachments for now\n";
     }
 

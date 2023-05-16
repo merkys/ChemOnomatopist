@@ -218,7 +218,11 @@ sub get_mainchain_name
         $name .= $number . $elements{$element}->{prefix};
     }
 
-    $name .= alkane_chain_name( scalar @chain ) . 'ane';
+    if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
+        $name .= $chain->name;
+    } else {
+        $name .= alkane_chain_name( scalar @chain ) . 'ane';
+    }
 
     if( $most_senior_group ) {
         if( $most_senior_group->is_carbon ) {
@@ -372,7 +376,7 @@ sub select_mainchain
         # FIXME: For now we do not attempt to preselect order
         my @vertices = Graph::Traversal::DFS->new( $core )->dfs;
         push @chains,
-             ChemOnomatopist::Chain::Circular->new( @vertices );
+             ChemOnomatopist::Chain::Circular->new( $tree, @vertices );
     } elsif( $most_senior_group ) {
         # TODO: Select a chain containing most of the senior groups
         my @groups = grep { blessed( $_ ) && $_->isa( $most_senior_group ) } $tree->vertices;
