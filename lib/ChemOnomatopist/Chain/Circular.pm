@@ -48,6 +48,12 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
+sub is_benzene
+{
+    my( $self ) = @_;
+    return $self->backbone_SMILES =~ /^(C=CC=CC=C|CC=CC=CC=)$/;
+}
+
 # sub branch_positions() # TODO: Maybe need to add 1 to all returned positions?
 
 sub _disconnected_chain_graph()

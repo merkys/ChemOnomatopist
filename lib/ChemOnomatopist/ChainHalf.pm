@@ -56,6 +56,22 @@ sub vertices()
 
 # Properties
 
+sub backbone_SMILES()
+{
+    my( $self ) = @_;
+
+    my @vertices = $self->vertices;
+    my $SMILES = '';
+    for my $i (0..$#vertices) {
+        $SMILES .= $vertices[$i]->{symbol};
+        next if $i == $#vertices;
+        next unless $self->{graph}->has_edge_attribute( $vertices[$i], $vertices[$i+1], 'bond' );
+        $SMILES .=  $self->{graph}->get_edge_attribute( $vertices[$i], $vertices[$i+1], 'bond' );
+    }
+
+    return $SMILES;
+}
+
 sub branch_positions()
 {
     my( $self ) = @_;
