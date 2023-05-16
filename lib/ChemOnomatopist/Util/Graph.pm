@@ -16,6 +16,7 @@ our @EXPORT_OK = qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
     graph_center
+    graph_cycle_core
     graph_has_cycle
     graph_longest_paths
     graph_longest_paths_from_vertex
@@ -82,6 +83,18 @@ sub graph_center
             die 'cannot find center of cyclic or isolated graphs';
         }
         $nvertices = $nvertices_now;
+    }
+    return $graph->vertices;
+}
+
+# Iteratively removes leaves of a graph until cycle core remains.
+sub graph_cycle_core
+{
+    my( $graph ) = @_;
+
+    $graph = $graph->copy;
+    while( my @leaves = grep { $graph->degree( $_ ) == 1 } $graph->vertices ) {
+        $graph->delete_vertices( @leaves );
     }
     return $graph->vertices;
 }
