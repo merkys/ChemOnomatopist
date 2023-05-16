@@ -91,6 +91,16 @@ sub name()
         return 'cyclo' . ChemOnomatopist::alkane_chain_name( $self->length ) . 'ane';
     }
 
+    # Check for annulenes
+    # FIXME: Check for kekulized compounds
+    if( ( all { $_->{symbol} eq 'c' } $self->vertices ) &&
+        $self->length =~ /^(4|6|8|10|12|14|16)$/ ) {
+        # Annulene detected
+        return 'cyclo' .
+               ChemOnomatopist::IUPAC_numerical_multiplier( $self->length, 1 ) .
+               ChemOnomatopist:: IUPAC_numerical_multiplier( $self->length / 2, 1 ) . 'ene';
+    }
+
     die "cannot name such compounds\n";
 }
 
