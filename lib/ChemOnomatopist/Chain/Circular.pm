@@ -51,6 +51,7 @@ sub new
 sub is_benzene
 {
     my( $self ) = @_;
+    return '' unless $self->length == 6;
     return $self->backbone_SMILES =~ /^(C=CC=CC=C|CC=CC=CC=)$/;
 }
 
