@@ -6,6 +6,7 @@ use warnings;
 # ABSTRACT: Circular chain
 # VERSION
 
+use ChemOnomatopist;
 use ChemOnomatopist::ChainHalf; # FIXME: Not sure why it is needed
 
 use parent ChemOnomatopist::ChainHalf::;
@@ -68,6 +69,29 @@ sub is_benzene()
     my( $self ) = @_;
     return '' unless $self->length == 6;
     return $self->backbone_SMILES =~ /^(C=CC=CC=C|CC=CC=CC=)$/;
+}
+
+sub name()
+{
+    my( $self ) = @_;
+
+    my $graph = $self->{graph};
+
+    if( any { $_->degree( $_ ) > 2 } $self->vertices ) {
+        die "cannot handle cycles with attachments for now\n";
+    }
+
+    my $SMILES = $self->backbone_SMILES;
+
+    # Check the preserved names
+    return $names{$SMILES} if exists $names{$SMILES};
+
+    # Check for cycloalkanes
+    if( all { $_->{symbol} eq 'C' } $self->vertices ) {
+        return 'cyclo' . ChemOnomatopist::alkane_chain_name( $self->length ) . 'ane';
+    }
+
+    die "cannot name such compounds\n";
 }
 
 # sub branch_positions() # TODO: Maybe need to add 1 to all returned positions?
