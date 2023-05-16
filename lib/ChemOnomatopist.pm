@@ -62,8 +62,8 @@ sub get_name
         die "cannot handle such compounds for now\n";
     }
 
-    my @main_chain = select_mainchain( $graph );
-    return get_mainchain_name( $graph, \@main_chain );
+    my $main_chain = select_mainchain( $graph );
+    return get_mainchain_name( $graph, $main_chain );
 }
 
 # get_sidechain_name() receives a graph and a position to start the chain in it.
@@ -140,7 +140,7 @@ sub get_mainchain_name
     my( $graph, $chain, $options ) = @_;
 
     my @vertices = $graph->vertices;
-    my @chain = @$chain;
+    my @chain = blessed $chain ? $chain->vertices : @$chain;
     my $most_senior_group = most_senior_group( $graph );
 
     # Disconnect the main chain: this way every main chain atom remains
@@ -457,7 +457,7 @@ sub select_mainchain
             }
         }
 
-        return $path_parts[0]->vertices if @path_parts == 1; # methane
+        return @path_parts if @path_parts == 1; # methane
 
         # Generate all possible chains.
         # FIXME: This needs optimisation.
@@ -480,9 +480,10 @@ sub select_mainchain
         $chain->number_of_groups( $most_senior_group ) ) {
         shift @vertices;
         pop @vertices;
+        $chain = ChemOnomatopist::Chain::VertexArray->new( $tree, @vertices );
     }
 
-    return @vertices;
+    return $chain;
 }
 
 # Selects the best side chain
