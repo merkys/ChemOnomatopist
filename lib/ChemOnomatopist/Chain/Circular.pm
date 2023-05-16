@@ -48,7 +48,22 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
-sub is_benzene
+# Need to override as the terminal bond is also important
+sub backbone_SMILES()
+{
+    my( $self ) = @_;
+
+    my @vertices = $self->vertices;
+    my $SMILES = $self->SUPER::backbone_SMILES;
+
+    if( $self->{graph}->has_edge_attribute( $vertices[0], $vertices[$#vertices], 'bond' ) ) {
+        $SMILES .= $self->{graph}->get_edge_attribute( $vertices[0], $vertices[$#vertices], 'bond' );
+    }
+
+    return $SMILES;
+}
+
+sub is_benzene()
 {
     my( $self ) = @_;
     return '' unless $self->length == 6;
