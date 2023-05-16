@@ -98,9 +98,10 @@ sub name()
         # Annulene detected
         return 'cyclo' .
                ChemOnomatopist::IUPAC_numerical_multiplier( $self->length, 1 ) .
-               ChemOnomatopist:: IUPAC_numerical_multiplier( $self->length / 2, 1 ) . 'ene';
+               ChemOnomatopist::IUPAC_numerical_multiplier( $self->length / 2, 1 ) . 'ene';
     }
 
+    # No other types of graphs with cycles can be processed for now
     die "cannot name such compounds\n";
 }
 

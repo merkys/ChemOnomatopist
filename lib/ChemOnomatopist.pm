@@ -54,33 +54,6 @@ sub get_name
     }
     die "nothing supplied for get_name()\n" unless $graph;
 
-    # Check if graph is a tree as trees are easy to process
-    if( graph_has_cycle( $graph ) ) {
-        # If it is not a tree, than the graph has cycles, and we have to
-        # do our best to recognise them. To make it easier, hydrogen atoms
-        # are removed here for now.
-        $graph->delete_vertices( grep { $_->{symbol} eq 'H' } $graph->vertices );
-        if( $graph->edges != $graph->vertices ) {
-            die "cannot handle cycles with attachments for now\n";
-        }
-        if( any { uc $_->{symbol} ne 'C' } $graph->vertices ) {
-            die "cannot handle heterocycles for now\n";
-        }
-        if( all { $_->{symbol} eq 'C' } $graph->vertices ) {
-            # Cycloalkane detected
-            return 'cyclo' . alkane_chain_name( scalar $graph->vertices ) . 'ane';
-        }
-        if( ( all { $_->{symbol} eq 'c' } $graph->vertices ) &&
-            ( scalar $graph->vertices ) =~ /^(4|6|8|10|12|14|16)$/ ) {
-            # Annulene detected
-            return 'cyclo' .
-                   IUPAC_numerical_multiplier( scalar $graph->vertices, 1 ) .
-                   IUPAC_numerical_multiplier( scalar $graph->vertices / 2, 1 ) . 'ene';
-        }
-        # No other types of graphs with cycles can be processed for now
-        die "only limited set of homocycles is supported for now\n";
-    }
-
     find_groups( $graph );
 
     if( any { $graph->has_edge_attributes( @$_ ) } $graph->edges ) {
@@ -384,7 +357,13 @@ sub select_mainchain
     my $most_senior_group = most_senior_group( $tree );
 
     my @chains;
-    if( $most_senior_group ) {
+    if( graph_has_cycle( $tree ) ) {
+        # If it is not a tree, than the graph has cycles, and we have to
+        # do our best to recognise them. To make it easier, hydrogen atoms
+        # are removed here for now.
+
+        # TODO: Create cycle and get its name
+    } elsif( $most_senior_group ) {
         # TODO: Select a chain containing most of the senior groups
         my @groups = grep { blessed( $_ ) && $_->isa( $most_senior_group ) } $tree->vertices;
         my @carbons = uniq map { $_->C } @groups; # FIXME: Carbons with the most attachments should be preferred
