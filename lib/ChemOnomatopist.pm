@@ -58,7 +58,8 @@ sub get_name
 
     find_groups( $graph );
 
-    if( any { $graph->has_edge_attributes( @$_ ) } $graph->edges ) {
+    if( any { $graph->has_edge_attributes( @$_ ) &&
+              $graph->get_edge_attribute(  @$_, 'bond' ) ne ':' } $graph->edges ) {
         die "cannot handle such compounds for now\n";
     }
 
