@@ -146,7 +146,11 @@ sub get_mainchain_name
     # Disconnect the main chain: this way every main chain atom remains
     # connected only to the side chains.
     $graph = $graph->copy;
-    $graph->delete_path( @chain );
+    if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
+        $graph->delete_cycle( @chain );
+    } else {
+        $graph->delete_path( @chain );
+    }
 
     my %attachments;
     my %heteroatoms;
