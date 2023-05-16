@@ -7,7 +7,8 @@ use warnings;
 # VERSION
 
 use ChemOnomatopist::Chain;
-use ChemOnomatopist::Chain::VertexArray;;
+use ChemOnomatopist::Chain::Circular;
+use ChemOnomatopist::Chain::VertexArray;
 use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group;
@@ -22,13 +23,14 @@ use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
     graph_center
+    graph_cycle_core
     graph_has_cycle
     graph_longest_paths_from_vertex
     graph_path_between_vertices
     tree_branch_positions
     tree_number_of_branches
 );
-use Graph::Traversal::BFS;
+use Graph::Traversal::DFS;
 use Graph::Undirected;
 use List::Util qw( all any max min sum0 uniq );
 use Scalar::Util qw( blessed );
@@ -362,7 +364,15 @@ sub select_mainchain
         # do our best to recognise them. To make it easier, hydrogen atoms
         # are removed here for now.
 
-        # TODO: Create cycle and get its name
+        my $core = graph_cycle_core( $tree );
+        if( any { $core->degree( $_ ) > 2 } $core->vertices ) {
+            die "cannot handle cyclic compounds other than monocycles\n";
+        }
+
+        # FIXME: For now we do not attempt to preselect order
+        my @vertices = Graph::Traversal::DFS->new( $core )->dfs;
+        push @chains,
+             ChemOnomatopist::Chain::Circular->new( @vertices );
     } elsif( $most_senior_group ) {
         # TODO: Select a chain containing most of the senior groups
         my @groups = grep { blessed( $_ ) && $_->isa( $most_senior_group ) } $tree->vertices;

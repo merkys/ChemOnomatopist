@@ -96,7 +96,7 @@ sub graph_cycle_core
     while( my @leaves = grep { $graph->degree( $_ ) == 1 } $graph->vertices ) {
         $graph->delete_vertices( @leaves );
     }
-    return $graph->vertices;
+    return $graph;
 }
 
 sub graph_has_cycle
