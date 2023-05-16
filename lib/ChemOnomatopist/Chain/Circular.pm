@@ -103,7 +103,7 @@ sub name()
     }
 
     # No other types of graphs with cycles can be processed for now
-    die "cannot name such compounds\n";
+    die "cannot handle complicated monocycles for now\n";
 }
 
 # sub branch_positions() # TODO: Maybe need to add 1 to all returned positions?
