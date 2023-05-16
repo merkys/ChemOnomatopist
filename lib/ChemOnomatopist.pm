@@ -17,6 +17,7 @@ use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
+use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
@@ -286,10 +287,16 @@ sub find_groups
             my $amino = ChemOnomatopist::Group::Amino->new( @C );
             $graph->add_edge( @C, $amino );
             $graph->delete_vertices( $atom, @H );
+        } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C == 1 && @H == 1 ) {
+            # Detecting imino
+            # FIXME: Check also for double bond
+            my $imino = ChemOnomatopist::Group::Imino->new( @C );
+            $graph->add_edge( @C, $imino );
+            $graph->delete_vertices( $atom, @H );
         }
 
         # Detecting carbonyl
-        if(      is_element( $atom, 'O' ) && @neighbours == 1 && @C == 1 ) {
+        if( is_element( $atom, 'O' ) && @neighbours == 1 && @C == 1 ) {
             my $carbonyl = ChemOnomatopist::Group::Carbonyl->new( @C );
             $graph->add_edge( @C, $carbonyl );
             $graph->delete_vertices( $atom );

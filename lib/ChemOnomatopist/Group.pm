@@ -9,6 +9,7 @@ use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
+use ChemOnomatopist::Group::Imino;
 
 # ABSTRACT: Chemical group
 # VERSION
@@ -35,7 +36,7 @@ our @order = (
     ChemOnomatopist::Group::Hydroxy::,
     ChemOnomatopist::Group::Hydroperoxide::,
     ChemOnomatopist::Group::Amino::,
-    # Imines
+    ChemOnomatopist::Group::Imino::,
 
     # Classes denoted by the senior atom in heterane nomenclature
 );
