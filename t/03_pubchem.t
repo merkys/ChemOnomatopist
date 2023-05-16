@@ -31,9 +31,6 @@ while (<$inp>) {
     next if @graphs > 1;
     my $graph = shift @graphs;
 
-    # TODO: Testing only on hydrocarbons
-    next if any { $_->{symbol} ne 'C' } $graph->vertices;
-
     # TODO: Cannot yet process double, triple, ... bonds between carbon atoms
     next if any { $_->[0]{symbol} eq 'C' && $_->[1]{symbol} eq 'C' }
             grep { $graph->has_edge_attributes( @$_ ) }
