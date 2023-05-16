@@ -9,6 +9,6 @@ use warnings;
 use parent ChemOnomatopist::Group::;
 
 sub prefix { return 'amino' }
-sub suffix { return 'amine' } # FIXME: May be incorrect
+sub suffix { return 'amine' }
 
 1;
