@@ -216,18 +216,23 @@ sub get_mainchain_name
     }
 
     # Collecting names of all the attachments
+    my @order = sort { cmp_only_aphabetical( $a, $b ) || $a cmp $b } keys %attachments;
     my $name = '';
-    for my $attachment_name (sort { cmp_only_aphabetical( $a, $b ) || $a cmp $b }
-                                  keys %attachments) {
+    for my $i (0..$#order) {
+        my $attachment_name = $order[$i];
         my $attachment = $attachment_objects{$attachment_name};
 
         $name .= '-' if "$name";
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
 
+        # BBv2 P-16.3.4 (a) seems to be held only for all but the last attachment
+        if( $attachment !~ /^[\(\[\{]/ && $attachment->has_locant && $i < $#order ) {
+            $attachment->bracket;
+        }
+
         # FIXME: More rules from BBv2 P-16.3.4 should be added
         if( $attachment !~ /^[\(\[\{]/ &&
-            ( $attachment->has_locant ||             # BBv2 P-16.3.4 (a)
-              $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
+            ( $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
               $attachment =~ /^dec/ ||               # BBv2 P-16.3.4 (d)
               $attachment =~ /^[0-9]/ ) ) {
               $attachment->bracket;
