@@ -115,14 +115,17 @@ sub get_sidechain_name
     # Collecting names of all the attachments
     my $name = ChemOnomatopist::Name->new;
     for my $attachment_name (sort { $a cmp $b } keys %attachments) {
-        my $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
-        $number = '' if $number eq 'mono';
-        $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
         if( @chain > 1 ) {
             $name .= '-' if "$name";
             $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
         }
-        $name->append_multiplier( $number ) if $number;
+
+        if( @{$attachments{$attachment_name}} > 1 ) {
+            my $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
+            $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
+            $name->append_multiplier( $number );
+        }
+
         $name .= $attachment_name;
     }
     $name .= alkane_chain_name( scalar @chain );
