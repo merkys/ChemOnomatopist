@@ -209,7 +209,6 @@ sub get_mainchain_name
                 push @senior_group_attachments, $i;
             } else {
                 my $attachment_name = get_sidechain_name( $graph, $neighbour );
-                $attachment_name->bracket if $attachment_name =~ /^[0-9]/;
                 push @{$attachments{$attachment_name}}, $i;
                 $attachment_objects{$attachment_name} = $attachment_name;
             }
@@ -217,7 +216,6 @@ sub get_mainchain_name
     }
 
     # Collecting names of all the attachments
-    # FIXME: Add parenthesis as described in BBv2 P-16.3.4
     my $name = '';
     for my $attachment_name (sort { cmp_only_aphabetical( $a, $b ) || $a cmp $b }
                                   keys %attachments) {
@@ -226,17 +224,24 @@ sub get_mainchain_name
         $name .= '-' if "$name";
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
 
+        $attachment->bracket if $attachment =~ /^[0-9]/;
+
         if( @{$attachments{$attachment_name}} > 1 ) {
+            # FIXME: More rules from BBv2 P-16.3.4 should be added
+            if( $attachment !~ /^[\(\[\{]/ &&
+                ( $attachment->has_locant ||             # BBv2 P-16.3.4 (a)
+                  $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
+                  $attachment =~ /^dec/ ||               # BBv2 P-16.3.4 (d)
+                  $attachment eq 'tert-butyl' ) ) {
+                  $attachment->bracket;
+            }
+
             my $number;
-            if( $attachment_name =~ /^[\(\[\{]/ ) {
+            if( $attachment =~ /^[\(\[\{]/ ) {
                 $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
             } else {
                 $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
                 $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
-            }
-
-            if( $attachment->has_locant || $attachment_name eq 'tert-butyl' ) {
-                $attachment->bracket;
             }
             $name .= $number;
         }
