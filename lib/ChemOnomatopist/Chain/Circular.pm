@@ -82,6 +82,9 @@ sub name()
     # Check the preserved names
     return $names{$SMILES} if exists $names{$SMILES};
 
+    # FIXME: This is an exception, but a proper fix should be implemented instead
+    return 'benzene' if $self->is_benzene;
+
     # Check for cycloalkanes
     if( all { $_->{symbol} eq 'C' } $self->vertices ) {
         return 'cyclo' . ChemOnomatopist::alkane_chain_name( $self->length ) . 'ane';
