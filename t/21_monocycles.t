@@ -8,6 +8,7 @@ use Test::More;
 
 my %SMILES_cases = (
     'C1CCNC1' => 'pyrrolidine',
+    'C1CCCCC1(C)CC' => '1-ethyl-1-methylcyclohexane',
 );
 
 plan tests => scalar( keys %SMILES_cases );

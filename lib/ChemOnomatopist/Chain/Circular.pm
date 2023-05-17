@@ -77,11 +77,6 @@ sub name()
     my( $self ) = @_;
 
     my $graph = $self->{graph};
-
-    if( any { $graph->degree( $_ ) > 2 } $self->vertices ) {
-        die "cannot handle cycles with attachments for now\n";
-    }
-
     my $SMILES = $self->backbone_SMILES;
 
     # Check the preserved names
