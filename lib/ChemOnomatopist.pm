@@ -207,7 +207,7 @@ sub get_mainchain_name
                 push @senior_group_attachments, $i;
             } else {
                 my $attachment_name = get_sidechain_name( $graph, $neighbour );
-                $attachment_name = bracket( $attachment_name ) if $attachment_name =~ /^[0-9]/;
+                $attachment_name->bracket if $attachment_name =~ /^[0-9]/;
                 push @{$attachments{$attachment_name}}, $i;
             }
         }
