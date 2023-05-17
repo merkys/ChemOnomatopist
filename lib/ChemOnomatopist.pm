@@ -1010,16 +1010,6 @@ sub alkane_chain_name
     return IUPAC_numerical_multiplier( $N );
 }
 
-# FIXME: Implement according to BBv2 P-16.5.4: {[({[( )]})]}
-sub bracket
-{
-    my( $name ) = @_;
-    return "($name)" if $name =~ /\{/;
-    return "{$name}" if $name =~ /\[/;
-    return "[$name]" if $name =~ /\(/;
-    return "($name)";
-}
-
 sub wjoin(@)
 {
     my( @parts ) = grep { $_ ne '' } @_;

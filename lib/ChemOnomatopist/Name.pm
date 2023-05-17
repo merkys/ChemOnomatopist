@@ -6,8 +6,6 @@ use warnings;
 # ABSTRACT: Chemical name
 # VERSION
 
-use ChemOnomatopist;
-
 use overload '.='  => \&append;
 use overload '""'  => sub { return $_[0]->{name} };
 use overload 'eq'  => sub { return  "$_[0]" eq  "$_[1]" };
@@ -44,7 +42,7 @@ sub append_multiplier($)
 sub bracket()
 {
     my( $self ) = @_;
-    $self->{name} = ChemOnomatopist::bracket( $self->{name} );
+    $self->{name} = _bracket( $self->{name} );
 }
 
 sub has_locant()
@@ -57,6 +55,16 @@ sub starts_with_multiplier()
 {
     my( $self ) = @_;
     return exists $self->{starts_with_multiplier};
+}
+
+# FIXME: Implement according to BBv2 P-16.5.4: {[({[( )]})]}
+sub _bracket
+{
+    my( $name ) = @_;
+    return "($name)" if $name =~ /\{/;
+    return "{$name}" if $name =~ /\[/;
+    return "[$name]" if $name =~ /\(/;
+    return "($name)";
 }
 
 1;
