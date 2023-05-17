@@ -101,6 +101,7 @@ sub get_sidechain_name
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_sidechain_name()
     my %attachments;
+    my %attachment_objects;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
@@ -108,13 +109,17 @@ sub get_sidechain_name
 
             my $attachment_name = get_sidechain_name( $graph, $neighbour );
             $attachment_name->bracket if $attachment_name =~ /^[0-9]/;
+
             push @{$attachments{$attachment_name}}, $i;
+            $attachment_objects{$attachment_name} = $attachment_name;
         }
     }
 
     # Collecting names of all the attachments
     my $name = ChemOnomatopist::Name->new;
     for my $attachment_name (sort { $a cmp $b } keys %attachments) {
+        my $attachment = $attachment_objects{$attachment_name};
+
         if( @chain > 1 ) {
             $name .= '-' if "$name";
             $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
@@ -124,15 +129,23 @@ sub get_sidechain_name
             my $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
             $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
             $name->append_multiplier( $number );
+
+            # FIXME: More rules from BBv2 P-16.3.4 should be added
+            if( $attachment->has_locant ||             # BBv2 P-16.3.4 (a)
+                $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
+                $attachment =~ /^dec/ ) {              # BBv2 P-16.3.4 (d)
+                $attachment->bracket;
+            }
         }
 
-        $name .= $attachment_name;
+        $name .= $attachment;
     }
     $name .= alkane_chain_name( scalar @chain );
 
     if( $branches_at_start > 1 ) {
         my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
-        $name .= 'an-' . ($branch_point + 1) . '-';
+        $name .= 'an';
+        $name->append_locant( $branch_point + 1 );
     }
 
     $name = ChemOnomatopist::Name->new( 'tert-but' ) if $name eq '2-methylpropan-2-';

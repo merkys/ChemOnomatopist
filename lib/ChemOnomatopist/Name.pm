@@ -27,6 +27,13 @@ sub append($)
     return $self;
 }
 
+sub append_locant($)
+{
+    my( $self, $locant ) = @_;
+    $self->{has_locant} = 1;
+    return $self->append( '-' . $locant . '-' );
+}
+
 sub append_multiplier($)
 {
     my( $self, $string ) = @_;
@@ -40,10 +47,16 @@ sub bracket()
     $self->{name} = ChemOnomatopist::bracket( $self->{name} );
 }
 
-sub starts_with_multiplier()
+sub has_locant()
 {
     my( $self ) = @_;
     return exists $self->{starts_with_multiplier};
+}
+
+sub starts_with_multiplier()
+{
+    my( $self ) = @_;
+    return exists $self->{has_locant};
 }
 
 1;
