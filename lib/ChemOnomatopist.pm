@@ -197,6 +197,7 @@ sub get_mainchain_name
     }
 
     # Collecting names of all the attachments
+    # FIXME: Add parenthesis as described in BBv2 P-16.3.4
     my $name = '';
     for my $attachment_name (sort { cmp_only_aphabetical( $a, $b ) || $a cmp $b }
                                   keys %attachments) {
