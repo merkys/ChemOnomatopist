@@ -3,6 +3,9 @@ package ChemOnomatopist::Chain::Circular::Numbering;
 use strict;
 use warnings;
 
+# ABSTRACT: Numbering of a circular chain
+# VERSION
+
 use ChemOnomatopist::Chain::Circular; # FIXME: Not sure why it is needed
 
 use parent ChemOnomatopist::Chain::Circular::;
