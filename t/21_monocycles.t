@@ -15,7 +15,7 @@ my %SMILES_cases = (
     # 'C(=O)(O)CC([Br])([Br])C1CCCCC1' => '3,3-dibromo-3-cyclohexylpropanoic acid', # FIXME: Does not work
 
     # From BBv2 P-14.5.3
-    # 'C(C)(C)(C)C=1C=CC(C(C)CC)=CC=1' => '1-(butan-2-yl)-3-tert-butylbenzene', # FIXME: Does not work due to limitations on double bonds
+    'C(C)(C)(C)C=1C=CC=C(C(C)CC)C=1' => '1-(butan-2-yl)-3-tert-butylbenzene', # FIXME: Does not work due to limitations on double bonds
 );
 
 plan tests => scalar( keys %SMILES_cases );

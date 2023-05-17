@@ -58,11 +58,6 @@ sub get_name
 
     find_groups( $graph );
 
-    if( any { $graph->has_edge_attributes( @$_ ) &&
-              $graph->get_edge_attribute(  @$_, 'bond' ) ne ':' } $graph->edges ) {
-        die "cannot handle such compounds for now\n";
-    }
-
     my $main_chain = select_mainchain( $graph );
     return get_mainchain_name( $graph, $main_chain );
 }
@@ -83,6 +78,12 @@ sub get_sidechain_name
 
     # TODO: Handle the case when none of the rules select proper chains
     die "could not select a chain\n" unless @chain;
+
+    # TODO: Bond orders are not handled yet
+    for (0..$#chain-1) {
+        next unless $graph->has_edge_attributes( $chain[$_], $chain[$_ + 1] );
+        die "cannot handle such compounds for now\n";
+    }
 
     # Handle non-carbon substituents
     if( @chain == 1 && !is_element( $chain[0], 'C' ) ) {
@@ -150,6 +151,11 @@ sub get_mainchain_name
     if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
         $graph->delete_cycle( @chain );
     } else {
+        # TODO: Bond orders are not handled yet
+        for (0..$#chain-1) {
+            next unless $graph->has_edge_attributes( $chain[$_], $chain[$_ + 1] );
+            die "cannot handle such compounds for now\n";
+        }
         $graph->delete_path( @chain );
     }
 
