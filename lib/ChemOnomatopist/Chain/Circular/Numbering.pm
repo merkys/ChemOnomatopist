@@ -28,4 +28,13 @@ sub vertices()
 
 # TODO: Rewrite
 
+sub _adjust_positions
+{
+    my( $self, @positions ) = @_;
+
+    # FIXME: Account for direction
+
+    return map { ( $_ - $self->{offset} ) % $self->length } @positions;
+}
+
 1;
