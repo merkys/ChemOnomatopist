@@ -108,8 +108,6 @@ sub get_sidechain_name
             $graph->delete_edge( $atom, $neighbour );
 
             my $attachment_name = get_sidechain_name( $graph, $neighbour );
-            $attachment_name->bracket if $attachment_name =~ /^[0-9]/;
-
             push @{$attachments{$attachment_name}}, $i;
             $attachment_objects{$attachment_name} = $attachment_name;
         }
@@ -133,7 +131,8 @@ sub get_sidechain_name
             # FIXME: More rules from BBv2 P-16.3.4 should be added
             if( $attachment->has_locant ||             # BBv2 P-16.3.4 (a)
                 $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
-                $attachment =~ /^dec/ ) {              # BBv2 P-16.3.4 (d)
+                $attachment =~ /^dec/ ||               # BBv2 P-16.3.4 (d)
+                $attachment =~ /^[0-9]/ ) {
                 $attachment->bracket;
             }
         }
