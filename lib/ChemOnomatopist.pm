@@ -389,18 +389,18 @@ sub is_element
 # Selects the main chain by evaluating its parts
 sub select_mainchain
 {
-    my( $tree ) = @_;
+    my( $graph ) = @_;
 
     # Find the most senior group, undefined if alkane
-    my $most_senior_group = most_senior_group( $tree );
+    my $most_senior_group = most_senior_group( $graph );
 
     my @chains;
-    if( graph_has_cycle( $tree ) ) {
+    if( graph_has_cycle( $graph ) ) {
         # If it is not a tree, than the graph has cycles, and we have to
         # do our best to recognise them. To make it easier, hydrogen atoms
         # are removed here for now.
 
-        my $core = graph_cycle_core( $tree );
+        my $core = graph_cycle_core( $graph );
         if( any { $core->degree( $_ ) > 2 } $core->vertices ) {
             die "cannot handle cyclic compounds other than monocycles\n";
         }
@@ -410,32 +410,32 @@ sub select_mainchain
         my @vertices = Graph::Traversal::DFS->new( $core )->dfs;
         for (0..$#vertices) {
             push @chains,
-                 ChemOnomatopist::Chain::Circular->new( $tree, @vertices );
+                 ChemOnomatopist::Chain::Circular->new( $graph, @vertices );
             push @vertices, shift @vertices;
         }
         @vertices = reverse @vertices;
         for (0..$#vertices) {
             push @chains,
-                 ChemOnomatopist::Chain::Circular->new( $tree, @vertices );
+                 ChemOnomatopist::Chain::Circular->new( $graph, @vertices );
             push @vertices, shift @vertices;
         }
     } elsif( $most_senior_group ) {
         # TODO: Select a chain containing most of the senior groups
-        my @groups = grep { blessed( $_ ) && $_->isa( $most_senior_group ) } $tree->vertices;
+        my @groups = grep { blessed( $_ ) && $_->isa( $most_senior_group ) } $graph->vertices;
         my @carbons = uniq map { $_->C } @groups; # FIXME: Carbons with the most attachments should be preferred
 
         if( @carbons == 1 ) {
             # As the starting position is known, it is enough to take the "side chain"
             # containing this particular carbon:
-            my @vertices = select_sidechain( $tree, @carbons );
-            push @chains, ChemOnomatopist::Chain::VertexArray->new( $tree, @vertices ),
-                          ChemOnomatopist::Chain::VertexArray->new( $tree, reverse @vertices );
+            my @vertices = select_sidechain( $graph, @carbons );
+            push @chains, ChemOnomatopist::Chain::VertexArray->new( $graph, @vertices ),
+                          ChemOnomatopist::Chain::VertexArray->new( $graph, reverse @vertices );
         } else {
             my @paths;
             my $max_value;
             for my $i (0..$#carbons) {
                 for my $j (($i+1)..$#carbons) {
-                    my @path = graph_path_between_vertices( $tree, $carbons[$i], $carbons[$j] );
+                    my @path = graph_path_between_vertices( $graph, $carbons[$i], $carbons[$j] );
                     my $value = (set( @carbons ) * set( @path ))->size;
                     if(      !defined $max_value || $max_value < $value ) {
                         @paths = ( \@path );
@@ -449,7 +449,7 @@ sub select_mainchain
             # Construct all chains having all possible extensions to both sides of the selected path
             my %longest_paths;
             for my $path (@paths) {
-                my $copy = $tree->copy;
+                my $copy = $graph->copy;
                 $copy->delete_path( @$path );
                 $copy->delete_vertices( grep { blessed $_ && !is_element( $_, 'C' ) } $copy->vertices );
 
@@ -466,11 +466,11 @@ sub select_mainchain
                 for my $i (0..$#{$longest_paths{$A}}) {
                     for my $j (0..$#{$longest_paths{$B}}) {
                         push @chains,
-                             ChemOnomatopist::Chain::VertexArray->new( $tree,
+                             ChemOnomatopist::Chain::VertexArray->new( $graph,
                                                                        reverse( @{$longest_paths{$A}->[$i]} ),
                                                                        @$path,
                                                                        @{$longest_paths{$B}->[$j]} ),
-                             ChemOnomatopist::Chain::VertexArray->new( $tree,
+                             ChemOnomatopist::Chain::VertexArray->new( $graph,
                                                                        reverse( @{$longest_paths{$B}->[$j]} ),
                                                                        reverse( @$path ),
                                                                        @{$longest_paths{$A}->[$j]} );
@@ -483,22 +483,22 @@ sub select_mainchain
     } else {
         # Here the candidate halves for the longest (and "best") path are placed in @path_parts.
         # Each of candidate halves start with center atom.
-        my @center = graph_center( $tree );
+        my @center = graph_center( $graph );
         my @path_parts;
         if( @center == 1 ) {
             # Longest path has odd length
-            for my $path ( graph_longest_paths_from_vertex( $tree, $center[0] ) ) {
+            for my $path ( graph_longest_paths_from_vertex( $graph, $center[0] ) ) {
                 push @path_parts,
-                     ChemOnomatopist::ChainHalf->new( $tree, undef, @$path );
+                     ChemOnomatopist::ChainHalf->new( $graph, undef, @$path );
             }
         } else {
             # Longest path has even length
             # Graph copy without center edge is required by graph_longest_paths_from_vertex()
-            my $copy = $tree->copy;
+            my $copy = $graph->copy;
             $copy->delete_edge( @center );
             for my $vertex ( @center ) {
                 push @path_parts,
-                     map { ChemOnomatopist::ChainHalf->new( $tree, (grep { $_ ne $vertex } @center), @$_ ) }
+                     map { ChemOnomatopist::ChainHalf->new( $graph, (grep { $_ ne $vertex } @center), @$_ ) }
                          graph_longest_paths_from_vertex( $copy, $vertex );
             }
         }
@@ -526,7 +526,7 @@ sub select_mainchain
         $chain->number_of_groups( $most_senior_group ) ) {
         shift @vertices;
         pop @vertices;
-        $chain = ChemOnomatopist::Chain::VertexArray->new( $tree, @vertices );
+        $chain = ChemOnomatopist::Chain::VertexArray->new( $graph, @vertices );
     }
 
     return $chain;
