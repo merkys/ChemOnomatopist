@@ -378,10 +378,20 @@ sub select_mainchain
             die "cannot handle cyclic compounds other than monocycles\n";
         }
 
-        # FIXME: For now we do not attempt to preselect order
+        # FIXME: For now we generate all possible traversals of the same cycle.
+        #        This is not optimal, some caching could be introduced.
         my @vertices = Graph::Traversal::DFS->new( $core )->dfs;
-        push @chains,
-             ChemOnomatopist::Chain::Circular->new( $tree, @vertices );
+        for (0..$#vertices) {
+            push @chains,
+                 ChemOnomatopist::Chain::Circular->new( $tree, @vertices );
+            push @vertices, shift @vertices;
+        }
+        @vertices = reverse @vertices;
+        for (0..$#vertices) {
+            push @chains,
+                 ChemOnomatopist::Chain::Circular->new( $tree, @vertices );
+            push @vertices, shift @vertices;
+        }
     } elsif( $most_senior_group ) {
         # TODO: Select a chain containing most of the senior groups
         my @groups = grep { blessed( $_ ) && $_->isa( $most_senior_group ) } $tree->vertices;
