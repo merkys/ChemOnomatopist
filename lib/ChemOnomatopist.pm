@@ -156,15 +156,18 @@ sub get_mainchain_name
     my %attachments;
     my %heteroatoms;
     # Examine the main chain
-    for my $i (0..$#chain) {
-        my $atom = $chain[$i];
-        if( blessed $atom ) {
-            next if $most_senior_group && $atom->isa( $most_senior_group );
-            push @{$attachments{$atom->prefix}}, $i;
-        } elsif( !is_element( $atom, 'C' ) &&
-                 exists $atom->{symbol} &&
-                 exists $elements{$atom->{symbol}} ) {
-            push @{$heteroatoms{$atom->{symbol}}}, $i;
+    # This is skipped for cycles as they should be capable of naming themselves
+    if( !blessed $chain || !$chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
+        for my $i (0..$#chain) {
+            my $atom = $chain[$i];
+            if( blessed $atom ) {
+                next if $most_senior_group && $atom->isa( $most_senior_group );
+                push @{$attachments{$atom->prefix}}, $i;
+            } elsif( !is_element( $atom, 'C' ) &&
+                     exists $atom->{symbol} &&
+                     exists $elements{$atom->{symbol}} ) {
+                push @{$heteroatoms{$atom->{symbol}}}, $i;
+            }
         }
     }
 
