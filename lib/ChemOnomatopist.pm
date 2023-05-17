@@ -178,6 +178,7 @@ sub get_mainchain_name
 
     my %attachments;
     my %heteroatoms;
+    my %attachment_objects;
     # Examine the main chain
     # This is skipped for cycles as they should be capable of naming themselves
     if( !blessed $chain || !$chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
@@ -186,6 +187,7 @@ sub get_mainchain_name
             if( blessed $atom ) {
                 next if $most_senior_group && $atom->isa( $most_senior_group );
                 push @{$attachments{$atom->prefix}}, $i;
+                $attachment_objects{$atom->prefix} = ChemOnomatopist::Name->new( $atom->prefix );
             } elsif( !is_element( $atom, 'C' ) &&
                      exists $atom->{symbol} &&
                      exists $elements{$atom->{symbol}} ) {
@@ -209,6 +211,7 @@ sub get_mainchain_name
                 my $attachment_name = get_sidechain_name( $graph, $neighbour );
                 $attachment_name->bracket if $attachment_name =~ /^[0-9]/;
                 push @{$attachments{$attachment_name}}, $i;
+                $attachment_objects{$attachment_name} = $attachment_name;
             }
         }
     }
@@ -218,7 +221,9 @@ sub get_mainchain_name
     my $name = '';
     for my $attachment_name (sort { cmp_only_aphabetical( $a, $b ) || $a cmp $b }
                                   keys %attachments) {
-        $name = $name ? $name . '-' : $name;
+        my $attachment = $attachment_objects{$attachment_name};
+
+        $name .= '-' if "$name";
         my $number;
         if( $attachment_name =~ /^[\(\[\{]/ ) {
             $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
@@ -228,13 +233,13 @@ sub get_mainchain_name
             $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
         }
 
-        $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
-
         if( $number && ( $attachment_name =~ /[0-9]-yl$/ || $attachment_name eq 'tert-butyl' ) ) {
-            $attachment_name = bracket( $attachment_name );
+            $attachment->bracket;
         }
 
-        $name .= $number . $attachment_name;
+        $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
+
+        $name .= $number . $attachment;
     }
 
     # Collecting names of all heteroatoms
