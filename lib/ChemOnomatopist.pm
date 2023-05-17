@@ -107,7 +107,7 @@ sub get_sidechain_name
             $graph->delete_edge( $atom, $neighbour );
 
             my $attachment_name = get_sidechain_name( $graph, $neighbour );
-            $attachment_name = bracket( $attachment_name ) if $attachment_name =~ /^[0-9]/;
+            $attachment_name->bracket if $attachment_name =~ /^[0-9]/;
             push @{$attachments{$attachment_name}}, $i;
         }
     }
@@ -134,7 +134,7 @@ sub get_sidechain_name
 
     $name = ChemOnomatopist::Name->new( 'tert-but' ) if $name eq '2-methylpropan-2-';
     $name .= 'yl';
-    $name = bracket( $name ) if $name =~ /hydroxymethyl$/; # FIXME: Ugly fix
+    $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Ugly fix
 
     return $name;
 }

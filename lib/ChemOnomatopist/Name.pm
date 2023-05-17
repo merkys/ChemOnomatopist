@@ -6,6 +6,8 @@ use warnings;
 # ABSTRACT: Chemical name
 # VERSION
 
+use ChemOnomatopist;
+
 use overload '.='  => \&append;
 use overload '""'  => sub { return $_[0]->{name} };
 use overload 'eq'  => sub { return  "$_[0]" eq  "$_[1]" };
@@ -30,6 +32,18 @@ sub append_multiplier($)
     my( $self, $string ) = @_;
     $self->{starts_with_multiplier} = 1 unless $self->{name};
     return $self->append( $string );
+}
+
+sub bracket()
+{
+    my( $self ) = @_;
+    $self->{name} = ChemOnomatopist::bracket( $self->{name} );
+}
+
+sub starts_with_multiplier()
+{
+    my( $self ) = @_;
+    return exists $self->{starts_with_multiplier};
 }
 
 1;
