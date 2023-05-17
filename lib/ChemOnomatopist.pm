@@ -224,18 +224,16 @@ sub get_mainchain_name
         $name .= '-' if "$name";
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
 
-        $attachment->bracket if $attachment =~ /^[0-9]/;
+        # FIXME: More rules from BBv2 P-16.3.4 should be added
+        if( $attachment !~ /^[\(\[\{]/ &&
+            ( $attachment->has_locant ||             # BBv2 P-16.3.4 (a)
+              $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
+              $attachment =~ /^dec/ ||               # BBv2 P-16.3.4 (d)
+              $attachment =~ /^[0-9]/ ) ) {
+              $attachment->bracket;
+        }
 
         if( @{$attachments{$attachment_name}} > 1 ) {
-            # FIXME: More rules from BBv2 P-16.3.4 should be added
-            if( $attachment !~ /^[\(\[\{]/ &&
-                ( $attachment->has_locant ||             # BBv2 P-16.3.4 (a)
-                  $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
-                  $attachment =~ /^dec/ ||               # BBv2 P-16.3.4 (d)
-                  $attachment eq 'tert-butyl' ) ) {
-                  $attachment->bracket;
-            }
-
             my $number;
             if( $attachment =~ /^[\(\[\{]/ ) {
                 $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
@@ -244,6 +242,10 @@ sub get_mainchain_name
                 $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
             }
             $name .= $number;
+
+            if( $attachment !~ /^[\(\[\{]/ && $attachment eq 'tert-butyl' ) {
+                $attachment->bracket;
+            }
         }
 
         $name .= $attachment;
