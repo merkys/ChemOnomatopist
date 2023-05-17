@@ -89,9 +89,9 @@ sub get_sidechain_name
     # Handle non-carbon substituents
     if( @chain == 1 && !is_element( $chain[0], 'C' ) ) {
         if( blessed $chain[0] ) {
-            return $chain[0]->prefix;
+            return ChemOnomatopist::Name->new( $chain[0]->prefix );
         } elsif( exists $elements{$chain[0]->{symbol}} ) {
-            return $elements{$chain[0]->{symbol}}->{prefix};
+            return ChemOnomatopist::Name->new( $elements{$chain[0]->{symbol}}->{prefix} );
         }
     }
 
@@ -224,22 +224,24 @@ sub get_mainchain_name
         my $attachment = $attachment_objects{$attachment_name};
 
         $name .= '-' if "$name";
-        my $number;
-        if( $attachment_name =~ /^[\(\[\{]/ ) {
-            $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
-        } else {
-            $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
-            $number = '' if $number eq 'mono';
-            $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
-        }
-
-        if( $number && ( $attachment_name =~ /[0-9]-yl$/ || $attachment_name eq 'tert-butyl' ) ) {
-            $attachment->bracket;
-        }
-
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
 
-        $name .= $number . $attachment;
+        if( @{$attachments{$attachment_name}} > 1 ) {
+            my $number;
+            if( $attachment_name =~ /^[\(\[\{]/ ) {
+                $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
+            } else {
+                $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
+                $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
+            }
+
+            if( $attachment->has_locant || $attachment_name eq 'tert-butyl' ) {
+                $attachment->bracket;
+            }
+            $name .= $number;
+        }
+
+        $name .= $attachment;
     }
 
     # Collecting names of all heteroatoms

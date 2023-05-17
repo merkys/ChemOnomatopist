@@ -50,13 +50,13 @@ sub bracket()
 sub has_locant()
 {
     my( $self ) = @_;
-    return exists $self->{starts_with_multiplier};
+    return exists $self->{has_locant};
 }
 
 sub starts_with_multiplier()
 {
     my( $self ) = @_;
-    return exists $self->{has_locant};
+    return exists $self->{starts_with_multiplier};
 }
 
 1;
