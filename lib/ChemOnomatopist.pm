@@ -19,6 +19,7 @@ use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
+use ChemOnomatopist::Name;
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
@@ -112,13 +113,13 @@ sub get_sidechain_name
     }
 
     # Collecting names of all the attachments
-    my $name = '';
+    my $name = ChemOnomatopist::Name->new;
     for my $attachment_name (sort { $a cmp $b } keys %attachments) {
         my $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
         $number = '' if $number eq 'mono';
         $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
         if( @chain > 1 ) {
-            $name = $name ? $name . '-' : $name;
+            $name .= '-' if "$name";
             $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
         }
         $name .= $number . $attachment_name;
