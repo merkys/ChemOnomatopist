@@ -6,8 +6,10 @@ use warnings;
 # ABSTRACT: Chemical name
 # VERSION
 
-use overload '.=' => \&append;
-use overload '""' => sub { return $_[0]->{name} };
+use overload '.='  => \&append;
+use overload '""'  => sub { return $_[0]->{name} };
+use overload 'eq'  => sub { return  "$_[0]" eq  "$_[1]" };
+use overload 'cmp' => sub { return ("$_[0]" cmp "$_[1]") * ($_[2] ? -1 : 1) };
 
 sub new
 {
@@ -20,13 +22,14 @@ sub append($)
 {
     my( $self, $string ) = @_;
     $self->{name} .= $string;
+    return $self;
 }
 
 sub append_multiplier($)
 {
     my( $self, $string ) = @_;
     $self->{starts_with_multiplier} = 1 unless $self->{name};
-    $self->append( $string );
+    return $self->append( $string );
 }
 
 1;

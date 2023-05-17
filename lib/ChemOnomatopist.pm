@@ -122,7 +122,8 @@ sub get_sidechain_name
             $name .= '-' if "$name";
             $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
         }
-        $name .= $number . $attachment_name;
+        $name->append_multiplier( $number ) if $number;
+        $name .= $attachment_name;
     }
     $name .= alkane_chain_name( scalar @chain );
 
@@ -131,7 +132,7 @@ sub get_sidechain_name
         $name .= 'an-' . ($branch_point + 1) . '-';
     }
 
-    $name = 'tert-but' if $name eq '2-methylpropan-2-';
+    $name = ChemOnomatopist::Name->new( 'tert-but' ) if $name eq '2-methylpropan-2-';
     $name .= 'yl';
     $name = bracket( $name ) if $name =~ /hydroxymethyl$/; # FIXME: Ugly fix
 
@@ -888,8 +889,8 @@ sub cmp_attachments
         my $a_alpha = $a[$_];
         my $b_alpha = $b[$_];
 
-        my @A = ref $a_alpha ? sort @$a_alpha : ( $a_alpha );
-        my @B = ref $b_alpha ? sort @$b_alpha : ( $b_alpha );
+        my @A = ref $a_alpha eq 'ARRAY' ? sort @$a_alpha : ( $a_alpha );
+        my @B = ref $b_alpha eq 'ARRAY' ? sort @$b_alpha : ( $b_alpha );
 
         for (0..min( scalar( @A ), scalar( @B ) )-1) {
             my $a_alpha = $A[$_];
