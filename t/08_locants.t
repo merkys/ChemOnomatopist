@@ -29,7 +29,6 @@ plan tests => 4;
 
 my $graph;
 my @paths;
-my @chain;
 
 my @atoms = map { { symbol => 'C', number => $_ } } 0..38;
 
@@ -48,8 +47,8 @@ $graph->add_edge( map { $atoms[$_] } ( 32, 38 ) );
 is scalar( @paths ), 1;
 is join( ',', map { $_->{number} } $paths[0]->vertices ), '27,26,25,24,23,22,1,0,11,12,13,14,15,16,17';
 
-@chain = ChemOnomatopist::select_mainchain( $graph );
-is join( ',', map { $_->{number} } @chain ), '27,26,25,24,23,22,1,0,11,12,13,14,15,16,17';
+my $chain = ChemOnomatopist::select_mainchain( $graph );
+is join( ',', map { $_->{number} } $chain->vertices ), '27,26,25,24,23,22,1,0,11,12,13,14,15,16,17';
 
 # Figure 7 from Urbonaitė, 2022.
 # In the image, however, one branch is held as having priority over another, while in fact they are equal.
