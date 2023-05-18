@@ -20,6 +20,7 @@ use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Name;
+use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
@@ -160,7 +161,7 @@ sub get_mainchain_name
 
     # Disconnect the main chain: this way every main chain atom remains
     # connected only to the side chains.
-    $graph = $graph->copy;
+    $graph = copy $graph;
     if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
         $graph->delete_cycle( @chain );
     } else {
@@ -462,7 +463,7 @@ sub select_mainchain
             # Construct all chains having all possible extensions to both sides of the selected path
             my %longest_paths;
             for my $path (@paths) {
-                my $copy = $graph->copy;
+                my $copy = copy $graph;
                 $copy->delete_path( @$path );
                 $copy->delete_vertices( grep { blessed $_ && !is_element( $_, 'C' ) } $copy->vertices );
 
@@ -507,7 +508,7 @@ sub select_mainchain
         } else {
             # Longest path has even length
             # Graph copy without center edge is required by graph_longest_paths_from_vertex()
-            my $copy = $graph->copy;
+            my $copy = copy $graph;
             $copy->delete_edge( @center );
             for my $vertex ( @center ) {
                 push @path_parts,
@@ -554,7 +555,7 @@ sub select_sidechain
     return $start unless is_element( $start, 'C' );
 
     # Cleaning the graph from the heteroatom leaves
-    my $C_graph = $graph->copy;
+    my $C_graph = copy $graph;
     $C_graph->delete_vertices( grep { blessed $_ && !is_element( $_, 'C' ) } $C_graph->vertices );
     while( my @leaves = grep { !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 } $C_graph->vertices ) {
         $C_graph->delete_vertices( @leaves );
@@ -562,7 +563,7 @@ sub select_sidechain
 
     my @path_parts;
     for my $neighbour ($C_graph->neighbours( $start )) {
-        my $graph_copy = $C_graph->copy;
+        my $graph_copy = copy $C_graph;
         $graph_copy->delete_edge( $start, $neighbour );
         for my $path ( graph_longest_paths_from_vertex( $graph_copy, $neighbour ) ) {
             push @path_parts,
