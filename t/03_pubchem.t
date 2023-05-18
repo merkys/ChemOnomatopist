@@ -18,6 +18,9 @@ my @cases;
 while (<$inp>) {
     my( $id, $iupac, $smiles ) = split /\t/, $_;
 
+    # According to BBvP-56.1, suffix -ol is now used to name hydroperoxides
+    next if $iupac =~ /^[^(]*hydroperoxy[^(]*ane$/;
+
     # TODO: The following compounds are not properly named yet
     next if $iupac =~ /edial$/;
     next if $iupac =~ / /;
