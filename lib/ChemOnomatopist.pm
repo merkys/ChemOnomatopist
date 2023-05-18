@@ -218,8 +218,7 @@ sub get_mainchain_name
         my $attachment_name = $order[$i];
         my $attachment = $attachment_objects{$attachment_name};
 
-        $name .= '-' if "$name";
-        $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
+        $name->append_locants( map { $_ + 1 } @{$attachments{$attachment_name}} );
 
         # FIXME: More rules from BBv2 P-16.3.4 should be added
         if( $attachment !~ /^[\(\[\{]/ &&
@@ -251,13 +250,11 @@ sub get_mainchain_name
     # Collecting names of all heteroatoms
     for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
                           keys %heteroatoms) {
-        $name .= '-' if "$name";
         my $number = IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} );
         $number = '' if $number eq 'mono';
         $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
-        if( @chain > 1 ) {
-            $name .= join( ',', map { $_ + 1 } @{$heteroatoms{$element}} ) . '-';
-        }
+
+        $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} ) if @chain > 1;
         $name .= $number . $elements{$element}->{prefix};
     }
 
@@ -284,7 +281,7 @@ sub get_mainchain_name
         # Terminal locants are not cited for 1 or 2 senior group attachments according to BBv2 P-14.3.4.1
         if( @senior_group_attachments && @chain > 1 &&
             (!$most_senior_group->is_carbon || @senior_group_attachments > 2) ) {
-            $name .= '-' . join( ',', map { $_ + 1 } @senior_group_attachments ) . '-';
+            $name->append_locants( map { $_ + 1 } @senior_group_attachments );
         }
         $name = wjoin $name,
                       $number,
