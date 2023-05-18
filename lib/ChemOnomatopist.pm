@@ -92,7 +92,9 @@ sub get_sidechain_name
         if( blessed $chain[0] ) {
             return ChemOnomatopist::Name->new( $chain[0]->prefix );
         } elsif( exists $elements{$chain[0]->{symbol}} ) {
-            return ChemOnomatopist::Name->new( $elements{$chain[0]->{symbol}}->{prefix} );
+            my $element = $elements{$chain[0]->{symbol}}->{prefix};
+            $element =~ s/a$/o/; # TODO: Is this a general rule? BBv2 seems silent.
+            return ChemOnomatopist::Name->new( $element );
         }
     }
 
