@@ -28,7 +28,7 @@ sub append($)
 sub append_locants
 {
     my( $self, @locants ) = @_;
-    $self->append( '-' ) if "$self";
+    $self->append( '-' ) if $self->{name};
     return $self->append( join( ',', @locants ) . '-' );
 }
 
