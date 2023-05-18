@@ -25,6 +25,12 @@ sub append($)
     return $self;
 }
 
+sub append_element($)
+{
+    my( $self, $element ) = @_;
+    return $self->append( $element );
+}
+
 sub append_locants
 {
     my( $self, @locants ) = @_;

@@ -261,7 +261,7 @@ sub get_mainchain_name
             $name .= $number;
         }
 
-        $name .= $elements{$element}->{prefix};
+        $name->append_element( $elements{$element}->{prefix} );
     }
 
     if( blessed $chain && $chain->can( 'name' ) ) {
