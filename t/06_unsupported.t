@@ -7,7 +7,7 @@ use ChemOnomatopist;
 use Test::More;
 
 my %unsupported = (
-    'CCCC=CCC'  => undef, # FIXME: Should be an error
+    'CCCC=CCC'  => 'cannot handle such compounds for now',
     'c1ccccoc1' => 'cannot handle complicated monocycles for now',
 );
 
