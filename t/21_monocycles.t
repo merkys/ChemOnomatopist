@@ -12,6 +12,8 @@ my %SMILES_cases = (
     'C1=CC=CC=C1'  => 'benzene',
     'C=1C=CC=CC=1' => 'benzene',
 
+    'C1=CC=CC=C1O' => 'phenol',
+
     # 'C(=O)(O)C1=CC=CC=C1' => 'benzoic acid', # FIXME: Fails
 
     # From BBv2 P-14.5.1
