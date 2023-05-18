@@ -129,7 +129,7 @@ sub get_sidechain_name
             $name->append_multiplier( $number );
 
             # FIXME: More rules from BBv2 P-16.3.4 should be added
-            if( $attachment->has_locant ||             # BBv2 P-16.3.4 (a)
+            if( $attachment->has_substituent_locant || # BBv2 P-16.3.4 (a)
                 $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
                 $attachment =~ /^dec/ ||               # BBv2 P-16.3.4 (d)
                 $attachment =~ /^[0-9]/ ) {
@@ -144,7 +144,7 @@ sub get_sidechain_name
     if( $branches_at_start > 1 ) {
         my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
         $name .= 'an';
-        $name->append_locant( $branch_point + 1 );
+        $name->append_substituent_locant( $branch_point + 1 );
     }
 
     $name = ChemOnomatopist::Name->new( 'tert-but' ) if $name eq '2-methylpropan-2-';
@@ -244,7 +244,7 @@ sub get_mainchain_name
             $name .= $number;
 
             # BBv2 P-16.3.4 (a)
-            if( $attachment !~ /^[\(\[\{]/ && ( $attachment->has_locant || $attachment eq 'tert-butyl' ) ) {
+            if( $attachment !~ /^[\(\[\{]/ && ( $attachment->has_substituent_locant || $attachment eq 'tert-butyl' ) ) {
                 $attachment->bracket;
             }
         }

@@ -39,6 +39,13 @@ sub append_multiplier($)
     return $self->append( $string );
 }
 
+sub append_substituent_locant($)
+{
+    my( $self, $locant ) = @_;
+    $self->{has_substituent_locant} = 1;
+    return $self->append( '-' . $locant . '-' );
+}
+
 sub bracket()
 {
     my( $self ) = @_;
@@ -49,6 +56,12 @@ sub has_locant()
 {
     my( $self ) = @_;
     return exists $self->{has_locant};
+}
+
+sub has_substituent_locant()
+{
+    my( $self ) = @_;
+    return exists $self->{has_substituent_locant};
 }
 
 sub starts_with_multiplier()
