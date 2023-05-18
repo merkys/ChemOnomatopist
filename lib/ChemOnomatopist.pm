@@ -213,7 +213,7 @@ sub get_mainchain_name
 
     # Collecting names of all the attachments
     my @order = sort { cmp_only_aphabetical( $a, $b ) || $a cmp $b } keys %attachments;
-    my $name = '';
+    my $name = ChemOnomatopist::Name->new;
     for my $i (0..$#order) {
         my $attachment_name = $order[$i];
         my $attachment = $attachment_objects{$attachment_name};
@@ -251,7 +251,7 @@ sub get_mainchain_name
     # Collecting names of all heteroatoms
     for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
                           keys %heteroatoms) {
-        $name = $name ? $name . '-' : $name;
+        $name .= '-' if "$name";
         my $number = IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} );
         $number = '' if $number eq 'mono';
         $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
