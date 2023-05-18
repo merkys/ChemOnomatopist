@@ -250,12 +250,16 @@ sub get_mainchain_name
     # Collecting names of all heteroatoms
     for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
                           keys %heteroatoms) {
-        my $number = IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} );
-        $number = '' if $number eq 'mono';
-        $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
 
         $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} ) if @chain > 1;
-        $name .= $number . $elements{$element}->{prefix};
+
+        if( @{$heteroatoms{$element}} > 1 ) {
+            my $number = IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} );
+            $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
+            $name .= $number;
+        }
+
+        $name .= $elements{$element}->{prefix};
     }
 
     if( blessed $chain && $chain->can( 'name' ) ) {
