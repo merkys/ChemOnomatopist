@@ -25,11 +25,11 @@ sub append($)
     return $self;
 }
 
-sub append_locant($)
+sub append_locants
 {
-    my( $self, $locant ) = @_;
-    $self->{has_locant} = 1;
-    return $self->append( '-' . $locant . '-' );
+    my( $self, @locants ) = @_;
+    $self->append( '-' ) if "$self";
+    return $self->append( join( ',', @locants ) . '-' );
 }
 
 sub append_multiplier($)
@@ -50,12 +50,6 @@ sub bracket()
 {
     my( $self ) = @_;
     $self->{name} = _bracket( $self->{name} );
-}
-
-sub has_locant()
-{
-    my( $self ) = @_;
-    return exists $self->{has_locant};
 }
 
 sub has_substituent_locant()

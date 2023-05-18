@@ -118,10 +118,7 @@ sub get_sidechain_name
     for my $attachment_name (sort { $a cmp $b } keys %attachments) {
         my $attachment = $attachment_objects{$attachment_name};
 
-        if( @chain > 1 ) {
-            $name .= '-' if "$name";
-            $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
-        }
+        $name->append_locants( map { $_ + 1 } @{$attachments{$attachment_name}} ) if @chain > 1;
 
         if( @{$attachments{$attachment_name}} > 1 ) {
             my $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
