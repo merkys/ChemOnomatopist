@@ -225,11 +225,6 @@ sub get_mainchain_name
         $name .= '-' if "$name";
         $name .= join( ',', map { $_ + 1 } @{$attachments{$attachment_name}} ) . '-';
 
-        # BBv2 P-16.3.4 (a) seems to be held only for all but the last attachment
-        if( $attachment !~ /^[\(\[\{]/ && $attachment->has_locant && $i < $#order ) {
-            $attachment->bracket;
-        }
-
         # FIXME: More rules from BBv2 P-16.3.4 should be added
         if( $attachment !~ /^[\(\[\{]/ &&
             ( $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
@@ -248,7 +243,8 @@ sub get_mainchain_name
             }
             $name .= $number;
 
-            if( $attachment !~ /^[\(\[\{]/ && $attachment eq 'tert-butyl' ) {
+            # BBv2 P-16.3.4 (a)
+            if( $attachment !~ /^[\(\[\{]/ && ( $attachment->has_locant || $attachment eq 'tert-butyl' ) ) {
                 $attachment->bracket;
             }
         }
