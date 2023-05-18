@@ -239,7 +239,7 @@ sub get_mainchain_name
             $name .= $number;
 
             # BBv2 P-16.3.4 (a)
-            if( $attachment !~ /^[\(\[\{]/ && ( $attachment->has_substituent_locant || $attachment eq 'tert-butyl' ) ) {
+            if( $attachment !~ /^[\(\[\{]/ && $attachment->has_substituent_locant ) {
                 $attachment->bracket;
             }
         }
