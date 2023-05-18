@@ -144,7 +144,6 @@ sub get_sidechain_name
         $name->append_substituent_locant( $branch_point + 1 );
     }
 
-    $name = ChemOnomatopist::Name->new( 'tert-but' ) if $name eq '2-methylpropan-2-';
     $name .= 'yl';
     $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Ugly fix
 

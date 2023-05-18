@@ -43,7 +43,9 @@ sub append_substituent_locant($)
 {
     my( $self, $locant ) = @_;
     $self->{has_substituent_locant} = 1;
-    return $self->append( '-' . $locant . '-' );
+    $self->append( '-' . $locant . '-' );
+    $self->{name} = 'tert-but' if $self->{name} eq '2-methylpropan-2-';
+    return $self;
 }
 
 sub bracket()
