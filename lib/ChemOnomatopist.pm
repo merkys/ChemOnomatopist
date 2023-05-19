@@ -864,7 +864,7 @@ sub cmp_heteroatoms
 }
 
 # Sorts given names only based on alphabetical part of the name.
-# tert compounds are ordered according to BBv2 P-14.5.3.
+# tert compounds are ordered according to BBv2 P-14.5.3 (tert-butyl < butyl)
 sub cmp_only_aphabetical
 {
     my( $a, $b ) = @_;
