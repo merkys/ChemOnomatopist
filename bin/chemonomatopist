@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use ChemOnomatopist;
+
+local $\ = "\n";
+for my $smiles (<>) {
+    chomp( $smiles );
+    my $name;
+    eval {
+        $name = ChemOnomatopist::get_name( $smiles );
+    };
+    if( $@ ) {
+        $@ =~ s/\n$//;
+        print STDERR $smiles, "\t", $@;
+    } else {
+        print $smiles, "\t", $name;
+    }
+}
