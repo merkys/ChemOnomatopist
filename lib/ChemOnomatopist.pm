@@ -231,12 +231,6 @@ sub get_mainchain_name
         }
 
         if( @{$attachments{$attachment_name}} > 1 ) {
-            if( $attachment !~ /^[\(\[\{]/ &&
-                ( $attachment =~ /^dec/ || # BBv2 P-16.3.4 (d)
-                  ( $attachment->has_substituent_locant && $attachment ne 'tert-butyl' && $i < $#order ) ) ) { # FIXME: Ugly
-                $attachment->bracket;
-            }
-
             my $number;
             if( $attachment =~ /^[\(\[\{]/ ) {
                 $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
@@ -247,7 +241,9 @@ sub get_mainchain_name
             $name .= $number;
 
             # BBv2 P-16.3.4 (a)
-            if( $attachment !~ /^[\(\[\{]/ && $attachment->has_substituent_locant ) {
+            if( $attachment !~ /^[\(\[\{]/ &&
+                ( $attachment =~ /^dec/ || # BBv2 P-16.3.4 (d)
+                  $attachment->has_substituent_locant ) ) {
                 $attachment->bracket;
             }
         }
