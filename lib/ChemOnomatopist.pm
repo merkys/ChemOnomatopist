@@ -226,13 +226,16 @@ sub get_mainchain_name
         # FIXME: More rules from BBv2 P-16.3.4 should be added
         if( $attachment !~ /^[\(\[\{]/ &&
             ( $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
-              $attachment =~ /^dec/ ||               # BBv2 P-16.3.4 (d)
               $attachment =~ /^[0-9]/ ||
               ( $attachment->has_substituent_locant && $attachment ne 'tert-butyl' && $i < $#order ) ) ) { # FIXME: Ugly
               $attachment->bracket;
         }
 
         if( @{$attachments{$attachment_name}} > 1 ) {
+            if( $attachment !~ /^[\(\[\{]/ && $attachment =~ /^dec/ ) { # BBv2 P-16.3.4 (d)
+                $attachment->bracket;
+            }
+
             my $number;
             if( $attachment =~ /^[\(\[\{]/ ) {
                 $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
