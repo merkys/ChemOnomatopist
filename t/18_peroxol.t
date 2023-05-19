@@ -6,12 +6,15 @@ use warnings;
 use ChemOnomatopist;
 use Test::More;
 
-my %SMILES_cases = (
-    'CCOO' => 'ethaneperoxol',
+my @cases = (
+    { smiles => 'CCOO', iupac => 'ethaneperoxol', AUTHOR => 1 },
 );
 
-plan tests => scalar( keys %SMILES_cases );
+@cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
+plan skip_all => 'No available cases' unless @cases;
 
-for my $case (sort keys %SMILES_cases) {
-    is ChemOnomatopist::get_name( $case ), $SMILES_cases{$case};
+plan tests => scalar @cases;
+
+for my $case (@cases) {
+    is ChemOnomatopist::get_name( $case->{smiles} ), $case->{iupac};
 }
