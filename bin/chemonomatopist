@@ -3,6 +3,8 @@
 use strict;
 use warnings;
 
+# VERSION
+
 use ChemOnomatopist;
 
 local $\ = "\n";
