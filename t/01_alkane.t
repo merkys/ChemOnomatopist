@@ -27,6 +27,9 @@ my @cases = (
     { smiles => 'CCCCC(CCCC)C(C)C(C)C', iupac => '5-(3-methylbutan-2-yl)nonane' },
     { smiles => 'CCCCCC(CC(C)CC)CC(CCCCC)C(C)CCC', iupac => '6-(2-methylbutyl)-8-pentan-2-yltridecane' },
 
+    { smiles => 'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC(CCCCCCCCCC)CCCCCCCCCCCCC', iupac => '14-decyltritetracontane', AUTHOR => 1 },
+    { smiles => 'CCCCCCCC(CCCCCCC)(CCCCCCC)C(C)CC', iupac => '8-butan-2-yl-8-heptylpentadecane', AUTHOR => 1 },
+
     { smiles => 'C(C)C(C(CCC)C)(C(CCCC)C)C', iupac => '5-ethyl-4,5,6-trimethyldecane' },
     { smiles => 'C(C)C(C(CC)C)C(C(CCC)(C)C)(CC)CC', iupac => '4,5,5-triethyl-3,6,6-trimethylnonane' },
     { smiles => 'C(C)C(C(C(CCC)C)(CCC)CCC)(CCCC)CCC', iupac => '6-ethyl-4-methyl-5,5,6-tripropyldecane' },
