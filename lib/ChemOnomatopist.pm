@@ -226,13 +226,14 @@ sub get_mainchain_name
         # FIXME: More rules from BBv2 P-16.3.4 should be added
         if( $attachment !~ /^[\(\[\{]/ &&
             ( $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
-              $attachment =~ /^[0-9]/ ||
-              ( $attachment->has_substituent_locant && $attachment ne 'tert-butyl' && $i < $#order ) ) ) { # FIXME: Ugly
+              $attachment =~ /^[0-9]/ ) ) {
               $attachment->bracket;
         }
 
         if( @{$attachments{$attachment_name}} > 1 ) {
-            if( $attachment !~ /^[\(\[\{]/ && $attachment =~ /^dec/ ) { # BBv2 P-16.3.4 (d)
+            if( $attachment !~ /^[\(\[\{]/ &&
+                ( $attachment =~ /^dec/ || # BBv2 P-16.3.4 (d)
+                  ( $attachment->has_substituent_locant && $attachment ne 'tert-butyl' && $i < $#order ) ) ) { # FIXME: Ugly
                 $attachment->bracket;
             }
 
