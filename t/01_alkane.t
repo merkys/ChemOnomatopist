@@ -36,7 +36,7 @@ my @cases = (
     { smiles => 'CC(CC(CCC)CCC)C', iupac => '2-methyl-4-propylheptane' },
     { smiles => 'CC(CC(CC(CC(CC)CC)C)(CC(CC(CC)C)C)CC(CC(CC)C)C)CC(CC)C', iupac => '7,7-bis(2,4-dimethylhexyl)-3-ethyl-5,9,11-trimethyltridecane' },
     { smiles => 'CC(C(CCC)C)C(CC(CCCC)CC)CCCCCC', iupac => '5-ethyl-7-(3-methylhexan-2-yl)tridecane' },
-    # 'CCC(CC)CCC(CCC(CC)CC)CCC(CCC(CCC(CC)CC)CCC(CC)CC)CCC(CCC(CC)CC)CCC(CC)CC' => '3,15-diethyl-9-[6-ethyl-3-(3-ethylpentyl)octyl]-6,12-bis(3-ethylpentyl)heptadecane', # different order
+    { smiles => 'CCC(CC)CCC(CCC(CC)CC)CCC(CCC(CCC(CC)CC)CCC(CC)CC)CCC(CCC(CC)CC)CCC(CC)CC', iupac => '3,15-diethyl-9-[6-ethyl-3-(3-ethylpentyl)octyl]-6,12-bis(3-ethylpentyl)heptadecane', AUTHOR => 1 }, # different order
     { smiles => 'CC(C)CC(CC(C)C)CC(CC(C)C)CC(C)C', iupac => '2,8-dimethyl-4,6-bis(2-methylpropyl)nonane' },
 
     { smiles => 'CCCCCCCCCC(CCCC)(CCCC)C(C)(C)C', iupac => '5-tert-butyl-5-butyltetradecane' }, # PubChem has 5-butyl-5-tert-butyltetradecane (?)
@@ -45,6 +45,8 @@ my @cases = (
 
     { smiles => 'CCCCCC(C)(C)C(C)CC(CC)CC(CCC(CC)CC)C(CCC(CC)CCC)(CC(CC)CCCC)C(CC)(CCCC(CC)CC)C(CC(C)C(CC)CC)(CC(C)(CC)CCC)C(C)C(CC(C)CC(C)CC)(CC(C)C(CC)CCC)CC(C)(CC)CCCC', iupac => '10,14-diethyl-11-(2-ethylhexyl)-11-(3-ethylhexyl)-10-(4-ethylhexyl)-7-(2-ethyl-2-methylhexyl)-7-(3-ethyl-2-methylhexyl)-9-(2-ethyl-2-methylpentyl)-9-(3-ethyl-2-methylpentyl)-12-(3-ethylpentyl)-3,5,8,16,17,17-hexamethyldocosane' },
 );
+
+@cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
 
 my %old_method_mistakes = (
     'CCCCC(CC)C(CCCC)C(C)(C)C' => '6-tert-butyl-5-ethyldecane',
