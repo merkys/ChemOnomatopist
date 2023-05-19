@@ -12,7 +12,6 @@ my @cases = (
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
 plan skip_all => 'No available cases' unless @cases;
-
 plan tests => scalar @cases;
 
 for my $case (@cases) {

@@ -48,12 +48,11 @@ my @cases = (
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
 plan skip_all => 'No available cases' unless @cases;
+plan tests => 2 * @cases;
 
 my %old_method_mistakes = (
     'CCCCC(CC)C(CCCC)C(C)(C)C' => '6-tert-butyl-5-ethyldecane',
 );
-
-plan tests => 2 * @cases;
 
 for my $case (@cases) {
     my $name = $case->{iupac};
