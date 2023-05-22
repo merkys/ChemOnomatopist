@@ -876,8 +876,8 @@ sub cmp_only_aphabetical
     my $a_has_tert = $a =~ s/^tert(butyl)$/$1/;
     my $b_has_tert = $b =~ s/^tert(butyl)$/$1/;
 
-    return $a_has_tert <=> $b_has_tert;
-    return $a cmp $b if $a cmp $b;
+    return $a_has_tert <=> $b_has_tert if $a_has_tert <=> $b_has_tert;
+    return $a cmp $b;
 }
 
 # Sorts arrays from lowest to biggest by values
