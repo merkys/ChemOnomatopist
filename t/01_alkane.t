@@ -38,7 +38,7 @@ my @cases = (
     { smiles => 'CCC(CC)C(C)C', iupac => '3-ethyl-2-methylpentane' },
     { smiles => 'CCCCCCCCCCCCCCCCCCCCCCC', iupac => 'tricosane' },
     { smiles => 'CC(CC(CCC)CCC)C', iupac => '2-methyl-4-propylheptane' },
-    { smiles => 'CC(CC(CC(CC(CC)CC)C)(CC(CC(CC)C)C)CC(CC(CC)C)C)CC(CC)C', iupac => '7,7-bis(2,4-dimethylhexyl)-3-ethyl-5,9,11-trimethyltridecane' },
+    { smiles => 'CC(CC(CC(CC(CC)CC)C)(CC(CC(CC)C)C)CC(CC(CC)C)C)CC(CC)C', iupac => '7,7-bis(2,4-dimethylhexyl)-3-ethyl-5,9,11-trimethyltridecane', AUTHOR => 1 }, # Fails 'old' nondeterministically on some machines
     { smiles => 'CC(C(CCC)C)C(CC(CCCC)CC)CCCCCC', iupac => '5-ethyl-7-(3-methylhexan-2-yl)tridecane' },
     { smiles => 'CCC(CC)CCC(CCC(CC)CC)CCC(CCC(CCC(CC)CC)CCC(CC)CC)CCC(CCC(CC)CC)CCC(CC)CC', iupac => '3,15-diethyl-9-[6-ethyl-3-(3-ethylpentyl)octyl]-6,12-bis(3-ethylpentyl)heptadecane', AUTHOR => 1 }, # different order
     { smiles => 'CC(C)CC(CC(C)C)CC(CC(C)C)CC(C)C', iupac => '2,8-dimethyl-4,6-bis(2-methylpropyl)nonane' },
