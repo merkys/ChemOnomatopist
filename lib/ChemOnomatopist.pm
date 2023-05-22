@@ -16,6 +16,7 @@ use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
+use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;

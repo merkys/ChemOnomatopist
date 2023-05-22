@@ -25,7 +25,7 @@ our @order = (
     # Acids
     ChemOnomatopist::Group::Carboxyl::,
     # Anhydrides
-    # Esters
+    ChemOnomatopist::Group::Ester::,
     # Acid halides and pseudohalides
     # Amides
     # Hydrazides
