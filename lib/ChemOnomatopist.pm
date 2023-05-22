@@ -61,6 +61,12 @@ sub get_name
 
     find_groups( $graph );
 
+    # Some groups have their own naming rules
+    my  $most_senior_group = most_senior_group( $graph );
+    if( $most_senior_group && $most_senior_group->can( 'name' ) ) {
+        return $most_senior_group->name( $graph );
+    }
+
     my $main_chain = select_mainchain( $graph );
     return get_mainchain_name( $graph, $main_chain );
 }
@@ -372,8 +378,8 @@ sub find_groups
         } elsif( is_element( $atom, 'C' ) && @groups == 1 && @C == 1 && @O == 2 &&
                  $groups[0]->isa( ChemOnomatopist::Group::Carbonyl:: ) ) {
             $graph->delete_vertices( @groups );
-            my( $hydroxylic ) = @C;
-            my( $acid ) = grep { $_ != $atom } map { $graph->neighbours( $_ ) } grep { !blessed $_ } @O;
+            my( $hydroxylic ) = grep { $_ != $atom } map { $graph->neighbours( $_ ) } grep { !blessed $_ } @O;
+            my( $acid ) = @C;
             my $ester = ChemOnomatopist::Group::Ester->new( $hydroxylic, $acid );
             $graph->add_edges( $ester, $hydroxylic );
             $graph->add_edges( $ester, $acid );
