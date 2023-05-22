@@ -818,8 +818,8 @@ sub pick_chain_with_lowest_attachments_alphabetically
     my( @chains ) = @_;
 
     my @locant_names = map { [ $_->locant_names ] } @chains;
-    my @sorted = reverse sort { cmp_attachments( $locant_names[$a], $locant_names[$b] ) }
-                              0..$#locant_names;
+    my @sorted = sort { cmp_attachments( $locant_names[$a], $locant_names[$b] ) }
+                      0..$#locant_names;
     return $chains[$sorted[0]];
 }
 
@@ -876,8 +876,8 @@ sub cmp_only_aphabetical
     my $a_has_tert = $a =~ s/^tert(butyl)$/$1/;
     my $b_has_tert = $b =~ s/^tert(butyl)$/$1/;
 
-    return $a cmp $b if $a cmp $b;
     return $a_has_tert <=> $b_has_tert;
+    return $a cmp $b if $a cmp $b;
 }
 
 # Sorts arrays from lowest to biggest by values
@@ -916,8 +916,8 @@ sub cmp_attachments
             my $a_has_tert = $a_alpha =~ s/^tert(butyl)$/$1/;
             my $b_has_tert = $b_alpha =~ s/^tert(butyl)$/$1/;
 
-            return $b_alpha cmp $a_alpha if $b_alpha cmp $a_alpha;
-            return $b_has_tert <=> $a_has_tert if $b_has_tert <=> $a_has_tert;
+            return $a_has_tert <=> $b_has_tert if $a_has_tert <=> $b_has_tert;
+            return $a_alpha cmp $b_alpha if $a_alpha cmp $b_alpha;
         }
     }
 
