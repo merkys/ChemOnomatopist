@@ -23,7 +23,6 @@ while (<$inp>) {
 
     # TODO: The following compounds are not properly named yet
     next if $iupac =~ /edial$/;
-    next if $iupac =~ / /;
     next if $iupac =~ /acetyl/;
 
     # Separate molecular entities, not sure if we want to support them at all
@@ -42,12 +41,6 @@ while (<$inp>) {
     next if any { $_->[0]{symbol} eq 'C' && $_->[1]{symbol} eq 'C' }
             grep { $graph->has_edge_attributes( @$_ ) }
             $graph->edges;
-
-    # TODO: Cannot process the following oxygen compounds
-    next if any { join( '', sort map { $_->{symbol} } $graph->neighbours( $_ ) ) =~ /^(CC|OO)$/ }
-            grep { $graph->degree( $_ ) == 2 }
-            grep { $_->{symbol} eq 'O' }
-            $graph->vertices;
 
     push @cases, { id => $id, iupac => $iupac, graph => $graph };
 }
