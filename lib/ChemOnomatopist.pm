@@ -323,8 +323,9 @@ sub find_groups
             $graph->delete_vertices( $atom, @H );
         }
 
-        # Detecting carbonyl
         if( is_element( $atom, 'O' ) && @neighbours == 1 && @C == 1 ) {
+            # Detecting carbonyl
+            # FIXME: Check also for double bond
             my $carbonyl = ChemOnomatopist::Group::Carbonyl->new( @C );
             $graph->add_edge( @C, $carbonyl );
             $graph->delete_vertices( $atom );
@@ -349,7 +350,9 @@ sub find_groups
         my @neighbours = $graph->neighbours( $atom );
         my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) }
                           @neighbours;
+        my @C = grep { is_element( $_, 'C' ) } @neighbours;
         my @H = grep { is_element( $_, 'H' ) } @neighbours;
+        my @O = grep { is_element( $_, 'O' ) } @neighbours;
 
         # Detecting aldehyde
         if( is_element( $atom, 'C' ) && @groups == 1 && @H == 1 &&
@@ -366,6 +369,15 @@ sub find_groups
             $graph->delete_vertices( @groups ); # FIXME: Be careful!
             $graph->add_edges( map { $carboxyl, $_ } $graph->neighbours( $atom ) );
             $graph->delete_vertex( $atom );
+        } elsif( is_element( $atom, 'C' ) && @groups == 1 && @C == 1 && @O == 2 &&
+                 $groups[0]->isa( ChemOnomatopist::Group::Carbonyl:: ) ) {
+            $graph->delete_vertices( @groups );
+            my( $hydroxylic ) = @C;
+            my( $acid ) = grep { $_ != $atom } map { $graph->neighbours( $_ ) } grep { !blessed $_ } @O;
+            my $ester = ChemOnomatopist::Group::Ester->new( $hydroxylic, $acid );
+            $graph->add_edges( $ester, $hydroxylic );
+            $graph->add_edges( $ester, $acid );
+            $graph->delete_vertices( $atom, @O );
         }
     }
 

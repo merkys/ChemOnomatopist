@@ -8,4 +8,10 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
+sub new
+{
+    my( $class, $hydroxylic, $acid ) = @_;
+    return bless { hydroxylic => $hydroxylic, acid => $acid }, $class;
+}
+
 1;
