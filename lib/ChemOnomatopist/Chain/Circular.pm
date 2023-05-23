@@ -15,15 +15,15 @@ use parent ChemOnomatopist::ChainHalf::;
 
 # From BBv2 P-22.2.1
 our %names = (
-    OCNCC => '1,3-oxazolidine',
-    ONCCC => '1,2-oxazolidine',
-    NCCCC => 'pyrrolidine',
-    NNCCC => 'pyrazolidine',
-    NCNCC => 'imidazolidine',
+    CCNCO => '1,3-oxazolidine',
+    CCCNO => '1,2-oxazolidine',
+    CCCCN => 'pyrrolidine',
+    CCCNN => 'pyrazolidine',
+    CCNCN => 'imidazolidine',
 
-    NCCCCC => 'piperidine',
-    NCCNCC => 'piperazine',
-    OCCNCC => 'morpholine',
+    CCCCCN => 'piperidine',
+    CCNCCN => 'piperazine',
+    CCNCCO => 'morpholine',
 
     # 5-membered aromatic
     'OC=CC=C'  => 'furan',
@@ -51,18 +51,25 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
-# Need to override as the terminal bond is also important
+# Selecting the candidate with the lowest alphabetical order
 sub backbone_SMILES()
 {
     my( $self ) = @_;
-    return cycle_SMILES( $self->{graph}, $self->vertices );
-}
 
-sub is_benzene()
-{
-    my( $self ) = @_;
-    return '' unless $self->length == 6;
-    return $self->backbone_SMILES =~ /^(C=CC=CC=C|CC=CC=CC=)$/;
+    my @vertices = $self->vertices;
+    my @candidates;
+    for (0..$#vertices) {
+        push @candidates, cycle_SMILES( $self->{graph}, @vertices );
+        push @vertices, shift @vertices;
+    }
+    @vertices = reverse @vertices;
+    for (0..$#vertices) {
+        push @candidates, cycle_SMILES( $self->{graph}, @vertices );
+        push @vertices, shift @vertices;
+    }
+
+    my( $SMILES ) = sort @candidates;
+    return $SMILES;
 }
 
 sub name()
@@ -74,9 +81,6 @@ sub name()
 
     # Check the preserved names
     return $names{$SMILES} if exists $names{$SMILES};
-
-    # FIXME: This is an exception, but a proper fix should be implemented instead
-    return 'benzene' if $self->is_benzene;
 
     # Check for cycloalkanes
     if( all { $_->{symbol} eq 'C' } $self->vertices ) {
