@@ -8,6 +8,7 @@ use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::ChainHalf; # FIXME: Not sure why it is needed
+use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use List::Util qw( all any );
 
 use parent ChemOnomatopist::ChainHalf::;
@@ -54,15 +55,7 @@ sub new
 sub backbone_SMILES()
 {
     my( $self ) = @_;
-
-    my @vertices = $self->vertices;
-    my $SMILES = $self->SUPER::backbone_SMILES;
-
-    if( $self->{graph}->has_edge_attribute( $vertices[0], $vertices[$#vertices], 'bond' ) ) {
-        $SMILES .= $self->{graph}->get_edge_attribute( $vertices[0], $vertices[$#vertices], 'bond' );
-    }
-
-    return $SMILES;
+    return cycle_SMILES( $self->{graph}, $self->vertices );
 }
 
 sub is_benzene()

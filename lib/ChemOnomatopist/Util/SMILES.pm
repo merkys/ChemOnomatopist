@@ -20,8 +20,8 @@ sub cycle_SMILES
     my $SMILES = '';
     for my $i (0..$#cycle) {
         $SMILES .= $cycle[$i]->{symbol};
-        next unless $graph->has_edge_attribute( $cycle[$i], $cycle[$i+1], 'bond' );
-        $SMILES .=  $graph->get_edge_attribute( $cycle[$i], $cycle[$i+1], 'bond' );
+        next unless $graph->has_edge_attribute( $cycle[$i], $cycle[($i+1) % scalar @cycle], 'bond' );
+        $SMILES .=  $graph->get_edge_attribute( $cycle[$i], $cycle[($i+1) % scalar @cycle], 'bond' );
     }
     return $SMILES;
 }
