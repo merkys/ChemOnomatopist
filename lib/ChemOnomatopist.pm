@@ -20,6 +20,7 @@ use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
+use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::Graph qw(
@@ -390,6 +391,26 @@ sub find_groups
     # Hydrogen atoms are no longer important
     $graph->delete_vertices( grep { is_element( $_, 'H' ) } $graph->vertices );
 
+    # Detecting monocyclic compounds
+    if( graph_has_cycle( $graph ) ) {
+        # If it is not a tree, then the graph has cycles, and we have to do our best to recognise them.
+
+        my $core = graph_cycle_core( $graph );
+        if( any { $core->degree( $_ ) > 2 } $core->vertices ) {
+            die "cannot handle cyclic compounds other than monocycles\n";
+        }
+
+        # The cycle object is given the original graph to retain the original atom-atom relations
+        my $cycle = ChemOnomatopist::Group::Monocycle->new( copy $graph, Graph::Traversal::DFS->new( $core )->dfs );
+        for my $vertex ($core->vertices) {
+            for my $neighbour ($graph->neighbours($vertex)) {
+                $graph->add_edge( $cycle, $neighbour );
+            }
+        }
+        $graph->delete_vertices( $core->vertices );
+        $graph->delete_edge( $cycle, $cycle ); # May have been added, must be removed
+    }
+
     return;
 }
 
@@ -430,36 +451,27 @@ sub select_mainchain
     my $most_senior_group = most_senior_group( $graph );
 
     my @chains;
-    if( graph_has_cycle( $graph ) ) {
-        # If it is not a tree, than the graph has cycles, and we have to
-        # do our best to recognise them. To make it easier, hydrogen atoms
-        # are removed here for now.
-
-        my $core = graph_cycle_core( $graph );
-        if( any { $core->degree( $_ ) > 2 } $core->vertices ) {
-            die "cannot handle cyclic compounds other than monocycles\n";
-        }
-
-        # FIXME: For now we generate all possible traversals of the same cycle.
-        #        This is not optimal, some caching could be introduced.
-        my @vertices = Graph::Traversal::DFS->new( $core )->dfs;
-        for (0..$#vertices) {
-            push @chains,
-                 ChemOnomatopist::Chain::Circular->new( $graph, @vertices );
-            push @vertices, shift @vertices;
-        }
-        @vertices = reverse @vertices;
-        for (0..$#vertices) {
-            push @chains,
-                 ChemOnomatopist::Chain::Circular->new( $graph, @vertices );
-            push @vertices, shift @vertices;
-        }
-    } elsif( $most_senior_group ) {
+    if( $most_senior_group ) {
         # TODO: Select a chain containing most of the senior groups
         my @groups = grep { blessed( $_ ) && $_->isa( $most_senior_group ) } $graph->vertices;
         my @carbons = uniq map { $_->C } @groups; # FIXME: Carbons with the most attachments should be preferred
 
-        if( @carbons == 1 ) {
+        if( $most_senior_group->isa( ChemOnomatopist::Group::Monocycle:: ) ) {
+            # FIXME: For now we generate all possible traversals of the same cycle.
+            #        This is not optimal, some caching could be introduced.
+            my @vertices = @{$groups[0]->{vertices}};
+            for (0..$#vertices) {
+                push @chains,
+                     ChemOnomatopist::Chain::Circular->new( $groups[0]->{graph}, @vertices );
+                push @vertices, shift @vertices;
+            }
+            @vertices = reverse @vertices;
+            for (0..$#vertices) {
+                push @chains,
+                     ChemOnomatopist::Chain::Circular->new( $groups[0]->{graph}, @vertices );
+                push @vertices, shift @vertices;
+            }
+        } elsif( @carbons == 1 ) {
             # As the starting position is known, it is enough to take the "side chain"
             # containing this particular carbon:
             my @vertices = select_sidechain( $graph, @carbons );

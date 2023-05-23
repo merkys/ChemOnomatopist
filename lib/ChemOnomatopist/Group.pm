@@ -11,6 +11,7 @@ use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
+use ChemOnomatopist::Group::Monocycle;
 
 # ABSTRACT: Chemical group
 # VERSION
@@ -40,6 +41,8 @@ our @order = (
     ChemOnomatopist::Group::Imino::,
 
     # Classes denoted by the senior atom in heterane nomenclature
+
+    ChemOnomatopist::Group::Monocycle::, # FIXME: Possibly not the right place
 );
 
 sub new
