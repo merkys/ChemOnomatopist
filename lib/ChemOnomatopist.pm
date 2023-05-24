@@ -408,9 +408,14 @@ sub find_groups
 
         # The cycle object is given the original graph to retain the original atom-atom relations
         my $cycle = ChemOnomatopist::Group::Monocycle->new( copy $graph, Graph::Traversal::DFS->new( $core )->dfs );
-        for my $vertex ($core->vertices) {
-            for my $neighbour ($graph->neighbours($vertex)) {
-                $graph->add_edge( $cycle, $neighbour );
+        for my $neighbour ( map { $graph->neighbours( $_ ) } $core->vertices ) {
+            $graph->add_edge( $cycle, $neighbour );
+
+            # Reattach groups
+            if( blessed $neighbour &&
+                $neighbour->isa( ChemOnomatopist::Group:: ) &&
+                $core->has_vertex( $neighbour->C ) ) {
+                $neighbour->{C} = $cycle;
             }
         }
         $graph->delete_vertices( $core->vertices );
