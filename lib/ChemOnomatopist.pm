@@ -421,7 +421,8 @@ sub is_element
            $atom->{symbol} eq $element;
 }
 
-# Selects the main chain by evaluating its parts
+# Given a graph, selects the main chain.
+# The returned chain is an object of ChemOnomatopist::ChainHalf or its subclasses.
 sub select_mainchain
 {
     my( $graph ) = @_;
