@@ -31,7 +31,7 @@ our %names = (
     'OC=NC=C'  => '1,3-oxazole',
     'C=CC=NO'  => '1,2-oxazole',
     'C=CC=NN'  => '1H-pyrazole', # FIXME: Adjust for isomerism
-    'NC=CC=C'  => '1H-pyrole', # FIXME: Adjust for isomerism
+    'C=CC=CN'  => '1H-pyrole', # FIXME: Adjust for isomerism
     'SeC=CC=C' => 'selenophene',
     'TeC=CC=C' => 'tellurophene',
     'C=CC=CS'  => 'thiophene',
@@ -40,8 +40,8 @@ our %names = (
     'C=CC=CC=C' => 'benzene',
     'C=CC=CCO'  => '2H-pyran', # FIXME: Adjust for isomerism
     'N=CC=NC=C' => 'pyrazine',
-    'N=NC=CC=C' => 'pyridazine',
-    'N=CC=CC=C' => 'pyridine',
+    'C=CC=CN=N' => 'pyridazine',
+    'C=CC=CC=N' => 'pyridine',
     'N=CN=CC=C' => 'pyrimidine',
 );
 
