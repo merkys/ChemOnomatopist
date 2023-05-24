@@ -15,7 +15,7 @@ plan tests => scalar @cases;
 
 for my $SMILES (@cases) {
     my $ring = $SMILES;
-    $ring =~ s/^(.)/${1}1/;
+    $ring =~ s/^(\[?[A-Z][a-z]?\]?)/${1}1/;
     $ring .= 1;
 
     my $parser = Chemistry::OpenSMILES::Parser->new;

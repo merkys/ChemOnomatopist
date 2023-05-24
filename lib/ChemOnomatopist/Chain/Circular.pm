@@ -32,8 +32,8 @@ our %names = (
     'C=CC=NO'  => '1,2-oxazole',
     'C=CC=NN'  => '1H-pyrazole', # FIXME: Adjust for isomerism
     'C=CC=CN'  => '1H-pyrole', # FIXME: Adjust for isomerism
-    'SeC=CC=C' => 'selenophene',
-    'TeC=CC=C' => 'tellurophene',
+    'C=CC=C[Se]' => 'selenophene',
+    'C=CC=C[Te]' => 'tellurophene',
     'C=CC=CS'  => 'thiophene',
 
     # 6-membered aromatic

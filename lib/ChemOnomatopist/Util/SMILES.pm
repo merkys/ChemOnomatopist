@@ -19,7 +19,9 @@ sub cycle_SMILES
 
     my $SMILES = '';
     for my $i (0..$#cycle) {
-        $SMILES .= $cycle[$i]->{symbol};
+        my $symbol = $cycle[$i]->{symbol};
+        $symbol = "[$symbol]" unless $symbol =~ /^[bcnosp]$/i || $symbol =~ /^(F|Cl|Br|I|\*)$/;
+        $SMILES .= $symbol;
         next unless $graph->has_edge_attribute( $cycle[$i], $cycle[($i+1) % scalar @cycle], 'bond' );
         $SMILES .=  $graph->get_edge_attribute( $cycle[$i], $cycle[($i+1) % scalar @cycle], 'bond' );
     }
@@ -32,7 +34,9 @@ sub path_SMILES
  
     my $SMILES = '';
     for my $i (0..$#path) {
-        $SMILES .= $path[$i]->{symbol};
+        my $symbol = $path[$i]->{symbol};
+        $symbol = "[$symbol]" unless $symbol =~ /^[bcnosp]$/i || $symbol =~ /^(F|Cl|Br|I|\*)$/;
+        $SMILES .= $symbol;
         next if $i == $#path;
         next unless $graph->has_edge_attribute( $path[$i], $path[$i+1], 'bond' );
         $SMILES .=  $graph->get_edge_attribute( $path[$i], $path[$i+1], 'bond' );
