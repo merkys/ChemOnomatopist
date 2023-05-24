@@ -82,6 +82,18 @@ sub name()
     # Check the preserved names
     return $names{$SMILES} if exists $names{$SMILES};
 
+    # Check for aromatic notation
+    if( $SMILES =~ /:/ ) {
+        $SMILES =~ s/([a-z]):/'' . uc( $1 )/ge;
+        $SMILES =~ s/\[([a-z]{1,2})\]:/'[' . uc( $1 ) . ']'/ge;
+        for my $SMILES_for_name (keys %names) {
+            next unless $SMILES_for_name =~ /=/;
+            my $name = $names{$SMILES_for_name};
+            $SMILES_for_name =~ s/=//g;
+            return $name if $SMILES eq $SMILES_for_name;
+        }
+    }
+
     # Check for cycloalkanes
     if( all { $_->{symbol} eq 'C' } $self->vertices ) {
         return 'cyclo' . ChemOnomatopist::alkane_chain_name( $self->length ) . 'ane';
