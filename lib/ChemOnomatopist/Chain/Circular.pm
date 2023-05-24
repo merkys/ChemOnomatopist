@@ -27,8 +27,8 @@ our %names = (
 
     # 5-membered aromatic
     'C=CC=CO'  => 'furan',
-    'NC=NC=C'  => '1H-imidazole', # FIXME: Adjust for isomerism
-    'OC=NC=C'  => '1,3-oxazole',
+    'C=CC=NC'  => '1H-imidazole', # FIXME: Adjust for isomerism
+    'C=CN=CO'  => '1,3-oxazole',
     'C=CC=NO'  => '1,2-oxazole',
     'C=CC=NN'  => '1H-pyrazole', # FIXME: Adjust for isomerism
     'C=CC=CN'  => '1H-pyrole', # FIXME: Adjust for isomerism
@@ -39,10 +39,10 @@ our %names = (
     # 6-membered aromatic
     'C=CC=CC=C' => 'benzene',
     'C=CC=CCO'  => '2H-pyran', # FIXME: Adjust for isomerism
-    'N=CC=NC=C' => 'pyrazine',
+    'C=CN=CC=N' => 'pyrazine',
     'C=CC=CN=N' => 'pyridazine',
     'C=CC=CC=N' => 'pyridine',
-    'N=CN=CC=C' => 'pyrimidine',
+    'C=CC=NC=N' => 'pyrimidine',
 );
 
 sub new
