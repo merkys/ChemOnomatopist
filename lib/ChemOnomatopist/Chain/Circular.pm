@@ -8,40 +8,41 @@ use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::ChainHalf; # FIXME: Not sure why it is needed
+use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use List::Util qw( all any );
 
 use parent ChemOnomatopist::ChainHalf::;
 
 # From BBv2 P-22.2.1
 our %names = (
-    OCNCC => '1,3-oxazolidine',
-    ONCCC => '1,2-oxazolidine',
-    NCCCC => 'pyrrolidine',
-    NNCCC => 'pyrazolidine',
-    NCNCC => 'imidazolidine',
+    CCNCO => '1,3-oxazolidine',
+    CCCNO => '1,2-oxazolidine',
+    CCCCN => 'pyrrolidine',
+    CCCNN => 'pyrazolidine',
+    CCNCN => 'imidazolidine',
 
-    NCCCCC => 'piperidine',
-    NCCNCC => 'piperazine',
-    OCCNCC => 'morpholine',
+    CCCCCN => 'piperidine',
+    CCNCCN => 'piperazine',
+    CCNCCO => 'morpholine',
 
     # 5-membered aromatic
-    'OC=CC=C'  => 'furan',
-    'NC=NC=C'  => '1H-imidazole', # FIXME: Adjust for isomerism
-    'OC=NC=C'  => '1,3-oxazole',
-    'ON=CC=C'  => '1,2-oxazole',
-    'NN=CC=C'  => '1H-pyrazole', # FIXME: Adjust for isomerism
-    'NC=CC=C'  => '1H-pyrole', # FIXME: Adjust for isomerism
-    'SeC=CC=C' => 'selenophene',
-    'TeC=CC=C' => 'tellurophene',
-    'SC=CC=C'  => 'thiophene',
+    'C=CC=CO'  => 'furan',
+    'C=CC=NC'  => '1H-imidazole', # FIXME: Adjust for isomerism
+    'C=CN=CO'  => '1,3-oxazole',
+    'C=CC=NO'  => '1,2-oxazole',
+    'C=CC=NN'  => '1H-pyrazole', # FIXME: Adjust for isomerism
+    'C=CC=CN'  => '1H-pyrole', # FIXME: Adjust for isomerism
+    'C=CC=C[Se]' => 'selenophene',
+    'C=CC=C[Te]' => 'tellurophene',
+    'C=CC=CS'  => 'thiophene',
 
     # 6-membered aromatic
     'C=CC=CC=C' => 'benzene',
-    'OCC=CC=C'  => '2H-pyran', # FIXME: Adjust for isomerism
-    'N=CC=NC=C' => 'pyrazine',
-    'N=NC=CC=C' => 'pyridazine',
-    'N=CC=CC=C' => 'pyridine',
-    'N=CN=CC=C' => 'pyrimidine',
+    'C=CC=CCO'  => '2H-pyran', # FIXME: Adjust for isomerism
+    'C=CN=CC=N' => 'pyrazine',
+    'C=CC=CN=N' => 'pyridazine',
+    'C=CC=CC=N' => 'pyridine',
+    'C=CC=NC=N' => 'pyrimidine',
 );
 
 sub new
@@ -50,26 +51,25 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
-# Need to override as the terminal bond is also important
+# Selecting the candidate with the lowest alphabetical order
 sub backbone_SMILES()
 {
     my( $self ) = @_;
 
     my @vertices = $self->vertices;
-    my $SMILES = $self->SUPER::backbone_SMILES;
-
-    if( $self->{graph}->has_edge_attribute( $vertices[0], $vertices[$#vertices], 'bond' ) ) {
-        $SMILES .= $self->{graph}->get_edge_attribute( $vertices[0], $vertices[$#vertices], 'bond' );
+    my @candidates;
+    for (0..$#vertices) {
+        push @candidates, cycle_SMILES( $self->{graph}, @vertices );
+        push @vertices, shift @vertices;
+    }
+    @vertices = reverse @vertices;
+    for (0..$#vertices) {
+        push @candidates, cycle_SMILES( $self->{graph}, @vertices );
+        push @vertices, shift @vertices;
     }
 
+    my( $SMILES ) = sort @candidates;
     return $SMILES;
-}
-
-sub is_benzene()
-{
-    my( $self ) = @_;
-    return '' unless $self->length == 6;
-    return $self->backbone_SMILES =~ /^(C=CC=CC=C|CC=CC=CC=)$/;
 }
 
 sub name()
@@ -81,9 +81,6 @@ sub name()
 
     # Check the preserved names
     return $names{$SMILES} if exists $names{$SMILES};
-
-    # FIXME: This is an exception, but a proper fix should be implemented instead
-    return 'benzene' if $self->is_benzene;
 
     # Check for cycloalkanes
     if( all { $_->{symbol} eq 'C' } $self->vertices ) {

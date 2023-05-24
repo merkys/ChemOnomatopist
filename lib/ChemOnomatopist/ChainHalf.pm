@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Graph::Traversal::DFS;
 use List::Util qw( sum0 );
 use Scalar::Util qw( blessed );
@@ -59,17 +60,7 @@ sub vertices()
 sub backbone_SMILES()
 {
     my( $self ) = @_;
-
-    my @vertices = $self->vertices;
-    my $SMILES = '';
-    for my $i (0..$#vertices) {
-        $SMILES .= $vertices[$i]->{symbol};
-        next if $i == $#vertices;
-        next unless $self->{graph}->has_edge_attribute( $vertices[$i], $vertices[$i+1], 'bond' );
-        $SMILES .=  $self->{graph}->get_edge_attribute( $vertices[$i], $vertices[$i+1], 'bond' );
-    }
-
-    return $SMILES;
+    return path_SMILES( $self->{graph}, $self->vertices );
 }
 
 sub branch_positions()
