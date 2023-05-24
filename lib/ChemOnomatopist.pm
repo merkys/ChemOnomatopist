@@ -310,6 +310,9 @@ sub get_mainchain_name
                       ( @senior_group_attachments > 2 ? $most_senior_group->multisuffix : $most_senior_group->suffix );
     }
 
+    $name = 'phenol'       if $name eq '1-benzenemethanol';
+    $name = 'benzoic acid' if $name eq '1-benzenemethanoic acid';
+
     return $name;
 }
 
@@ -484,11 +487,16 @@ sub select_mainchain
                 push @vertices, shift @vertices;
             }
         } elsif( @carbons == 1 ) {
-            # As the starting position is known, it is enough to take the "side chain"
-            # containing this particular carbon:
-            my @vertices = select_sidechain( $graph, @carbons );
-            push @chains, ChemOnomatopist::Chain::VertexArray->new( $graph, @vertices ),
-                          ChemOnomatopist::Chain::VertexArray->new( $graph, reverse @vertices );
+            if( blessed $carbons[0] && @groups == 1 && $carbons[0]->isa( ChemOnomatopist::Group::Monocycle:: ) ) {
+                # For senior attachments to cycles
+                push @chains, ChemOnomatopist::Chain::VertexArray->new( $graph, @groups );
+            } else {
+                # As the starting position is known, it is enough to take the "side chain"
+                # containing this particular carbon:
+                my @vertices = select_sidechain( $graph, @carbons );
+                push @chains, ChemOnomatopist::Chain::VertexArray->new( $graph, @vertices ),
+                              ChemOnomatopist::Chain::VertexArray->new( $graph, reverse @vertices );
+            }
         } else {
             my @paths;
             my $max_value;
