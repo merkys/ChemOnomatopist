@@ -171,11 +171,12 @@ sub get_mainchain_name
 
     # Disconnect the main chain: this way every main chain atom remains
     # connected only to the side chains.
-    $graph = copy $graph;
     if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
+        $graph = copy $chain->{graph};
         $graph->delete_cycle( @chain );
     } else {
         # TODO: Bond orders are not handled yet
+        $graph = copy $graph;
         for (0..$#chain-1) {
             next unless $graph->has_edge_attributes( $chain[$_], $chain[$_ + 1] );
             die "cannot handle such compounds for now\n";
