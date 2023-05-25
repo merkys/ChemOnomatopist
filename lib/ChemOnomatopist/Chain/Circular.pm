@@ -112,13 +112,21 @@ sub name()
 
     if( $self->length >= 3 && $self->length <= 10 &&
         any { $_->{symbol} =~ /[cC]/ } $self->vertices ) {
-        # Hantzsch-Widman names
+        # Hantzsch-Widman names (BBv2 P-22.2.2.1)
         my @hetero = grep { $_->{symbol} !~ /[cC]/ } $self->vertices;
         die "cannot handle complicated monocycles for now\n" unless @hetero == 1; # TODO
-        if( $self->length >= 7 ) {
+        my $element = ucfirst $hetero[0]->{symbol};
+        my $name = $elements{$element}->{prefix};
+        $name =~ s/a$//;
+        if(    $self->length == 6 ) {
+            if( ($elements{$element}->{seniority} >= 5 &&
+                 $elements{$element}->{seniority} <= 8) || $element eq 'Bi' ) {
+                return $name . 'ane';
+            } else {
+                return $name . 'inane';
+            }
+        } elsif( $self->length >= 7 ) {
             my @stems = ( 'epane', 'ocane', 'onane', 'ecane' );
-            my $name = $elements{ucfirst $hetero[0]->{symbol}}->{prefix};
-            $name =~ s/a$// if $stems[$self->length - 7] =~ /^[aeiou]/;
             return $name . $stems[$self->length - 7];
         }
     }
