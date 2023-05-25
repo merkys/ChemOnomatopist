@@ -8,7 +8,7 @@ use Test::More;
 
 my %unsupported = (
     'CCCC=CCC'  => 'cannot handle such compounds for now',
-    'c1ccccoc1' => 'cannot handle complicated monocycles for now',
+    'c1cccooc1' => 'cannot handle complicated monocycles for now',
 );
 
 plan tests => scalar keys %unsupported;
