@@ -113,9 +113,14 @@ sub name()
     if( $self->length >= 3 && $self->length <= 10 &&
         any { $_->{symbol} =~ /[cC]/ } $self->vertices ) {
         # Hantzsch-Widman names (BBv2 P-22.2.2.1)
-        my @hetero = grep { $_->{symbol} !~ /[cC]/ } $self->vertices;
+        my @hetero = grep { $_->{symbol} !~ /^[cC]$/ } $self->vertices;
+        my %element_counts;
+        for (@hetero) {
+            $element_counts{ucfirst $_->{symbol}}++;
+        }
         die "cannot handle complicated monocycles for now\n" unless @hetero == 1; # TODO
-        my $element = ucfirst $hetero[0]->{symbol};
+
+        my( $element ) = keys %element_counts;
         my $name = exists $elements{$element}->{HantzschWidman} ? $elements{$element}->{HantzschWidman} : $elements{$element}->{prefix};
         $name =~ s/a$//;
         if(      $self->length <= 5 ) {
