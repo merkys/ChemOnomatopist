@@ -13,6 +13,8 @@ my @cases = (
     { smiles => 'C=1C=CC=CC=1', iupac => 'benzene' },
     { smiles => 'c1ccccc1',     iupac => 'benzene' },
 
+    { smiles => 'O1CCCCCCC1', iupac => 'oxocane', AUTHOR => 1 }, # From BBv2 P-22.2.2.1.1
+
     { smiles => 'C1=CC=CC=C1O', iupac => 'phenol' },
     { smiles => 'C(=O)(O)C1=CC=CC=C1', iupac => 'benzoic acid' },
 
@@ -20,7 +22,7 @@ my @cases = (
     { smiles => 'C1CCCCC1(C)CC', iupac => '1-ethyl-1-methylcyclohexane' },
     { smiles => 'CCC1CCC(C)CC1', iupac => '1-ethyl-4-methylcyclohexane' },
 
-    { smiles => 'C1CCCCC1(C(C)(C)C)(CCCC)', iupac => '1-butyl-1-tert-butylcyclohexane' }, # Simplified version of example from P-14.5.1
+    { smiles => 'C1CCCCC1(C(C)(C)C)(CCCC)', iupac => '1-butyl-1-tert-butylcyclohexane' }, # Simplified version of example from BBv2 P-14.5.1
 
     { smiles => 'C(=O)(O)CC([Br])([Br])C1CCCCC1', iupac => '3,3-dibromo-3-cyclohexylpropanoic acid' },
     { smiles => 'ClC=1C=CC=CC=1C(F)(F)C(F)(F)F',  iupac => '1-chloro-2-(pentafluoroethyl)benzene', AUTHOR => 1 }, # From BBv2 P-14.3.4.5
