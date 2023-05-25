@@ -42,6 +42,7 @@ our %elements = (
 
     Al => {
         prefix => 'alumina',
+        HantzschWidman => 'aluma',
         standard_bonding_number => 3,
         seniority => 21,
     },
@@ -94,6 +95,7 @@ our %elements = (
 
     In => {
         prefix => 'inda',
+        HantzschWidman => 'indiga',
         standard_bonding_number => 3,
         seniority => 23,
     },
