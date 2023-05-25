@@ -116,7 +116,7 @@ sub name()
         my @hetero = grep { $_->{symbol} !~ /[cC]/ } $self->vertices;
         die "cannot handle complicated monocycles for now\n" unless @hetero == 1; # TODO
         my $element = ucfirst $hetero[0]->{symbol};
-        my $name = $elements{$element}->{prefix};
+        my $name = exists $elements{$element}->{HantzschWidman} ? $elements{$element}->{HantzschWidman} : $elements{$element}->{prefix};
         $name =~ s/a$//;
         if(      $self->length <= 5 ) {
             my @stems = ( 'ir', 'et', 'ol' );
