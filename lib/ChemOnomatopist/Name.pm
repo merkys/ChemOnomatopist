@@ -23,6 +23,7 @@ sub append($)
 {
     my( $self, $string ) = @_;
     $self->{name} .= $string;
+    delete $self->{ends_with_multiplier};
     return $self;
 }
 
@@ -42,8 +43,12 @@ sub append_locants
 sub append_multiplier($)
 {
     my( $self, $string ) = @_;
+    return $self if $string eq '';
+
     $self->{starts_with_multiplier} = 1 unless $self->{name};
-    return $self->append( $string );
+    $self->append( $string );
+    $self->{ends_with_multiplier} = 1;
+    return $self;
 }
 
 sub append_substituent_locant($)
@@ -53,6 +58,14 @@ sub append_substituent_locant($)
     $self->append( '-' . $locant . '-' );
     $self->{name} = 'tert-but' if $self->{name} eq '2-methylpropan-2-';
     return $self;
+}
+
+sub append_suffix($)
+{
+    my( $self, $suffix ) = @_;
+    $self->{name} =~ s/e(-[0-9,]+-|)$/$1/ if $suffix =~ /^[aeiouy]/;              # BBv2 P-16.7.1 (a)
+    $self->{name} =~ s/a$// if $self->ends_with_multiplier && $suffix =~ /^[ao]/; # BBv2 P-16.7.1 (b)
+    return $self->append( $suffix );
 }
 
 sub bracket()
@@ -71,6 +84,12 @@ sub starts_with_multiplier()
 {
     my( $self ) = @_;
     return exists $self->{starts_with_multiplier};
+}
+
+sub ends_with_multiplier()
+{
+    my( $self ) = @_;
+    return exists $self->{ends_with_multiplier};
 }
 
 # FIXME: Implement according to BBv2 P-16.5.4: {[({[( )]})]}

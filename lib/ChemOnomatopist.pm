@@ -42,8 +42,6 @@ use Set::Object qw( set );
 
 no warnings 'recursion';
 
-sub wjoin(@);
-
 sub get_name
 {
     my( $what ) = @_;
@@ -305,9 +303,8 @@ sub get_mainchain_name
             (!$most_senior_group->is_carbon || @senior_group_attachments > 2) ) {
             $name->append_locants( map { $_ + 1 } @senior_group_attachments );
         }
-        $name = wjoin $name,
-                      $number,
-                      ( @senior_group_attachments > 2 ? $most_senior_group->multisuffix : $most_senior_group->suffix );
+        $name->append_multiplier( $number );
+        $name->append_suffix( @senior_group_attachments > 2 ? $most_senior_group->multisuffix : $most_senior_group->suffix );
     }
 
     $name = 'phenol'       if $name eq '1-benzenemethanol';
@@ -1051,18 +1048,6 @@ sub alkane_chain_name
 
     return $names[$N] if $N < @names;
     return IUPAC_numerical_multiplier( $N );
-}
-
-sub wjoin(@)
-{
-    my( @parts ) = grep { $_ ne '' } @_;
-
-    for (0..(@parts-2)) {
-        next if $parts[$_] eq 'di' || $parts[$_] eq 'tri';
-        $parts[$_] =~ s/[aeiou](-[0-9,]+-|)$/$1/ if $parts[$_ + 1] =~ /^[aeiou]/;
-    }
-
-    return join '', @parts;
 }
 
 1;
