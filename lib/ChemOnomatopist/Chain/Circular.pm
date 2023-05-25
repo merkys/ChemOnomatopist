@@ -8,6 +8,7 @@ use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::ChainHalf; # FIXME: Not sure why it is needed
+use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use List::Util qw( all any );
 
@@ -107,6 +108,19 @@ sub name()
         return 'cyclo' .
                ChemOnomatopist::IUPAC_numerical_multiplier( $self->length, 1 ) .
                ChemOnomatopist::IUPAC_numerical_multiplier( $self->length / 2, 1 ) . 'ene';
+    }
+
+    if( $self->length >= 3 && $self->length <= 10 &&
+        any { $_->{symbol} =~ /[cC]/ } $self->vertices ) {
+        # Hantzsch-Widman names
+        my @hetero = grep { $_->{symbol} !~ /[cC]/ } $self->vertices;
+        die "cannot handle complicated monocycles for now\n" unless @hetero == 1; # TODO
+        if( $self->length >= 7 ) {
+            my @stems = ( 'epane', 'ocane', 'onane', 'ecane' );
+            my $name = $elements{ucfirst $hetero[0]->{symbol}}->{prefix};
+            $name =~ s/a$// if $stems[$self->length - 7] =~ /^[aeiou]/;
+            return $name . $stems[$self->length - 7];
+        }
     }
 
     # No other types of graphs with cycles can be processed for now
