@@ -13,7 +13,9 @@ my @cases = (
     { smiles => 'C=1C=CC=CC=1', iupac => 'benzene' },
     { smiles => 'c1ccccc1',     iupac => 'benzene' },
 
-    { smiles => 'O1CCCCCCC1', iupac => 'oxocane' }, # From BBv2 P-22.2.2.1.1
+    { smiles => 'O1CCCCCCC1', iupac => 'oxocane' },   # From BBv2 P-22.2.2.1.1
+    { smiles => 'O1CCC1',     iupac => 'oxetane' },   # From BBv2 P-22.2.2.1.5.2
+    { smiles => 'N1CCC1',     iupac => 'azetidine' }, # From BBv2 P-22.2.2.1.5.2
 
     { smiles => 'C1=CC=CC=C1O', iupac => 'phenol' },
     { smiles => 'C(=O)(O)C1=CC=CC=C1', iupac => 'benzoic acid' },

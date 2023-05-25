@@ -118,7 +118,12 @@ sub name()
         my $element = ucfirst $hetero[0]->{symbol};
         my $name = $elements{$element}->{prefix};
         $name =~ s/a$//;
-        if(    $self->length == 6 ) {
+        if(      $self->length <= 5 ) {
+            my @stems = ( 'ir', 'et', 'ol' );
+            $name .= $stems[$self->length - 3];
+            $name .= $element eq 'N' ? 'idine' : 'ane';
+            return $name;
+        } elsif( $self->length == 6 ) {
             if( ($elements{$element}->{seniority} >= 5 &&
                  $elements{$element}->{seniority} <= 8) || $element eq 'Bi' ) {
                 return $name . 'ane';
