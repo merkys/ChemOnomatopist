@@ -11,6 +11,7 @@ our @EXPORT_OK = qw( %elements );
 
 # Replacement prefixes taken from BBv2 P-15.4.1.1
 # Seniorities taken from BBv2 P-15.4.1.2
+# Hantzsch-Widman system prefixes, where different, taken from BBv2 P-22.2.2.1.1, Table 2.4
 
 our %elements = (
     B => {
