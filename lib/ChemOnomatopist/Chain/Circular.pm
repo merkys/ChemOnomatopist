@@ -118,10 +118,12 @@ sub name()
         for (@hetero) {
             $element_counts{ucfirst $_->{symbol}}++;
         }
-        die "cannot handle complicated monocycles for now\n" unless @hetero == 1; # TODO
+        die "cannot handle complicated monocycles for now\n" unless scalar( keys %element_counts ) == 1;
+        die "cannot handle complicated monocycles for now\n" unless @hetero == 1 || @hetero == $self->length - 1;
 
         my( $element ) = keys %element_counts;
-        my $name = exists $elements{$element}->{HantzschWidman} ? $elements{$element}->{HantzschWidman} : $elements{$element}->{prefix};
+        my $name = @hetero > 1 ? ChemOnomatopist::IUPAC_numerical_multiplier( scalar @hetero ) : '';
+        $name .= exists $elements{$element}->{HantzschWidman} ? $elements{$element}->{HantzschWidman} : $elements{$element}->{prefix};
         $name =~ s/a$//;
         if(      $self->length <= 5 ) {
             my @stems = ( 'ir', 'et', 'ol' );
