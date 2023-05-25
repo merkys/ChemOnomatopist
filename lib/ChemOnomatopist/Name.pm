@@ -18,6 +18,7 @@ sub new
     return bless { name => $name }, $class;
 }
 
+# TODO: Implement vowel elision as written in BBv2 P-16.7
 sub append($)
 {
     my( $self, $string ) = @_;
