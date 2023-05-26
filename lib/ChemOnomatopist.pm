@@ -21,6 +21,7 @@ use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Monocycle;
+use ChemOnomatopist::Group::Thioketone;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::Graph qw(
@@ -355,6 +356,14 @@ sub find_groups
                 $graph->add_edge( @C, $hydroperoxide );
                 $graph->delete_vertices( $atom, @H, @O );
             }
+        }
+
+        if( is_element( $atom, 'S' ) && @neighbours == 1 && @C == 1 ) {
+            # Detecting thioketone
+            # FIXME: Check also for double bond
+            my $thioketone = ChemOnomatopist::Group::Thioketone->new( @C );
+            $graph->add_edge( @C, $thioketone );
+            $graph->delete_vertices( $atom );
         }
     }
 

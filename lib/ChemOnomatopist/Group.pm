@@ -12,6 +12,7 @@ use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Monocycle;
+use ChemOnomatopist::Group::Thioketone;
 
 # ABSTRACT: Chemical group
 # VERSION
@@ -35,6 +36,7 @@ our @order = (
     # Nitriles
     ChemOnomatopist::Group::Aldehyde::,
     ChemOnomatopist::Group::Carbonyl::,
+    ChemOnomatopist::Group::Thioketone::,
     ChemOnomatopist::Group::Hydroxy::,
     ChemOnomatopist::Group::Hydroperoxide::,
     ChemOnomatopist::Group::Amino::,
