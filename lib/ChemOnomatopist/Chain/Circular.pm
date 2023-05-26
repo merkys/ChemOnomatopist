@@ -148,6 +148,7 @@ sub name()
             unless( scalar keys %heteroatoms == 1 &&
                     (@{$heteroatoms{$element}} == 1 ||
                      @{$heteroatoms{$element}} == $self->length - 1) ) {
+                # Locants are omitted according to BBv2 P-22.2.2.1.7
                 $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
             }
             if( @{$heteroatoms{$element}} > 1 ) {
