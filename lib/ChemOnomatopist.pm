@@ -714,7 +714,8 @@ sub filter_chains
                    # TODO: P-44.4.1.4: Concerns rings
                    # P-44.4.1.5: Lowest locants for heteroatoms in skeletal chain
                    \&rule_lowest_numbered_heteroatoms,
-                   # TODO: P-44.4.1.6: Lowest locants for heteroatoms in skeletal chain according to heteroatom seniority
+                   # P-44.4.1.6: Lowest locants for heteroatoms in skeletal chain according to heteroatom seniority
+                   \&rule_lowest_numbered_most_senior_heteroatoms,
                    # TODO: P-44.4.1.7: Concerns rings
                    # P-44.4.1.8: Lowest locants for suffix groups
                    \&rule_lowest_numbered_senior_groups,
@@ -844,9 +845,9 @@ sub rule_most_senior_heteroatoms
 {
     my( @chains ) = @_;
 
-    my( $max_value ) = sort { cmp_heteroatoms( $a, $b ) }
+    my( $max_value ) = sort { cmp_heteroatom_counts( $a, $b ) }
                        map  { [ $_->heteroatoms ] } @chains;
-    return grep { !cmp_heteroatoms( [ $_->heteroatoms ], $max_value ) } @chains;
+    return grep { !cmp_heteroatom_counts( [ $_->heteroatoms ], $max_value ) } @chains;
 }
 
 sub rule_lowest_numbered_heteroatoms
@@ -858,6 +859,20 @@ sub rule_lowest_numbered_heteroatoms
                             @chains;
     return grep { !cmp_arrays( [ $_->heteroatom_positions ],
                                [ $max_value->heteroatom_positions ] ) }
+                @chains;
+}
+
+# Chains given for this rule have the same number of heteroatoms at the same positions.
+sub rule_lowest_numbered_most_senior_heteroatoms
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { cmp_heteroatom_seniority( [ $a->heteroatoms ],
+                                                        [ $b->heteroatoms ] ) }
+                            @chains;
+
+    return grep { !cmp_heteroatom_seniority( [ $_->heteroatoms ],
+                                             [ $max_value->heteroatoms ] ) }
                 @chains;
 }
 
@@ -890,7 +905,7 @@ sub most_senior_group
 }
 
 # Given two lists of heteroatoms, return the one with the most senior ones
-sub cmp_heteroatoms
+sub cmp_heteroatom_counts
 {
     my( $A, $B ) = @_;
 
@@ -906,6 +921,18 @@ sub cmp_heteroatoms
         $B{$_} = 0 unless $B{$_};
 
         return $B{$_} <=> $A{$_} if $B{$_} <=> $A{$_};
+    }
+
+    return 0;
+}
+
+sub cmp_heteroatom_seniority
+{
+    my( $A, $B ) = @_;
+
+    for (0..$#$A) {
+        next unless $elements{$A->[$_]}->{seniority} <=> $elements{$B->[$_]}->{seniority};
+        return      $elements{$A->[$_]}->{seniority} <=> $elements{$B->[$_]}->{seniority};
     }
 
     return 0;

@@ -6,7 +6,7 @@ use warnings;
 use ChemOnomatopist;
 use Test::More;
 
-plan tests => 3;
+plan tests => 4;
 
 my @sorted;
 
@@ -18,3 +18,6 @@ is join( ';', map { join ',', @$_ } @sorted ), 'tricosyl;tert-butyl';
 
 @sorted = sort { ChemOnomatopist::cmp_attachments( $a, $b ) } ( [ 'ethyl' ], [ 'methyl' ] );
 is join( ';', map { join ',', @$_ } @sorted ), 'ethyl;methyl';
+
+@sorted = sort { ChemOnomatopist::cmp_heteroatom_seniority( $a, $b ) } ( [ 'S' ], [ 'N' ] );
+is join( ';', map { join ',', @$_ } @sorted ), 'S;N';
