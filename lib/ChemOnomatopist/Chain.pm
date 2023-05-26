@@ -55,6 +55,13 @@ sub heteroatom_positions()
            ( map { $self->{halves}[1]->length + $_ - !defined $self->{halves}[0]{other_center} } @half1_positions );
 }
 
+sub heteroatoms()
+{
+    my( $self ) = @_;
+    my @vertices = $self->vertices;
+    return map { $vertices[$_]->{symbol} } $self->heteroatom_positions;
+}
+
 sub locant_names()
 {
     my( $self ) = @_;
