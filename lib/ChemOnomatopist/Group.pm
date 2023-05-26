@@ -14,6 +14,9 @@ use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Thioketone;
 
+use List::Util qw( any );
+use Scalar::Util qw( blessed );
+
 # ABSTRACT: Chemical group
 # VERSION
 
@@ -66,5 +69,22 @@ sub C {
     my( $self ) = @_;
     return $self->is_carbon ? $self : $self->{C};
 }
+
+# Compare seniority of two objects
+sub cmp
+{
+    my( $A, $B ) = @_;
+
+    my( $A_pos ) = grep { $A->isa( $order[$_] ) } 0..$#order;
+    my( $B_pos ) = grep { $B->isa( $order[$_] ) } 0..$#order;
+
+    die "cannot compare\n" if !defined $A_pos || !defined $B_pos;
+
+    return $A_pos <=> $B_pos if $A_pos <=> $B_pos;
+    return _cmp_instances( $A, $B );
+}
+
+# Two instances of the same group are thought to be of the same seniority
+sub _cmp_instances { return 0 }
 
 1;

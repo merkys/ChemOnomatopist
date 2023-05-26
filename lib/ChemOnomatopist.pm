@@ -904,13 +904,11 @@ sub most_senior_group
         @vertices = $vertices[0]->vertices;
     }
 
-    # Find the most senior group, undefined if alkane
-    for my $group (@ChemOnomatopist::Group::order) {
-        next unless any { blessed $_ && $_->isa( $group ) } @vertices;
-        return $group;
-    }
+    my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) } @vertices;
+    return unless @groups;
 
-    return;
+    my( $most_senior_group ) = sort { ChemOnomatopist::Group::cmp( $a, $b ) } @groups;
+    return blessed $most_senior_group;
 }
 
 # Given two lists of heteroatoms, return the one with the most senior ones
