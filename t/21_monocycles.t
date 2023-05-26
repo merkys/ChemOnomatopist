@@ -51,6 +51,8 @@ my @cases = (
     { smiles => 'c1cc(oc1)C=O', iupac => 'furan-2-carbaldehyde', AUTHOR => 1 }, # furfural
 
     { smiles => 'C1CCCCC1C=O', iupac => 'cyclohexanecarbaldehyde', AUTHOR => 1 }, # From BBv2 P-66.6.1.1.3
+
+    { smiles => 'S=C(CC1CC(CCC1)CC(CC)=O)CC', iupac => '1-[3-(2-sulfanylidenebutyl)cyclohexyl]butan-2-one', AUTHOR => 1 }, # From BBv2 P-64.7.3
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
