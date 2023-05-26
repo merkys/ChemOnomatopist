@@ -19,6 +19,9 @@ my @cases = (
 
     { smiles => 'N1NNC1', iupac => 'triazetidine' }, # Not checked
 
+    { smiles => 'O1COCC1', iupac => '1,3-dioxolane' }, # From BBv2 P-22.2.2.1.2
+    { smiles => 'O1SCCC1', iupac => '1,2-oxathiolane', AUTHOR => 1 }, # From BBv2 P-22.2.2.1.3
+
     { smiles => 'C1=CC=CC=C1O', iupac => 'phenol' },
     { smiles => 'C(=O)(O)C1=CC=CC=C1', iupac => 'benzoic acid' },
 

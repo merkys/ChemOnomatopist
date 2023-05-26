@@ -113,26 +113,59 @@ sub name()
     if( $self->length >= 3 && $self->length <= 10 &&
         any { $_->{symbol} =~ /[cC]/ } $self->vertices ) {
         # Hantzsch-Widman names (BBv2 P-22.2.2.1)
-        my @hetero = grep { $_->{symbol} !~ /^[cC]$/ } $self->vertices;
-        my %element_counts;
-        for (@hetero) {
-            $element_counts{ucfirst $_->{symbol}}++;
-        }
-        die "cannot handle complicated monocycles for now\n" unless scalar( keys %element_counts ) == 1;
-        die "cannot handle complicated monocycles for now\n" unless @hetero == 1 || @hetero == $self->length - 1;
 
-        my( $element ) = keys %element_counts;
-        my $name = @hetero > 1 ? ChemOnomatopist::IUPAC_numerical_multiplier( scalar @hetero ) : '';
-        $name .= exists $elements{$element}->{HantzschWidman} ? $elements{$element}->{HantzschWidman} : $elements{$element}->{prefix};
-        $name =~ s/a$//;
+        # Select the best numbering for heteroatoms
+        my @chains;
+        my @vertices = $self->vertices;
+        my $cycle = $self->{graph}->subgraph( \@vertices ); # TODO: Add attributes
+        for (0..$#vertices) {
+            push @chains,
+                 ChemOnomatopist::Chain::Circular->new( $cycle, @vertices );
+            push @vertices, shift @vertices;
+        }
+        @vertices = reverse @vertices;
+        for (0..$#vertices) {
+            push @chains,
+                 ChemOnomatopist::Chain::Circular->new( $cycle, @vertices );
+            push @vertices, shift @vertices;
+        }
+        my $chain = ChemOnomatopist::filter_chains( @chains );
+        @vertices = $chain->vertices;
+
+        # Collect the types of heteroatoms and their attachment positions
+        my %heteroatoms;
+        for my $i (0..$#vertices) {
+            next if ChemOnomatopist::is_element( $vertices[$i], 'C' );
+            my $symbol = ucfirst $vertices[$i]->{symbol};
+            $heteroatoms{$symbol} = [] unless $heteroatoms{$symbol};
+            push @{$heteroatoms{$symbol}}, $i;
+        }
+
+        my $name = ChemOnomatopist::Name->new;
+        my $least_senior_element;
+        for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
+                              keys %heteroatoms) {
+            unless( scalar keys %heteroatoms == 1 &&
+                    (@{$heteroatoms{$element}} == 1 ||
+                     @{$heteroatoms{$element}} == $self->length - 1) ) {
+                $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
+            }
+            if( @{$heteroatoms{$element}} > 1 ) {
+                $name->append_multiplier( ChemOnomatopist::IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} ) );
+            }
+            $name->append_element( exists $elements{$element}->{HantzschWidman} ? $elements{$element}->{HantzschWidman} : $elements{$element}->{prefix} );
+            $least_senior_element = $element;
+        }
+        $name->{name} =~ s/a$//;
+
         if(      $self->length <= 5 ) {
             my @stems = ( 'ir', 'et', 'ol' );
             $name .= $stems[$self->length - 3];
-            $name .= $element eq 'N' ? 'idine' : 'ane';
+            $name .= $heteroatoms{N} ? 'idine' : 'ane';
             return $name;
         } elsif( $self->length == 6 ) {
-            if( ($elements{$element}->{seniority} >= 5 &&
-                 $elements{$element}->{seniority} <= 8) || $element eq 'Bi' ) {
+            if( ($elements{$least_senior_element}->{seniority} >= 5 &&
+                 $elements{$least_senior_element}->{seniority} <= 8) || $least_senior_element eq 'Bi' ) {
                 return $name . 'ane';
             } else {
                 return $name . 'inane';
