@@ -16,7 +16,8 @@ sub AUTOLOAD {
     if( $call =~ /^number_/ ) {
         return int sum0 map { $_->can( $call )->( $_ ) } @{$_[0]->{halves}};
     } else {
-        return; # TODO: This may be a source of future problems, it is better to throw a warning here...
+        warn "$call called"; # This may be a source of future problems, it is better to throw a warning here
+        return;
     }
 }
 
@@ -49,6 +50,17 @@ sub heteroatom_positions()
     my( $self ) = @_;
     my @half0_positions = $self->{halves}[0]->heteroatom_positions;
     my @half1_positions = $self->{halves}[1]->heteroatom_positions;
+    # If path parts start at the same atom, its attachments get duplicated
+    @half1_positions = grep { $_ } @half1_positions unless $self->{halves}[0]{other_center};
+    return ( map { $self->{halves}[0]->length - $_ - 1 }                                 reverse @half0_positions ),
+           ( map { $self->{halves}[1]->length + $_ - !defined $self->{halves}[0]{other_center} } @half1_positions );
+}
+
+sub most_senior_group_positions()
+{
+    my( $self ) = @_;
+    my @half0_positions = $self->{halves}[0]->most_senior_group_positions;
+    my @half1_positions = $self->{halves}[1]->most_senior_group_positions;
     # If path parts start at the same atom, its attachments get duplicated
     @half1_positions = grep { $_ } @half1_positions unless $self->{halves}[0]{other_center};
     return ( map { $self->{halves}[0]->length - $_ - 1 }                                 reverse @half0_positions ),
