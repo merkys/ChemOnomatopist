@@ -12,7 +12,7 @@ my @cases = (
 
     # From BBv2 P-15.4.3.1
     { smiles => 'COCSSCCOCC[Se]C', iupac => '2,8-dioxa-4,5-dithia-11-selenadodecane' },
-    { smiles => '[Si]OCS[Si]', iupac => '2-oxa-4-thia-1,5-disilapentane', AUTHOR => 1 },
+    { smiles => '[Si]OCS[Si]', iupac => '2-oxa-4-thia-1,5-disilapentane' },
 
     # From BBv2 P-15.4.3.2.1
     { smiles => 'C[Si]C[Si]C[Si]CSCC', iupac => '8-thia-2,4,6-trisiladecane' },
