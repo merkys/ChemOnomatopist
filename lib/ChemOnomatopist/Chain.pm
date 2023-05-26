@@ -16,7 +16,7 @@ sub AUTOLOAD {
     if( $call =~ /^number_/ ) {
         return int sum0 map { $_->can( $call )->( $_ ) } @{$_[0]->{halves}};
     } else {
-        return;
+        return; # TODO: This may be a source of future problems, it is better to throw a warning here...
     }
 }
 
