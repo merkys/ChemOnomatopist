@@ -7,8 +7,8 @@ use ChemOnomatopist;
 use Test::More;
 
 my %unsupported = (
-    'CCCC=CCC'  => 'cannot handle such compounds for now',
-    'c1cccooc1' => 'cannot handle complicated monocycles for now',
+    'CCCC=CCC' => 'cannot handle such compounds for now',
+    'N1NNN1'   => 'cannot handle complicated monocycles for now',
 );
 
 plan tests => scalar keys %unsupported;
