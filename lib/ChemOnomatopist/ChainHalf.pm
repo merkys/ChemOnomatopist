@@ -230,6 +230,22 @@ sub number_of_branches()
     return scalar $self->branch_positions;
 }
 
+sub number_of_double_bonds()
+{
+    my( $self ) = @_;
+
+    my $graph = $self->{graph};
+    my @vertices = $self->vertices;
+
+    my $number = 0;
+    for (0..$self->length-1) {
+        next unless $graph->has_edge_attribute( @vertices[$_ .. $_+1], 'bond' );
+        next unless $graph->get_edge_attribute( @vertices[$_ .. $_+1], 'bond' ) eq '=';
+        $number++;
+    }
+    return $number;
+}
+
 sub number_of_groups
 {
     my( $self, $class ) = @_;
@@ -240,6 +256,22 @@ sub number_of_heteroatoms()
 {
     my( $self ) = @_;
     return scalar $self->heteroatom_positions;
+}
+
+sub number_of_multiple_bonds()
+{
+    my( $self ) = @_;
+
+    my $graph = $self->{graph};
+    my @vertices = $self->vertices;
+
+    my $number = 0;
+    for (0..$self->length-1) {
+        next unless $graph->has_edge_attribute( @vertices[$_ .. $_+1], 'bond' );
+        next unless $graph->get_edge_attribute( @vertices[$_ .. $_+1], 'bond' ) =~ /^[=#\$]$/;
+        $number++;
+    }
+    return $number;
 }
 
 sub _disconnected_chain_graph()
