@@ -111,7 +111,7 @@ sub name()
     }
 
     if( $self->length >= 3 && $self->length <= 10 &&
-        any { $_->{symbol} =~ /[cC]/ } $self->vertices ) {
+        any { $_->{symbol} =~ /^[cC]$/ } $self->vertices ) {
         # Hantzsch-Widman names (BBv2 P-22.2.2.1)
 
         # Select the best numbering for heteroatoms
