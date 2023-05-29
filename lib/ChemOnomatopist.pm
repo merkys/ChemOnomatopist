@@ -105,6 +105,7 @@ sub get_sidechain_name
         }
     }
 
+    $graph = copy $graph;
     $graph->delete_path( @chain );
 
     # Examine the attachments to the main chain: delete the edges
