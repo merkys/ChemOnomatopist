@@ -28,8 +28,8 @@ my @cases = (
     { smiles => 'O1COCC1', iupac => '1,3-dioxolane' },
 
     # From BBv2 P-22.2.2.1.3
-    { smiles => 'S1C=NC=C1', iupac => '1,3-thiazole', AUTHOR => 1 },
-    { smiles => 'O1SCCC1',   iupac => '1,2-oxathiolane', AUTHOR => 1 },
+    { smiles => 'S1C=NC=C1', iupac => '1,3-thiazole' },
+    { smiles => 'O1SCCC1',   iupac => '1,2-oxathiolane' },
     { smiles => 'O1SCCCSC1', iupac => '1,2,6-oxadithiepane', AUTHOR => 1 },
 
     { smiles => 'O1CCCCCCOCCCCCCCCCC1', iupac => '1,8-dioxacyclooctadecane' }, # From BBv2 P-22.2.4

@@ -166,21 +166,27 @@ sub name()
             push @{$heteroatoms{$symbol}}, $i;
         }
 
-        my $name = ChemOnomatopist::Name->new;
         my $least_senior_element;
+        my @heteroatom_locants;
         for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
                               keys %heteroatoms) {
-            unless( scalar keys %heteroatoms == 1 &&
-                    (@{$heteroatoms{$element}} == 1 ||
-                     @{$heteroatoms{$element}} == $self->length - 1) ) {
-                # Locants are omitted according to BBv2 P-22.2.2.1.7
-                $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
-            }
+            push @heteroatom_locants, @{$heteroatoms{$element}};
+            $least_senior_element = $element;
+        }
+
+        my $name = ChemOnomatopist::Name->new;
+        unless(  @heteroatom_locants == 1 ||
+                (scalar keys %heteroatoms == 1 && @heteroatom_locants == $self->length - 1) ) {
+            # Locants are omitted according to BBv2 P-22.2.2.1.7
+            $name->append_locants( map { $_ + 1 } @heteroatom_locants );
+        }
+
+        for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
+                              keys %heteroatoms) {
             if( @{$heteroatoms{$element}} > 1 ) {
                 $name->append_multiplier( ChemOnomatopist::IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} ) );
             }
             $name->append_element( exists $elements{$element}->{HantzschWidman} ? $elements{$element}->{HantzschWidman} : $elements{$element}->{prefix} );
-            $least_senior_element = $element;
         }
         $name->{name} =~ s/a$//;
 

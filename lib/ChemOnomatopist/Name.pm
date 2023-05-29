@@ -22,6 +22,7 @@ sub new
 sub append($)
 {
     my( $self, $string ) = @_;
+    $self->{name} =~ s/a$// if $string =~ /^a/;
     $self->{name} .= $string;
     delete $self->{ends_with_multiplier};
     delete $self->{ends_with_stem};
