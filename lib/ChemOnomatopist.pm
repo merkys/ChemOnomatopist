@@ -717,8 +717,10 @@ sub filter_chains
                    # P-44.3.3: Maximum number of the most senior heteroatom
                    \&rule_most_senior_heteroatoms,
 
-                   # TODO: P-44.4.1.1: Maximum number of multiple bonds
-                   # TODO: P-44.4.1.2: Maximum number of double bonds
+                   # P-44.4.1.1: Maximum number of multiple bonds
+                   \&rule_most_multiple_bonds,
+                   # P-44.4.1.2: Maximum number of double bonds
+                   \&rule_most_double_bonds,
                    # TODO: P-44.4.1.3: Nonstandard bonding numbers
                    # TODO: P-44.4.1.4: Concerns rings
                    # P-44.4.1.5: Lowest locants for heteroatoms in skeletal chain
@@ -857,6 +859,24 @@ sub rule_most_senior_heteroatoms
     my( $max_value ) = sort { cmp_heteroatom_counts( $a, $b ) }
                        map  { [ $_->heteroatoms ] } @chains;
     return grep { !cmp_heteroatom_counts( [ $_->heteroatoms ], $max_value ) } @chains;
+}
+
+sub rule_most_multiple_bonds
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { $b <=> $a }
+                       map { $_->number_of_multiple_bonds } @chains;
+    return grep { $_->number_of_multiple_bonds == $max_value } @chains;
+}
+
+sub rule_most_double_bonds
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { $b <=> $a }
+                       map { $_->number_of_double_bonds } @chains;
+    return grep { $_->number_of_double_bonds == $max_value } @chains;
 }
 
 sub rule_lowest_numbered_heteroatoms

@@ -238,7 +238,7 @@ sub number_of_double_bonds()
     my @vertices = $self->vertices;
 
     my $number = 0;
-    for (0..$self->length-1) {
+    for (0..$self->length-2) {
         next unless $graph->has_edge_attribute( @vertices[$_ .. $_+1], 'bond' );
         next unless $graph->get_edge_attribute( @vertices[$_ .. $_+1], 'bond' ) eq '=';
         $number++;
@@ -266,7 +266,7 @@ sub number_of_multiple_bonds()
     my @vertices = $self->vertices;
 
     my $number = 0;
-    for (0..$self->length-1) {
+    for (0..$self->length-2) {
         next unless $graph->has_edge_attribute( @vertices[$_ .. $_+1], 'bond' );
         next unless $graph->get_edge_attribute( @vertices[$_ .. $_+1], 'bond' ) =~ /^[=#\$]$/;
         $number++;
