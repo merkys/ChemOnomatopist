@@ -63,6 +63,28 @@ sub backbone_SMILES()
     return path_SMILES( $self->{graph}, $self->vertices );
 }
 
+sub bonds()
+{
+    my( $self ) = @_;
+
+    return @{$self->{bonds}} if $self->{bonds};
+
+    my $graph = $self->{graph};
+    my @vertices = $self->vertices;
+
+    my @bonds;
+    for (0..$self->length-2) {
+        if( $graph->has_edge_attribute( @vertices[$_ .. $_+1], 'bond' ) ) {
+            push @bonds, $graph->get_edge_attribute( @vertices[$_ .. $_+1], 'bond' );
+        } else {
+            push @bonds, '-';
+        }
+    }
+
+    $self->{bonds} = \@bonds;
+    return @bonds;
+}
+
 sub branch_positions()
 {
     my( $self ) = @_;
@@ -233,17 +255,7 @@ sub number_of_branches()
 sub number_of_double_bonds()
 {
     my( $self ) = @_;
-
-    my $graph = $self->{graph};
-    my @vertices = $self->vertices;
-
-    my $number = 0;
-    for (0..$self->length-2) {
-        next unless $graph->has_edge_attribute( @vertices[$_ .. $_+1], 'bond' );
-        next unless $graph->get_edge_attribute( @vertices[$_ .. $_+1], 'bond' ) eq '=';
-        $number++;
-    }
-    return $number;
+    return scalar grep { $_ eq '=' } $self->bonds;
 }
 
 sub number_of_groups
@@ -261,17 +273,7 @@ sub number_of_heteroatoms()
 sub number_of_multiple_bonds()
 {
     my( $self ) = @_;
-
-    my $graph = $self->{graph};
-    my @vertices = $self->vertices;
-
-    my $number = 0;
-    for (0..$self->length-2) {
-        next unless $graph->has_edge_attribute( @vertices[$_ .. $_+1], 'bond' );
-        next unless $graph->get_edge_attribute( @vertices[$_ .. $_+1], 'bond' ) =~ /^[=#\$]$/;
-        $number++;
-    }
-    return $number;
+    return scalar grep { $_ =~ /^[=#\$]$/ } $self->bonds;
 }
 
 sub _disconnected_chain_graph()
