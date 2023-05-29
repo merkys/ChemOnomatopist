@@ -20,8 +20,8 @@ my @cases = (
     { smiles => 'CCOCCOCCOCCOC=C', iupac => '3,6,9,12-tetraoxatetradec-1-ene' },
 
     # From BBv2 P-44.4.1.2
-    { smiles => 'C1C=CCCCCCCCCCCCCCCCCC1', iupac => 'cycloicosene', AUTHOR => 1 },
-    { smiles => 'C1C#CCCCCCCCCCCCCCCCCC1', iupac => 'cycloicosyne', AUTHOR => 1 },
+    { smiles => 'C1C=CCCCCCCCCCCCCCCCCC1', iupac => 'cycloicosene' },
+    { smiles => 'C1C#CCCCCCCCCCCCCCCCCC1', iupac => 'cycloicosyne' },
     { smiles => 'C1C=CCCCCC=CCCCCCCCCCCC1', iupac => 'cycloicosa-1,8-diene', AUTHOR => 1 },
 );
 
