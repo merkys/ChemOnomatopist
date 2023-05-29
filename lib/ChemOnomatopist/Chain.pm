@@ -71,6 +71,7 @@ sub bonds()
 {
     my( $self ) = @_;
     my @bonds = reverse $self->{halves}[0]->bonds;
+
     if( $self->{halves}[0]->{other_center} ) {
         my $graph = $self->{halves}[0]->{graph};
         my @centers = map { $_->{other_center} } @{$self->{halves}};
@@ -80,6 +81,7 @@ sub bonds()
             push @bonds, '-';
         }
     }
+
     push @bonds, $self->{halves}[1]->bonds;
     return @bonds;
 }
@@ -96,6 +98,13 @@ sub locant_names()
     my( $self ) = @_;
     return reverse( $self->{halves}[0]->locant_names ),
            $self->{halves}[1]->locant_names;
+}
+
+sub multiple_bond_positions()
+{
+    my( $self ) = @_;
+    my @bonds = $self->bonds;
+    return grep { $bonds[$_] =~ /^[=#\$]$/ } 0..$#bonds;
 }
 
 sub vertices()

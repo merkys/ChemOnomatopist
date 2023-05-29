@@ -732,6 +732,8 @@ sub filter_chains
                    \&rule_lowest_numbered_senior_groups,
                    # TODO: P-44.4.1.9: Concerns rings
                    # TODO: P-44.4.1.10: Lowest locants for prefixes/suffixes expressing degrees of hydrogenation
+                   #                    This is not fully implemented now
+                   \&rule_lowest_numbered_multiple_bonds,
                    # TODO: P-44.4.1.11: Concerns isotopes
                    # TODO: P-44.4.1.12: Concerns stereogenic centers
 
@@ -790,6 +792,16 @@ sub rule_lowest_numbered_senior_groups
                             @chains;
     return grep { !cmp_arrays( [ $_->most_senior_group_positions ],
                                [ $max_value->most_senior_group_positions ] ) }
+                @chains;
+}
+
+sub rule_lowest_numbered_multiple_bonds
+{
+    my @chains = @_;
+    my( $max_value ) = sort { cmp_arrays( $a, $b ) }
+                       map  {  [ $_->multiple_bond_positions ] } @chains;
+    return grep { !cmp_arrays( [ $_->multiple_bond_positions ],
+                               $max_value ) }
                 @chains;
 }
 
