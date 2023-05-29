@@ -183,36 +183,19 @@ sub name()
 
 # sub branch_positions() # TODO: Maybe need to add 1 to all returned positions?
 
-sub number_of_double_bonds()
+sub bonds()
 {
     my( $self ) = @_;
-    my $number = $self->SUPER::number_of_double_bonds;
+    my @bonds = $self->SUPER::bonds;
 
     my $graph = $self->{graph};
     my @vertices = $self->vertices;
-
-    if( $graph->has_edge_attribute( $vertices[0], $vertices[-1], 'bond' ) &&
-        $graph->get_edge_attribute( $vertices[0], $vertices[-1], 'bond' ) eq '=' ) {
-        $number++;
+    if( $graph->has_edge_attribute( $vertices[0], $vertices[-1], 'bond' ) ) {
+        push @bonds, $graph->get_edge_attribute( $vertices[0], $vertices[-1], 'bond' );
+    } else {
+        push @bonds, '-';
     }
-
-    return $number;
-}
-
-sub number_of_multiple_bonds()
-{
-    my( $self ) = @_;
-    my $number = $self->SUPER::number_of_multiple_bonds;
-
-    my $graph = $self->{graph};
-    my @vertices = $self->vertices;
-
-    if( $graph->has_edge_attribute( $vertices[0], $vertices[-1], 'bond' ) &&
-        $graph->get_edge_attribute( $vertices[0], $vertices[-1], 'bond' ) =~ /^[=#\$]$/ ) {
-        $number++;
-    }
-
-    return $number;
+    return @bonds;
 }
 
 sub _disconnected_chain_graph()
