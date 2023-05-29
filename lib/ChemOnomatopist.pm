@@ -116,9 +116,14 @@ sub get_sidechain_name
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
+            my $bond = '-';
+            if(         $graph->has_edge_attribute( $atom, $neighbour, 'bond' ) ) {
+                $bond = $graph->get_edge_attribute( $atom, $neighbour, 'bond' );
+            }
             $graph->delete_edge( $atom, $neighbour );
 
             my $attachment_name = get_sidechain_name( $graph, $neighbour );
+            $attachment_name .= 'idene' if $bond eq '=';
             push @{$attachments{$attachment_name}}, $i;
             $attachment_objects{$attachment_name} = $attachment_name;
         }
@@ -148,16 +153,16 @@ sub get_sidechain_name
         $name .= $attachment;
     }
     $name .= unbranched_chain_name( blessed $chain && $chain->can( 'vertices' ) ? $chain : \@chain );
-    $name->{name} =~ s/(an)?e$//;
+    $name->{name} =~ s/(an)?e$//; # FIXME: Dirty
 
     if( $branches_at_start > 1 ) {
         my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
-        $name .= 'an';
+        $name .= 'an' unless $name->{name} =~ /-en$/; # FIXME: Dirty
         $name->append_substituent_locant( $branch_point + 1 );
     }
 
     $name .= 'yl';
-    $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Ugly fix
+    $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Dirty
 
     return $name;
 }
@@ -208,12 +213,18 @@ sub get_mainchain_name
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
+            my $bond = '-';
+            if(         $graph->has_edge_attribute( $atom, $neighbour, 'bond' ) ) {
+                $bond = $graph->get_edge_attribute( $atom, $neighbour, 'bond' );
+            }
             $graph->delete_edge( $atom, $neighbour );
 
             if( $most_senior_group && blessed $neighbour && $neighbour->isa( $most_senior_group ) ) {
                 push @senior_group_attachments, $i;
             } else {
                 my $attachment_name = get_sidechain_name( $graph, $neighbour );
+                $attachment_name .= 'idene' if $bond eq '=';
+
                 push @{$attachments{$attachment_name}}, $i;
                 $attachment_objects{$attachment_name} = $attachment_name;
             }
