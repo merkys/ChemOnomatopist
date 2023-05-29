@@ -7,7 +7,6 @@ use ChemOnomatopist;
 use Test::More;
 
 my %unsupported = (
-    'CCCC=CCC' => 'cannot handle such compounds for now',
     'N1NNN1'   => 'cannot handle complicated monocycles for now',
 );
 
