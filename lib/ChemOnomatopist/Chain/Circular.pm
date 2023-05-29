@@ -90,6 +90,8 @@ sub is_homogeneous()
     return 1;
 }
 
+# Returns undef for cycles not needing special treatment.
+# Those can be handled by ChemOnomatopist::get_mainchain_name().
 sub name()
 {
     my( $self ) = @_;
@@ -194,8 +196,7 @@ sub name()
         }
     }
 
-    # No other types of graphs with cycles can be processed for now
-    die "cannot handle complicated monocycles for now\n";
+    return undef;
 }
 
 # sub branch_positions() # TODO: Maybe need to add 1 to all returned positions?

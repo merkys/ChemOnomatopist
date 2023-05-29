@@ -25,7 +25,7 @@ my @cases = (
     { smiles => 'O1SCCC1', iupac => '1,2-oxathiolane', AUTHOR => 1 },
     { smiles => 'O1SCCCSC1', iupac => '1,2,6-oxadithiepane', AUTHOR => 1 },
 
-    { smiles => 'O1CCCCCCOCCCCCCCCCC1', iupac => '1,8-dioxacyclooctadecane', AUTHOR => 1 }, # From BBv2 P-22.2.4
+    { smiles => 'O1CCCCCCOCCCCCCCCCC1', iupac => '1,8-dioxacyclooctadecane' }, # From BBv2 P-22.2.4
 
     { smiles => 'C1=CC=CC=C1O', iupac => 'phenol' },
     { smiles => 'C(=O)(O)C1=CC=CC=C1', iupac => 'benzoic acid' },

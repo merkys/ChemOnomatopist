@@ -191,7 +191,11 @@ sub get_mainchain_name
     my %attachment_objects;
     # Examine the main chain
     # This is skipped for cycles as they should be capable of naming themselves
-    if( !blessed $chain || !$chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
+    my $cycle_name;
+    if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
+        $cycle_name = $chain->name;
+    }
+    if( !defined $cycle_name ) {
         for my $i (0..$#chain) {
             my $atom = $chain[$i];
             if( blessed $atom ) {
@@ -290,9 +294,12 @@ sub get_mainchain_name
         $name->append_element( $elements{$element}->{prefix} );
     }
 
-    if( blessed $chain && $chain->can( 'name' ) ) {
-        $name .= $chain->name;
+    if( $cycle_name ) {
+        $name .= $cycle_name;
     } else {
+        if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
+            $name .= 'cyclo';
+        }
         $name .= unbranched_chain_name( $chain );
     }
 
