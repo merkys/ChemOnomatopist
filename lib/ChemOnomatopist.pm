@@ -181,10 +181,6 @@ sub get_mainchain_name
     } else {
         # TODO: Bond orders are not handled yet
         $graph = copy $graph;
-        for (0..$#chain-1) {
-            next unless $graph->has_edge_attributes( $chain[$_], $chain[$_ + 1] );
-            die "cannot handle such compounds for now\n";
-        }
         $graph->delete_path( @chain );
     }
 
@@ -282,7 +278,25 @@ sub get_mainchain_name
     if( blessed $chain && $chain->can( 'name' ) ) {
         $name .= $chain->name;
     } else {
-        $name .= alkane_chain_name( scalar @chain ) . 'ane';
+        $name .= alkane_chain_name( scalar @chain );
+        my( @double, @triple );
+        if( blessed $chain ) {
+            my @bonds = $chain->bonds;
+            @double = grep { $bonds[$_] eq '=' } 0..$#bonds;
+            @triple = grep { $bonds[$_] eq '#' } 0..$#bonds;
+            if( @double ) {
+                $name->append_locants( map { $_ + 1 } @double );
+                $name->append_multiplier( IUPAC_numerical_multiplier( scalar @double ) ) if @double > 1;
+                $name .= 'en';
+            }
+            if( @triple ) {
+                $name->append_locants( map { $_ + 1 } @triple );
+                $name->append_multiplier( IUPAC_numerical_multiplier( scalar @triple ) ) if @triple > 1;
+                $name .= 'yn';
+            }
+        }
+        $name .= 'an' unless @double || @triple;
+        $name .= 'e';
     }
 
     if( $most_senior_group ) {
