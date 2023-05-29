@@ -278,25 +278,7 @@ sub get_mainchain_name
     if( blessed $chain && $chain->can( 'name' ) ) {
         $name .= $chain->name;
     } else {
-        $name .= alkane_chain_name( scalar @chain );
-        my( @double, @triple );
-        if( blessed $chain ) {
-            my @bonds = $chain->bonds;
-            @double = grep { $bonds[$_] eq '=' } 0..$#bonds;
-            @triple = grep { $bonds[$_] eq '#' } 0..$#bonds;
-            if( @double ) {
-                $name->append_locants( map { $_ + 1 } @double );
-                $name->append_multiplier( IUPAC_numerical_multiplier( scalar @double ) ) if @double > 1;
-                $name .= 'en';
-            }
-            if( @triple ) {
-                $name->append_locants( map { $_ + 1 } @triple );
-                $name->append_multiplier( IUPAC_numerical_multiplier( scalar @triple ) ) if @triple > 1;
-                $name .= 'yn';
-            }
-        }
-        $name .= 'an' unless @double || @triple;
-        $name .= 'e';
+        $name .= unbranched_chain_name( $chain );
     }
 
     if( $most_senior_group ) {
@@ -1120,7 +1102,7 @@ sub IUPAC_complex_numerical_multiplier
     return IUPAC_numerical_multiplier( $N, 1 ) . 'kis';
 }
 
-sub alkane_chain_name
+sub alkane_chain_name($)
 {
     my( $N ) = @_;
 
@@ -1128,6 +1110,34 @@ sub alkane_chain_name
 
     return $names[$N] if $N < @names;
     return IUPAC_numerical_multiplier( $N );
+}
+
+sub unbranched_chain_name($)
+{
+    my( $chain ) = @_;
+
+    my @chain = blessed $chain ? $chain->vertices : @$chain;
+
+    my $name = ChemOnomatopist::Name->new( alkane_chain_name scalar @chain );
+    my( @double, @triple );
+    if( blessed $chain ) {
+        my @bonds = $chain->bonds;
+        @double = grep { $bonds[$_] eq '=' } 0..$#bonds;
+        @triple = grep { $bonds[$_] eq '#' } 0..$#bonds;
+        if( @double ) {
+            $name->append_locants( map { $_ + 1 } @double );
+            $name->append_multiplier( IUPAC_numerical_multiplier( scalar @double ) ) if @double > 1;
+            $name .= 'en';
+        }
+        if( @triple ) {
+            $name->append_locants( map { $_ + 1 } @triple );
+            $name->append_multiplier( IUPAC_numerical_multiplier( scalar @triple ) ) if @triple > 1;
+            $name .= 'yn';
+        }
+    }
+    $name .= 'an' unless @double || @triple;
+    $name .= 'e';
+    return $name;
 }
 
 1;
