@@ -91,6 +91,38 @@ sub vertices()
     return reverse( @A ), @B;
 }
 
+sub number_of_double_bonds()
+{
+    my( $self ) = @_;
+    my $number = int sum0 map { $_->number_of_double_bonds } @{$_[0]->{halves}};
+
+    my $graph = $self->{halves}[0]->{graph};
+    my @centers = map  { $_->{other_center} }
+                  grep { defined $_->{other_center} } @{$self->{halves}};
+    if( @centers &&
+        $graph->has_edge_attribute( @centers, 'bond' ) &&
+        $graph->get_edge_attribute( @centers, 'bond' ) eq '=' ) {
+        $number++;
+    }
+    return $number;
+}
+
+sub number_of_multiple_bonds()
+{
+    my( $self ) = @_;
+    my $number = int sum0 map { $_->number_of_multiple_bonds } @{$_[0]->{halves}};
+
+    my $graph = $self->{halves}[0]->{graph};
+    my @centers = map  { $_->{other_center} }
+                  grep { defined $_->{other_center} } @{$self->{halves}};
+    if( @centers &&
+        $graph->has_edge_attribute( @centers, 'bond' ) &&
+        $graph->get_edge_attribute( @centers, 'bond' ) =~ /^[=#\$]$/ ) {
+        $number++;
+    }
+    return $number;
+}
+
 # Generators
 
 sub reversed()
