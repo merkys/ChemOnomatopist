@@ -227,7 +227,14 @@ sub get_mainchain_name
         my $attachment_name = $order[$i];
         my $attachment = $attachment_objects{$attachment_name};
 
-        $name->append_locants( map { $_ + 1 } @{$attachments{$attachment_name}} );
+        # Locants are not important in single-substituted homogeneous cycles
+        if( @order > 1 ||
+            @{$attachments{$attachment_name}} > 1 ||
+            !blessed $chain ||
+            !$chain->isa( ChemOnomatopist::Chain::Circular:: ) ||
+            !$chain->is_homogeneous ) {
+            $name->append_locants( map { $_ + 1 } @{$attachments{$attachment_name}} );
+        }
 
         # FIXME: More rules from BBv2 P-16.3.4 should be added
         if( $attachment !~ /^[\(\[\{]/ &&
