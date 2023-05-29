@@ -24,6 +24,7 @@ sub append($)
     my( $self, $string ) = @_;
     $self->{name} .= $string;
     delete $self->{ends_with_multiplier};
+    delete $self->{ends_with_stem};
     return $self;
 }
 
@@ -36,6 +37,7 @@ sub append_element($)
 sub append_locants
 {
     my( $self, @locants ) = @_;
+    $self->append( 'a' ) if $self->{ends_with_stem} && @locants == 2;
     $self->append( '-' ) if $self->{name};
     return $self->append( join( ',', @locants ) . '-' );
 }
@@ -48,6 +50,14 @@ sub append_multiplier($)
     $self->{starts_with_multiplier} = 1 unless $self->{name};
     $self->append( $string );
     $self->{ends_with_multiplier} = 1;
+    return $self;
+}
+
+sub append_stem($)
+{
+    my( $self, $stem ) = @_;
+    $self->append( $stem );
+    $self->{ends_with_stem} = 1;
     return $self;
 }
 

@@ -22,7 +22,7 @@ my @cases = (
     # From BBv2 P-44.4.1.2
     { smiles => 'C1C=CCCCCCCCCCCCCCCCCC1', iupac => 'cycloicosene' },
     { smiles => 'C1C#CCCCCCCCCCCCCCCCCC1', iupac => 'cycloicosyne' },
-    { smiles => 'C1=CCCCCCC=CCCCCCCCCCCC1', iupac => 'cycloicosa-1,8-diene', AUTHOR => 1 },
+    { smiles => 'C1=CCCCCCC=CCCCCCCCCCCC1', iupac => 'cycloicosa-1,8-diene' },
 
     { smiles => 'CCC(=C)CCC', iupac => '3-methylidenehexane' }, # BBv2 P-61.2.1
     { smiles => 'C(C)=C(C(C)C1=NC=CC=C1)CCC=C(C)C', iupac => '2-(3-ethylidene-7-methyloct-6-en-2-yl)pyridine' }, # BBv2 P-61.2.4

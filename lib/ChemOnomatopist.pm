@@ -1140,7 +1140,9 @@ sub unbranched_chain_name($)
 
     my @chain = blessed $chain ? $chain->vertices : @$chain;
 
-    my $name = ChemOnomatopist::Name->new( alkane_chain_name scalar @chain );
+    my $name = ChemOnomatopist::Name->new;
+    $name->append_stem( alkane_chain_name scalar @chain );
+
     my( @double, @triple );
     if( blessed $chain ) {
         my @bonds = $chain->bonds;
