@@ -36,6 +36,10 @@ my @cases = (
     { smiles => 'C1C=CCCC1', iupac => 'cyclohexene', AUTHOR => 1 },
     { smiles => 'C1C=CCC=C1', iupac => 'cyclohexa-1,4-diene', AUTHOR => 1 },
 
+    # From BBv2 P-31.1.3.4
+    { smiles => 'C=CC1=CC=CC=C1', iupac => 'ethenylbenzene', AUTHOR => 1 },
+    { smiles => 'C=C1C=CC=C1', iupac => '5-methylidenecyclopenta-1,3-diene', AUTHOR => 1 },
+
     # From BBv2 P-14.5.1
     { smiles => 'C1CCCCC1(C)CC', iupac => '1-ethyl-1-methylcyclohexane' },
     { smiles => 'CCC1CCC(C)CC1', iupac => '1-ethyl-4-methylcyclohexane' },
