@@ -22,7 +22,7 @@ my @cases = (
     # From BBv2 P-44.4.1.2
     { smiles => 'C1C=CCCCCCCCCCCCCCCCCC1', iupac => 'cycloicosene' },
     { smiles => 'C1C#CCCCCCCCCCCCCCCCCC1', iupac => 'cycloicosyne' },
-    { smiles => 'C1C=CCCCCC=CCCCCCCCCCCC1', iupac => 'cycloicosa-1,8-diene', AUTHOR => 1 },
+    { smiles => 'C1=CCCCCCC=CCCCCCCCCCCC1', iupac => 'cycloicosa-1,8-diene', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
