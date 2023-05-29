@@ -430,7 +430,19 @@ sub find_groups
 
         my $core = graph_cycle_core( $graph );
         if( any { $core->degree( $_ ) > 2 } $core->vertices ) {
-            die "cannot handle cyclic compounds other than monocycles\n";
+            my @d2 = grep { $core->degree( $_ ) == 2 } $core->vertices;
+            my @d3 = grep { $core->degree( $_ ) == 3 } $core->vertices;
+
+            if( @d2 + @d3 < $core->vertices || @d3 != 2 ) {
+                die "cannot handle cyclic compounds other than monocycles\n";
+            }
+
+            if( !$core->has_edge( @d3 ) ) {
+                die "cannot handle cyclic compounds other than monocycles\n";
+            }
+
+            # ortho-fused as defined in BBv2 P-25.3.1.1.1
+            die "cannot handle ortho-fused rings for now\n";
         }
 
         # The cycle object is given the original graph to retain the original atom-atom relations
