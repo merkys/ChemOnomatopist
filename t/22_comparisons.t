@@ -6,7 +6,7 @@ use warnings;
 use ChemOnomatopist;
 use Test::More;
 
-plan tests => 5;
+plan tests => 7;
 
 my @sorted;
 
@@ -24,3 +24,9 @@ is join( ';', map { join ',', @$_ } @sorted ), 'S;N';
 
 @sorted = sort { ChemOnomatopist::cmp_heteroatom_seniority( $a, $b ) } ( [ 'O' ], [ 'Si' ] );
 is join( ';', map { join ',', @$_ } @sorted ), 'O;Si';
+
+@sorted = sort { ChemOnomatopist::cmp_heteroatom_seniority( $a, $b ) } ( [ 'N' ], [ 'O' ] );
+is join( ';', map { join ',', @$_ } @sorted ), 'O;N';
+
+@sorted = sort { ChemOnomatopist::cmp_heteroatom_seniority( $a, $b ) } ( [ 'N' ], [ 'O' ], [ 'P' ] );
+is join( ';', map { join ',', @$_ } @sorted ), 'O;N;P';
