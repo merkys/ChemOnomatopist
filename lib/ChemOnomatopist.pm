@@ -88,7 +88,8 @@ sub get_sidechain_name
     my $branches_at_start = grep { !blessed $_ || $_->is_carbon }
                                  $graph->neighbours( $start );
 
-    my @chain = select_sidechain( $graph, $start );
+    my $chain = select_sidechain( $graph, $start );
+    my @chain = blessed $chain && $chain->can( 'vertices' ) ? $chain->vertices : $chain;
 
     # TODO: Handle the case when none of the rules select proper chains
     die "could not select a chain\n" unless @chain;
@@ -495,7 +496,8 @@ sub select_mainchain
             } else {
                 # As the starting position is known, it is enough to take the "side chain"
                 # containing this particular carbon:
-                my @vertices = select_sidechain( $graph, @carbons );
+                my $chain = select_sidechain( $graph, @carbons );
+                my @vertices = blessed $chain && $chain->can( 'vertices' ) ? $chain->vertices : $chain;
                 push @chains, ChemOnomatopist::Chain::VertexArray->new( $graph, @vertices ),
                               ChemOnomatopist::Chain::VertexArray->new( $graph, reverse @vertices );
             }
@@ -687,8 +689,7 @@ sub select_sidechain
         # If a single chain cannot be chosen now, pass on to the next rule
         next unless @chains == 1;
 
-        return $chains[0]->vertices;
-        last;
+        return shift @chains;
     }
 
     # TODO: Handle the case when none of the rules select proper chains
