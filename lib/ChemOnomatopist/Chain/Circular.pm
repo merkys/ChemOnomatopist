@@ -195,12 +195,15 @@ sub name()
                 $name .= 'e';
             }
             return $name;
-        } elsif( $self->length == 6 ) { # FIXME: Support unsaturated
-            if( ($elements{$least_senior_element}->{seniority} >= 5 &&
-                 $elements{$least_senior_element}->{seniority} <= 8) || $least_senior_element eq 'Bi' ) {
-                return $name . 'ane';
+        } elsif( $self->length == 6 ) {
+            if(      ($elements{$least_senior_element}->{seniority} >= 5 &&
+                      $elements{$least_senior_element}->{seniority} <= 8) || $least_senior_element eq 'Bi' ) {
+                return $name . $self->is_saturated ? 'ane' : 'ine';
+            } elsif( ($elements{$least_senior_element}->{seniority} >= 16 &&
+                      $elements{$least_senior_element}->{seniority} <= 19) || $least_senior_element eq 'N' ) {
+                return $name . $self->is_saturated ? 'inane' : 'ine';
             } else {
-                return $name . 'inane';
+                return $name . $self->is_saturated ? 'inane' : 'inine';
             }
         } elsif( $self->length >= 7 ) {
             my @stems = ( 'ep', 'oc', 'on', 'ec' );
