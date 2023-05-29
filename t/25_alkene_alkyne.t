@@ -12,6 +12,8 @@ my @cases = (
     { smiles => 'C=CC(C)C', iupac => '3-methylbut-1-ene' },
     { smiles => 'CC=CC(O)CC(C)C', iupac => '6-methylhept-2-en-4-ol' },
 
+    { smiles => 'COCCOCCOCCOCC=C', iupac => '2,5,8,11-tetraoxatetradec-13-ene' }, # BBv2 P-31.1.2.2.2
+
     # From BBv2 P-44.4.1.1
     { smiles => 'CC=CC#C', iupac => 'pent-3-en-1-yne' },
     { smiles => 'CCC=CC', iupac => 'pent-2-ene' },
