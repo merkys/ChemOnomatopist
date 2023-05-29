@@ -13,13 +13,19 @@ my @cases = (
     { smiles => 'C=1C=CC=CC=1', iupac => 'benzene' },
     { smiles => 'c1ccccc1',     iupac => 'benzene' },
 
-    { smiles => 'O1CCCCCCC1', iupac => 'oxocane' },   # From BBv2 P-22.2.2.1.1
-    { smiles => 'O1CCC1',     iupac => 'oxetane' },   # From BBv2 P-22.2.2.1.5.2
-    { smiles => 'N1CCC1',     iupac => 'azetidine' }, # From BBv2 P-22.2.2.1.5.2
+    # From BBv2 P-22.2.2.1.1
+    { smiles => 'S1C=CC=CC=C1', iupac => 'thiepine' },
+    { smiles => 'O1CCCCCCC1',   iupac => 'oxocane' },
+
+    # From BBv2 P-22.2.2.1.5.2
+    { smiles => 'O1CCC1',     iupac => 'oxetane' },
+    { smiles => 'N1CCC1',     iupac => 'azetidine' },
 
     { smiles => 'N1NNC1', iupac => 'triazetidine' }, # Not checked
 
-    { smiles => 'O1COCC1', iupac => '1,3-dioxolane' }, # From BBv2 P-22.2.2.1.2
+    # From BBv2 P-22.2.2.1.2
+    { smiles => 'N1=CC=CN=CC=C1', iupac => '1,5-diazocine' },
+    { smiles => 'O1COCC1', iupac => '1,3-dioxolane' },
 
     # From BBv2 P-22.2.2.1.3
     { smiles => 'O1SCCC1', iupac => '1,2-oxathiolane', AUTHOR => 1 },
