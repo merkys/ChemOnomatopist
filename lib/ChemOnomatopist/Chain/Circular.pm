@@ -73,6 +73,21 @@ sub backbone_SMILES()
     return $SMILES;
 }
 
+sub is_homogeneous()
+{
+    my( $self ) = @_;
+
+    my @vertices = $self->vertices;
+    my @bonds = $self->bonds;
+
+    my $element = ucfirst $vertices[0]->{symbol};
+    my( $bond ) = @bonds;
+
+    return '' if any { ucfirst $_ ne $element } @vertices;
+    return '' if any { $_ ne $bond } @bonds;
+    return 1;
+}
+
 sub name()
 {
     my( $self ) = @_;
