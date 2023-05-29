@@ -114,7 +114,7 @@ sub name()
 
     # Check for cycloalkanes
     if( all { $_->{symbol} eq 'C' } $self->vertices ) {
-        return 'cyclo' . ChemOnomatopist::alkane_chain_name( $self->length ) . 'ane';
+        return 'cyclo' . ChemOnomatopist::unbranched_chain_name( $self );
     }
 
     # Check for annulenes
