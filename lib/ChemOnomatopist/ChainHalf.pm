@@ -170,6 +170,13 @@ sub most_senior_group_positions()
     return @positions;
 }
 
+sub multiple_bond_positions()
+{
+    my( $self ) = @_;
+    my @bonds = $self->bonds;
+    return grep { $bonds[$_] =~ /^[=#\$]$/ } 0..$#bonds;
+}
+
 sub heteroatoms()
 {
     my( $self ) = @_;
