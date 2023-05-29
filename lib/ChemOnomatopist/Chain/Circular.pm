@@ -90,6 +90,12 @@ sub is_homogeneous()
     return 1;
 }
 
+sub is_saturated()
+{
+    my( $self ) = @_;
+    return all { $_ eq '-' } $self->bonds;
+}
+
 # Returns undef for cycles not needing special treatment.
 # Those can be handled by ChemOnomatopist::get_mainchain_name().
 sub name()
@@ -181,9 +187,15 @@ sub name()
         if(      $self->length <= 5 ) {
             my @stems = ( 'ir', 'et', 'ol' );
             $name .= $stems[$self->length - 3];
-            $name .= $heteroatoms{N} ? 'idine' : 'ane';
+            if( $self->is_saturated ) {
+                $name .= $heteroatoms{N} ? 'idine' : 'ane';
+            } elsif( $self->length == 3 ) {
+                $name .= $heteroatoms{N} ? 'ene' : 'ine';
+            } else {
+                $name .= 'e';
+            }
             return $name;
-        } elsif( $self->length == 6 ) {
+        } elsif( $self->length == 6 ) { # FIXME: Support unsaturated
             if( ($elements{$least_senior_element}->{seniority} >= 5 &&
                  $elements{$least_senior_element}->{seniority} <= 8) || $least_senior_element eq 'Bi' ) {
                 return $name . 'ane';
@@ -191,8 +203,10 @@ sub name()
                 return $name . 'inane';
             }
         } elsif( $self->length >= 7 ) {
-            my @stems = ( 'epane', 'ocane', 'onane', 'ecane' );
-            return $name . $stems[$self->length - 7];
+            my @stems = ( 'ep', 'oc', 'on', 'ec' );
+            $name .= $stems[$self->length - 7];
+            $name .= $self->is_saturated ? 'ane' : 'ine';
+            return $name;
         }
     }
 
