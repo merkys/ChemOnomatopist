@@ -14,6 +14,8 @@ my %SMILES_cases = (
     'CC(C)CC(=O)C(CCC(=O)C)C(=O)CC(C)C' => '8-methyl-5-(3-methyl-1-oxobutyl)nonane-2,6-dione', # PubChem has '8-methyl-5-(3-methylbutanoyl)nonane-2,6-dione'
 
     'CC(=S)CC' => 'butane-2-thione',
+
+    'OC(C)C(C(C(C(C)O)=C)=O)=C' => '2,6-dihydroxy-3,5-dimethylideneheptan-4-one', # BBv2 P-64.7.1
 );
 
 plan tests => scalar( keys %SMILES_cases );
