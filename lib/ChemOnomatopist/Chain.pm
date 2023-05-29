@@ -67,6 +67,23 @@ sub most_senior_group_positions()
            ( map { $self->{halves}[1]->length + $_ - !defined $self->{halves}[0]{other_center} } @half1_positions );
 }
 
+sub bonds()
+{
+    my( $self ) = @_;
+    my @bonds = reverse $self->{halves}[0]->bonds;
+    if( $self->{halves}[0]->{other_center} ) {
+        my $graph = $self->{halves}[0]->{graph};
+        my @centers = map { $_->{other_center} } @{$self->{halves}};
+        if( $graph->has_edge_attribute( @centers, 'bond' ) ) {
+            push @bonds, $graph->get_edge_attribute( @centers, 'bond' );
+        } else {
+            push @bonds, '-';
+        }
+    }
+    push @bonds, $self->{halves}[1]->bonds;
+    return @bonds;
+}
+
 sub heteroatoms()
 {
     my( $self ) = @_;
