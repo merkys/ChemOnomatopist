@@ -148,7 +148,7 @@ sub get_sidechain_name
         $name .= $attachment;
     }
     $name .= unbranched_chain_name( blessed $chain && $chain->can( 'vertices' ) ? $chain : \@chain );
-    $name->{name} =~ s/ane$//;
+    $name->{name} =~ s/(an)?e$//;
 
     if( $branches_at_start > 1 ) {
         my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
