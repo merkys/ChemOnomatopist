@@ -94,12 +94,6 @@ sub get_sidechain_name
     # TODO: Handle the case when none of the rules select proper chains
     die "could not select a chain\n" unless @chain;
 
-    # TODO: Bond orders are not handled yet
-    for (0..$#chain-1) {
-        next unless $graph->has_edge_attributes( $chain[$_], $chain[$_ + 1] );
-        die "cannot handle such compounds for now\n";
-    }
-
     # Handle non-carbon substituents
     if( @chain == 1 && !is_element( $chain[0], 'C' ) ) {
         if( blessed $chain[0] ) {
@@ -152,7 +146,8 @@ sub get_sidechain_name
 
         $name .= $attachment;
     }
-    $name .= alkane_chain_name( scalar @chain );
+    $name .= unbranched_chain_name( blessed $chain && $chain->can( 'vertices' ) ? $chain : \@chain );
+    $name->{name} =~ s/ane$//;
 
     if( $branches_at_start > 1 ) {
         my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
