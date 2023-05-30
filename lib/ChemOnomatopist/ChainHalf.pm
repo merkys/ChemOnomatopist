@@ -225,9 +225,11 @@ sub number_of_branches_in_sidechains()
     my @vertex_neighbours = map { $graph->neighbours( $_ ) } $self->vertices;
     $graph->delete_vertices( $self->vertices );
 
+    # has_vertex() is used to filter out neighbours within the chain
     my $number = sum0 map { $_ > 2 ? $_ - 2 : 0 }
-                          map { $graph->degree( $_ ) }
-                          map { Graph::Traversal::DFS->new( $graph, start => $_ )->dfs }
+                          map  { $graph->degree( $_ ) }
+                          map  { Graph::Traversal::DFS->new( $graph, start => $_ )->dfs }
+                          grep { $graph->has_vertex( $_ ) }
                               @vertex_neighbours;
 
     $self->{number_of_branches_in_sidechains} = $number;

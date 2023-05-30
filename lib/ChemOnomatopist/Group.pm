@@ -12,6 +12,7 @@ use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Monocycle;
+use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::Thioketone;
 
 use List::Util qw( any );
@@ -48,6 +49,7 @@ our @order = (
     # Classes denoted by the senior atom in heterane nomenclature
 
     ChemOnomatopist::Group::Monocycle::, # FIXME: Possibly not the right place
+    ChemOnomatopist::Group::Monospiro::, # FIXME: Possibly not the right place
 );
 
 sub new
