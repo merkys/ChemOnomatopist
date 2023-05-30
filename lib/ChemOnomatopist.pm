@@ -135,7 +135,13 @@ sub get_sidechain_name
     for my $attachment_name (sort { $a cmp $b } keys %attachments) {
         my $attachment = $attachment_objects{$attachment_name};
 
-        $name->append_locants( map { $_ + 1 } @{$attachments{$attachment_name}} ) if @chain > 1;
+        if( @chain > 1 &&
+            ( !blessed $chain ||
+              !$chain->can( 'max_valence' ) ||
+              scalar keys %attachments > 1 ||
+              @{$attachments{$attachment_name}} != $chain->max_valence - 1 ) ) {
+            $name->append_locants( map { $_ + 1 } @{$attachments{$attachment_name}} );
+        }
 
         if( @{$attachments{$attachment_name}} > 1 ) {
             my $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
@@ -283,7 +289,13 @@ sub get_mainchain_name
     for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
                           keys %heteroatoms) {
 
-        $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} ) if @chain > 1;
+        if( @chain > 1 &&
+            ( !blessed $chain ||
+              !$chain->can( 'max_valence' ) ||
+              scalar keys %heteroatoms > 1 ||
+              @{$heteroatoms{$element}} != $chain->max_valence - 1 ) ) {
+            $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
+        }
 
         if( @{$heteroatoms{$element}} > 1 ) {
             my $number = IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} );
