@@ -300,6 +300,8 @@ sub get_mainchain_name
     } else {
         if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
             $name .= 'cyclo';
+        } elsif( $most_senior_group && $most_senior_group->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
+            $name .= 'spiro'; # FIXME: Not accurate; moreover, instance instead of a class should be here
         }
         $name .= unbranched_chain_name( $chain );
     }
