@@ -450,6 +450,7 @@ sub find_groups
         } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,3' && @{$vertices_by_degree{3}} == 2 &&
                  $core->has_edge( @{$vertices_by_degree{3}} ) ) {
             # Ortho-fused as defined in BBv2 P-25.3.1.1.1
+            # FIXME: These may actually be two rings joined by a bridge
             die "cannot handle ortho-fused rings for now\n";
         } else {
             die "cannot handle cyclic compounds other than monocycles and monospiro\n";
