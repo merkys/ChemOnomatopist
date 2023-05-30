@@ -1,3 +1,9 @@
+0.4.0 2023-05-30
+
+    - Implement support for monocycles and monospiro compounds.
+    - Implement support for some nitrogen- and sulfur-based compound
+      classes.
+
 0.3.0 2023-05-10
 
     - 99.6% correctness rate for unbranched and branched saturated acyclic
