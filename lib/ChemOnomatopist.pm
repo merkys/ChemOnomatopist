@@ -438,11 +438,17 @@ sub find_groups
 
         if( any { $_ > 2 } keys %vertices_by_degree ) {
 
-            if( @{$vertices_by_degree{2}} + @{$vertices_by_degree{3}} == $core->vertices &&
+            if( join( ',', sort keys %vertices_by_degree ) eq '2,3' &&
                 @{$vertices_by_degree{3}} == 2 &&
                 $core->has_edge( @{$vertices_by_degree{3}} ) ) {
-                # ortho-fused as defined in BBv2 P-25.3.1.1.1
+                # Ortho-fused as defined in BBv2 P-25.3.1.1.1
                 die "cannot handle ortho-fused rings for now\n";
+            }
+
+            if( join( ',', sort keys %vertices_by_degree ) eq '2,4' &&
+                @{$vertices_by_degree{4}} == 1 ) {
+                # BBv2 P-24.2.1 Monospiro alicyclic ring systems
+                die "cannot handle monospiro ring systems for now\n";
             }
 
             die "cannot handle cyclic compounds other than monocycles\n";
