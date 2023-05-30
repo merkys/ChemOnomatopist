@@ -5,6 +5,7 @@ use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
+use Chemistry::OpenSMILES qw( %normal_valence );
 use Graph::Traversal::DFS;
 use List::Util qw( sum0 );
 use Scalar::Util qw( blessed );
@@ -141,6 +142,43 @@ sub heteroatom_positions()
 
     $self->{heteroatom_positions} = \@heteroatom_positions;
     return @heteroatom_positions;
+}
+
+sub max_valence()
+{
+    my( $self ) = @_;
+
+    my @vertices = $self->vertices;
+    my $graph = $self->{graph};
+    my $subgraph = $graph->subgraph( \@vertices );
+
+    my %bond_order = (
+        '-' => 1,
+        ':' => 1.5, # Not in OpenSMILES
+        '=' => 2,
+        '#' => 3,
+        '$' => 4,
+    );
+
+    my $max_valence = 0;
+    for my $vertex (@vertices) {
+        next unless exists $normal_valence{ucfirst $vertex->{symbol}};
+
+        my $valence = 0;
+        for my $neighbour ($subgraph->neighbours( $vertex )) {
+            if( $graph->has_edge_attribute( $vertex, $neighbour, 'bond' ) &&
+                exists $bond_order{$graph->get_edge_attribute( $vertex, $neighbour, 'bond' )} ) {
+                $valence += $bond_order{$graph->get_edge_attribute( $vertex, $neighbour, 'bond' )};
+            } else {
+                $valence++;
+            }
+        }
+
+        my( $normal_valence ) = grep { $_ >= $valence } @{$normal_valence{ucfirst $vertex->{symbol}}};
+        $max_valence += $normal_valence - $valence if defined $valence;
+    }
+
+    return $max_valence;
 }
 
 sub most_senior_group_positions()
