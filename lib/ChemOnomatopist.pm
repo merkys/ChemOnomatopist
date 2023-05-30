@@ -182,7 +182,6 @@ sub get_mainchain_name
         $graph = copy $chain->{graph};
         $graph->delete_cycle( @chain );
     } else {
-        # TODO: Bond orders are not handled yet
         $graph = copy $graph;
         $graph->delete_path( @chain );
     }
