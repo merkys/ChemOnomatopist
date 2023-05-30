@@ -429,11 +429,19 @@ sub find_groups
         # If it is not a tree, then the graph has cycles, and we have to do our best to recognise them.
 
         my $core = graph_cycle_core( $graph );
-        if( any { $core->degree( $_ ) > 2 } $core->vertices ) {
+        my %vertices_by_degree;
+        for my $vertex ($core->vertices) {
+            my $degree = $core->degree( $vertex );
+            $vertices_by_degree{$degree} = [] unless $vertices_by_degree{$degree};
+            push @{$vertices_by_degree{$degree}}, $vertex;
+        }
+
+        if( any { $_ > 2 } keys %vertices_by_degree ) {
             my @d2 = grep { $core->degree( $_ ) == 2 } $core->vertices;
             my @d3 = grep { $core->degree( $_ ) == 3 } $core->vertices;
 
-            if( @d2 + @d3 < $core->vertices || @d3 != 2 ) {
+            if( @{$vertices_by_degree{2}} + @{$vertices_by_degree{3}} < $core->vertices ||
+                @{$vertices_by_degree{3}} != 2 ) {
                 die "cannot handle cyclic compounds other than monocycles\n";
             }
 
