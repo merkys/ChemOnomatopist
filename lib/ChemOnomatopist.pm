@@ -300,7 +300,9 @@ sub get_mainchain_name
         if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
             $name .= 'cyclo';
         } elsif( $most_senior_group && $most_senior_group->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
-            $name .= 'spiro'; # FIXME: Not accurate; moreover, instance instead of a class should be here
+            # FIXME: Heterogeneous exception
+            my( $group ) = grep { $_->isa( $most_senior_group ) } $graph->vertices;
+            $name .= $group->suffix;
         }
         $name .= unbranched_chain_name( $chain );
     }

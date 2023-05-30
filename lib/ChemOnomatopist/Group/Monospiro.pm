@@ -64,4 +64,11 @@ sub candidate_chains
     return @chains;
 }
 
+# FIXME: This is a bit strange: class and object method with the same name
+sub suffix
+{
+    my( $self ) = @_;
+    return ref $self ? 'spiro[' . join( '.', map { scalar @$_ } @{$self->{components}} ) . ']' : '';
+}
+
 1;
