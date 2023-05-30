@@ -7,6 +7,20 @@ use warnings;
 
 use ChemOnomatopist;
 
+=head1 NAME
+
+chemonomatopist - derive IUPAC systematic names for chemical structures
+
+=head1 SYNOPSYS
+
+chemonomatopist [file]
+
+=head1 DESCRIPTION
+
+ChemOnomatopist analyses chemical graphs to determine IUPAC names according to the "Nomenclature of Organic Chemistry. IUPAC Recommendations and Preferred Names 2013", also known as the Blue Book.
+
+=cut
+
 local $\ = "\n";
 for my $smiles (<>) {
     chomp( $smiles );
