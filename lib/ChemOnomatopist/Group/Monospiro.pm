@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Chain::VertexArray;
+use Graph::Traversal::DFS;
 
 sub new
 {
@@ -17,8 +18,16 @@ sub new
     my $subgraph = $graph->subgraph( \@vertices );
     my( $spiro_atom ) = grep { $subgraph->degree( $_ ) == 4 } @vertices;
     $subgraph->delete_vertex( $spiro_atom );
-    my @components = sort { @$a <=> @$b } $subgraph->connected_components;
-    # FIXME: Make sure the atom order in components is correct
+
+    # Graph is broken into components.
+    # Each component is represented as an array of vertices in the order of traverse.
+    my @components;
+    for my $component (sort { @$a <=> @$b } $subgraph->connected_components) {
+        my( $start ) = sort { $subgraph->degree( $a ) <=> $subgraph->degree( $b ) }
+                            @$component;
+        push @components,
+             [ Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs ];
+    }
 
     return bless { graph => $graph, vertices => \@vertices, spiro_atom => $spiro_atom, components => \@components }, $class;
 }
