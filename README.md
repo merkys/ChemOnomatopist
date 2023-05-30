@@ -16,6 +16,22 @@ The easiest way to install it is using [Dist::Zilla](https://metacpan.org/releas
     $ git clone https://github.com/merkys/ChemOnomatopist
     $ dzil install
 
+## Support
+
+This tool is under development.
+Support for the variety of chemical compounds is underway.
+Currently *ChemOnomatopist* supports:
+
+* Branched acyclic hydrocarbons
+* Monocycles
+* Monospiro compounds
+
+Issues known to produce names deviating from IUPAC guidelines:
+
+* Possibly incorrect seniority for *tert* substituents (nomenclature is not quite clear about them)
+* Incorrect addition/omission of unambiguous locants
+* Incorrect addition/omission of parentheses
+
 ## License
 
 *ChemOnomatopist* is free software licensed under BSD-3-Clause license.
