@@ -21,6 +21,7 @@ use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Monocycle;
+use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::Thioketone;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util qw( copy );
@@ -436,38 +437,33 @@ sub find_groups
             push @{$vertices_by_degree{$degree}}, $vertex;
         }
 
-        if( any { $_ > 2 } keys %vertices_by_degree ) {
-
-            if( join( ',', sort keys %vertices_by_degree ) eq '2,3' &&
-                @{$vertices_by_degree{3}} == 2 &&
-                $core->has_edge( @{$vertices_by_degree{3}} ) ) {
-                # Ortho-fused as defined in BBv2 P-25.3.1.1.1
-                die "cannot handle ortho-fused rings for now\n";
-            }
-
-            if( join( ',', sort keys %vertices_by_degree ) eq '2,4' &&
-                @{$vertices_by_degree{4}} == 1 ) {
-                # BBv2 P-24.2.1 Monospiro alicyclic ring systems
-                die "cannot handle monospiro ring systems for now\n";
-            }
-
-            die "cannot handle cyclic compounds other than monocycles\n";
+        # The cycle object is given the original graph to retain the original atom-atom relations
+        my $compound;
+        if(      join( ',', sort keys %vertices_by_degree ) eq '2' ) {
+            $compound = ChemOnomatopist::Group::Monocycle->new( copy $graph, Graph::Traversal::DFS->new( $core )->dfs );
+        } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,4' && @{$vertices_by_degree{4}} == 1 ) {
+            # BBv2 P-24.2.1 Monospiro alicyclic ring systems
+            $compound = ChemOnomatopist::Group::Monospiro->new( copy $graph, $core->vertices );
+        } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,3' && @{$vertices_by_degree{3}} == 2 &&
+                 $core->has_edge( @{$vertices_by_degree{3}} ) ) {
+            # Ortho-fused as defined in BBv2 P-25.3.1.1.1
+            die "cannot handle ortho-fused rings for now\n";
+        } else {
+            die "cannot handle cyclic compounds other than monocycles and monospiro\n";
         }
 
-        # The cycle object is given the original graph to retain the original atom-atom relations
-        my $cycle = ChemOnomatopist::Group::Monocycle->new( copy $graph, Graph::Traversal::DFS->new( $core )->dfs );
         for my $neighbour ( map { $graph->neighbours( $_ ) } $core->vertices ) {
-            $graph->add_edge( $cycle, $neighbour );
+            $graph->add_edge( $compound, $neighbour );
 
             # Reattach groups
             if( blessed $neighbour &&
                 $neighbour->isa( ChemOnomatopist::Group:: ) &&
                 $core->has_vertex( $neighbour->C ) ) {
-                $neighbour->{C} = $cycle;
+                $neighbour->{C} = $compound;
             }
         }
         $graph->delete_vertices( $core->vertices );
-        $graph->delete_edge( $cycle, $cycle ); # May have been added, must be removed
+        $graph->delete_edge( $compound, $compound ); # May have been added, must be removed
     }
 
     return;

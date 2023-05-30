@@ -9,8 +9,8 @@ use Test::More;
 my %unsupported = (
     # 'N1NNN1'   => 'cannot handle complicated monocycles for now', # FIXME: This is not supported
     'C1=CC=CC2=CC=CC=C12' => 'cannot handle ortho-fused rings for now',
-    'C1=CC=CC=2C=CC=3C(=C4C=CC=CC=C4C3)C12' => 'cannot handle cyclic compounds other than monocycles',
-    'C1CCCC12CCCCC2' => 'cannot handle monospiro ring systems for now',
+    'C1=CC=CC=2C=CC=3C(=C4C=CC=CC=C4C3)C12' => 'cannot handle cyclic compounds other than monocycles and monospiro',
+    # 'C1CCCC12CCCCC2' => 'cannot handle monospiro ring systems for now', # FIXME: Monospiro is on its way to be implemented
 );
 
 plan tests => scalar keys %unsupported;
