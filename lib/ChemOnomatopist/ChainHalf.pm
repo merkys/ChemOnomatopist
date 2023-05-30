@@ -162,6 +162,7 @@ sub max_valence()
 
     my $max_valence = 0;
     for my $vertex (@vertices) {
+        next if blessed $vertex; # Groups probably have full valence
         next unless exists $normal_valence{ucfirst $vertex->{symbol}};
 
         my $valence = 0;
