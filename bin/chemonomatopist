@@ -32,6 +32,8 @@ DESCRIPTION
     $basename derives IUPAC systematic names for chemical structures
 
 END
+    [ 'check', 'treat the input as list of SMILES and IUPAC names and check whether given and generated names match' ],
+    [],
     [ 'help', 'print usage message and exit', { shortcircuit => 1 } ],
 );
 
@@ -41,16 +43,34 @@ if( $opt->help ) {
 }
 
 local $\ = "\n";
-for my $smiles (<>) {
-    chomp( $smiles );
-    my $name;
-    eval {
-        $name = ChemOnomatopist::get_name( $smiles );
-    };
-    if( $@ ) {
-        $@ =~ s/\n$//;
-        print STDERR $smiles, "\t", $@;
+while (<>) {
+    chomp;
+    my( $id, $given_name, $SMILES );
+    if( $opt->check ) {
+        ( $id, $given_name, $SMILES ) = split "\t", $_;
     } else {
-        print $smiles, "\t", $name;
+        $SMILES = $_;
+    }
+
+    my $derived_name;
+    eval {
+        $derived_name = ChemOnomatopist::get_name( $SMILES );
+    };
+    $@ =~ s/\n$// if $@;
+
+    if( $opt->check ) {
+        if( $@ ) {
+            print $id, "\t", 'ERROR', "\t", $@;
+        } elsif( $given_name ne $derived_name ) {
+            print $id, "\t", 'FAIL', "\t", $given_name, "\t", $derived_name;
+        } else {
+            print $id, "\t", 'OK';
+        }
+    } else {
+        if( $@ ) {
+            print STDERR $SMILES, "\t", $@;
+        } else {
+            print $SMILES, "\t", $derived_name;
+        }
     }
 }
