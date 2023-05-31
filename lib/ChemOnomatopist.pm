@@ -403,6 +403,10 @@ sub find_groups
         }
     }
 
+    # Due to an issue in Graph, bridges() returns strings instead of real objects
+    my %vertices_by_name = map { $_ => $_ } $graph->vertices;
+    my $cut_vertices = set( map { $vertices_by_name{$_} } map { @$_ } $graph->bridges );
+
     # Second pass is needed to build on top of these trivial groups
     for my $atom ($graph->vertices) {
         my @neighbours = $graph->neighbours( $atom );
@@ -428,7 +432,10 @@ sub find_groups
             $graph->add_edges( map { $carboxyl, $_ } $graph->neighbours( $atom ) );
             $graph->delete_vertex( $atom );
         } elsif( is_element( $atom, 'C' ) && @groups == 1 && @C == 1 && @O == 2 &&
-                 $groups[0]->isa( ChemOnomatopist::Group::Carbonyl:: ) ) {
+                 $groups[0]->isa( ChemOnomatopist::Group::Carbonyl:: ) &&
+                 all { $cut_vertices->has( $_ ) } @O ) {
+            # Detecting esters
+            # Both oxygens have to be cut vertices to avoid one being in a ring
             $graph->delete_vertices( @groups );
             my( $hydroxylic ) = grep { $_ != $atom } map { $graph->neighbours( $_ ) } grep { !blessed $_ } @O;
             my( $acid ) = @C;
