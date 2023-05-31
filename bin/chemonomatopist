@@ -8,6 +8,7 @@ use warnings;
 use ChemOnomatopist;
 use File::Basename qw( basename );
 use Getopt::Long::Descriptive;
+use List::Util qw( sum );
 
 =head1 NAME
 
@@ -42,6 +43,8 @@ if( $opt->help ) {
     exit;
 }
 
+my %counts = ( OK => 0, FAIL => 0, ERROR => 0 );
+
 local $\ = "\n";
 while (<>) {
     chomp;
@@ -61,10 +64,13 @@ while (<>) {
     if( $opt->check ) {
         if( $@ ) {
             print $id, "\t", 'ERROR', "\t", $@;
+            $counts{ERROR}++;
         } elsif( $given_name ne $derived_name ) {
             print $id, "\t", 'FAIL', "\t", $given_name, "\t", $derived_name;
+            $counts{FAIL}++;
         } else {
             print $id, "\t", 'OK';
+            $counts{OK}++;
         }
     } else {
         if( $@ ) {
@@ -73,4 +79,12 @@ while (<>) {
             print $SMILES, "\t", $derived_name;
         }
     }
+}
+
+if( $opt->check ) {
+    print '';
+    for (reverse sort keys %counts) {
+        print "$_:\t", $counts{$_};
+    }
+    print "TOTAL:\t", sum values %counts;
 }
