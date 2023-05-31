@@ -313,7 +313,7 @@ sub get_mainchain_name
             $name .= 'cyclo';
         } elsif( $most_senior_group && $most_senior_group->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
             # FIXME: Heterogeneous exception
-            my( $group ) = grep { $_->isa( $most_senior_group ) } $graph->vertices;
+            my( $group ) = grep { blessed $_ && $_->isa( $most_senior_group ) } $graph->vertices;
             $name .= $group->suffix;
         }
         $name .= unbranched_chain_name( $chain );
