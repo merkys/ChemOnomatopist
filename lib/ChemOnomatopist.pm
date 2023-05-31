@@ -604,6 +604,7 @@ sub select_mainchain
                     }
                 }
             }
+            die "cannot determine the parent structure\n" unless @chains;
 
             @chains = rule_most_groups( $most_senior_group, @chains );
         }
