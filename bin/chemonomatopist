@@ -6,6 +6,8 @@ use warnings;
 # VERSION
 
 use ChemOnomatopist;
+use File::Basename qw( basename );
+use Getopt::Long::Descriptive;
 
 =head1 NAME
 
@@ -13,13 +15,30 @@ chemonomatopist - derive IUPAC systematic names for chemical structures
 
 =head1 SYNOPSYS
 
-chemonomatopist [file]
+chemonomatopist [args] [files]
 
 =head1 DESCRIPTION
 
 ChemOnomatopist analyses chemical graphs to determine IUPAC names according to the "Nomenclature of Organic Chemistry. IUPAC Recommendations and Preferred Names 2013", also known as the Blue Book.
 
 =cut
+
+my $basename = basename $0;
+my( $opt, $usage ) = describe_options( <<"END" . 'OPTIONS',
+USAGE
+    $basename [<args>] [<files>]
+
+DESCRIPTION
+    $basename derives IUPAC systematic names for chemical structures
+
+END
+    [ 'help', 'print usage message and exit', { shortcircuit => 1 } ],
+);
+
+if( $opt->help ) {
+    print $usage->text;
+    exit;
+}
 
 local $\ = "\n";
 for my $smiles (<>) {
