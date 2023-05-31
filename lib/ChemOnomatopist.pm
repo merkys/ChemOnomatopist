@@ -79,7 +79,9 @@ sub get_sidechain_name
     my( $graph, $start, $options ) = @_;
 
     # TODO: Extend to other subclasses of ChemOnomatopist::Group::
-    if( blessed $start && $start->isa( ChemOnomatopist::Group::Monocycle:: ) ) {
+    if( blessed $start &&
+        ( $start->isa( ChemOnomatopist::Group::Monocycle:: ) ||
+          $start->isa( ChemOnomatopist::Group::Monospiro:: ) ) ) {
         return ChemOnomatopist::Name->new( $start->prefix );
     }
 

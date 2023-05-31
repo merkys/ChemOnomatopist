@@ -8,6 +8,7 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
+use ChemOnomatopist;
 use ChemOnomatopist::Chain::VertexArray;
 use Graph::Traversal::DFS;
 
@@ -62,6 +63,13 @@ sub candidate_chains
     }
 
     return @chains;
+}
+
+sub prefix
+{
+    my( $self ) = @_;
+    return 'spiro[' . join( '.', map { scalar @$_ } @{$self->{components}} ) . ']' .
+           ChemOnomatopist::alkane_chain_name( scalar @{$self->{vertices}} ) . 'ane';
 }
 
 # FIXME: This is a bit strange: class and object method with the same name
