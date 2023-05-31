@@ -6,8 +6,8 @@ use warnings;
 # ABSTRACT: Give molecule a name
 # VERSION
 
-use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Circular;
+use ChemOnomatopist::Chain::FromHalves;
 use ChemOnomatopist::Chain::VertexArray;
 use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Elements qw( %elements );
@@ -648,7 +648,7 @@ sub select_mainchain
         for my $part1 (@path_parts) {
             for my $part2 (@path_parts) {
                 next if $part1->group eq $part2->group;
-                push @chains, ChemOnomatopist::Chain->new( $part1, $part2 );
+                push @chains, ChemOnomatopist::Chain::FromHalves->new( $part1, $part2 );
             }
         }
     }
@@ -703,7 +703,7 @@ sub select_sidechain
         for my $part1 (@path_parts) {
             for my $part2 (@path_parts) {
                 next if $part1->group eq $part2->group;
-                push @chains, ChemOnomatopist::Chain->new( $part1, $part2 );
+                push @chains, ChemOnomatopist::Chain::FromHalves->new( $part1, $part2 );
             }
         }
     } elsif( $C_graph->degree( $start ) == 1 ) {

@@ -5,7 +5,7 @@ use warnings;
 
 use Algorithm::Combinatorics qw(combinations);
 use ChemOnomatopist;
-use ChemOnomatopist::Chain;
+use ChemOnomatopist::Chain::FromHalves;
 use ChemOnomatopist::ChainHalf;
 use Graph::Undirected;
 use Test::More;
@@ -29,7 +29,7 @@ $graph->add_path( 0, 41..45 );
 $graph->add_path( 12, 16 );
 $graph->add_path( 22, 26, 27 );
 
-@chains = map  { ChemOnomatopist::Chain->new( @$_ ) }
+@chains = map  { ChemOnomatopist::Chain::FromHalves->new( @$_ ) }
           grep { $_->[0] ne $_->[1] }
           combinations [ chain( $graph, 0, 11..15 ),
                          chain( $graph, 0, 21..25 ),
@@ -40,7 +40,7 @@ $graph->add_path( 22, 26, 27 );
 
 is scalar( @chains ), 6;
 
-@chains = map  { ChemOnomatopist::Chain->new( @$_ ) }
+@chains = map  { ChemOnomatopist::Chain::FromHalves->new( @$_ ) }
           grep { $_->[0] ne $_->[1] }
           combinations [ chain( $graph, 0, 11..15 ),
                          chain( $graph, 0, 31..35 ),

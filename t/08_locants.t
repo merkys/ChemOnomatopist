@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
-use ChemOnomatopist::Chain;
+use ChemOnomatopist::Chain::FromHalves;
 use ChemOnomatopist::ChainHalf;
 use Graph::Undirected;
 use Test::More;
@@ -18,7 +18,7 @@ sub chains($@)
     for my $half1 (@halves) {
         for my $half2 (@halves) {
             next if $half1 == $half2;
-            push @chains, ChemOnomatopist::Chain->new( $half1, $half2 );
+            push @chains, ChemOnomatopist::Chain::FromHalves->new( $half1, $half2 );
         }
     }
 

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
-use ChemOnomatopist::Chain;
+use ChemOnomatopist::Chain::FromHalves;
 use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Util::Graph qw(
     graph_longest_paths
@@ -22,7 +22,7 @@ sub chains_odd($@)
     for my $half1 (@halves) {
         for my $half2 (@halves) {
             next if $half1 == $half2;
-            push @chains, ChemOnomatopist::Chain->new( $half1, $half2 );
+            push @chains, ChemOnomatopist::Chain::FromHalves->new( $half1, $half2 );
         }
     }
 
@@ -38,7 +38,7 @@ sub chains_even($@)
     for my $half1 (@halves) {
         for my $half2 (@halves) {
             next if $half1->group eq $half2->group;
-            push @chains, ChemOnomatopist::Chain->new( $half1, $half2 );
+            push @chains, ChemOnomatopist::Chain::FromHalves->new( $half1, $half2 );
         }
     }
 

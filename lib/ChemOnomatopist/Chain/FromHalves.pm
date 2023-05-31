@@ -1,9 +1,9 @@
-package ChemOnomatopist::Chain;
+package ChemOnomatopist::Chain::FromHalves;
 
 use strict;
 use warnings;
 
-# ABSTRACT: Longest chain in a compound
+# ABSTRACT: Chain formed by two halves
 # VERSION
 
 use List::Util qw( sum0 );
@@ -135,7 +135,7 @@ sub reversed()
 {
     my( $self ) = @_;
 
-    return ChemOnomatopist::Chain->new( reverse @{$self->{halves}} );
+    return ChemOnomatopist::Chain::FromHalves->new( reverse @{$self->{halves}} );
 }
 
 1;
