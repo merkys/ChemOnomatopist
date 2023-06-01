@@ -9,42 +9,11 @@ use warnings;
 use ChemOnomatopist;
 use ChemOnomatopist::Chain; # FIXME: Not sure why it is needed
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use List::Util qw( all any );
 
 use parent ChemOnomatopist::Chain::;
-
-# From BBv2 P-22.2.1
-our %names = (
-    CCNCO => '1,3-oxazolidine',
-    CCCNO => '1,2-oxazolidine',
-    CCCCN => 'pyrrolidine',
-    CCCNN => 'pyrazolidine',
-    CCNCN => 'imidazolidine',
-
-    CCCCCN => 'piperidine',
-    CCNCCN => 'piperazine',
-    CCNCCO => 'morpholine',
-
-    # 5-membered aromatic
-    'C=CC=CO'  => 'furan',
-    'C=CC=NC'  => '1H-imidazole', # FIXME: Adjust for isomerism
-    'C=CN=CO'  => '1,3-oxazole',
-    'C=CC=NO'  => '1,2-oxazole',
-    'C=CC=NN'  => '1H-pyrazole', # FIXME: Adjust for isomerism
-    'C=CC=CN'  => '1H-pyrole', # FIXME: Adjust for isomerism
-    'C=CC=C[Se]' => 'selenophene',
-    'C=CC=C[Te]' => 'tellurophene',
-    'C=CC=CS'  => 'thiophene',
-
-    # 6-membered aromatic
-    'C=CC=CC=C' => 'benzene',
-    'C=CC=CCO'  => '2H-pyran', # FIXME: Adjust for isomerism
-    'C=CN=CC=N' => 'pyrazine',
-    'C=CC=CN=N' => 'pyridazine',
-    'C=CC=CC=N' => 'pyridine',
-    'C=CC=NC=N' => 'pyrimidine',
-);
 
 sub new
 {
@@ -98,6 +67,7 @@ sub name()
 
     my $graph = $self->graph;
     my $SMILES = $self->backbone_SMILES;
+    my %names = %ChemOnomatopist::Group::Monocycle::names;
 
     # Check the preserved names
     return $names{$SMILES} if exists $names{$SMILES};
