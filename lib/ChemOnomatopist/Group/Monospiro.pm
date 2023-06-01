@@ -9,7 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist;
-use ChemOnomatopist::Chain::VertexArray;
+use ChemOnomatopist::Chain;
 use Graph::Traversal::DFS;
 
 sub new
@@ -41,25 +41,25 @@ sub candidate_chains
     # "Numbering starts in the smaller ring, if one is smaller, at a ring atom next to the spiro atom and proceeds first around that ring, then through the spiro atom and around the second ring."
     my @chains;
     push @chains,
-         ChemOnomatopist::Chain::VertexArray->new( $self->{graph},
-                                                   @$A, $self->{spiro_atom}, @$B ),
-         ChemOnomatopist::Chain::VertexArray->new( $self->{graph},
-                                                   @$A, $self->{spiro_atom}, reverse(@$B) ),
-         ChemOnomatopist::Chain::VertexArray->new( $self->{graph},
-                                                   reverse(@$A), $self->{spiro_atom}, @$B ),
-         ChemOnomatopist::Chain::VertexArray->new( $self->{graph},
-                                                   reverse(@$A), $self->{spiro_atom}, reverse(@$B) );
+         ChemOnomatopist::Chain->new( $self->{graph},
+                                      @$A, $self->{spiro_atom}, @$B ),
+         ChemOnomatopist::Chain->new( $self->{graph},
+                                      @$A, $self->{spiro_atom}, reverse(@$B) ),
+         ChemOnomatopist::Chain->new( $self->{graph},
+                                      reverse(@$A), $self->{spiro_atom}, @$B ),
+         ChemOnomatopist::Chain->new( $self->{graph},
+                                      reverse(@$A), $self->{spiro_atom}, reverse(@$B) );
 
     if( @$A == @$B ) {
         push @chains,
-             ChemOnomatopist::Chain::VertexArray->new( $self->{graph},
-                                                       @$B, $self->{spiro_atom}, @$A ),
-             ChemOnomatopist::Chain::VertexArray->new( $self->{graph},
-                                                       @$B, $self->{spiro_atom}, reverse(@$A) ),
-             ChemOnomatopist::Chain::VertexArray->new( $self->{graph},
-                                                       reverse(@$B), $self->{spiro_atom}, @$A ),
-             ChemOnomatopist::Chain::VertexArray->new( $self->{graph},
-                                                       reverse(@$B), $self->{spiro_atom}, reverse(@$A) );
+             ChemOnomatopist::Chain->new( $self->{graph},
+                                          @$B, $self->{spiro_atom}, @$A ),
+             ChemOnomatopist::Chain->new( $self->{graph},
+                                          @$B, $self->{spiro_atom}, reverse(@$A) ),
+             ChemOnomatopist::Chain->new( $self->{graph},
+                                          reverse(@$B), $self->{spiro_atom}, @$A ),
+             ChemOnomatopist::Chain->new( $self->{graph},
+                                          reverse(@$B), $self->{spiro_atom}, reverse(@$A) );
     }
 
     return @chains;

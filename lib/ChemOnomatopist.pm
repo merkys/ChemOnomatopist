@@ -6,9 +6,9 @@ use warnings;
 # ABSTRACT: Give molecule a name
 # VERSION
 
+use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::FromHalves;
-use ChemOnomatopist::Chain::VertexArray;
 use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group;
@@ -558,14 +558,14 @@ sub select_mainchain
         } elsif( @carbons == 1 ) {
             if( blessed $carbons[0] && @groups == 1 && $carbons[0]->isa( ChemOnomatopist::Group::Monocycle:: ) ) {
                 # For senior attachments to cycles
-                push @chains, ChemOnomatopist::Chain::VertexArray->new( $graph, @groups );
+                push @chains, ChemOnomatopist::Chain->new( $graph, @groups );
             } else {
                 # As the starting position is known, it is enough to take the "side chain"
                 # containing this particular carbon:
                 my $chain = select_sidechain( $graph, @carbons );
                 my @vertices = blessed $chain && $chain->can( 'vertices' ) ? $chain->vertices : $chain;
-                push @chains, ChemOnomatopist::Chain::VertexArray->new( $graph, @vertices ),
-                              ChemOnomatopist::Chain::VertexArray->new( $graph, reverse @vertices );
+                push @chains, ChemOnomatopist::Chain->new( $graph, @vertices ),
+                              ChemOnomatopist::Chain->new( $graph, reverse @vertices );
             }
         } else {
             my @paths;
@@ -603,14 +603,14 @@ sub select_mainchain
                 for my $i (0..$#{$longest_paths{$A}}) {
                     for my $j (0..$#{$longest_paths{$B}}) {
                         push @chains,
-                             ChemOnomatopist::Chain::VertexArray->new( $graph,
-                                                                       reverse( @{$longest_paths{$A}->[$i]} ),
-                                                                       @$path,
-                                                                       @{$longest_paths{$B}->[$j]} ),
-                             ChemOnomatopist::Chain::VertexArray->new( $graph,
-                                                                       reverse( @{$longest_paths{$B}->[$j]} ),
-                                                                       reverse( @$path ),
-                                                                       @{$longest_paths{$A}->[$j]} );
+                             ChemOnomatopist::Chain->new( $graph,
+                                                          reverse( @{$longest_paths{$A}->[$i]} ),
+                                                          @$path,
+                                                          @{$longest_paths{$B}->[$j]} ),
+                             ChemOnomatopist::Chain->new( $graph,
+                                                          reverse( @{$longest_paths{$B}->[$j]} ),
+                                                          reverse( @$path ),
+                                                          @{$longest_paths{$A}->[$j]} );
                     }
                 }
             }
@@ -664,7 +664,7 @@ sub select_mainchain
         $chain->number_of_groups( $most_senior_group ) ) {
         shift @vertices;
         pop @vertices;
-        $chain = ChemOnomatopist::Chain::VertexArray->new( $graph, @vertices );
+        $chain = ChemOnomatopist::Chain->new( $graph, @vertices );
     }
 
     return $chain;
@@ -707,7 +707,7 @@ sub select_sidechain
             }
         }
     } elsif( $C_graph->degree( $start ) == 1 ) {
-        @chains = map { ChemOnomatopist::Chain::VertexArray->new( $graph, $_->vertices ) } @path_parts;
+        @chains = map { ChemOnomatopist::Chain->new( $graph, $_->vertices ) } @path_parts;
     } else {
         return ( $start );
     }
