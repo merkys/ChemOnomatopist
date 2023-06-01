@@ -6,7 +6,7 @@ use warnings;
 # ABSTRACT: Monospiro compound
 # VERSION
 
-use parent ChemOnomatopist::Group::;
+use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Chain;
@@ -30,53 +30,54 @@ sub new
              [ Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs ];
     }
 
-    return bless { graph => $graph, vertices => \@vertices, spiro_atom => $spiro_atom, components => \@components }, $class;
-}
-
-sub candidate_chains
-{
-    my( $self ) = @_;
-    my( $A, $B ) = @{$self->{components}};
-
     # "Numbering starts in the smaller ring, if one is smaller, at a ring atom next to the spiro atom and proceeds first around that ring, then through the spiro atom and around the second ring."
+    my( $A, $B ) = @components;
     my @chains;
     push @chains,
-         ChemOnomatopist::Chain->new( $self->{graph},
-                                      @$A, $self->{spiro_atom}, @$B ),
-         ChemOnomatopist::Chain->new( $self->{graph},
-                                      @$A, $self->{spiro_atom}, reverse(@$B) ),
-         ChemOnomatopist::Chain->new( $self->{graph},
-                                      reverse(@$A), $self->{spiro_atom}, @$B ),
-         ChemOnomatopist::Chain->new( $self->{graph},
-                                      reverse(@$A), $self->{spiro_atom}, reverse(@$B) );
+         ChemOnomatopist::Chain->new( $graph,
+                                      @$A, $spiro_atom, @$B ),
+         ChemOnomatopist::Chain->new( $graph,
+                                      @$A, $spiro_atom, reverse(@$B) ),
+         ChemOnomatopist::Chain->new( $graph,
+                                      reverse(@$A), $spiro_atom, @$B ),
+         ChemOnomatopist::Chain->new( $graph,
+                                      reverse(@$A), $spiro_atom, reverse(@$B) );
 
     if( @$A == @$B ) {
         push @chains,
-             ChemOnomatopist::Chain->new( $self->{graph},
-                                          @$B, $self->{spiro_atom}, @$A ),
-             ChemOnomatopist::Chain->new( $self->{graph},
-                                          @$B, $self->{spiro_atom}, reverse(@$A) ),
-             ChemOnomatopist::Chain->new( $self->{graph},
-                                          reverse(@$B), $self->{spiro_atom}, @$A ),
-             ChemOnomatopist::Chain->new( $self->{graph},
-                                          reverse(@$B), $self->{spiro_atom}, reverse(@$A) );
+             ChemOnomatopist::Chain->new( $graph,
+                                          @$B, $spiro_atom, @$A ),
+             ChemOnomatopist::Chain->new( $graph,
+                                          @$B, $spiro_atom, reverse(@$A) ),
+             ChemOnomatopist::Chain->new( $graph,
+                                          reverse(@$B), $spiro_atom, @$A ),
+             ChemOnomatopist::Chain->new( $graph,
+                                          reverse(@$B), $spiro_atom, reverse(@$A) );
     }
 
-    return @chains;
+    my( $chain ) = ChemOnomatopist::filter_chains( @chains );
+
+    return bless { graph => $graph, vertices => [ $chain->vertices ], spiro_atom => $spiro_atom, components => \@components }, $class;
 }
 
-sub prefix
+sub components()
 {
     my( $self ) = @_;
-    return 'spiro[' . join( '.', map { scalar @$_ } @{$self->{components}} ) . ']' .
-           ChemOnomatopist::alkane_chain_name( scalar @{$self->{vertices}} ) . 'ane';
+    return @{$self->{components}};
+}
+
+sub prefix()
+{
+    my( $self ) = @_;
+    return 'spiro[' . join( '.', map { scalar @$_ } $self->components ) . ']' .
+           ChemOnomatopist::alkane_chain_name( $self->length ) . 'ane';
 }
 
 # FIXME: This is a bit strange: class and object method with the same name
-sub suffix
+sub suffix()
 {
     my( $self ) = @_;
-    return ref $self ? 'spiro[' . join( '.', map { scalar @$_ } @{$self->{components}} ) . ']' : '';
+    return ref $self ? 'spiro[' . join( '.', map { scalar @$_ } $self->components ) . ']' : '';
 }
 
 1;

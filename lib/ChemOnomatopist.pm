@@ -540,6 +540,8 @@ sub select_mainchain
 
         if( $most_senior_group->can( 'candidate_chains' ) ) {
             @chains = $groups[0]->candidate_chains;
+        } elsif( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
+            return shift @groups;
         } elsif( @carbons == 1 ) {
             if( blessed $carbons[0] && @groups == 1 && $carbons[0]->isa( ChemOnomatopist::Group::Monocycle:: ) ) {
                 # For senior attachments to cycles
