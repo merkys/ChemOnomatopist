@@ -180,9 +180,9 @@ sub get_mainchain_name
 
     # Disconnect the main chain: this way every main chain atom remains
     # connected only to the side chains.
-    if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
-        $graph = copy $chain->{graph};
-        $graph->delete_cycle( @chain );
+    if( blessed $chain && $chain->isa( ChemOnomatopist::Chain:: ) ) {
+        $graph = copy $chain->graph;
+        $graph->delete_edges( map { @$_ } $graph->subgraph( \@chain )->edges );
     } else {
         $graph = copy $graph;
         $graph->delete_path( @chain );
