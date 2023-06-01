@@ -38,7 +38,7 @@ our @names = (
 # From BBv2 P-25.1.1, order of decreasing seniority
 our %hydrocarbons_by_size = (
     '5,7' => 'azulene',
-    '6,6' => 'naphtalene',
+    '6,6' => 'naphthalene',
     '5,6' => 'indene',
 );
 
