@@ -1,10 +1,12 @@
-package package ChemOnomatopist::Group::Bicycle;
+package ChemOnomatopist::Group::Bicycle;
 
 use strict;
 use warnings;
 
 # ABSTRACT: Fused bicyclic group
 # VERSION
+
+use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 use Graph::Traversal::DFS;
 use Set::Object qw( set );
@@ -48,14 +50,21 @@ sub new
     }
 
     # Finding a name from list
-    my( $A, $B ) = @components;
+    # TODO: Unused
+    my @A = @{$components[0]};
+    my @B = @{$components[1]};
     my @SMILES;
     push @SMILES, cycle_SMILES( $graph, @A[1..$#A], $A[0] ) . '|' .
                   cycle_SMILES( $graph, @B[1..$#B], $B[0] );
-    if( @$A == @$B ) {
+    if( @A == @B ) {
         push @SMILES, cycle_SMILES( $graph, @B[1..$#B], $B[0] ) . '|' .
                       cycle_SMILES( $graph, @A[1..$#A], $A[0] );
     }
+
+    my @cycles =  map { ChemOnomatopist::Group::Monocycle->new( $graph, @$_ ) }
+                      @components;
+
+    return bless { graph => $graph, vertices => \@vertices, cycles => \@cycles }, $class;
 }
 
 1;

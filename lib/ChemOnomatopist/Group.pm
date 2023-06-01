@@ -5,6 +5,7 @@ use warnings;
 
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amino;
+use ChemOnomatopist::Group::Bicycle;
 use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Ester;
@@ -46,10 +47,12 @@ our @order = (
     ChemOnomatopist::Group::Amino::,
     ChemOnomatopist::Group::Imino::,
 
-    # Classes denoted by the senior atom in heterane nomenclature
+    # TODO: Classes denoted by the senior atom in heterane nomenclature should go here
 
-    ChemOnomatopist::Group::Monocycle::, # FIXME: Possibly not the right place
-    ChemOnomatopist::Group::Monospiro::, # FIXME: Possibly not the right place
+    # FIXME: The following order is not written anywhere
+    ChemOnomatopist::Group::Bicycle::,
+    ChemOnomatopist::Group::Monocycle::,
+    ChemOnomatopist::Group::Monospiro::,
 );
 
 sub new
