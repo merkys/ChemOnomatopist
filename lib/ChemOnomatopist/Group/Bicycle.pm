@@ -34,6 +34,13 @@ our @names = (
     [ 'CC=CNC',  'C=CC=CN',   '1H-pyrrolizine' ], # TODO: There are isomers
 );
 
+# From BBv2 P-25.1.1, order of decreasing seniority
+our %hydrocarbons_by_size = (
+    '5,7' => 'azulene',
+    '6,6' => 'naphtalene',
+    '5,6' => 'indene',
+);
+
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
@@ -75,14 +82,23 @@ sub cycles()
     return @{$self->{cycles}};
 }
 
+sub is_hydrocarbon()
+{
+    my( $self ) = @_;
+    return all { $_->is_alicyclic } $self->cycles;
+}
+
 # FIXME: This is a bit strange: class and object method with the same name
 sub suffix()
 {
     my( $self ) = @_;
     return '' unless ref $self;
-    if( all { $_->is_alicyclic } $self->cycles ) {
-        return 'naphtalene' if all { $_->length == 6 } $self->cycles;
+    if( $self->is_hydrocarbon ) { # FIXME: Check if aromatic
+        my $cycle_sizes = join ',', map { $_->length } $self->cycles;
+        return $hydrocarbons_by_size{$cycle_sizes} if exists $hydrocarbons_by_size{$cycle_sizes};
     }
+
+    die "cannot name complex bicyclic compounds\n";
 }
 
 1;
