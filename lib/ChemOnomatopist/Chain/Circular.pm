@@ -7,12 +7,12 @@ use warnings;
 # VERSION
 
 use ChemOnomatopist;
-use ChemOnomatopist::ChainHalf; # FIXME: Not sure why it is needed
+use ChemOnomatopist::Chain; # FIXME: Not sure why it is needed
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use List::Util qw( all any );
 
-use parent ChemOnomatopist::ChainHalf::;
+use parent ChemOnomatopist::Chain::;
 
 # From BBv2 P-22.2.1
 our %names = (
