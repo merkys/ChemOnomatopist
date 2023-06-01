@@ -42,12 +42,6 @@ sub backbone_SMILES()
     return $SMILES;
 }
 
-sub is_alicyclic()
-{
-    my( $self ) = @_;
-    return $self->number_of_heteroatoms == 0;
-}
-
 sub is_homogeneous()
 {
     my( $self ) = @_;

@@ -86,7 +86,7 @@ sub cycles()
 sub is_hydrocarbon()
 {
     my( $self ) = @_;
-    return all { $_->is_alicyclic } $self->cycles;
+    return all { $_->is_hydrocarbon } $self->cycles;
 }
 
 sub needs_heteroatom_names() { return '' } # FIXME: This is not always correct

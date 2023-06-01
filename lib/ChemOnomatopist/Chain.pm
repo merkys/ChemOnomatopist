@@ -142,6 +142,12 @@ sub heteroatom_positions()
     return @heteroatom_positions;
 }
 
+sub is_hydrocarbon()
+{
+    my( $self ) = @_;
+    return $self->number_of_heteroatoms == 0;
+}
+
 sub is_saturated()
 {
     my( $self ) = @_;
