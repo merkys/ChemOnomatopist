@@ -9,7 +9,6 @@ use warnings;
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 use ChemOnomatopist;
-use ChemOnomatopist::Chain;
 use Graph::Traversal::DFS;
 
 sub new
