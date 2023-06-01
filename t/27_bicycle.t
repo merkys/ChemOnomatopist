@@ -10,6 +10,8 @@ my @cases = (
     # From BBv2 P-25.0
     { smiles => 'C1=CC=CC2=CC=CC=C12', iupac => 'naphthalene' },
 
+    { smiles => 'C1=CC=C2C(C(C=CC2=C1)O)O', iupac => '1,2-dihydronaphthalene-1,2-diol', AUTHOR => 1 }, # PubChem 362
+
     { smiles => 'C1=CC=CC=CC2=CC=CC=CC=C12', iupac => 'octalene' }, # From BBv2 P-25.1.2.3
 
     # From BBv2 P-25.2.2.4
