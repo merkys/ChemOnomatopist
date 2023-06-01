@@ -52,11 +52,7 @@ sub suffix()
 {
     my( $self ) = @_;
     return '' unless ref $self;
-
-    my $name = $self->name;
-    return $name if defined $name;
-
-    return 'cyclo' . ChemOnomatopist::unbranched_chain_name( $self );
+    return $self->name;
 }
 
 1;

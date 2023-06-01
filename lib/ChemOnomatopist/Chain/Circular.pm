@@ -214,7 +214,7 @@ sub name()
         }
     }
 
-    return undef;
+    return 'cyclo' . ChemOnomatopist::unbranched_chain_name( $self );
 }
 
 # sub branch_positions() # TODO: Maybe need to add 1 to all returned positions?
