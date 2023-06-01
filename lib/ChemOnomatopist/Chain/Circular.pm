@@ -96,7 +96,7 @@ sub name()
 {
     my( $self ) = @_;
 
-    my $graph = $self->{graph};
+    my $graph = $self->graph;
     my $SMILES = $self->backbone_SMILES;
 
     # Check the preserved names
@@ -224,7 +224,7 @@ sub bonds()
     my( $self ) = @_;
     my @bonds = $self->SUPER::bonds;
 
-    my $graph = $self->{graph};
+    my $graph = $self->graph;
     my @vertices = $self->vertices;
     if( $graph->has_edge_attribute( $vertices[0], $vertices[-1], 'bond' ) ) {
         push @bonds, $graph->get_edge_attribute( $vertices[0], $vertices[-1], 'bond' );
@@ -238,7 +238,7 @@ sub _disconnected_chain_graph()
 {
     my( $self ) = @_;
 
-    my $graph = $self->{graph}->copy;
+    my $graph = $self->graph->copy; # FIXME: Call our copy() to preserve bonds
     $graph->delete_cycle( $self->vertices );
 
     return $graph;
