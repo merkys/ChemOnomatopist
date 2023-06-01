@@ -192,11 +192,6 @@ sub get_mainchain_name
     my %heteroatoms;
     my %attachment_objects;
     # Examine the main chain
-    # This is skipped for cycles as they should be capable of naming themselves
-    my $cycle_name;
-    if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
-        $cycle_name = $chain->name;
-    }
     if( !blessed $chain || !$chain->isa( ChemOnomatopist::Group:: ) || $chain->needs_heteroatom_names ) {
         for my $i (0..$#chain) {
             my $atom = $chain[$i];
@@ -302,17 +297,14 @@ sub get_mainchain_name
         $name->append_element( $elements{$element}->{prefix} );
     }
 
-    if( $cycle_name ) {
-        $name .= $cycle_name;
+    if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
+        my $cycle_name = $chain->name;
+        $name .= defined $cycle_name ? $cycle_name : 'cyclo' . unbranched_chain_name( $chain );
+    } elsif( $most_senior_group && $most_senior_group->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
+        # FIXME: Heterogeneous exception
+        my( $group ) = grep { blessed $_ && $_->isa( $most_senior_group ) } $graph->vertices;
+        $name .= $group->suffix . unbranched_chain_name( $chain );
     } else {
-        if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
-            my $cycle_name = $chain->name;
-            $name .= defined $cycle_name ? $cycle_name : 'cyclo';
-        } elsif( $most_senior_group && $most_senior_group->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
-            # FIXME: Heterogeneous exception
-            my( $group ) = grep { blessed $_ && $_->isa( $most_senior_group ) } $graph->vertices;
-            $name .= $group->suffix;
-        }
         $name .= unbranched_chain_name( $chain );
     }
 
