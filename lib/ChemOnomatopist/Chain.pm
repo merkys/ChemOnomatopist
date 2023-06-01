@@ -7,7 +7,7 @@ use ChemOnomatopist;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Chemistry::OpenSMILES qw( %normal_valence );
 use Graph::Traversal::DFS;
-use List::Util qw( sum0 );
+use List::Util qw( all sum0 );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
@@ -140,6 +140,12 @@ sub heteroatom_positions()
 
     $self->{heteroatom_positions} = \@heteroatom_positions;
     return @heteroatom_positions;
+}
+
+sub is_saturated()
+{
+    my( $self ) = @_;
+    return all { $_ eq '-' } $self->bonds;
 }
 
 sub max_valence()

@@ -90,12 +90,6 @@ sub is_homogeneous()
     return 1;
 }
 
-sub is_saturated()
-{
-    my( $self ) = @_;
-    return all { $_ eq '-' } $self->bonds;
-}
-
 # Returns undef for cycles not needing special treatment.
 # Those can be handled by ChemOnomatopist::get_mainchain_name().
 sub name()
