@@ -1,10 +1,13 @@
-package package ChemOnomatopist::Group::Monocycle;
+package package ChemOnomatopist::Group::Bicycle;
 
 use strict;
 use warnings;
 
 # ABSTRACT: Fused bicyclic group
 # VERSION
+
+use Graph::Traversal::DFS;
+use Set::Object qw( set );
 
 # From BBv2 P-25.2.1
 our @names = (
@@ -26,5 +29,23 @@ our @names = (
     [ 'CC=CNC=', 'C=CC=CCN',  'indolizine', ],
     [ 'CC=CNC',  'C=CC=CN',   '1H-pyrrolizine' ], # TODO: There are isomers
 );
+
+sub new
+{
+    my( $class, $graph, @vertices ) = @_;
+
+    my $subgraph = $graph->subgraph( \@vertices );
+    my @bridge = grep { $subgraph->degree( $_ ) == 3 } @vertices;
+    $subgraph->delete_vertices( @bridge );
+
+    # Graph is broken into components.
+    # Each component is represented as an array of vertices in the order of traverse.
+    my @components = sort { @$a <=> @$b } $subgraph->connected_components;
+    for (0..1) {
+        my $subgraph = $graph->subgraph( [ @{$components[$_]} ] );
+        $subgraph->delete_edge( @bridge );
+        $components[$_] = [ Graph::Traversal::DFS->new( $subgraph, start => $bridge[$_] )->dfs ];
+    }
+}
 
 1;
