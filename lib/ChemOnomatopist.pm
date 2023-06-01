@@ -538,22 +538,7 @@ sub select_mainchain
         my @groups = grep { blessed( $_ ) && $_->isa( $most_senior_group ) } $graph->vertices;
         my @carbons = uniq map { $_->C } @groups; # FIXME: Carbons with the most attachments should be preferred
 
-        if( $most_senior_group->isa( ChemOnomatopist::Group::Monocycle:: ) ) {
-            # FIXME: For now we generate all possible traversals of the same cycle.
-            #        This is not optimal, some caching could be introduced.
-            my @vertices = @{$groups[0]->{vertices}};
-            for (0..$#vertices) {
-                push @chains,
-                     ChemOnomatopist::Chain::Circular->new( $groups[0]->{graph}, @vertices );
-                push @vertices, shift @vertices;
-            }
-            @vertices = reverse @vertices;
-            for (0..$#vertices) {
-                push @chains,
-                     ChemOnomatopist::Chain::Circular->new( $groups[0]->{graph}, @vertices );
-                push @vertices, shift @vertices;
-            }
-        } elsif( $most_senior_group->can( 'candidate_chains' ) ) {
+        if( $most_senior_group->can( 'candidate_chains' ) ) {
             @chains = $groups[0]->candidate_chains;
         } elsif( @carbons == 1 ) {
             if( blessed $carbons[0] && @groups == 1 && $carbons[0]->isa( ChemOnomatopist::Group::Monocycle:: ) ) {
