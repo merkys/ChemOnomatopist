@@ -455,7 +455,7 @@ sub find_groups
                  $core->has_edge( @{$vertices_by_degree{3}} ) && $core->is_edge_connected ) {
             # Ortho-fused as defined in BBv2 P-25.3.1.1.1
             # Edge connected means that it has no bridges
-            die "cannot handle ortho-fused rings for now\n";
+            $compound = ChemOnomatopist::Group::Bicycle->new( copy $graph, $core->vertices );
         } else {
             die "cannot handle cyclic compounds other than monocycles and monospiro\n";
         }

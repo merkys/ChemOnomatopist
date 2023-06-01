@@ -8,7 +8,9 @@ use warnings;
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
+use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Graph::Traversal::DFS;
+use List::Util qw( all );
 use Set::Object qw( set );
 
 # From BBv2 P-25.2.1
@@ -44,7 +46,7 @@ sub new
     # Each component is represented as an array of vertices in the order of traverse.
     my @components = sort { @$a <=> @$b } $subgraph->connected_components;
     for (0..1) {
-        my $subgraph = $graph->subgraph( [ @{$components[$_]} ] );
+        my $subgraph = $graph->subgraph( [ @{$components[$_]}, @bridge ] );
         $subgraph->delete_edge( @bridge );
         $components[$_] = [ Graph::Traversal::DFS->new( $subgraph, start => $bridge[$_] )->dfs ];
     }
@@ -61,10 +63,26 @@ sub new
                       cycle_SMILES( $graph, @A[1..$#A], $A[0] );
     }
 
-    my @cycles =  map { ChemOnomatopist::Group::Monocycle->new( $graph, @$_ ) }
-                      @components;
+    my @cycles = map { ChemOnomatopist::Group::Monocycle->new( $graph, @$_ ) }
+                     @components;
 
     return bless { graph => $graph, vertices => \@vertices, cycles => \@cycles }, $class;
+}
+
+sub cycles()
+{
+    my( $self ) = @_;
+    return @{$self->{cycles}};
+}
+
+# FIXME: This is a bit strange: class and object method with the same name
+sub suffix()
+{
+    my( $self ) = @_;
+    return '' unless ref $self;
+    if( all { $_->is_alicyclic } $self->cycles ) {
+        return 'naphtalene' if all { $_->length == 6 } $self->cycles;
+    }
 }
 
 1;
