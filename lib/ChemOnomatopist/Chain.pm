@@ -147,7 +147,7 @@ sub max_valence()
     my( $self ) = @_;
 
     my @vertices = $self->vertices;
-    my $graph = $self->{graph};
+    my $graph = $self->graph;
     my $subgraph = $graph->subgraph( \@vertices );
 
     my %bond_order = (
