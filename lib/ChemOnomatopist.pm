@@ -197,7 +197,7 @@ sub get_mainchain_name
     if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
         $cycle_name = $chain->name;
     }
-    if( !defined $cycle_name ) {
+    if( !blessed $chain || !$chain->isa( ChemOnomatopist::Group:: ) || $chain->needs_heteroatom_names ) {
         for my $i (0..$#chain) {
             my $atom = $chain[$i];
             if( blessed $atom ) {

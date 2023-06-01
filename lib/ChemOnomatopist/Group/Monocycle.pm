@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist;
+use List::Util qw( all );
 
 sub new
 {
@@ -32,7 +33,13 @@ sub new
     return bless { graph => $graph, vertices => [ $chain->vertices ] }, $class;
 }
 
-sub prefix
+sub needs_heteroatom_names()
+{
+    my( $self ) = @_;
+    return $self->length < 3 || $self->length > 10 || all { $_->{symbol} !~ /^[cC]$/ } $self->vertices;
+}
+
+sub prefix()
 {
     my( $self ) = @_;
     my $chain = ChemOnomatopist::Chain::Circular->new( $self->{graph}, @{$self->{vertices}} );
