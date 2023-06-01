@@ -42,10 +42,21 @@ sub needs_heteroatom_names()
 sub prefix()
 {
     my( $self ) = @_;
-    my $chain = ChemOnomatopist::Chain::Circular->new( $self->{graph}, @{$self->{vertices}} );
-    my $name = $chain->name;
+    my $name = $self->name;
     $name =~ s/ane$/yl/;
     return $name;
+}
+
+# FIXME: This is a bit strange: class and object method with the same name
+sub suffix()
+{
+    my( $self ) = @_;
+    return '' unless ref $self;
+
+    my $name = $self->name;
+    return $name if defined $name;
+
+    return 'cyclo' . ChemOnomatopist::unbranched_chain_name( $self );
 }
 
 1;

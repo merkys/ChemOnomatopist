@@ -297,12 +297,8 @@ sub get_mainchain_name
         $name->append_element( $elements{$element}->{prefix} );
     }
 
-    if(      blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
-        my $cycle_name = $chain->name;
-        $name .= defined $cycle_name ? $cycle_name : 'cyclo' . unbranched_chain_name( $chain );
-    } elsif( blessed $chain && $chain->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
-        # FIXME: Heterogeneous exception
-        $name .= $chain->suffix . unbranched_chain_name( $chain );
+    if( blessed $chain && $chain->isa( ChemOnomatopist::Group:: ) ) {
+        $name .= $chain->suffix;
     } else {
         $name .= unbranched_chain_name( $chain );
     }

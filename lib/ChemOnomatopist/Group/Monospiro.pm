@@ -76,7 +76,9 @@ sub prefix()
 sub suffix()
 {
     my( $self ) = @_;
-    return ref $self ? 'spiro[' . join( '.', map { scalar @$_ } $self->components ) . ']' : '';
+    return '' unless ref $self;
+    return 'spiro[' . join( '.', map { scalar @$_ } $self->components ) . ']' .
+           ChemOnomatopist::unbranched_chain_name( $self );
 }
 
 1;
