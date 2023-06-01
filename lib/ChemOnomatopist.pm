@@ -62,12 +62,6 @@ sub get_name
 
     find_groups( $graph );
 
-    # Some groups have their own naming rules
-    my  $most_senior_group = most_senior_group( $graph );
-    if( $most_senior_group && $most_senior_group->can( 'name' ) ) {
-        return $most_senior_group->name( $graph );
-    }
-
     my $main_chain = select_mainchain( $graph );
     return get_mainchain_name( $graph, $main_chain );
 }
@@ -538,9 +532,7 @@ sub select_mainchain
         my @groups = grep { blessed( $_ ) && $_->isa( $most_senior_group ) } $graph->vertices;
         my @carbons = uniq map { $_->C } @groups; # FIXME: Carbons with the most attachments should be preferred
 
-        if( $most_senior_group->can( 'candidate_chains' ) ) {
-            @chains = $groups[0]->candidate_chains;
-        } elsif( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
+        if( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
             return shift @groups;
         } elsif( @carbons == 1 ) {
             if( blessed $carbons[0] && @groups == 1 && $carbons[0]->isa( ChemOnomatopist::Group::Monocycle:: ) ) {

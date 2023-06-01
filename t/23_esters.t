@@ -7,7 +7,7 @@ use ChemOnomatopist;
 use Test::More;
 
 my @cases = (
-    { smiles => 'CCCCCCCC(=O)OC(C)(C)C', iupac => 'tert-butyl octanoate' }, # BBv2 P-65.6.3.3.1
+    { smiles => 'CCCCCCCC(=O)OC(C)(C)C', iupac => 'tert-butyl octanoate', AUTHOR => 1 }, # BBv2 P-65.6.3.3.1
     { smiles => 'CCOC(=O)CC(=O)OC', iupac => 'ethyl methyl propanedioate', AUTHOR => 1 }, # BBv2 P-65.6.3.3.2.1
 );
 

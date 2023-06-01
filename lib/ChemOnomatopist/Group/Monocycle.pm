@@ -6,35 +6,30 @@ use warnings;
 # ABSTRACT: Monocyclic group
 # VERSION
 
-use parent ChemOnomatopist::Group::;
+use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
-use ChemOnomatopist::Chain::Circular;
+use ChemOnomatopist;
 
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
-    return bless { graph => $graph, vertices => \@vertices }, $class;
-}
-
-sub candidate_chains()
-{
-    my( $self ) = @_;
 
     # FIXME: For now we generate all possible traversals of the same cycle.
     #        This is not optimal, some caching could be introduced.
     my @chains;
-    my @vertices = @{$self->{vertices}};
     for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Chain::Circular->new( $self->{graph}, @vertices );
+        push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @vertices );
         push @vertices, shift @vertices;
     }
     @vertices = reverse @vertices;
     for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Chain::Circular->new( $self->{graph}, @vertices );
+        push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @vertices );
         push @vertices, shift @vertices;
     }
 
-    return @chains;
+    my( $chain ) = ChemOnomatopist::filter_chains( @chains );
+
+    return bless { graph => $graph, vertices => [ $chain->vertices ] }, $class;
 }
 
 sub prefix
