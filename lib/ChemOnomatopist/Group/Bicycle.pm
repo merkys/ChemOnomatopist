@@ -8,6 +8,7 @@ use warnings;
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
+use ChemOnomatopist;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Graph::Traversal::DFS;
 use List::Util qw( all );
@@ -96,6 +97,10 @@ sub suffix()
     if( $self->is_hydrocarbon ) { # FIXME: Check if aromatic
         my $cycle_sizes = join ',', map { $_->length } $self->cycles;
         return $hydrocarbons_by_size{$cycle_sizes} if exists $hydrocarbons_by_size{$cycle_sizes};
+
+        if( $cycle_sizes =~ /^(\d+),\1$/ ) {
+            return ChemOnomatopist::alkane_chain_name( $1 ) . 'alene';
+        }
     }
 
     die "cannot name complex bicyclic compounds\n";

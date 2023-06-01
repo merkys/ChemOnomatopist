@@ -9,6 +9,8 @@ use Test::More;
 my @cases = (
     # From BBv2 P-25.0
     { smiles => 'C1=CC=CC2=CC=CC=C12', iupac => 'naphtalene' },
+
+    { smiles => 'C1=CC=CC=CC2=CC=CC=CC=C12', iupac => 'octalene' }, # From BBv2 P-25.1.2.3
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
