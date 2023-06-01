@@ -90,7 +90,7 @@ sub heteroatoms()
 {
     my( $self ) = @_;
     my @vertices = $self->vertices;
-    return map { $vertices[$_]->{symbol} } $self->heteroatom_positions;
+    return map { ucfirst $vertices[$_]->{symbol} } $self->heteroatom_positions;
 }
 
 sub locant_names()

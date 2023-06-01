@@ -223,7 +223,7 @@ sub multiple_bond_positions()
 sub heteroatoms()
 {
     my( $self ) = @_;
-    return map { $self->{vertices}[$_]{symbol} } $self->heteroatom_positions;
+    return map { ucfirst $self->{vertices}[$_]{symbol} } $self->heteroatom_positions;
 }
 
 sub length()
