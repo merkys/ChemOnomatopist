@@ -297,13 +297,12 @@ sub get_mainchain_name
         $name->append_element( $elements{$element}->{prefix} );
     }
 
-    if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
+    if(      blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
         my $cycle_name = $chain->name;
         $name .= defined $cycle_name ? $cycle_name : 'cyclo' . unbranched_chain_name( $chain );
-    } elsif( $most_senior_group && $most_senior_group->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
+    } elsif( blessed $chain && $chain->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
         # FIXME: Heterogeneous exception
-        my( $group ) = grep { blessed $_ && $_->isa( $most_senior_group ) } $graph->vertices;
-        $name .= $group->suffix . unbranched_chain_name( $chain );
+        $name .= $chain->suffix . unbranched_chain_name( $chain );
     } else {
         $name .= unbranched_chain_name( $chain );
     }
