@@ -11,7 +11,7 @@ use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 use ChemOnomatopist;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Graph::Traversal::DFS;
-use List::Util qw( all );
+use List::Util qw( all any );
 use Set::Object qw( set );
 
 # From BBv2 P-25.2.1
@@ -89,6 +89,8 @@ sub is_hydrocarbon()
     return all { $_->is_alicyclic } $self->cycles;
 }
 
+sub needs_heteroatom_names() { return '' } # FIXME: This is not always correct
+
 # FIXME: This is a bit strange: class and object method with the same name
 sub suffix()
 {
@@ -101,6 +103,11 @@ sub suffix()
         if( $cycle_sizes =~ /^(\d+),\1$/ ) {
             return ChemOnomatopist::alkane_chain_name( $1 ) . 'alene';
         }
+    }
+
+    if( any { $_->suffix eq 'benzene' } $self->cycles ) {
+        my( $other ) = grep { $_->suffix ne 'benzene' } $self->cycles;
+        return 'benzo' . $other->suffix; # FIXME: This is not always correct
     }
 
     die "cannot name complex bicyclic compounds\n";
