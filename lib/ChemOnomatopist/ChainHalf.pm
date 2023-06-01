@@ -3,14 +3,7 @@ package ChemOnomatopist::ChainHalf;
 use strict;
 use warnings;
 
-use ChemOnomatopist;
 use ChemOnomatopist::Chain;
-use ChemOnomatopist::Util::SMILES qw( path_SMILES );
-use Chemistry::OpenSMILES qw( %normal_valence );
-use Graph::Traversal::DFS;
-use List::Util qw( sum0 );
-use Scalar::Util qw( blessed );
-use Set::Object qw( set );
 
 use parent ChemOnomatopist::Chain::;
 
@@ -34,15 +27,13 @@ sub group()
     return $self->{vertices}[1 - defined $self->{other_center}];
 }
 
-# Properties
-
 sub _disconnected_chain_graph()
 {
     my( $self ) = @_;
 
     return $self->{_disconnected_chain_graph} if $self->{_disconnected_chain_graph};
 
-    my $graph = $self->{graph}->copy;
+    my $graph = $self->graph->copy;
     my @vertices = $self->vertices;
 
     if( $self->{other_center} ) {
