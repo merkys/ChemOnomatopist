@@ -46,6 +46,16 @@ sub new
         $subgraph->delete_edge( @bridge );
         $components[$_] = [ Graph::Traversal::DFS->new( $subgraph, start => $bridge[$_] )->dfs ];
     }
+
+    # Finding a name from list
+    my( $A, $B ) = @components;
+    my @SMILES;
+    push @SMILES, cycle_SMILES( $graph, @A[1..$#A], $A[0] ) . '|' .
+                  cycle_SMILES( $graph, @B[1..$#B], $B[0] );
+    if( @$A == @$B ) {
+        push @SMILES, cycle_SMILES( $graph, @B[1..$#B], $B[0] ) . '|' .
+                      cycle_SMILES( $graph, @A[1..$#A], $A[0] );
+    }
 }
 
 1;
