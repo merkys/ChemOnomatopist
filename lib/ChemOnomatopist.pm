@@ -306,7 +306,8 @@ sub get_mainchain_name
         $name .= $cycle_name;
     } else {
         if( blessed $chain && $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
-            $name .= 'cyclo';
+            my $cycle_name = $chain->name;
+            $name .= defined $cycle_name ? $cycle_name : 'cyclo';
         } elsif( $most_senior_group && $most_senior_group->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
             # FIXME: Heterogeneous exception
             my( $group ) = grep { blessed $_ && $_->isa( $most_senior_group ) } $graph->vertices;
