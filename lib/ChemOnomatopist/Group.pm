@@ -65,6 +65,7 @@ sub new
 sub is_carbon { return '' }
 sub is_oxygen { return '' }
 
+sub needs_heteroatom_locants { return 1 }
 sub needs_heteroatom_names { return 1 }
 
 sub prefix { return '' }

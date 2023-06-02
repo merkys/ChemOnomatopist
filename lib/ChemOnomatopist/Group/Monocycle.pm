@@ -65,10 +65,16 @@ sub new
     return bless { graph => $graph, vertices => [ $chain->vertices ] }, $class;
 }
 
-sub needs_heteroatom_names()
+sub needs_heteroatom_locants()
 {
     my( $self ) = @_;
     return $self->length < 3 || $self->length > 10 || all { $_->{symbol} !~ /^[cC]$/ } $self->vertices;
+}
+
+sub needs_heteroatom_names()
+{
+    my( $self ) = @_;
+    return $self->needs_heteroatom_locants;
 }
 
 sub prefix()

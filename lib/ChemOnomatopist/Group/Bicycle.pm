@@ -108,6 +108,12 @@ sub is_hydrocarbon()
     return all { $_->is_hydrocarbon } $self->cycles;
 }
 
+sub needs_heteroatom_locants()
+{
+    my( $self ) = @_;
+    return $self->suffix =~ /^benzo/;
+}
+
 sub needs_heteroatom_names() { return '' } # FIXME: This is not always correct
 
 # FIXME: This is a bit strange: class and object method with the same name

@@ -192,18 +192,16 @@ sub get_mainchain_name
     my %heteroatoms;
     my %attachment_objects;
     # Examine the main chain
-    if( !blessed $chain || !$chain->isa( ChemOnomatopist::Group:: ) || $chain->needs_heteroatom_names ) {
-        for my $i (0..$#chain) {
-            my $atom = $chain[$i];
-            if( blessed $atom ) {
-                next if $most_senior_group && $atom->isa( $most_senior_group );
-                push @{$attachments{$atom->prefix}}, $i;
-                $attachment_objects{$atom->prefix} = ChemOnomatopist::Name->new( $atom->prefix );
-            } elsif( !is_element( $atom, 'C' ) &&
-                     exists $atom->{symbol} &&
-                     exists $elements{$atom->{symbol}} ) {
-                push @{$heteroatoms{$atom->{symbol}}}, $i;
-            }
+    for my $i (0..$#chain) {
+        my $atom = $chain[$i];
+        if( blessed $atom ) {
+            next if $most_senior_group && $atom->isa( $most_senior_group );
+            push @{$attachments{$atom->prefix}}, $i;
+            $attachment_objects{$atom->prefix} = ChemOnomatopist::Name->new( $atom->prefix );
+        } elsif( !is_element( $atom, 'C' ) &&
+                 exists $atom->{symbol} &&
+                 exists $elements{$atom->{symbol}} ) {
+            push @{$heteroatoms{$atom->{symbol}}}, $i;
         }
     }
 
@@ -280,21 +278,33 @@ sub get_mainchain_name
     for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
                           keys %heteroatoms) {
 
-        if( @chain > 1 &&
-            ( !blessed $chain ||
-              !$chain->can( 'max_valence' ) ||
-              scalar keys %heteroatoms > 1 ||
-              @{$heteroatoms{$element}} != $chain->max_valence - 1 ) ) {
-            $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
+        # FIXME: The logic became too twisted here, need to untangle
+        if( @chain > 1 ) {
+            if( !blessed $chain ) {
+                $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
+            } else {
+                if( $chain->isa( ChemOnomatopist::Group:: ) ) {
+                    if( $chain->needs_heteroatom_locants &&
+                        ( scalar keys %heteroatoms > 1 ||
+                          @{$heteroatoms{$element}} != $chain->max_valence - 1 ) ) {
+                        $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
+                    }
+                } else {
+                    $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
+                }
+            }
         }
 
-        if( @{$heteroatoms{$element}} > 1 ) {
-            my $number = IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} );
-            $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
-            $name .= $number;
-        }
+        if( !blessed $chain || !$chain->isa( ChemOnomatopist::Group:: ) ||
+            $chain->needs_heteroatom_names ) {
+            if( @{$heteroatoms{$element}} > 1 ) {
+                my $number = IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} );
+                $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
+                $name .= $number;
+            }
 
-        $name->append_element( $elements{$element}->{prefix} );
+            $name->append_element( $elements{$element}->{prefix} );
+        }
     }
 
     if( blessed $chain && $chain->isa( ChemOnomatopist::Group:: ) ) {
