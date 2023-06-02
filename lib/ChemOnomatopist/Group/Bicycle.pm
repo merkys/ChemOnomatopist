@@ -30,7 +30,7 @@ our @names = (
 
     [ 'C=NC=NC=', 'N=CNC=C', 'purine' ], # TODO: Special rules apply
 
-    [ 'NN=CCC',  'CC=CC=CC=', 'indazole' ],
+    [ 'NN=CCC',  'CC=CC=CC=', '1H-indazole' ],
     [ 'NC=CCC',  'CC=CC=CC=', 'indole' ],
     [ 'CNC=CC=', 'C=CC=CCC',  'isoindole' ],
     [ 'CC=CNC=', 'C=CC=CCN',  'indolizine', ],
@@ -61,10 +61,23 @@ sub new
     for (0..1) {
         my $subgraph = $graph->subgraph( [ @{$components[$_]}, @bridge ] );
         $subgraph->delete_edge( @bridge );
-        $components[$_] = [ Graph::Traversal::DFS->new( $subgraph, start => $bridge[$_] )->dfs ];
+        my @path = Graph::Traversal::DFS->new( $subgraph, start => $bridge[$_] )->dfs;
+        push @path, shift @path;
+        $components[$_] = \@path;
     }
     my @cycles = map { ChemOnomatopist::Group::Monocycle::Fused->new( $graph, $self, @$_ ) }
                      @components;
+    my @flipped = map { $_->flipped } @cycles;
+    my( $chain ) = ChemOnomatopist::filter_chains( @cycles, @flipped );
+
+    if(      $chain == $cycles[1] ) {
+        @cycles = reverse @cycles;
+    } elsif( $chain == $flipped[0] ) {
+        @cycles = @flipped;
+    } elsif( $chain == $flipped[1] ) {
+        @cycles = reverse @flipped;
+    }
+
     $self->{cycles} = \@cycles;
     return $self;
 }
@@ -114,6 +127,11 @@ sub suffix()
         my( $other ) = grep { $_->suffix ne 'benzene' } $self->cycles;
         return 'benzo' . $other->suffix; # FIXME: This is not always correct
     }
+
+    my @SMILES = map { $_->backbone_SMILES } $self->cycles;
+    my( $retained ) = grep { ($_->[0] eq $SMILES[0] && $_->[1] eq $SMILES[1]) ||
+                             ($_->[0] eq $SMILES[1] && $_->[1] eq $SMILES[0]) } @names;
+    return $retained->[2] if $retained;
 
     die "cannot name complex bicyclic compounds\n";
 }

@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::Monocycle::;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use List::Util qw( all );
 
 sub new
@@ -16,6 +17,12 @@ sub new
     my( $class, $graph, $system, @vertices ) = @_;
 
     return bless { graph => $graph, system => \$system, vertices => \@vertices }, $class;
+}
+
+sub backbone_SMILES()
+{
+    my( $self ) = @_;
+    return cycle_SMILES( $self->graph, $self->vertices );
 }
 
 sub is_aromatic()
