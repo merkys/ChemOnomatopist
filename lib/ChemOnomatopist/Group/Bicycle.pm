@@ -10,6 +10,7 @@ use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Chain::Circular;
+use ChemOnomatopist::Group::Monocycle::Fused;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Graph::Traversal::DFS;
 use List::Util qw( all any );
@@ -47,6 +48,9 @@ sub new
 {
     my( $class, $graph, @vertices ) = @_;
 
+    # Has to be created early to be given for fused parts
+    my $self = bless { graph => $graph, vertices => \@vertices }, $class;
+
     my $subgraph = $graph->subgraph( \@vertices );
     my @bridge = grep { $subgraph->degree( $_ ) == 3 } @vertices;
     $subgraph->delete_vertices( @bridge );
@@ -59,23 +63,10 @@ sub new
         $subgraph->delete_edge( @bridge );
         $components[$_] = [ Graph::Traversal::DFS->new( $subgraph, start => $bridge[$_] )->dfs ];
     }
-
-    # Finding a name from list
-    # TODO: Unused
-    my @A = @{$components[0]};
-    my @B = @{$components[1]};
-    my @SMILES;
-    push @SMILES, cycle_SMILES( $graph, @A[1..$#A], $A[0] ) . '|' .
-                  cycle_SMILES( $graph, @B[1..$#B], $B[0] );
-    if( @A == @B ) {
-        push @SMILES, cycle_SMILES( $graph, @B[1..$#B], $B[0] ) . '|' .
-                      cycle_SMILES( $graph, @A[1..$#A], $A[0] );
-    }
-
-    my @cycles = map { ChemOnomatopist::Group::Monocycle->new( $graph, @$_ ) }
+    my @cycles = map { ChemOnomatopist::Group::Monocycle::Fused->new( $graph, $self, @$_ ) }
                      @components;
-
-    return bless { graph => $graph, vertices => \@vertices, cycles => \@cycles }, $class;
+    $self->{cycles} = \@cycles;
+    return $self;
 }
 
 sub cycles()
