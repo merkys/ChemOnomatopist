@@ -42,6 +42,7 @@ sub backbone_SMILES()
     return $SMILES;
 }
 
+# FIXME: Implement Apodaca's algoritm to treat furan and others as aromatic
 sub is_aromatic()
 {
     my( $self ) = @_;
