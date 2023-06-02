@@ -42,6 +42,14 @@ sub backbone_SMILES()
     return $SMILES;
 }
 
+sub is_aromatic()
+{
+    my( $self ) = @_;
+    return 1 if join( '', $self->bonds ) =~ /^((-=)+|(=-)+)$/; # FIXME: Simple aromaticity detection
+    return 1 if all { $_ eq ':' } $self->bonds;
+    return '';
+}
+
 sub is_homogeneous()
 {
     my( $self ) = @_;
@@ -84,19 +92,17 @@ sub name()
         }
     }
 
-    # Check for cycloalkanes
-    if( all { $_->{symbol} eq 'C' } $self->vertices ) {
-        return 'cyclo' . ChemOnomatopist::unbranched_chain_name( $self );
-    }
-
     # Check for annulenes
-    # FIXME: Check for kekulized compounds
-    if( ( all { $_->{symbol} eq 'c' } $self->vertices ) &&
+    if( $self->is_hydrocarbon && $self->is_aromatic &&
         $self->length =~ /^(4|6|8|10|12|14|16)$/ ) {
-        # Annulene detected
         return 'cyclo' .
                ChemOnomatopist::IUPAC_numerical_multiplier( $self->length, 1 ) .
                ChemOnomatopist::IUPAC_numerical_multiplier( $self->length / 2, 1 ) . 'ene';
+    }
+
+    # Check for cycloalkanes
+    if( $self->is_hydrocarbon ) {
+        return 'cyclo' . ChemOnomatopist::unbranched_chain_name( $self );
     }
 
     if( $self->length >= 3 && $self->length <= 10 &&
