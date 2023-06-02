@@ -68,7 +68,8 @@ sub new
     my @cycles = map { ChemOnomatopist::Group::Monocycle::Fused->new( $graph, $self, @$_ ) }
                      @components;
     my @flipped = map { $_->flipped } @cycles;
-    my( $chain ) = ChemOnomatopist::filter_chains( @cycles, @flipped );
+    # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
+    my( $chain ) = sort { ChemOnomatopist::Chain::Circular::_cmp( $a, $b ) } ( @cycles, @flipped );
 
     if(      $chain == $cycles[1] ) {
         @cycles = reverse @cycles;

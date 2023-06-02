@@ -37,7 +37,8 @@ sub flipped()
 {
     my( $self ) = @_;
     my @vertices = $self->vertices;
-    my @flipped = ( reverse( @vertices[0..-2] ), reverse( @vertices[-2..-1] ) );
+    my @bridge = splice @vertices, -2;
+    my @flipped = ( reverse( @vertices ), reverse( @bridge ) );
     return ChemOnomatopist::Group::Monocycle::Fused->new( $self->graph,
                                                           $self->{system},
                                                           @flipped );
