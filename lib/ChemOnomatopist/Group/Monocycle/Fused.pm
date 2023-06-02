@@ -16,7 +16,7 @@ sub new
 {
     my( $class, $graph, $system, @vertices ) = @_;
 
-    return bless { graph => $graph, system => \$system, vertices => \@vertices }, $class;
+    return bless { graph => $graph, system => $system, vertices => \@vertices }, $class;
 }
 
 sub system()
