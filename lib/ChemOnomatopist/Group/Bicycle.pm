@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Graph::Traversal::DFS;
 use List::Util qw( all any );
@@ -81,6 +82,19 @@ sub cycles()
 {
     my( $self ) = @_;
     return @{$self->{cycles}};
+}
+
+# Tells whether the outer bonds of the bicycle qualify as aromatic
+sub is_aromatic()
+{
+    my( $self ) = @_;
+    my @outer_vertices;
+    for ($self->cycles) {
+        my @vertices = $_->vertices;
+        pop @vertices;
+        push @outer_vertices, @vertices;
+    }
+    return ChemOnomatopist::Chain::Circular->new( $self->graph, @outer_vertices )->is_aromatic;
 }
 
 sub is_hydrocarbon()

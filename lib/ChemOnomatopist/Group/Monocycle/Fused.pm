@@ -22,15 +22,7 @@ sub is_aromatic()
 {
     my( $self ) = @_;
     return 1 if $self->SUPER::is_aromatic;
-
-    # Check if the whole system can be deemed as aromatic
-    my @system_vertices;
-    for ($self->{system}->cycles) {
-        my @vertices = $_->vertices;
-        pop @vertices;
-        push @system_vertices, @vertices;
-    }
-    return ChemOnomatopist::Chain::Circular->new( $self->graph, @system_vertices )->is_aromatic;
+    return $self->{system}->is_aromatic;
 }
 
 1;
