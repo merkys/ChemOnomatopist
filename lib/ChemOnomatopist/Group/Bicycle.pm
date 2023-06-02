@@ -126,7 +126,8 @@ sub suffix()
 
     if( any { $_->suffix eq 'benzene' } $self->cycles ) {
         my( $other ) = grep { $_->suffix ne 'benzene' } $self->cycles;
-        return 'benzo' . $other->suffix; # FIXME: This is not always correct
+        $other = ChemOnomatopist::Group::Monocycle->new( $other->graph, $other->vertices );
+        return 'benzo' . $other->suffix;
     }
 
     my @SMILES = map { $_->backbone_SMILES } $self->cycles;
