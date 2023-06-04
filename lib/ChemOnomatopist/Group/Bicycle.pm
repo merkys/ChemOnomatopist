@@ -79,6 +79,13 @@ sub new
         @cycles = reverse @flipped;
     }
 
+    # Reworking the vertice order in the bicyclic chain itself
+    $self->{vertices} = [];
+    push @{$self->{vertices}}, $cycles[0]->vertices;
+    pop  @{$self->{vertices}};
+    push @{$self->{vertices}}, $cycles[1]->vertices;
+    pop  @{$self->{vertices}};
+
     $self->{cycles} = \@cycles;
     return $self;
 }
@@ -113,19 +120,12 @@ sub is_hydrocarbon()
 sub locants(@)
 {
     my $self = shift;
-
     my @cycles = $self->cycles;
-    my @locants;
-    for (@_) {
-        if(      $_ == $cycles[0]->length - 2 ) {
-            push @locants, $_ . 'a';
-        } elsif( $_ == $self->length - 1 ) {
-            push @locants, ($_ - 1) . 'a';
-        } else {
-            push @locants, $_ + 1;
-        }
-    }
-    return @locants;
+    my @locant_map = ( 1..$cycles[0]->length - 2,
+                      ($cycles[0]->length - 2) . 'a',
+                      ($cycles[0]->length - 1)..($self->length - 2),
+                      ($self->length - 2) . 'a' );
+    return map { $locant_map[$_] } @_;
 }
 
 sub needs_heteroatom_locants()
