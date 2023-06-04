@@ -67,26 +67,31 @@ sub new
     }
     my @cycles = map { ChemOnomatopist::Group::Monocycle::Fused->new( $graph, $self, @$_ ) }
                      @components;
-    my @flipped = map { $_->flipped } @cycles;
-    # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
-    my( $chain ) = sort { ChemOnomatopist::Chain::Circular::_cmp( $a, $b ) } ( @cycles, @flipped );
+    $self->{cycles} = \@cycles;
 
-    if(      $chain == $cycles[1] ) {
-        @cycles = reverse @cycles;
-    } elsif( $chain == $flipped[0] ) {
-        @cycles = @flipped;
-    } elsif( $chain == $flipped[1] ) {
-        @cycles = reverse @flipped;
+    # The ordering should not be done if one of the cycles is benzene
+    if( all { $_->suffix ne 'benzene' } @cycles ) {
+        my @flipped = map { $_->flipped } @cycles;
+        # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
+        my( $chain ) = sort { ChemOnomatopist::Chain::Circular::_cmp( $a, $b ) } ( @cycles, @flipped );
+
+        if(      $chain == $cycles[1] ) {
+            @cycles = reverse @cycles;
+        } elsif( $chain == $flipped[0] ) {
+            @cycles = @flipped;
+        } elsif( $chain == $flipped[1] ) {
+            @cycles = reverse @flipped;
+        }
+        $self->{cycles} = \@cycles;
+
+        # Reworking the vertice order in the bicyclic chain itself
+        $self->{vertices} = [];
+        push @{$self->{vertices}}, $cycles[0]->vertices;
+        pop  @{$self->{vertices}};
+        push @{$self->{vertices}}, $cycles[1]->vertices;
+        pop  @{$self->{vertices}};
     }
 
-    # Reworking the vertice order in the bicyclic chain itself
-    $self->{vertices} = [];
-    push @{$self->{vertices}}, $cycles[0]->vertices;
-    pop  @{$self->{vertices}};
-    push @{$self->{vertices}}, $cycles[1]->vertices;
-    pop  @{$self->{vertices}};
-
-    $self->{cycles} = \@cycles;
     return $self;
 }
 
