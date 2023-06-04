@@ -13,7 +13,10 @@ my %SMILES_cases = (
     'CC(C)C(=O)CC(=O)C' => '5-methylhexane-2,4-dione',
     'CC(C)CC(=O)C(CCC(=O)C)C(=O)CC(C)C' => '8-methyl-5-(3-methyl-1-oxobutyl)nonane-2,6-dione', # PubChem has '8-methyl-5-(3-methylbutanoyl)nonane-2,6-dione'
 
+    # From BBv2 P-64.6.1
     'CC(=S)CC' => 'butane-2-thione',
+    'CCC(CCC)=[Se]' => 'hexane-3-selone',
+    'CC(CC(C)=S)=S' => 'pentane-2,4-dithione',
 
     'OC(C)C(C(C(C(C)O)=C)=O)=C' => '2,6-dihydroxy-3,5-dimethylideneheptan-4-one', # BBv2 P-64.7.1
 );

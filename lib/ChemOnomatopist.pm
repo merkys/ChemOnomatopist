@@ -370,13 +370,7 @@ sub find_groups
         }
 
         # O-based groups
-        if( is_element( $atom, 'O' ) && @neighbours == 1 && @C == 1 &&
-            is_double_bond( $graph, $atom, @C ) ) {
-            # Detecting carbonyl
-            my $carbonyl = ChemOnomatopist::Group::Carbonyl->new( @C, $atom );
-            $graph->add_edge( @C, $carbonyl );
-            $graph->delete_vertices( $atom );
-        } elsif( is_element( $atom, 'O' ) && @neighbours == 2 && @C == 1 && @H == 1 ) {
+        if( is_element( $atom, 'O' ) && @neighbours == 2 && @C == 1 && @H == 1 ) {
             # Detecting hydroxy
             my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C );
             $graph->add_edge( @C, $hydroxy );
@@ -391,12 +385,11 @@ sub find_groups
             }
         }
 
-        # S-based groups
-        if( is_element( $atom, 'S' ) && @neighbours == 1 && @C == 1 &&
-            is_double_bond( $graph, $atom, @C ) ) {
-            # Detecting thioketone
-            my $thioketone = ChemOnomatopist::Group::Carbonyl->new( @C, $atom );
-            $graph->add_edge( @C, $thioketone );
+        # Ketones and their chalcogen analogues
+        if( @neighbours == 1 && @C == 1 && is_double_bond( $graph, $atom, @C ) &&
+            any { is_element( $atom, $_ ) } ( 'O', 'S', 'Se', 'Te' ) ) {
+            my $ketone = ChemOnomatopist::Group::Carbonyl->new( @C, $atom );
+            $graph->add_edge( @C, $ketone );
             $graph->delete_vertices( $atom );
         }
     }
