@@ -340,6 +340,7 @@ sub get_mainchain_name
 
     $name = 'phenol'       if $name eq '1-benzenemethanol';
     $name = 'benzoic acid' if $name eq '1-benzenemethanoic acid';
+    $name = 'toluene'      if $name eq 'methylbenzene';
 
     return $name;
 }

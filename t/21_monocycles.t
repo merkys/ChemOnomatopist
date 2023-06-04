@@ -13,6 +13,10 @@ my @cases = (
     { smiles => 'C=1C=CC=CC=1', iupac => 'benzene' },
     { smiles => 'c1ccccc1',     iupac => 'benzene' },
 
+    # From BBv2 P-22.1.3
+    { smiles => 'CC1=CC=CC=C1', iupac => 'toluene' },
+    { smiles => 'CC1=CC(=CC(=C1)C)C', iupac => '1,3,5-trimethylbenzene' },
+
     # From BBv2 P-22.2.2.1.1
     { smiles => 'S1C=CC=CC=C1', iupac => 'thiepine' },
     { smiles => 'O1CCCCCCC1',   iupac => 'oxocane' },
