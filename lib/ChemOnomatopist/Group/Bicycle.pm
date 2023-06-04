@@ -141,7 +141,8 @@ sub suffix()
 {
     my( $self ) = @_;
     return '' unless ref $self;
-    if( $self->is_hydrocarbon ) { # FIXME: Check if aromatic
+    if( $self->is_hydrocarbon ) {
+        # FIXME: Check if aromatic, but with caution, as substitutions will break aromaticity
         my $cycle_sizes = join ',', map { $_->length } $self->cycles;
         return $hydrocarbons_by_size{$cycle_sizes} if exists $hydrocarbons_by_size{$cycle_sizes};
 
