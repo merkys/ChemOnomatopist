@@ -15,6 +15,9 @@ my @cases = (
 
     # From BBv2 P-22.1.3
     { smiles => 'CC1=CC=CC=C1', iupac => 'toluene' },
+    { smiles => 'C=1(C(=CC=CC1)C)C', iupac => '1,2-xylene', AUTHOR => 1 }, # FIXME: Fails as 1,6-xylene
+    { smiles => 'C1(=CC(=CC=C1)C)C', iupac => '1,3-xylene' },
+    { smiles => 'C1(=CC=C(C=C1)C)C', iupac => '1,4-xylene' },
     { smiles => 'CC1=CC(=CC(=C1)C)C', iupac => '1,3,5-trimethylbenzene' },
 
     # From BBv2 P-22.2.2.1.1
