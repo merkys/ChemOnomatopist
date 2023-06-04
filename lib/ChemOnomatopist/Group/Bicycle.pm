@@ -125,11 +125,12 @@ sub is_hydrocarbon()
 sub locants(@)
 {
     my $self = shift;
+    my @vertices = $self->vertices;
     my @cycles = $self->cycles;
     my @locant_map = ( 1..$cycles[0]->length - 2,
                       ($cycles[0]->length - 2) . 'a',
                       ($cycles[0]->length - 1)..($self->length - 2),
-                      ($self->length - 2) . 'a' );
+                      ChemOnomatopist::is_element( $vertices[-1], 'C' ) ? ($self->length - 2) . 'a' : ($self->length - 1) );
     return map { $locant_map[$_] } @_;
 }
 
