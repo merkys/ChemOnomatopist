@@ -315,7 +315,7 @@ sub get_mainchain_name
         $name .= unbranched_chain_name( $chain );
     }
 
-    if( $most_senior_group ) {
+    if( $most_senior_group && !$most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
         if( $most_senior_group->is_carbon ) {
             # Most senior group is carbon, thus it is in the chain as well
             my @senior_group_positions =
