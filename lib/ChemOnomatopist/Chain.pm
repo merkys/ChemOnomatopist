@@ -198,7 +198,8 @@ sub most_senior_group_positions()
     return @{$self->{most_senior_group_positions}} if $self->{most_senior_group_positions};
 
     my @groups = ChemOnomatopist::most_senior_groups( $self->vertices, $self->substituents );
-    return () unless @groups; # TODO: Memoize this
+    $self->{most_senior_group_positions} = [];
+    return () unless @groups;
 
     my $groups = set( @groups );
     my @vertices = $self->vertices;
