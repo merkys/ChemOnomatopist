@@ -495,8 +495,9 @@ sub find_groups
 sub is_element
 {
     my( $atom, $element ) = @_;
-
     return unless ref $atom;
+
+    $element = ucfirst $element;
 
     if( blessed $atom ) {
         if( $atom->isa( ChemOnomatopist::Group:: ) ) {
@@ -516,7 +517,7 @@ sub is_element
 
     return ref $atom eq 'HASH' &&
            exists $atom->{symbol} &&
-           $atom->{symbol} eq $element;
+           ucfirst $atom->{symbol} eq $element;
 }
 
 # Given a graph, selects the main chain.
