@@ -6,12 +6,12 @@ use warnings;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Bicycle;
-use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
+use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
 
@@ -39,7 +39,7 @@ our @order = (
     # Imides
     # Nitriles
     ChemOnomatopist::Group::Aldehyde::,
-    ChemOnomatopist::Group::Carbonyl::,
+    ChemOnomatopist::Group::Ketone::,
     ChemOnomatopist::Group::Hydroxy::,
     ChemOnomatopist::Group::Hydroperoxide::,
     ChemOnomatopist::Group::Amino::,

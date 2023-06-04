@@ -14,12 +14,12 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amino;
-use ChemOnomatopist::Group::Carbonyl;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
+use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Name;
@@ -388,7 +388,7 @@ sub find_groups
         # Ketones and their chalcogen analogues
         if( @neighbours == 1 && @C == 1 && is_double_bond( $graph, $atom, @C ) &&
             any { is_element( $atom, $_ ) } ( 'O', 'S', 'Se', 'Te' ) ) {
-            my $ketone = ChemOnomatopist::Group::Carbonyl->new( @C, $atom );
+            my $ketone = ChemOnomatopist::Group::Ketone->new( @C, $atom );
             $graph->add_edge( @C, $ketone );
             $graph->delete_vertices( $atom );
         }
@@ -409,14 +409,14 @@ sub find_groups
         my @O = grep { is_element( $_, 'O' ) } @neighbours;
 
         if( is_element( $atom, 'C' ) && @groups == 1 && @H == 1 &&
-            $groups[0]->isa( ChemOnomatopist::Group::Carbonyl:: ) ) {
+            $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) ) {
             # Detecting aldehyde
             my $aldehyde = ChemOnomatopist::Group::Aldehyde->new( $atom );
             $graph->delete_vertices( @groups, @H ); # FIXME: Be careful!
             $graph->add_edges( map { $aldehyde, $_ } $graph->neighbours( $atom ) );
             $graph->delete_vertex( $atom );
         } elsif( is_element( $atom, 'C' ) &&
-            (any { $_->isa( ChemOnomatopist::Group::Carbonyl:: ) } @groups) &&
+            (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) &&
             (any { $_->isa( ChemOnomatopist::Group::Hydroxy::  ) } @groups) ) {
             # Detecting carboxyl
             my $carboxyl = ChemOnomatopist::Group::Carboxyl->new( $atom );
@@ -424,7 +424,7 @@ sub find_groups
             $graph->add_edges( map { $carboxyl, $_ } $graph->neighbours( $atom ) );
             $graph->delete_vertex( $atom );
         } elsif( is_element( $atom, 'C' ) && @groups == 1 && @C == 1 && @O == 2 &&
-                 $groups[0]->isa( ChemOnomatopist::Group::Carbonyl:: ) &&
+                 $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) &&
                  all { $cut_vertices->has( $_ ) } @O ) {
             # Detecting esters
             # Both oxygens have to be cut vertices to avoid one being in a ring

@@ -1,9 +1,9 @@
-package ChemOnomatopist::Group::Carbonyl;
+package ChemOnomatopist::Group::Ketone;
 
 use strict;
 use warnings;
 
-# ABSTRACT: Carbonyl group
+# ABSTRACT: Ketone group
 # VERSION
 
 use parent ChemOnomatopist::Group::;
