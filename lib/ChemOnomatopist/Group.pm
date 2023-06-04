@@ -14,7 +14,6 @@ use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
-use ChemOnomatopist::Group::Thioketone;
 
 use List::Util qw( any );
 use Scalar::Util qw( blessed );
@@ -41,7 +40,6 @@ our @order = (
     # Nitriles
     ChemOnomatopist::Group::Aldehyde::,
     ChemOnomatopist::Group::Carbonyl::,
-    ChemOnomatopist::Group::Thioketone::,
     ChemOnomatopist::Group::Hydroxy::,
     ChemOnomatopist::Group::Hydroperoxide::,
     ChemOnomatopist::Group::Amino::,

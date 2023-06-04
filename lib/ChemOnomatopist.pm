@@ -22,7 +22,6 @@ use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
-use ChemOnomatopist::Group::Thioketone;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::Graph qw(
