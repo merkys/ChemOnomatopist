@@ -374,7 +374,7 @@ sub find_groups
         if( is_element( $atom, 'O' ) && @neighbours == 1 && @C == 1 &&
             is_double_bond( $graph, $atom, @C ) ) {
             # Detecting carbonyl
-            my $carbonyl = ChemOnomatopist::Group::Carbonyl->new( @C );
+            my $carbonyl = ChemOnomatopist::Group::Carbonyl->new( @C, $atom );
             $graph->add_edge( @C, $carbonyl );
             $graph->delete_vertices( $atom );
         } elsif( is_element( $atom, 'O' ) && @neighbours == 2 && @C == 1 && @H == 1 ) {
