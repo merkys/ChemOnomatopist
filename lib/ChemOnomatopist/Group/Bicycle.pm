@@ -121,16 +121,22 @@ sub is_hydrocarbon()
 }
 
 # Implemented according to BBv2 P-25.3.3
-# TODO: Handle the situation when fusion atoms are heteroatoms
 sub locants(@)
 {
     my $self = shift;
     my @vertices = $self->vertices;
     my @cycles = $self->cycles;
-    my @locant_map = ( 1..$cycles[0]->length - 2,
-                      ($cycles[0]->length - 2) . 'a',
-                      ($cycles[0]->length - 1)..($self->length - 2),
-                      ChemOnomatopist::is_element( $vertices[-1], 'C' ) ? ($self->length - 2) . 'a' : ($self->length - 1) );
+    my @locant_map = map { $_ + 1 } 0..$self->length - 1;
+
+    if( ChemOnomatopist::is_element( $cycles[0]->{vertices}[-2], 'C' ) ) {
+        splice @locant_map, $cycles[0]->length-2, 0, ($cycles[0]->length - 2) . 'a';
+        pop @locant_map;
+    }
+
+    if( ChemOnomatopist::is_element( $cycles[1]->{vertices}[-2], 'C' ) ) {
+        $locant_map[-1] = $locant_map[-2] . 'a';
+    }
+
     return map { $locant_map[$_] } @_;
 }
 
