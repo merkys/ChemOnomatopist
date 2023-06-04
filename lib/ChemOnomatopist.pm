@@ -36,6 +36,7 @@ use ChemOnomatopist::Util::Graph qw(
     tree_branch_positions
     tree_number_of_branches
 );
+use Chemistry::OpenSMILES qw( is_double_bond );
 use Graph::Traversal::DFS;
 use Graph::Undirected;
 use List::Util qw( all any max min sum0 uniq );
@@ -357,17 +358,17 @@ sub find_groups
             my $amino = ChemOnomatopist::Group::Amino->new( @C );
             $graph->add_edge( @C, $amino );
             $graph->delete_vertices( $atom, @H );
-        } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C == 1 && @H == 1 ) {
+        } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C == 1 && @H == 1 &&
+                 is_double_bond( $graph, $atom, @C ) ) {
             # Detecting imino
-            # FIXME: Check also for double bond
             my $imino = ChemOnomatopist::Group::Imino->new( @C );
             $graph->add_edge( @C, $imino );
             $graph->delete_vertices( $atom, @H );
         }
 
-        if( is_element( $atom, 'O' ) && @neighbours == 1 && @C == 1 ) {
+        if( is_element( $atom, 'O' ) && @neighbours == 1 && @C == 1 &&
+            is_double_bond( $graph, $atom, @C ) ) {
             # Detecting carbonyl
-            # FIXME: Check also for double bond
             my $carbonyl = ChemOnomatopist::Group::Carbonyl->new( @C );
             $graph->add_edge( @C, $carbonyl );
             $graph->delete_vertices( $atom );
@@ -386,9 +387,9 @@ sub find_groups
             }
         }
 
-        if( is_element( $atom, 'S' ) && @neighbours == 1 && @C == 1 ) {
+        if( is_element( $atom, 'S' ) && @neighbours == 1 && @C == 1 &&
+            is_double_bond( $graph, $atom, @C ) ) {
             # Detecting thioketone
-            # FIXME: Check also for double bond
             my $thioketone = ChemOnomatopist::Group::Thioketone->new( @C );
             $graph->add_edge( @C, $thioketone );
             $graph->delete_vertices( $atom );
