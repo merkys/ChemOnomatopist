@@ -108,6 +108,26 @@ sub is_hydrocarbon()
     return all { $_->is_hydrocarbon } $self->cycles;
 }
 
+# Implemented according to BBv2 P-25.3.3
+# TODO: Handle the situation when fusion atoms are heteroatoms
+sub locants(@)
+{
+    my $self = shift;
+
+    my @cycles = $self->cycles;
+    my @locants;
+    for (@_) {
+        if(      $_ == $cycles[0]->length - 2 ) {
+            push @locants, $_ . 'a';
+        } elsif( $_ == $self->length - 1 ) {
+            push @locants, ($_ - 1) . 'a';
+        } else {
+            push @locants, $_ + 1;
+        }
+    }
+    return @locants;
+}
+
 sub needs_heteroatom_locants()
 {
     my( $self ) = @_;

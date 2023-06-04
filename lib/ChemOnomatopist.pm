@@ -136,7 +136,11 @@ sub get_sidechain_name
               !$chain->can( 'max_valence' ) ||
               scalar keys %attachments > 1 ||
               @{$attachments{$attachment_name}} != $chain->max_valence - 1 ) ) {
-            $name->append_locants( map { $_ + 1 } @{$attachments{$attachment_name}} );
+            if( blessed $chain && $chain->isa( ChemOnomatopist::Chain:: ) ) {
+                $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
+            } else {
+                $name->append_locants( map { $_ + 1 } @{$attachments{$attachment_name}} );
+            }
         }
 
         if( @{$attachments{$attachment_name}} > 1 ) {
@@ -244,7 +248,11 @@ sub get_mainchain_name
             !blessed $chain ||
             !$chain->isa( ChemOnomatopist::Chain::Circular:: ) ||
             !$chain->is_homogeneous ) {
-            $name->append_locants( map { $_ + 1 } @{$attachments{$attachment_name}} );
+            if( blessed $chain && $chain->isa( ChemOnomatopist::Chain:: ) ) {
+                $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
+            } else {
+                $name->append_locants( map { $_ + 1 } @{$attachments{$attachment_name}} );
+            }
         }
 
         # FIXME: More rules from BBv2 P-16.3.4 should be added
@@ -288,8 +296,14 @@ sub get_mainchain_name
                     if( $chain->needs_heteroatom_locants &&
                         ( scalar keys %heteroatoms > 1 ||
                           @{$heteroatoms{$element}} != $chain->max_valence - 1 ) ) {
-                        $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
+                        if( $chain->isa( ChemOnomatopist::Chain:: ) ) {
+                            $name->append_locants( $chain->locants( @{$heteroatoms{$element}} ) );
+                        } else {
+                            $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
+                        }
                     }
+                } elsif( $chain->isa( ChemOnomatopist::Chain:: ) ) {
+                    $name->append_locants( $chain->locants( @{$heteroatoms{$element}} ) );
                 } else {
                     $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
                 }

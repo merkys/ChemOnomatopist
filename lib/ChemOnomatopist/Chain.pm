@@ -263,6 +263,12 @@ sub locant_names()
     return @locants;
 }
 
+sub locants(@)
+{
+    my $self = shift;
+    return map { $_ + 1 } @_;
+}
+
 sub number_of_branches_in_sidechains()
 {
     my( $self ) = @_;
