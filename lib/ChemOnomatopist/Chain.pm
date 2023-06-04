@@ -134,7 +134,6 @@ sub heteroatom_positions()
     for (0..$#vertices) {
         next if blessed $vertices[$_];
         next if ChemOnomatopist::is_element( $vertices[$_], 'C' );
-        next if ChemOnomatopist::is_element( $vertices[$_], 'c' ); # FIXME: is_element() should pay attention to aromaticity
         push @heteroatom_positions, $_;
     }
 
