@@ -353,8 +353,9 @@ sub find_groups
         my @H = grep { is_element( $_, 'H' ) } @neighbours;
         my @O = grep { is_element( $_, 'O' ) } @neighbours;
 
-        # Detecting amino
+        # N-based groups
         if( is_element( $atom, 'N' ) && @neighbours == 3 && @C == 1 && @H == 2 ) {
+            # Detecting amino
             my $amino = ChemOnomatopist::Group::Amino->new( @C );
             $graph->add_edge( @C, $amino );
             $graph->delete_vertices( $atom, @H );
@@ -366,19 +367,20 @@ sub find_groups
             $graph->delete_vertices( $atom, @H );
         }
 
+        # O-based groups
         if( is_element( $atom, 'O' ) && @neighbours == 1 && @C == 1 &&
             is_double_bond( $graph, $atom, @C ) ) {
             # Detecting carbonyl
             my $carbonyl = ChemOnomatopist::Group::Carbonyl->new( @C );
             $graph->add_edge( @C, $carbonyl );
             $graph->delete_vertices( $atom );
-        # Detecting hydroxy
         } elsif( is_element( $atom, 'O' ) && @neighbours == 2 && @C == 1 && @H == 1 ) {
+            # Detecting hydroxy
             my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C );
             $graph->add_edge( @C, $hydroxy );
             $graph->delete_vertices( $atom, @H );
-        # Detecting hydroperoxide
         } elsif( is_element( $atom, 'O' ) && @neighbours == 2 && @H == 1 && @O == 1 ) {
+            # Detecting hydroperoxide
             my @C = grep { is_element( $_, 'C' ) } $graph->neighbours( @O );
             if( @C == 1 ) {
                 my $hydroperoxide = ChemOnomatopist::Group::Hydroperoxide->new( @C );
@@ -387,6 +389,7 @@ sub find_groups
             }
         }
 
+        # S-based groups
         if( is_element( $atom, 'S' ) && @neighbours == 1 && @C == 1 &&
             is_double_bond( $graph, $atom, @C ) ) {
             # Detecting thioketone
@@ -410,17 +413,17 @@ sub find_groups
         my @H = grep { is_element( $_, 'H' ) } @neighbours;
         my @O = grep { is_element( $_, 'O' ) } @neighbours;
 
-        # Detecting aldehyde
         if( is_element( $atom, 'C' ) && @groups == 1 && @H == 1 &&
             $groups[0]->isa( ChemOnomatopist::Group::Carbonyl:: ) ) {
+            # Detecting aldehyde
             my $aldehyde = ChemOnomatopist::Group::Aldehyde->new( $atom );
             $graph->delete_vertices( @groups, @H ); # FIXME: Be careful!
             $graph->add_edges( map { $aldehyde, $_ } $graph->neighbours( $atom ) );
             $graph->delete_vertex( $atom );
-        # Detecting carboxyl
         } elsif( is_element( $atom, 'C' ) &&
             (any { $_->isa( ChemOnomatopist::Group::Carbonyl:: ) } @groups) &&
             (any { $_->isa( ChemOnomatopist::Group::Hydroxy::  ) } @groups) ) {
+            # Detecting carboxyl
             my $carboxyl = ChemOnomatopist::Group::Carboxyl->new( $atom );
             $graph->delete_vertices( @groups ); # FIXME: Be careful!
             $graph->add_edges( map { $carboxyl, $_ } $graph->neighbours( $atom ) );
