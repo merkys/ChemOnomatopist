@@ -527,12 +527,12 @@ sub select_mainchain
     my( $graph ) = @_;
 
     # Find the most senior group, undefined if alkane
-    my $most_senior_group = most_senior_group( $graph );
+    my @groups = most_senior_groups( $graph->vertices );
+    my $most_senior_group = blessed $groups[0] if @groups;
 
     my @chains;
-    if( $most_senior_group ) {
+    if( @groups ) {
         # TODO: Select a chain containing most of the senior groups
-        my @groups = grep { blessed( $_ ) && $_->isa( $most_senior_group ) } $graph->vertices;
         my @carbons = uniq map { $_->C } @groups; # FIXME: Carbons with the most attachments should be preferred
 
         if( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
@@ -989,6 +989,22 @@ sub most_senior_group
 
     my( $most_senior_group ) = sort { ChemOnomatopist::Group::cmp( $a, $b ) } @groups;
     return blessed $most_senior_group;
+}
+
+sub most_senior_groups
+{
+    my( @vertices ) = @_;
+
+    if( @vertices == 1 && blessed $vertices[0] && $vertices[0]->isa( Graph::Undirected:: ) ) {
+        # Graph given instead of an array of vertices
+        @vertices = $vertices[0]->vertices;
+    }
+
+    my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) } @vertices;
+    return unless @groups;
+
+    my( $most_senior_group ) = sort { ChemOnomatopist::Group::cmp( $a, $b ) } @groups;
+    return grep { $_->isa( blessed $most_senior_group ) } @groups;
 }
 
 # Given two lists of heteroatoms, return the one with the most senior ones
