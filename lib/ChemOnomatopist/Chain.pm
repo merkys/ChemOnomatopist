@@ -197,20 +197,19 @@ sub most_senior_group_positions()
 
     return @{$self->{most_senior_group_positions}} if $self->{most_senior_group_positions};
 
-    my $class = ChemOnomatopist::most_senior_group( $self->vertices, $self->substituents );
-    return () unless $class;
+    my @groups = ChemOnomatopist::most_senior_groups( $self->vertices, $self->substituents );
+    return () unless @groups; # TODO: Memoize this
 
+    my $groups = set( @groups );
     my @vertices = $self->vertices;
     my $vertices = set( @vertices );
     my @positions;
     for (0..$#vertices) {
         my $vertex = $vertices[$_];
-        push @positions, $_ if blessed $vertex && $vertex->isa( $class );
+        push @positions, $_ if $groups->has( $vertex );
         for my $neighbour ($self->{graph}->neighbours( $vertex )) {
             next if $vertices->has( $neighbour );
-            next unless blessed $neighbour;
-            next unless $neighbour->isa( $class );
-            push @positions, $_;
+            push @positions, $_ if $groups->has( $neighbour );
         }
     }
 

@@ -177,7 +177,8 @@ sub get_mainchain_name
 
     my @vertices = $graph->vertices;
     my @chain = blessed $chain ? $chain->vertices : @$chain;
-    my $most_senior_group = most_senior_group( $graph );
+    my @groups = most_senior_groups( $graph->vertices );
+    my $most_senior_group = blessed $groups[0] if @groups;
 
     # Disconnect the main chain: this way every main chain atom remains
     # connected only to the side chains.
@@ -973,22 +974,6 @@ sub pick_chain_with_lowest_attachments_alphabetically
     my @sorted = sort { cmp_attachments( $locant_names[$a], $locant_names[$b] ) }
                       0..$#locant_names;
     return $chains[$sorted[0]];
-}
-
-sub most_senior_group
-{
-    my( @vertices ) = @_;
-
-    if( @vertices == 1 && blessed $vertices[0] && $vertices[0]->isa( Graph::Undirected:: ) ) {
-        # Graph given instead of an array of vertices
-        @vertices = $vertices[0]->vertices;
-    }
-
-    my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) } @vertices;
-    return unless @groups;
-
-    my( $most_senior_group ) = sort { ChemOnomatopist::Group::cmp( $a, $b ) } @groups;
-    return blessed $most_senior_group;
 }
 
 sub most_senior_groups
