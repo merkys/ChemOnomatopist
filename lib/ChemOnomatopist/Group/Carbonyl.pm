@@ -19,8 +19,20 @@ sub is_oxygen() {
     return ChemOnomatopist::is_element( $self->{atom}, 'O' );
 }
 
-sub prefix { return 'oxo' };
-sub suffix { return 'one' };
+my %prefixes = ( O => 'oxo', S => 'sulfanylidene' );
+my %suffixes = ( O => 'one', S => 'thione' );
+
+sub prefix
+{
+    my( $self ) = @_;
+    return $prefixes{$self->{atom}{symbol}};
+}
+
+sub suffix
+{
+    my( $self ) = @_;
+    return $suffixes{$self->{atom}{symbol}};
+}
 
 sub _cmp_instances
 {

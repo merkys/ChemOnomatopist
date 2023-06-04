@@ -335,7 +335,7 @@ sub get_mainchain_name
             $name->append_locants( map { $_ + 1 } @senior_group_attachments );
         }
         $name->append_multiplier( $number );
-        $name->append_suffix( @senior_group_attachments > 2 ? $most_senior_group->multisuffix : $most_senior_group->suffix );
+        $name->append_suffix( @senior_group_attachments > 2 ? $groups[0]->multisuffix : $groups[0]->suffix );
     }
 
     $name = 'phenol'       if $name eq '1-benzenemethanol';
@@ -396,7 +396,7 @@ sub find_groups
         if( is_element( $atom, 'S' ) && @neighbours == 1 && @C == 1 &&
             is_double_bond( $graph, $atom, @C ) ) {
             # Detecting thioketone
-            my $thioketone = ChemOnomatopist::Group::Thioketone->new( @C );
+            my $thioketone = ChemOnomatopist::Group::Carbonyl->new( @C, $atom );
             $graph->add_edge( @C, $thioketone );
             $graph->delete_vertices( $atom );
         }
