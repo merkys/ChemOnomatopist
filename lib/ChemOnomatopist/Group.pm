@@ -15,6 +15,7 @@ use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::Nitro;
+use ChemOnomatopist::Group::Nitroso;
 
 use List::Util qw( any );
 use Scalar::Util qw( blessed );
@@ -55,6 +56,7 @@ our @order = (
 
     # FIXME: These do not act as suffixes, but have to be included for _cmp() to work
     ChemOnomatopist::Group::Nitro::,
+    ChemOnomatopist::Group::Nitroso::,
 );
 
 sub new

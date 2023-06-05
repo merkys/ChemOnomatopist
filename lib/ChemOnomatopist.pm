@@ -23,6 +23,7 @@ use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::Nitro;
+use ChemOnomatopist::Group::Nitroso;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::Graph qw(
@@ -388,6 +389,12 @@ sub find_groups
             # Detecting nitro
             my $nitro = ChemOnomatopist::Group::Nitro->new( @C );
             $graph->add_edge( @C, $nitro );
+            $graph->delete_vertices( $atom, @O );
+        } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C == 1 && @O == 1 &&
+                 is_double_bond( $graph, $atom, @O ) ) {
+            # Detecting nitroso
+            my $nitroso = ChemOnomatopist::Group::Nitroso->new( @C );
+            $graph->add_edge( @C, $nitroso );
             $graph->delete_vertices( $atom, @O );
         }
 
