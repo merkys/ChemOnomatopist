@@ -426,7 +426,7 @@ sub find_groups
         }
 
         # XO3
-        if( @neighbours == 2 && @C == 1 && @O == 3 && all { is_double_bond( $graph, $atom, $_ ) } @O &&
+        if( @neighbours == 4 && @C == 1 && @O == 3 && (all { is_double_bond( $graph, $atom, $_ ) } @O) &&
             any { is_element( $atom, $_ ) } qw( Br Cl F I ) ) {
             my $XO3 = ChemOnomatopist::Group::XO3->new( @C, $atom );
             $graph->add_edge( @C, $XO3 );
