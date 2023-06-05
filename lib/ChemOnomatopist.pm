@@ -393,7 +393,7 @@ sub find_groups
         } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C == 1 && @O == 1 &&
                  is_double_bond( $graph, $atom, @O ) ) {
             # Detecting nitroso
-            my $nitroso = ChemOnomatopist::Group::Nitroso->new( @C );
+            my $nitroso = ChemOnomatopist::Group::Nitroso->new( @C, $atom );
             $graph->add_edge( @C, $nitroso );
             $graph->delete_vertices( $atom, @O );
         }
