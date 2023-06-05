@@ -452,8 +452,14 @@ sub find_groups
         }
     }
 
-    # Hydrogen atoms are no longer important
-    $graph->delete_vertices( grep { is_element( $_, 'H' ) } $graph->vertices );
+    # Hydrogen atoms are no longer important.
+    # They are demoted to hydrogen counts for future reference.
+    for my $H (grep { is_element( $_, 'H' ) } $graph->vertices) {
+        my( $parent ) = $graph->neighbours( $H );
+        $parent->{hcount} = 0 unless exists $parent->{hcount};
+        $parent->{hcount}++;
+        $graph->delete_vertex( $H );
+    }
 
     # Detecting monocyclic compounds
     if( graph_has_cycle( $graph ) ) {
