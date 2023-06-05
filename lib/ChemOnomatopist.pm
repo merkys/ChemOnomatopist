@@ -1014,7 +1014,7 @@ sub most_senior_groups
         @vertices = $vertices[0]->vertices;
     }
 
-    my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) } @vertices;
+    my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) && !$_->is_prefix_only } @vertices;
     return unless @groups;
 
     my( $most_senior_group ) = sort { ChemOnomatopist::Group::cmp( $a, $b ) } @groups;

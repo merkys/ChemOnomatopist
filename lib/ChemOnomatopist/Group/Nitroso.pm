@@ -9,6 +9,8 @@ use warnings;
 use parent ChemOnomatopist::Group::;
 
 sub prefix { return 'nitroso' }
-sub suffix { return '' } # CHECKME: Is it specified anywhere?
+sub suffix { return undef } # Cannot act as suffix
+
+sub is_prefix_only() { return 1 }
 
 1;

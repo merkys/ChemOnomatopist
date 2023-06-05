@@ -14,8 +14,6 @@ use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
-use ChemOnomatopist::Group::Nitro;
-use ChemOnomatopist::Group::Nitroso;
 
 use List::Util qw( any );
 use Scalar::Util qw( blessed );
@@ -53,10 +51,6 @@ our @order = (
     ChemOnomatopist::Group::Bicycle::,
     ChemOnomatopist::Group::Monocycle::,
     ChemOnomatopist::Group::Monospiro::,
-
-    # FIXME: These do not act as suffixes, but have to be included for _cmp() to work
-    ChemOnomatopist::Group::Nitro::,
-    ChemOnomatopist::Group::Nitroso::,
 );
 
 sub new
@@ -68,6 +62,8 @@ sub new
 # Neither of these by default
 sub is_carbon { return '' }
 sub is_oxygen { return '' }
+
+sub is_prefix_only() { return '' }
 
 sub needs_heteroatom_locants { return 1 }
 sub needs_heteroatom_names { return 1 }
