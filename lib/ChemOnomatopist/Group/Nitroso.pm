@@ -27,6 +27,7 @@ sub prefix {
 
 sub suffix { return undef } # Cannot act as suffix
 
+sub is_part_of_chain() { return '' }
 sub is_prefix_only() { return 1 }
 
 1;

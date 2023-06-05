@@ -646,18 +646,22 @@ sub select_mainchain
     } else {
         # Here the candidate halves for the longest (and "best") path are placed in @path_parts.
         # Each of candidate halves start with center atom.
-        my @center = graph_center( $graph );
+        my $subgraph = copy $graph;
+        $subgraph->delete_vertices( grep { blessed $_ &&
+                                           $_->isa( ChemOnomatopist::Group:: ) &&
+                                           !$_->is_part_of_chain } $subgraph->vertices );
+        my @center = graph_center( $subgraph );
         my @path_parts;
         if( @center == 1 ) {
             # Longest path has odd length
-            for my $path ( graph_longest_paths_from_vertex( $graph, $center[0] ) ) {
+            for my $path ( graph_longest_paths_from_vertex( $subgraph, $center[0] ) ) {
                 push @path_parts,
                      ChemOnomatopist::ChainHalf->new( $graph, undef, @$path );
             }
         } else {
             # Longest path has even length
             # Graph copy without center edge is required by graph_longest_paths_from_vertex()
-            my $copy = copy $graph;
+            my $copy = copy $subgraph;
             $copy->delete_edge( @center );
             for my $vertex ( @center ) {
                 push @path_parts,
@@ -666,7 +670,7 @@ sub select_mainchain
             }
         }
 
-        return @path_parts if @path_parts == 1; # methane
+        return shift @path_parts if @path_parts == 1; # methane
 
         # Generate all possible chains.
         # FIXME: This needs optimisation.
