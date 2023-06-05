@@ -20,6 +20,8 @@ my @cases = (
     { smiles => 'C1(=CC=C(C=C1)C)C', iupac => '1,4-xylene' },
     { smiles => 'CC1=CC(=CC(=C1)C)C', iupac => '1,3,5-trimethylbenzene' },
 
+    { smiles => 'CC1=C(C=C(C=C1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-]', iupac => '2-methyl-1,3,5-trinitrobenzene', AUTHOR => 1 }, # FIXME: Nitro group not detected yet
+
     # From BBv2 P-22.2.2.1.1
     { smiles => 'S1C=CC=CC=C1', iupac => 'thiepine' },
     { smiles => 'O1CCCCCCC1',   iupac => 'oxocane' },
