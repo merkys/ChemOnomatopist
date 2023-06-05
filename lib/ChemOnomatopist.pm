@@ -22,6 +22,7 @@ use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
+use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::Graph qw(
@@ -381,6 +382,13 @@ sub find_groups
             my $imino = ChemOnomatopist::Group::Imino->new( @C );
             $graph->add_edge( @C, $imino );
             $graph->delete_vertices( $atom, @H );
+        } elsif( is_element( $atom, 'N' ) && @C == 1 && @O == 2 && $atom->{charge} && $atom->{charge} == 1 &&
+                 (any {  is_double_bond( $graph, $atom, $_ ) } @O) &&
+                 (any { !is_double_bond( $graph, $atom, $_ ) && $_->{charge} && $_->{charge} == -1 } @O) ) {
+            # Detecting nitro
+            my $nitro = ChemOnomatopist::Group::Nitro->new( @C );
+            $graph->add_edge( @C, $nitro );
+            $graph->delete_vertices( $atom, @O );
         }
 
         # O-based groups
