@@ -390,12 +390,6 @@ sub find_groups
             my $nitro = ChemOnomatopist::Group::Nitro->new( @C );
             $graph->add_edge( @C, $nitro );
             $graph->delete_vertices( $atom, @O );
-        } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C == 1 && @O == 1 &&
-                 is_double_bond( $graph, $atom, @O ) ) {
-            # Detecting nitroso
-            my $nitroso = ChemOnomatopist::Group::Nitroso->new( @C, $atom );
-            $graph->add_edge( @C, $nitroso );
-            $graph->delete_vertices( $atom, @O );
         }
 
         # O-based groups
@@ -420,6 +414,14 @@ sub find_groups
             my $ketone = ChemOnomatopist::Group::Ketone->new( @C, $atom );
             $graph->add_edge( @C, $ketone );
             $graph->delete_vertices( $atom );
+        }
+
+        # Nitroso and its analogues
+        if( @neighbours == 2 && @C == 1 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
+            any { is_element( $atom, $_ ) } qw( Br Cl F I N ) ) {
+            my $nitroso = ChemOnomatopist::Group::Nitroso->new( @C, $atom );
+            $graph->add_edge( @C, $nitroso );
+            $graph->delete_vertices( $atom, @O );
         }
     }
 
