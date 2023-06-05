@@ -88,6 +88,9 @@ my @cases = (
     { smiles => 'C1CCCCC1C=O', iupac => 'cyclohexanecarbaldehyde', AUTHOR => 1 }, # From BBv2 P-66.6.1.1.3
 
     { smiles => 'S=C(CC1CC(CCC1)CC(CC)=O)CC', iupac => '1-[3-(2-sulfanylidenebutyl)cyclohexyl]butan-2-one', AUTHOR => 1 }, # From BBv2 P-64.7.3
+
+    { smiles => 'C1=CC(=CC=C1F)Cl(=O)(=O)=O', iupac => '1-fluoro-4-perchlorylbenzene', AUTHOR => 1 }, # PubChem 24972904
+    { smiles => 'CCC1CN1Cl(=O)(=O)=O', iupac => '2-ethyl-1-perchlorylaziridine', AUTHOR => 1 }, # PubChem 24973518
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
