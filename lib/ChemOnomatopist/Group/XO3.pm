@@ -1,9 +1,9 @@
-package ChemOnomatopist::Group::Nitroso;
+package ChemOnomatopist::Group::XO3;
 
 use strict;
 use warnings;
 
-# ABSTRACT: Nitroso group or its analogue
+# ABSTRACT: XO3 group
 # VERSION
 
 use parent ChemOnomatopist::Group::;
@@ -19,9 +19,8 @@ sub new
 # Compiled from BBv2 Table 5.1 (P-59.1.9)
 sub prefix {
     my( $self ) = @_;
-    return 'nitroso' if $self->{atom}{symbol} eq 'N';
-    my $prefix = $elements{$self->{atom}{symbol}}{prefix};
-    $prefix =~ s/a$/osyl/;
+    my $prefix = 'per' . $elements{$self->{atom}{symbol}}{prefix};
+    $prefix =~ s/a$/yl/;
     return $prefix;
 }
 

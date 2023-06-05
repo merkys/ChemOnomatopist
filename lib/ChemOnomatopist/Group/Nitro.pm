@@ -3,7 +3,7 @@ package ChemOnomatopist::Group::Nitro;
 use strict;
 use warnings;
 
-# ABSTRACT: Nitro group, or its analogue
+# ABSTRACT: Nitro group
 # VERSION
 
 use parent ChemOnomatopist::Group::;

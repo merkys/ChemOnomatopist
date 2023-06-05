@@ -24,6 +24,7 @@ use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
+use ChemOnomatopist::Group::XO3;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::Graph qw(
@@ -421,6 +422,14 @@ sub find_groups
             any { is_element( $atom, $_ ) } qw( Br Cl F I N ) ) {
             my $nitroso = ChemOnomatopist::Group::Nitroso->new( @C, $atom );
             $graph->add_edge( @C, $nitroso );
+            $graph->delete_vertices( $atom, @O );
+        }
+
+        # XO3
+        if( @neighbours == 2 && @C == 1 && @O == 3 && all { is_double_bond( $graph, $atom, $_ ) } @O &&
+            any { is_element( $atom, $_ ) } qw( Br Cl F I ) ) {
+            my $XO3 = ChemOnomatopist::Group::XO3->new( @C, $atom );
+            $graph->add_edge( @C, $XO3 );
             $graph->delete_vertices( $atom, @O );
         }
     }
