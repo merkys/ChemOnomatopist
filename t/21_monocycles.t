@@ -20,6 +20,8 @@ my @cases = (
     { smiles => 'C1(=CC=C(C=C1)C)C', iupac => '1,4-xylene' },
     { smiles => 'CC1=CC(=CC(=C1)C)C', iupac => '1,3,5-trimethylbenzene' },
 
+    { smiles => 'N(=O)C1=CC=CC=C1', iupac => 'nitrosobenzene', AUTHOR => 1 }, # From BBv2 P-59.1.9
+
     # From BBv2 P-61.5.1
     { smiles => 'CC1=C(C=C(C=C1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-]', iupac => '2-methyl-1,3,5-trinitrobenzene' },
 
