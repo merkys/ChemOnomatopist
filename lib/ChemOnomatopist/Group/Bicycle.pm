@@ -90,6 +90,18 @@ sub new
         pop  @{$self->{vertices}};
         push @{$self->{vertices}}, $cycles[1]->vertices;
         pop  @{$self->{vertices}};
+    } else {
+        # Numbering has to start from cycle other than benzene
+        if( ($cycles[0]->suffix eq 'benzene') > ($cycles[1]->suffix eq 'benzene') ) {
+            @cycles = reverse @cycles;
+
+            # Reworking the vertice order in the bicyclic chain itself
+            $self->{vertices} = [];
+            push @{$self->{vertices}}, $cycles[0]->vertices;
+            pop  @{$self->{vertices}};
+            push @{$self->{vertices}}, $cycles[1]->vertices;
+            pop  @{$self->{vertices}};
+        }
     }
 
     return $self;
