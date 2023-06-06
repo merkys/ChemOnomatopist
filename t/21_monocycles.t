@@ -54,7 +54,7 @@ my @cases = (
 
     # From BBv2 P-63.1.1.1
     { smiles => 'C1=CC=CC=C1O', iupac => 'phenol' },
-    { smiles => 'BrC1=C(C=CC=C1)O', iupac => '2-bromophenol', AUTHOR => 1 },
+    { smiles => 'BrC1=C(C=CC=C1)O', iupac => '2-bromophenol' },
 
     { smiles => 'C(=O)(O)C1=CC=CC=C1', iupac => 'benzoic acid' },
 

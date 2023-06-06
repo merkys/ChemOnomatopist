@@ -197,7 +197,9 @@ sub name()
 sub needs_substituent_locants()
 {
     my( $self ) = @_;
-    return !$self->is_homogeneous;
+    # BBv2 P-14.3.4.2 (c): monosubstituted homogeneous cycles do not need locants
+    return '' if $self->is_homogeneous && $self->number_of_branches == 1;
+    return 1;
 }
 
 # sub branch_positions() # TODO: Maybe need to add 1 to all returned positions?
