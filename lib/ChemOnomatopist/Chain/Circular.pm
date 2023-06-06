@@ -194,6 +194,12 @@ sub name()
     return 'cyclo' . ChemOnomatopist::unbranched_chain_name( $self );
 }
 
+sub needs_substituent_locants()
+{
+    my( $self ) = @_;
+    return !$self->is_homogeneous;
+}
+
 # sub branch_positions() # TODO: Maybe need to add 1 to all returned positions?
 
 sub bonds()

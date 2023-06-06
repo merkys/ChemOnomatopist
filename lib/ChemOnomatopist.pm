@@ -246,15 +246,8 @@ sub get_mainchain_name
         my $attachment = $attachment_objects{$attachment_name};
 
         # Locants are not important in single-substituted homogeneous cycles
-        if( @order > 1 ||
-            @{$attachments{$attachment_name}} > 1 ||
-            !$chain->isa( ChemOnomatopist::Chain::Circular:: ) ||
-            !$chain->is_homogeneous ) {
-            if( $chain->isa( ChemOnomatopist::Chain:: ) ) {
-                $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
-            } else {
-                $name->append_locants( map { $_ + 1 } @{$attachments{$attachment_name}} );
-            }
+        if( @order > 1 || @{$attachments{$attachment_name}} > 1 || $chain->needs_substituent_locants ) {
+            $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
         }
 
         # FIXME: More rules from BBv2 P-16.3.4 should be added
