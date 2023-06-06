@@ -8,10 +8,12 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-sub is_carbon { return 1 }
+sub is_carbon() { return 1 }
 
-sub prefix { return 'carboxy' }
-sub suffix { return 'oic acid' }
-sub multisuffix { return 'carboxylic acid' }
+sub is_part_of_chain() { return '' }
+
+sub prefix() { return 'carboxy' }
+sub suffix() { return 'oic acid' }
+sub multisuffix() { return 'carboxylic acid' }
 
 1;

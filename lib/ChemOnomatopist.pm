@@ -435,14 +435,13 @@ sub find_groups
             $graph->delete_vertices( @groups, @H ); # FIXME: Be careful!
             $graph->add_edges( map { $aldehyde, $_ } $graph->neighbours( $atom ) );
             $graph->delete_vertex( $atom );
-        } elsif( is_element( $atom, 'C' ) &&
+        } elsif( is_element( $atom, 'C' ) && @C == 1 &&
             (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) &&
             (any { $_->isa( ChemOnomatopist::Group::Hydroxy::  ) } @groups) ) {
             # Detecting carboxyl
             my $carboxyl = ChemOnomatopist::Group::Carboxyl->new( $atom );
-            $graph->delete_vertices( @groups ); # FIXME: Be careful!
-            $graph->add_edges( map { $carboxyl, $_ } $graph->neighbours( $atom ) );
-            $graph->delete_vertex( $atom );
+            $graph->delete_vertices( $atom, @groups ); # FIXME: Be careful!
+            $graph->add_edges( $carboxyl, @C );
         } elsif( is_element( $atom, 'C' ) && @groups == 1 && @C == 1 && @O == 2 &&
                  $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) &&
                  all { $cut_vertices->has( $_ ) } @O ) {
