@@ -125,6 +125,7 @@ sub get_sidechain_name
 
             my $attachment_name = get_sidechain_name( $graph, $neighbour );
             $attachment_name .= 'idene' if $bond eq '=';
+            $attachment_name .= 'idyne' if $bond eq '#';
             push @{$attachments{$attachment_name}}, $i;
             $attachment_objects{$attachment_name} = $attachment_name;
         }
@@ -233,7 +234,7 @@ sub get_mainchain_name
             } else {
                 my $attachment_name = get_sidechain_name( $graph, $neighbour );
                 $attachment_name .= 'idene' if $bond eq '=';
-
+                $attachment_name .= 'idyne' if $bond eq '#';
                 push @{$attachments{$attachment_name}}, $i;
                 $attachment_objects{$attachment_name} = $attachment_name;
             }
