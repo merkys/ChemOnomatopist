@@ -320,7 +320,7 @@ sub get_mainchain_name
         # Terminal locants are not cited for 1 or 2 senior group attachments according to BBv2 P-14.3.4.1
         if( @senior_group_attachments && @chain > 1 &&
             (!$most_senior_group->is_carbon || @senior_group_attachments > 2) ) {
-            $name->append_locants( map { $_ + 1 } @senior_group_attachments );
+            $name->append_locants( $chain->locants( @senior_group_attachments ) );
         }
         $name->append_multiplier( $number );
         $name->append_suffix( @senior_group_attachments > 2 ? $groups[0]->multisuffix : $groups[0]->suffix );
