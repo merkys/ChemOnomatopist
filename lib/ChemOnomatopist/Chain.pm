@@ -161,6 +161,12 @@ sub max_valence()
                 grep { !blessed $_ && exists $_->{hcount} } $self->vertices;
 }
 
+sub most_senior_groups()
+{
+    my( $self ) = @_;
+    return ChemOnomatopist::most_senior_groups( $self->vertices, $self->substituents );
+}
+
 sub most_senior_group_positions()
 {
     my( $self ) = @_;
@@ -208,6 +214,17 @@ sub needs_heteroatom_locants()
 }
 
 sub needs_heteroatom_names() { return 1 }
+
+sub needs_suffix_locant()
+{
+    my( $self ) = @_;
+    return '' if $self->length == 1;
+
+    my @most_senior_groups = $self->most_senior_groups;
+    return '' unless @most_senior_groups;
+    return 1 if !$most_senior_groups[0]->is_carbon || @most_senior_groups > 2;
+    return '';
+}
 
 sub needs_substituent_locants()
 {
