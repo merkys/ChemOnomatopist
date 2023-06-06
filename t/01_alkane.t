@@ -48,6 +48,8 @@ my @cases = (
     { smiles => 'CCCCC(CC)C(CCCC)C(C)(C)C', iupac => '5-ethyl-6-tert-butyldecane' },
     { smiles => 'CCCCC(CCCC)CCCCCCCC(C(C)CCC)C(C)(C)C', iupac => '5-tert-butyl-13-butyl-4-methylheptadecane', AUTHOR => 1 },
 
+    { smiles => 'CC(CC)C(CCCC)(CCCCCCCCCCCCCCCCCCCCCCCCCC)CCCC', iupac => '5-(butan-2-yl)-5-butylhentriacontane', AUTHOR => 1 }, # BBv2 P-14.5.1
+
     { smiles => 'CCCCCC(C)(C)C(C)CC(CC)CC(CCC(CC)CC)C(CCC(CC)CCC)(CC(CC)CCCC)C(CC)(CCCC(CC)CC)C(CC(C)C(CC)CC)(CC(C)(CC)CCC)C(C)C(CC(C)CC(C)CC)(CC(C)C(CC)CCC)CC(C)(CC)CCCC', iupac => '10,14-diethyl-11-(2-ethylhexyl)-11-(3-ethylhexyl)-10-(4-ethylhexyl)-7-(2-ethyl-2-methylhexyl)-7-(3-ethyl-2-methylhexyl)-9-(2-ethyl-2-methylpentyl)-9-(3-ethyl-2-methylpentyl)-12-(3-ethylpentyl)-3,5,8,16,17,17-hexamethyldocosane' },
 );
 
