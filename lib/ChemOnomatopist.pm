@@ -173,6 +173,7 @@ sub get_sidechain_name
     }
 
     $name .= 'yl';
+    $name->{name} =~ s/butan-1-yl$/butyl/; # FIXME: Dirty
     $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Dirty
 
     return $name;
