@@ -26,6 +26,8 @@ my @cases = (
 
     { smiles => 'CCC(=C)CCC', iupac => '3-methylidenehexane' }, # BBv2 P-61.2.1
     { smiles => 'C(C)=C(C(C)C1=NC=CC=C1)CCC=C(C)C', iupac => '2-(3-ethylidene-7-methyloct-6-en-2-yl)pyridine' }, # BBv2 P-61.2.4
+
+    { smiles => 'CCC=CCC', iupac => 'hex-3-ene' }, # Chain halves are joined by double bond
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
