@@ -218,6 +218,8 @@ sub needs_heteroatom_names() { return 1 }
 sub needs_suffix_locant()
 {
     my( $self ) = @_;
+
+    # BBv2 P-14.3.4.2 (a): mononuclear parent hydrides do not need locants
     return '' if $self->length == 1;
 
     # BBv2 P-14.3.4.2 (b): monosubstituted homogeneous chains consisting of only two identical atoms do not need locants
