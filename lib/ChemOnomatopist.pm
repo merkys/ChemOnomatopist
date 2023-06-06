@@ -15,6 +15,7 @@ use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Carboxyl;
+use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
@@ -363,6 +364,13 @@ sub find_groups
             my $nitro = ChemOnomatopist::Group::Nitro->new( @C );
             $graph->add_edge( @C, $nitro );
             $graph->delete_vertices( $atom, @O );
+        } elsif( is_element( $atom, 'N' ) && @neighbours == 1 && @C == 1 &&
+                 is_triple_bond( $graph, $atom, @C ) ) {
+            # Detecting cyanide
+            my( $C ) = grep { is_element( $_, 'C' ) } $graph->neighbours( @C );
+            my $cyanide = ChemOnomatopist::Group::Cyanide->new( $C );
+            $graph->add_edge( $C, $cyanide );
+            $graph->delete_vertices( $atom, @C );
         }
 
         # O-based groups
@@ -531,6 +539,13 @@ sub is_element
     return ref $atom eq 'HASH' &&
            exists $atom->{symbol} &&
            ucfirst $atom->{symbol} eq $element;
+}
+
+sub is_triple_bond
+{
+    my( $graph, $A, $B ) = @_;
+    return $graph->has_edge_attribute( $A, $B, 'bond' ) &&
+           $graph->get_edge_attribute( $A, $B, 'bond' ) eq '#';
 }
 
 # Given a graph, selects the main chain.
