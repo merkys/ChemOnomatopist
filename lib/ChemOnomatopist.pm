@@ -1138,10 +1138,8 @@ sub IUPAC_numerical_multiplier
     return IUPAC_numerical_multiplier( $ones, 1 ) . 'cos' . ($is_middle ? 'a' : '') if $N < 30;
 
     if( $N < 100 ) {
-        if( $ones == 1 ) {
-            return 'hen' . IUPAC_numerical_multiplier( $tens, 1 ) . 'cont' . ($is_middle ? 'a' : '');
-        } elsif ( $ones == 3 ) {
-            return 'tri' . IUPAC_numerical_multiplier( $tens, 1 ) . 'cont' . ($is_middle ? 'a' : '');
+        if( $ones == 1 || $ones == 3 ) {
+            return $prefix[$ones] . IUPAC_numerical_multiplier( $tens, 1 ) . 'cont' . ($is_middle ? 'a' : '');
         } else {
             return IUPAC_numerical_multiplier( $ones, 1 ) .
                    IUPAC_numerical_multiplier( $tens, 1 ) .
