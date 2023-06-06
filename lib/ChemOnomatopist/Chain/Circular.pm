@@ -202,6 +202,12 @@ sub needs_substituent_locants()
     return 1;
 }
 
+sub needs_suffix_locant()
+{
+    my( $self ) = @_;
+    return $self->needs_substituent_locants;
+}
+
 # sub branch_positions() # TODO: Maybe need to add 1 to all returned positions?
 
 sub bonds()

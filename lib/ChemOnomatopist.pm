@@ -323,11 +323,18 @@ sub get_mainchain_name
             $name->append_locants( $chain->locants( @senior_group_attachments ) );
         }
         $name->append_multiplier( $number );
-        $name->append_suffix( @senior_group_attachments > 2 ? $groups[0]->multisuffix : $groups[0]->suffix );
+        if( $chain->isa( ChemOnomatopist::Group::Monocycle:: ) ||
+            $chain->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
+            $name->append_suffix( $groups[0]->suffix_if_cycle_substituent );
+        } elsif( @senior_group_attachments > 2 ) {
+            $name->append_suffix( $groups[0]->multisuffix );
+        } else {
+            $name->append_suffix( $groups[0]->suffix );
+        }
     }
 
-    $name =~ s/benzen-1-ol$/phenol/;
-    $name = 'benzoic acid' if $name eq 'benzenoic acid';
+    $name =~ s/benzen(-1-)?ol$/phenol/;
+    $name = 'benzoic acid' if $name eq 'benzenecarboxylic acid';
     $name = 'toluene'      if $name eq 'methylbenzene';
     $name =~ s/^(\d,\d-)dimethylbenzene$/$1xylene/;
 

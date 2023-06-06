@@ -72,6 +72,7 @@ sub needs_heteroatom_names { return 1 }
 sub prefix { return '' }
 sub suffix { return '' }
 sub multisuffix { return $_[0]->suffix }
+sub suffix_if_cycle_substituent() { return $_[0]->suffix }
 
 # Return the attached carbon
 sub C {
