@@ -8,6 +8,7 @@ use warnings;
 
 use parent ChemOnomatopist::;
 
+use ChemOnomatopist::Chain;
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
@@ -86,7 +87,7 @@ sub get_name
         my( $vertex ) = grep { $_->{number} == $curr_vertex } $graph->vertices;
         push @chain, $vertex;
     }
-    return get_mainchain_name( $graph->copy, \@chain );
+    return get_mainchain_name( $graph->copy, ChemOnomatopist::Chain->new( $graph, @chain ) );
 }
 
 # BFS is performed for the given graph after all vertices that are not carbons
