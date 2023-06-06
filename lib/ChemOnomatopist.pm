@@ -1140,12 +1140,16 @@ sub IUPAC_numerical_multiplier
 
     if( $N < 1000 ) {
         my $prefix = int( $tens . $ones ) == 1 ? $prefix[$ones] : IUPAC_numerical_multiplier( int( $tens . $ones ), 1 );
-        return $prefix . 'hect' if $N < 200;
+        $prefix[1] = 'he';
         return $prefix . $prefix[$hundreds] . 'ct' . ($is_middle ? 'a' : '');
     }
 
-    return IUPAC_numerical_multiplier( int( $hundreds . $tens . $ones ), 1 ) . 'kili'                     if $N <  2000;
-    return IUPAC_numerical_multiplier( int( $hundreds . $tens . $ones ), 1 ) . $prefix[$thousands] . 'li' if $N < 10000;
+    if( $N < 10000 ) {
+        $prefix[0] = 'ki';
+        return IUPAC_numerical_multiplier( int( $hundreds . $tens . $ones ), 1 ) .
+               $prefix[$thousands] . 'li';
+    }
+
     die "cannot generate IUPAC numerical multiplier for $N\n";
 }
 
