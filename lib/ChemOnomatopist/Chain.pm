@@ -220,6 +220,9 @@ sub needs_suffix_locant()
     my( $self ) = @_;
     return '' if $self->length == 1;
 
+    # BBv2 P-14.3.4.2 (b): monosubstituted homogeneous chains consisting of only two identical atoms do not need locants
+    return '' if $self->length == 2 && $self->number_of_branches == 1;
+
     my @most_senior_groups = $self->most_senior_groups;
     return '' unless @most_senior_groups;
     return 1 if !$most_senior_groups[0]->is_carbon || @most_senior_groups > 2;

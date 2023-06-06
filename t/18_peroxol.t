@@ -7,7 +7,7 @@ use ChemOnomatopist;
 use Test::More;
 
 my @cases = (
-    { smiles => 'CCOO', iupac => 'ethaneperoxol', AUTHOR => 1 },
+    { smiles => 'CCOO', iupac => 'ethaneperoxol' },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
