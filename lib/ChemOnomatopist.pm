@@ -131,16 +131,11 @@ sub get_sidechain_name
     for my $attachment_name (sort { $a cmp $b } keys %attachments) {
         my $attachment = $attachment_objects{$attachment_name};
 
-        if( @chain > 1 &&
-            ( !blessed $chain ||
-              !$chain->can( 'max_valence' ) ||
+        if( $chain->length > 1 &&
+            ( !$chain->can( 'max_valence' ) ||
               scalar keys %attachments > 1 ||
               @{$attachments{$attachment_name}} != $chain->max_valence - 1 ) ) {
-            if( blessed $chain && $chain->isa( ChemOnomatopist::Chain:: ) ) {
-                $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
-            } else {
-                $name->append_locants( map { $_ + 1 } @{$attachments{$attachment_name}} );
-            }
+            $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
         }
 
         if( @{$attachments{$attachment_name}} > 1 ) {
