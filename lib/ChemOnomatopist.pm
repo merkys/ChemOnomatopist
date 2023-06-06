@@ -327,8 +327,8 @@ sub get_mainchain_name
         $name->append_suffix( @senior_group_attachments > 2 ? $groups[0]->multisuffix : $groups[0]->suffix );
     }
 
-    $name = 'phenol'       if $name eq 'benzenemethanol';
-    $name = 'benzoic acid' if $name eq 'benzenemethanoic acid';
+    $name = 'phenol'       if $name eq 'benzen-1-ol';
+    $name = 'benzoic acid' if $name eq 'benzenoic acid';
     $name = 'toluene'      if $name eq 'methylbenzene';
     $name =~ s/^(\d,\d-)dimethylbenzene$/$1xylene/;
 
@@ -439,7 +439,7 @@ sub find_groups
             (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) &&
             (any { $_->isa( ChemOnomatopist::Group::Hydroxy::  ) } @groups) ) {
             # Detecting carboxyl
-            my $carboxyl = ChemOnomatopist::Group::Carboxyl->new( $atom );
+            my $carboxyl = ChemOnomatopist::Group::Carboxyl->new( @C );
             $graph->delete_vertices( $atom, @groups ); # FIXME: Be careful!
             $graph->add_edges( $carboxyl, @C );
         } elsif( is_element( $atom, 'C' ) && @groups == 1 && @C == 1 && @O == 2 &&
@@ -569,7 +569,7 @@ sub select_mainchain
                 ( $carbons[0]->isa( ChemOnomatopist::Group::Monocycle:: ) ||
                   $carbons[0]->isa( ChemOnomatopist::Group::Monospiro:: ) ) ) {
                 # For senior attachments to cycles
-                push @chains, ChemOnomatopist::Chain->new( $graph, @groups );
+                push @chains, @carbons;
             } else {
                 # As the starting position is known, it is enough to take the "side chain"
                 # containing this particular carbon:
@@ -676,7 +676,9 @@ sub select_mainchain
     # exception of three or more carbon-based groups.
     if( $most_senior_group &&
         $most_senior_group->is_carbon &&
-        $chain->number_of_groups( $most_senior_group ) ) {
+        !$chain->isa( ChemOnomatopist::Group:: ) &&
+         $chain->number_of_groups( $most_senior_group ) ) {
+
         shift @vertices;
         pop @vertices;
         $chain = ChemOnomatopist::Chain->new( $graph, @vertices );

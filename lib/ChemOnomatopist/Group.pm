@@ -76,7 +76,7 @@ sub multisuffix { return $_[0]->suffix }
 # Return the attached carbon
 sub C {
     my( $self ) = @_;
-    return $self->is_carbon ? $self : $self->{C};
+    return $self->is_part_of_chain && $self->is_carbon ? $self : $self->{C};
 }
 
 # Compare seniority of two objects
