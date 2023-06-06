@@ -88,10 +88,7 @@ sub get_sidechain_name
                                  $graph->neighbours( $start );
 
     my $chain = select_sidechain( $graph, $start );
-    my @chain = blessed $chain && $chain->can( 'vertices' ) ? $chain->vertices : $chain;
-
-    # TODO: Handle the case when none of the rules select proper chains
-    die "could not select a chain\n" unless @chain;
+    my @chain = $chain->vertices;
 
     # Handle non-carbon substituents
     if( @chain == 1 && !is_element( $chain[0], 'C' ) ) {
@@ -162,7 +159,7 @@ sub get_sidechain_name
 
         $name .= $attachment;
     }
-    $name .= unbranched_chain_name( blessed $chain && $chain->can( 'vertices' ) ? $chain : \@chain );
+    $name .= unbranched_chain_name( $chain );
     $name->{name} =~ s/(an)?e$//; # FIXME: Dirty
 
     if( $branches_at_start > 1 ) {
@@ -700,7 +697,7 @@ sub select_sidechain
     my( $graph, $start ) = @_;
 
     # Do this for non-carbons for now in order to represent attachments
-    return $start unless is_element( $start, 'C' );
+    return ChemOnomatopist::Chain->new( $graph, $start ) unless is_element( $start, 'C' );
 
     # Cleaning the graph from the heteroatom leaves
     my $C_graph = copy $graph;
@@ -733,7 +730,7 @@ sub select_sidechain
     } elsif( $C_graph->degree( $start ) == 1 ) {
         @chains = map { ChemOnomatopist::Chain->new( $graph, $_->vertices ) } @path_parts;
     } else {
-        return ( $start );
+        return ChemOnomatopist::Chain->new( $graph, $start );
     }
 
     # From BBv2 P-29.2
@@ -783,8 +780,7 @@ sub select_sidechain
         return shift @chains;
     }
 
-    # TODO: Handle the case when none of the rules select proper chains
-    return ();
+    die "cannot select a sidechain\n";
 }
 
 # TODO: Should reflect the order described in BBv2 P-44
