@@ -289,21 +289,8 @@ sub get_mainchain_name
     for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
                           keys %heteroatoms) {
 
-        # FIXME: The logic became too twisted here, need to untangle
-        if( @chain > 1 ) {
-            if( $chain->isa( ChemOnomatopist::Group:: ) ) {
-                if( $chain->needs_heteroatom_locants ) {
-                    if( $chain->isa( ChemOnomatopist::Chain:: ) ) {
-                        $name->append_locants( $chain->locants( @{$heteroatoms{$element}} ) );
-                    } else {
-                        $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
-                    }
-                }
-            } elsif( $chain->isa( ChemOnomatopist::Chain:: ) ) {
-                $name->append_locants( $chain->locants( @{$heteroatoms{$element}} ) );
-            } else {
-                $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
-            }
+        if( $chain->needs_heteroatom_locants ) {
+            $name->append_locants( $chain->locants( @{$heteroatoms{$element}} ) );
         }
 
         if( !$chain->isa( ChemOnomatopist::Group:: ) || $chain->needs_heteroatom_names ) {

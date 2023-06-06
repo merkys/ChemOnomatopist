@@ -201,7 +201,7 @@ sub needs_heteroatom_locants()
     return '' if $self->length == 1;
 
     if(      scalar( uniq $self->heteroatoms ) == 1 ) {
-        return $self->number_of_heteroatoms == $self->max_valence;
+        return $self->number_of_heteroatoms != $self->max_valence;
     } elsif( scalar( uniq $self->heteroatoms ) >  1 ) {
         return 1;
     }

@@ -100,11 +100,25 @@ sub locant_names()
            $self->{halves}[1]->locant_names;
 }
 
+sub locants()
+{
+    my $self = shift;
+    return map { $_ + 1 } @_;
+}
+
 sub multiple_bond_positions()
 {
     my( $self ) = @_;
     my @bonds = $self->bonds;
     return grep { $bonds[$_] =~ /^[=#\$]$/ } 0..$#bonds;
+}
+
+sub needs_heteroatom_locants()
+{
+    my( $self ) = @_;
+    return '' if $self->length == 1;
+
+    return 1; # FIXME: Port or inherit from ChemOnomatopist::Chain
 }
 
 sub vertices()
