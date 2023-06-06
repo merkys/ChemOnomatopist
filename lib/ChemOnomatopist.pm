@@ -159,12 +159,14 @@ sub get_sidechain_name
 
     if( $branches_at_start > 1 ) {
         my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
-        $name .= 'an' unless $name->{name} =~ /-en$/; # FIXME: Dirty
-        $name->append_substituent_locant( $branch_point + 1 );
+        if( $branch_point || !$chain->is_saturated ) {
+            # According to BBv2 P-29.2 (1)
+            $name .= 'an' unless $name->{name} =~ /-en$/; # FIXME: Dirty
+            $name->append_substituent_locant( $branch_point + 1 );
+        }
     }
 
     $name .= 'yl';
-    $name->{name} =~ s/butan-1-yl$/butyl/; # FIXME: Dirty
     $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Dirty
 
     return $name;
