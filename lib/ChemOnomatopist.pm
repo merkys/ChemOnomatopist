@@ -74,7 +74,7 @@ sub get_name
 # From that position it finds the longest chain and returns the constructed name.
 sub get_sidechain_name
 {
-    my( $graph, $start, $options ) = @_;
+    my( $graph, $start ) = @_;
 
     # TODO: Extend to other subclasses of ChemOnomatopist::Group::
     if( blessed $start &&
@@ -82,8 +82,6 @@ sub get_sidechain_name
           $start->isa( ChemOnomatopist::Group::Monospiro:: ) ) ) {
         return ChemOnomatopist::Name->new( $start->prefix );
     }
-
-    $options = {} unless $options;
 
     # Groups that cannot be included in the chain do not matter
     my $branches_at_start = grep { !blessed $_ || $_->is_carbon }
