@@ -23,7 +23,7 @@ my @cases = (
     { smiles => 'CCCCCCCCC(C=O)C(CC)O', iupac => '2-(1-hydroxypropyl)decanal' },
     { smiles => 'S=C(CC(=O)O)C', iupac => '3-sulfanylidenebutanoic acid' },
 
-    { smiles => '[N+](=O)([O-])C', iupac => 'nitromethane', AUTHOR => 1 }, # BBv2 P-61.5.1
+    { smiles => '[N+](=O)([O-])C', iupac => 'nitromethane' }, # BBv2 P-61.5.1
 
     { smiles => 'I(=O)(=O)(=O)CCC', iupac => 'periodylpropane', AUTHOR => 1 },
     { smiles => 'I(=O)(=O)(=O)C(C)C', iupac => '2-periodylpropane' },
