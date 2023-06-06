@@ -1127,27 +1127,19 @@ sub IUPAC_numerical_multiplier
 
     return 'dec'    . ($is_middle ? 'a' : '') if $N == 10;
     return 'undec'  . ($is_middle ? 'a' : '') if $N == 11;
-    return 'dodec'  . ($is_middle ? 'a' : '') if $N == 12;
     return IUPAC_numerical_multiplier( $ones, 1 ) . 'dec' . ($is_middle ? 'a' : '') if $N < 20;
     return 'icos'   . ($is_middle ? 'a' : '') if $N == 20;
     return IUPAC_numerical_multiplier( $ones, 1 ) . 'cos' . ($is_middle ? 'a' : '') if $N < 30;
 
     if( $N < 100 ) {
-        if( $ones == 1 ) {
-            return $prefix[$ones] .
-                   IUPAC_numerical_multiplier( $tens, 1 ) .
-                   ($tens == 3 ? 'a' : '') .
-                   'cont' . ($is_middle ? 'a' : '');
-        } else {
-            return IUPAC_numerical_multiplier( $ones, 1 ) .
-                   IUPAC_numerical_multiplier( $tens, 1 ) .
-                   ($tens == 3 ? 'a' : '') .
-                   'cont' . ($is_middle ? 'a' : '');
-        }
+        return ($ones == 1 ? $prefix[$ones] : IUPAC_numerical_multiplier( $ones, 1 )) .
+               IUPAC_numerical_multiplier( $tens, 1 ) .
+               ($tens == 3 ? 'a' : '') .
+               'cont' . ($is_middle ? 'a' : '');
     }
 
     if( $N < 1000 ) {
-        my $prefix = int( $tens . $ones ) == 1 ? 'hen' : IUPAC_numerical_multiplier( int( $tens . $ones ), 1 );
+        my $prefix = int( $tens . $ones ) == 1 ? $prefix[$ones] : IUPAC_numerical_multiplier( int( $tens . $ones ), 1 );
         return $prefix . 'hect' if $N < 200;
         return $prefix . $prefix[$hundreds] . 'ct' . ($is_middle ? 'a' : '');
     }
