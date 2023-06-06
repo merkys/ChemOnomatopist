@@ -1132,8 +1132,6 @@ sub IUPAC_numerical_multiplier
     return 'tridec' . ($is_middle ? 'a' : '') if $N == 13;
     return IUPAC_numerical_multiplier( $ones, 1 ) . 'dec' . ($is_middle ? 'a' : '') if $N < 20;
     return 'icos'   . ($is_middle ? 'a' : '') if $N == 20;
-    return 'henicos'. ($is_middle ? 'a' : '') if $N == 21;
-    return 'docos'  . ($is_middle ? 'a' : '') if $N == 22;
     return 'tricos' . ($is_middle ? 'a' : '') if $N == 23;
     return IUPAC_numerical_multiplier( $ones, 1 ) . 'cos' . ($is_middle ? 'a' : '') if $N < 30;
 
