@@ -292,9 +292,7 @@ sub get_mainchain_name
         # FIXME: The logic became too twisted here, need to untangle
         if( @chain > 1 ) {
             if( $chain->isa( ChemOnomatopist::Group:: ) ) {
-                if( $chain->needs_heteroatom_locants &&
-                    ( scalar keys %heteroatoms > 1 ||
-                      @{$heteroatoms{$element}} != $chain->max_valence - 1 ) ) {
+                if( $chain->needs_heteroatom_locants ) {
                     if( $chain->isa( ChemOnomatopist::Chain:: ) ) {
                         $name->append_locants( $chain->locants( @{$heteroatoms{$element}} ) );
                     } else {

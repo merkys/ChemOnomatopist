@@ -6,7 +6,7 @@ use warnings;
 use ChemOnomatopist;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Graph::Traversal::DFS;
-use List::Util qw( all sum0 );
+use List::Util qw( all sum0 uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
@@ -193,6 +193,18 @@ sub multiple_bond_positions()
     my( $self ) = @_;
     my @bonds = $self->bonds;
     return grep { $bonds[$_] =~ /^[=#\$]$/ } 0..$#bonds;
+}
+
+sub needs_heteroatom_locants()
+{
+    my( $self ) = @_;
+    return '' if $self->length == 1;
+
+    if(      scalar( uniq $self->heteroatoms ) == 1 ) {
+        return $self->number_of_heteroatoms == $self->max_valence;
+    } elsif( scalar( uniq $self->heteroatoms ) >  1 ) {
+        return 1;
+    }
 }
 
 sub heteroatoms()
