@@ -121,6 +121,8 @@ sub needs_heteroatom_locants()
     return 1; # FIXME: Port or inherit from ChemOnomatopist::Chain
 }
 
+sub needs_heteroatom_names() { return 1 }
+
 sub vertices()
 {
     my( $self ) = @_;

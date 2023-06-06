@@ -293,7 +293,7 @@ sub get_mainchain_name
             $name->append_locants( $chain->locants( @{$heteroatoms{$element}} ) );
         }
 
-        if( !$chain->isa( ChemOnomatopist::Group:: ) || $chain->needs_heteroatom_names ) {
+        if( $chain->needs_heteroatom_names ) {
             if( @{$heteroatoms{$element}} > 1 ) {
                 my $number = IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} );
                 $number .= 'a' unless $number =~ /^(|\?|.*i)$/;

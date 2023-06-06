@@ -207,6 +207,8 @@ sub needs_heteroatom_locants()
     }
 }
 
+sub needs_heteroatom_names() { return 1 }
+
 sub heteroatoms()
 {
     my( $self ) = @_;
