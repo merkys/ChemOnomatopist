@@ -147,13 +147,4 @@ sub number_of_multiple_bonds()
     return scalar grep { $_ =~ /^[=#\$]$/ } $self->bonds;
 }
 
-# Generators
-
-sub reversed()
-{
-    my( $self ) = @_;
-
-    return ChemOnomatopist::Chain::FromHalves->new( reverse @{$self->{halves}} );
-}
-
 1;
