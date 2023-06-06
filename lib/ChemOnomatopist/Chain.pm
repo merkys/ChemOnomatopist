@@ -209,7 +209,11 @@ sub needs_heteroatom_locants()
 
 sub needs_heteroatom_names() { return 1 }
 
-sub needs_substituent_locants() { return 1 }
+sub needs_substituent_locants()
+{
+    my( $self ) = @_;
+    return $self->length != 1;
+}
 
 sub heteroatoms()
 {

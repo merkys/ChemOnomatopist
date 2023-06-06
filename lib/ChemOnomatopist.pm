@@ -326,8 +326,8 @@ sub get_mainchain_name
         $name->append_suffix( @senior_group_attachments > 2 ? $groups[0]->multisuffix : $groups[0]->suffix );
     }
 
-    $name = 'phenol'       if $name eq '1-benzenemethanol';
-    $name = 'benzoic acid' if $name eq '1-benzenemethanoic acid';
+    $name = 'phenol'       if $name eq 'benzenemethanol';
+    $name = 'benzoic acid' if $name eq 'benzenemethanoic acid';
     $name = 'toluene'      if $name eq 'methylbenzene';
     $name =~ s/^(\d,\d-)dimethylbenzene$/$1xylene/;
 
