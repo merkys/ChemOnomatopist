@@ -6,6 +6,7 @@ use warnings;
 # ABSTRACT: Chain formed by two halves
 # VERSION
 
+use ChemOnomatopist::Util::Graph qw( merge_graphs );
 use List::Util qw( sum0 );
 
 sub AUTOLOAD {
@@ -25,6 +26,16 @@ sub new
 {
     my( $class, @halves ) = @_;
     return bless { halves => \@halves }, $class;
+}
+
+sub graph()
+{
+    my( $self ) = @_;
+    my $merged = merge_graphs( @{$self->{halves}} );
+    if( $self->{halves}[0]{other_center} ) {
+        $merged->add_edge( map { $_->{other_center} } @{$self->{halves}} );
+    }
+    return $merged;
 }
 
 sub length()

@@ -6,6 +6,7 @@ use warnings;
 # ABSTRACT: Generic graph utilities
 # VERSION
 
+use ChemOnomatopist::Util qw( copy );
 use Exporter;
 use Graph::Traversal::BFS;
 use List::Util qw( sum0 );
@@ -21,6 +22,7 @@ our @EXPORT_OK = qw(
     graph_longest_paths
     graph_longest_paths_from_vertex
     graph_path_between_vertices
+    merge_graphs
     tree_branch_positions
     tree_number_of_branches
 );
@@ -193,6 +195,21 @@ sub graph_longest_paths_from_vertex
     }
 
     return @longest_paths;
+}
+
+sub merge_graphs
+{
+    my( $A, $B, $A_vertex, $B_vertex ) = @_;
+
+    my $merged = copy $A;
+    for my $edge ($B->edges) {
+        $merged->add_edge( @$edge );
+        next unless $B->has_edge_attributes( @$edge );
+        $merged->set_edge_attributes( @$edge, $B->get_edge_attributes( @$edge ) );
+    }
+    $merged->add_edge( $A_vertex, $B_vertex ) if $A_vertex && $B_vertex;
+
+    return $merged;
 }
 
 # Given a tree and a path, finds the number of branches branching off the given path.
