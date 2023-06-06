@@ -248,10 +248,9 @@ sub get_mainchain_name
         # Locants are not important in single-substituted homogeneous cycles
         if( @order > 1 ||
             @{$attachments{$attachment_name}} > 1 ||
-            !blessed $chain ||
             !$chain->isa( ChemOnomatopist::Chain::Circular:: ) ||
             !$chain->is_homogeneous ) {
-            if( blessed $chain && $chain->isa( ChemOnomatopist::Chain:: ) ) {
+            if( $chain->isa( ChemOnomatopist::Chain:: ) ) {
                 $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
             } else {
                 $name->append_locants( map { $_ + 1 } @{$attachments{$attachment_name}} );
@@ -292,29 +291,24 @@ sub get_mainchain_name
 
         # FIXME: The logic became too twisted here, need to untangle
         if( @chain > 1 ) {
-            if( !blessed $chain ) {
-                $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
-            } else {
-                if( $chain->isa( ChemOnomatopist::Group:: ) ) {
-                    if( $chain->needs_heteroatom_locants &&
-                        ( scalar keys %heteroatoms > 1 ||
-                          @{$heteroatoms{$element}} != $chain->max_valence - 1 ) ) {
-                        if( $chain->isa( ChemOnomatopist::Chain:: ) ) {
-                            $name->append_locants( $chain->locants( @{$heteroatoms{$element}} ) );
-                        } else {
-                            $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
-                        }
+            if( $chain->isa( ChemOnomatopist::Group:: ) ) {
+                if( $chain->needs_heteroatom_locants &&
+                    ( scalar keys %heteroatoms > 1 ||
+                      @{$heteroatoms{$element}} != $chain->max_valence - 1 ) ) {
+                    if( $chain->isa( ChemOnomatopist::Chain:: ) ) {
+                        $name->append_locants( $chain->locants( @{$heteroatoms{$element}} ) );
+                    } else {
+                        $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
                     }
-                } elsif( $chain->isa( ChemOnomatopist::Chain:: ) ) {
-                    $name->append_locants( $chain->locants( @{$heteroatoms{$element}} ) );
-                } else {
-                    $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
                 }
+            } elsif( $chain->isa( ChemOnomatopist::Chain:: ) ) {
+                $name->append_locants( $chain->locants( @{$heteroatoms{$element}} ) );
+            } else {
+                $name->append_locants( map { $_ + 1 } @{$heteroatoms{$element}} );
             }
         }
 
-        if( !blessed $chain || !$chain->isa( ChemOnomatopist::Group:: ) ||
-            $chain->needs_heteroatom_names ) {
+        if( !$chain->isa( ChemOnomatopist::Group:: ) || $chain->needs_heteroatom_names ) {
             if( @{$heteroatoms{$element}} > 1 ) {
                 my $number = IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} );
                 $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
@@ -325,7 +319,7 @@ sub get_mainchain_name
         }
     }
 
-    if( blessed $chain && $chain->isa( ChemOnomatopist::Group:: ) ) {
+    if( $chain->isa( ChemOnomatopist::Group:: ) ) {
         $name .= $chain->suffix;
     } else {
         $name .= unbranched_chain_name( $chain );
