@@ -32,7 +32,7 @@ our @names = (
     [ 'C=NC=NC=', 'N=CNC=C', 'purine' ], # TODO: Special rules apply
 
     [ 'NN=CCC',  'CC=CC=CC=', '1H-indazole' ],
-    [ 'C=CNC=C', 'C=CC=CC=C', '1H-indole' ],
+    [ 'C=CNC=C', 'C=CC=CC=C', '1H-indole' ], # FIXME: This results in incorrect numbering, the right values should be 'NC=CCC' and 'CC=CC=CC='
     [ 'CNC=CC=', 'C=CC=CCC',  'isoindole' ],
     [ 'CC=CNC=', 'C=CC=CCN',  'indolizine', ],
     [ 'CC=CNC',  'C=CC=CN',   '1H-pyrrolizine' ], # TODO: There are isomers
