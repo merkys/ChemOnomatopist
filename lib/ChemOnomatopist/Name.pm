@@ -11,6 +11,8 @@ use overload '""'  => sub { return $_[0]->{name} };
 use overload 'eq'  => sub { return  "$_[0]" eq  "$_[1]" };
 use overload 'cmp' => sub { return ("$_[0]" cmp "$_[1]") * ($_[2] ? -1 : 1) };
 
+use Scalar::Util qw( blessed );
+
 sub new
 {
     my( $class, $name ) = @_;
@@ -23,6 +25,12 @@ sub append($)
 {
     my( $self, $string ) = @_;
     $self->{name} =~ s/a$// if $string =~ /^a/;
+
+    # If names are combined and the second one starts with a number, a separator is added.
+    if( $self->{name} ne '' && blessed $string && $string->isa( ChemOnomatopist::Name:: ) && $string =~ /^\d/ ) {
+        $self->{name} .= '-';
+    }
+
     $self->{name} .= $string;
     delete $self->{ends_with_multiplier};
     delete $self->{ends_with_stem};

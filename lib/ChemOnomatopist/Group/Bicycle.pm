@@ -11,6 +11,7 @@ use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 use ChemOnomatopist;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Group::Monocycle::Fused;
+use ChemOnomatopist::Name;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Graph::Traversal::DFS;
 use List::Util qw( all any );
@@ -179,7 +180,7 @@ sub suffix()
     my @SMILES = map { $_->backbone_SMILES } $self->cycles;
     my( $retained ) = grep { ($_->[0] eq $SMILES[0] && $_->[1] eq $SMILES[1]) ||
                              ($_->[0] eq $SMILES[1] && $_->[1] eq $SMILES[0]) } @names;
-    return $retained->[2] if $retained;
+    return ChemOnomatopist::Name->new( $retained->[2] ) if $retained;
 
     if( any { $_->suffix eq 'benzene' } $self->cycles ) {
         my( $other ) = grep { $_->suffix ne 'benzene' } $self->cycles;
