@@ -70,8 +70,12 @@ sub new
                      @components;
     $self->{cycles} = \@cycles;
 
+    my $nbenzene = scalar grep { $_->suffix eq 'benzene' }
+                          map  { ChemOnomatopist::Group::Monocycle->new( $graph, $_->vertices ) }
+                               @cycles;
+
     # The ordering should not be done if one of the cycles is benzene
-    if( all { $_->suffix ne 'benzene' } @cycles ) {
+    if( $nbenzene == 0 ) {
         my @flipped = map { $_->flipped } @cycles;
         # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
         my( $chain ) = sort { ChemOnomatopist::Chain::Circular::_cmp( $a, $b ) } ( @cycles, @flipped );
@@ -91,19 +95,26 @@ sub new
         pop  @{$self->{vertices}};
         push @{$self->{vertices}}, $cycles[1]->vertices;
         pop  @{$self->{vertices}};
-    } else {
+    } elsif( $nbenzene == 1 ) {
         # Numbering has to start from cycle other than benzene
         if( ($cycles[0]->suffix eq 'benzene') > ($cycles[1]->suffix eq 'benzene') ) {
             @cycles = reverse @cycles;
             $self->{cycles} = \@cycles;
-
-            # Reworking the vertice order in the bicyclic chain itself
-            $self->{vertices} = [];
-            push @{$self->{vertices}}, $cycles[0]->vertices;
-            pop  @{$self->{vertices}};
-            push @{$self->{vertices}}, $cycles[1]->vertices;
-            pop  @{$self->{vertices}};
         }
+
+        my( $chain ) = sort { ChemOnomatopist::Chain::Circular::_cmp( $a, $b ) } ( $cycles[0], $cycles[0]->flipped );
+
+        if( $chain != $cycles[0] ) {
+            @cycles = map { $_->flipped } @cycles;
+            $self->{cycles} = \@cycles;
+        }
+
+        # Reworking the vertice order in the bicyclic chain itself
+        $self->{vertices} = [];
+        push @{$self->{vertices}}, $cycles[0]->vertices;
+        pop  @{$self->{vertices}};
+        push @{$self->{vertices}}, $cycles[1]->vertices;
+        pop  @{$self->{vertices}};
     }
 
     return $self;

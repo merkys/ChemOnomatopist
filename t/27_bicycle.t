@@ -13,7 +13,7 @@ my @cases = (
     # From BBv2 P-25.2.1
     { smiles => 'N1=CN=CC2=NC=CN=C12', iupac => 'pteridine' },
     { smiles => 'N1=CN=C2N=CNC2=C1', iupac => 'purine', AUTHOR => 1 },
-    { smiles => 'N1N=CC2=CC=CC=C12', iupac => '1H-indazole', AUTHOR => 1 },
+    { smiles => 'N1N=CC2=CC=CC=C12', iupac => '1H-indazole' },
     { smiles => 'C12=C(C=CN2)C=CC=C1', iupac => '1H-indole', AUTHOR => 1 },
 
     { smiles => 'C1=CC=C2C(C(C=CC2=C1)O)O', iupac => '1,2-dihydronaphthalene-1,2-diol', AUTHOR => 1 }, # PubChem 362
@@ -23,7 +23,7 @@ my @cases = (
 
     # From BBv2 P-25.2.2.4
     { smiles => 'C1=COC=CC2=C1C=CC=C2', iupac => '3-benzoxepine' },
-    { smiles => 'O1C=CC2=C1C=CC=C2', iupac => '1-benzofuran', AUTHOR => 1 },
+    { smiles => 'O1C=CC2=C1C=CC=C2', iupac => '1-benzofuran' },
     { smiles => 'C=1OC=C2C1C=CC=C2', iupac => '2-benzofuran', AUTHOR => 1 },
     { smiles => 'C1=CC=COC=CC=CC=COC=CC=CC2=C1C=CC=C2', iupac => '5,12-benzodioxacyclooctadecine', AUTHOR => 1 },
 
