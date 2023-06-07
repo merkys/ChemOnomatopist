@@ -70,8 +70,7 @@ sub new
                      @components;
     $self->{cycles} = \@cycles;
 
-    my $nbenzene = scalar grep { $_->suffix eq 'benzene' }
-                          map  { ChemOnomatopist::Group::Monocycle->new( $graph, $_->vertices ) }
+    my $nbenzene = scalar grep { $_->is_aromatic && $_->is_homogeneous && $_->length == 6 }
                                @cycles;
 
     # The ordering should not be done if one of the cycles is benzene
