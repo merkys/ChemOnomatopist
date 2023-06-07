@@ -8,6 +8,10 @@ use Test::More;
 
 my @cases = (
     { smiles => 'CCOO', iupac => 'ethaneperoxol' },
+
+    # From BBv2 P-63.7
+    { smiles => '[SeH]OCCOO', iupac => '2-(selanyloxy)ethane-1-peroxol', AUTHOR => 1 },
+    { smiles => 'NCC(C)(OO)C', iupac => '1-amino-2-methylpropane-2-peroxol' },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
