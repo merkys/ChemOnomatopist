@@ -94,6 +94,7 @@ sub new
         # Numbering has to start from cycle other than benzene
         if( ($cycles[0]->suffix eq 'benzene') > ($cycles[1]->suffix eq 'benzene') ) {
             @cycles = reverse @cycles;
+            $self->{cycles} = \@cycles;
 
             # Reworking the vertice order in the bicyclic chain itself
             $self->{vertices} = [];
