@@ -16,6 +16,7 @@ use parent Exporter::;
 our @EXPORT_OK = qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
+    cyclic_components
     graph_center
     graph_cycle_core
     graph_has_cycle
@@ -55,6 +56,23 @@ sub BFS_is_chain_branched
     $bfs->bfs;
 
     return $branched;
+}
+
+sub cyclic_components
+{
+    my( $graph ) = @_;
+
+    $graph = copy $graph;
+
+    # Due to the issue in Graph, bridges() returns strings instead of real objects.
+    # Graph issue: https://github.com/graphviz-perl/Graph/issues/29
+    my %vertices_by_name = map { $_ => $_ } $graph->vertices;
+    $graph->delete_edges( map { map { $vertices_by_name{$_} } @$_ } $graph->bridges );
+    $graph->delete_vertices( grep { !$graph->degree( $_ ) } $graph->vertices );
+
+    return () unless $graph->vertices; # No vertices = no cycles
+
+    return map { $graph->subgraph( $_ ) } $graph->connected_components;
 }
 
 # Find how many side attachments are at every position of the given path.

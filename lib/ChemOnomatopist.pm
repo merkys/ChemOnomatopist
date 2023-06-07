@@ -31,6 +31,7 @@ use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
+    cyclic_components
     graph_center
     graph_cycle_core
     graph_has_cycle
@@ -468,10 +469,7 @@ sub find_groups
     }
 
     # Detecting monocyclic compounds
-    if( graph_has_cycle( $graph ) ) {
-        # If it is not a tree, then the graph has cycles, and we have to do our best to recognise them.
-
-        my $core = graph_cycle_core( $graph );
+    for my $core (cyclic_components( $graph )) {
         my %vertices_by_degree;
         for my $vertex ($core->vertices) {
             my $degree = $core->degree( $vertex );
