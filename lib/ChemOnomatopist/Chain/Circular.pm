@@ -51,6 +51,12 @@ sub is_aromatic()
     return '';
 }
 
+sub is_benzene()
+{
+    my( $self ) = @_;
+    return $self->is_aromatic && $self->is_homogeneous && $self->length == 6;
+}
+
 sub is_homogeneous()
 {
     my( $self ) = @_;

@@ -32,7 +32,7 @@ our @names = (
     [ 'C=NC=NC=', 'N=CNC=C', 'purine' ], # TODO: Special rules apply
 
     [ 'NN=CCC',  'CC=CC=CC=', '1H-indazole' ],
-    [ 'C=CNC=C', 'C=CC=CC=C', '1H-indole' ], # FIXME: This results in incorrect numbering, the right values should be 'NC=CCC' and 'CC=CC=CC='
+    [ 'NC=CC=C', 'C=CC=CC=C', '1H-indole' ],
     [ 'CNC=CC=', 'C=CC=CCC',  'isoindole' ],
     [ 'CC=CNC=', 'C=CC=CCN',  'indolizine', ],
     [ 'CC=CNC',  'C=CC=CN',   '1H-pyrrolizine' ], # TODO: There are isomers
@@ -96,7 +96,7 @@ sub new
         pop  @{$self->{vertices}};
     } elsif( $nbenzene == 1 ) {
         # Numbering has to start from cycle other than benzene
-        if( ($cycles[0]->suffix eq 'benzene') > ($cycles[1]->suffix eq 'benzene') ) {
+        if( $cycles[0]->is_benzene ) {
             @cycles = reverse @cycles;
             $self->{cycles} = \@cycles;
         }

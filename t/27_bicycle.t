@@ -14,7 +14,7 @@ my @cases = (
     { smiles => 'N1=CN=CC2=NC=CN=C12', iupac => 'pteridine' },
     { smiles => 'N1=CN=C2N=CNC2=C1', iupac => 'purine', AUTHOR => 1 },
     { smiles => 'N1N=CC2=CC=CC=C12', iupac => '1H-indazole' },
-    { smiles => 'C12=C(C=CN2)C=CC=C1', iupac => '1H-indole', AUTHOR => 1 },
+    { smiles => 'C12=C(C=CN2)C=CC=C1', iupac => '1H-indole' },
 
     { smiles => 'C1=CC=C2C(C(C=CC2=C1)O)O', iupac => '1,2-dihydronaphthalene-1,2-diol', AUTHOR => 1 }, # PubChem 362
     { smiles => 'C12(C(C(C(C(C1(F)F)(F)F)(F)F)(F)F)(C(C(C(C2(F)F)(F)F)(F)F)(F)F)F)F', iupac => '1,1,2,2,3,3,4,4,4a,5,5,6,6,7,7,8,8,8a-octadecafluoronaphthalene' }, # PubChem 9386
@@ -27,7 +27,7 @@ my @cases = (
     { smiles => 'C=1OC=C2C1C=CC=C2', iupac => '2-benzofuran', AUTHOR => 1 },
     { smiles => 'C1=CC=COC=CC=CC=COC=CC=CC2=C1C=CC=C2', iupac => '5,12-benzodioxacyclooctadecine', AUTHOR => 1 },
 
-    { smiles => 'C1=CC2=C(C=C1O)C(=CN2)CCN', iupac => '3-(2-aminoethyl)-1H-indol-5-ol', AUTHOR => 1 }, # serotonin
+    { smiles => 'C1=CC2=C(C=C1O)C(=CN2)CCN', iupac => '3-(2-aminoethyl)-1H-indol-5-ol' }, # serotonin
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
