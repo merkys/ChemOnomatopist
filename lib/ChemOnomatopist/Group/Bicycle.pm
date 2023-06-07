@@ -70,8 +70,7 @@ sub new
                      @components;
     $self->{cycles} = \@cycles;
 
-    my $nbenzene = scalar grep { $_->is_aromatic && $_->is_homogeneous && $_->length == 6 }
-                               @cycles;
+    my $nbenzene = scalar grep { $_->is_benzene } @cycles;
 
     # The ordering should not be done if one of the cycles is benzene
     if( $nbenzene == 0 ) {
@@ -192,8 +191,8 @@ sub suffix()
                              ($_->[0] eq $SMILES[1] && $_->[1] eq $SMILES[0]) } @names;
     return ChemOnomatopist::Name->new( $retained->[2] ) if $retained;
 
-    if( any { $_->suffix eq 'benzene' } $self->cycles ) {
-        my( $other ) = grep { $_->suffix ne 'benzene' } $self->cycles;
+    if( any { $_->is_benzene } $self->cycles ) {
+        my( $other ) = grep { !$_->is_benzene } $self->cycles;
         $other = ChemOnomatopist::Group::Monocycle->new( $other->graph, $other->vertices );
         my $suffix = $other->suffix;
         $suffix =~ s/^o//;
