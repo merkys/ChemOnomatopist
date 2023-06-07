@@ -31,7 +31,7 @@ our @names = (
     [ 'C=NC=NC=', 'N=CNC=C', 'purine' ], # TODO: Special rules apply
 
     [ 'NN=CCC',  'CC=CC=CC=', '1H-indazole' ],
-    [ 'NC=CCC',  'CC=CC=CC=', 'indole' ],
+    [ 'C=CNC=C', 'C=CC=CC=C', '1H-indole' ],
     [ 'CNC=CC=', 'C=CC=CCC',  'isoindole' ],
     [ 'CC=CNC=', 'C=CC=CCN',  'indolizine', ],
     [ 'CC=CNC',  'C=CC=CN',   '1H-pyrrolizine' ], # TODO: There are isomers
@@ -175,6 +175,11 @@ sub suffix()
         }
     }
 
+    my @SMILES = map { $_->backbone_SMILES } $self->cycles;
+    my( $retained ) = grep { ($_->[0] eq $SMILES[0] && $_->[1] eq $SMILES[1]) ||
+                             ($_->[0] eq $SMILES[1] && $_->[1] eq $SMILES[0]) } @names;
+    return $retained->[2] if $retained;
+
     if( any { $_->suffix eq 'benzene' } $self->cycles ) {
         my( $other ) = grep { $_->suffix ne 'benzene' } $self->cycles;
         $other = ChemOnomatopist::Group::Monocycle->new( $other->graph, $other->vertices );
@@ -182,11 +187,6 @@ sub suffix()
         $suffix =~ s/^o//;
         return 'benzo' . $suffix;
     }
-
-    my @SMILES = map { $_->backbone_SMILES } $self->cycles;
-    my( $retained ) = grep { ($_->[0] eq $SMILES[0] && $_->[1] eq $SMILES[1]) ||
-                             ($_->[0] eq $SMILES[1] && $_->[1] eq $SMILES[0]) } @names;
-    return $retained->[2] if $retained;
 
     die "cannot name complex bicyclic compounds\n";
 }
