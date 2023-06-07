@@ -241,6 +241,7 @@ sub _disconnected_chain_graph()
     return $graph;
 }
 
+# FIXME: Pay attention to bond orders
 sub _cmp
 {
     my( $A, $B ) = @_;

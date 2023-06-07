@@ -115,6 +115,9 @@ sub new
         pop  @{$self->{vertices}};
     }
 
+    if( join( ',', map { $_->backbone_SMILES } @cycles ) eq 'N=CNCC,CN=CN=CC=' ) { # TODO: purine exception
+    }
+
     return $self;
 }
 
