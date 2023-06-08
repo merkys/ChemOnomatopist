@@ -28,7 +28,11 @@ my @cases = (
     { smiles => 'C1=CC=COC=CC=CC=COC=CC=CC2=C1C=CC=C2', iupac => '5,12-benzodioxacyclooctadecine', AUTHOR => 1 },
 
     { smiles => 'C1=CC2=C(C=C1O)C(=CN2)CCN', iupac => '3-(2-aminoethyl)-1H-indol-5-ol' }, # serotonin
-    { smiles => 'O=C1c2ncnc2nc(N)N1', iupac => '2-amino-1,9-dihydro-6H-purin-6-one', AUTHOR => 1 }, # guanine; FIXME: fails due to aromaticity
+
+    # Guanine
+    { smiles => 'O=C1c2ncnc2nc(N)N1', iupac => '2-amino-1,9-dihydro-6H-purin-6-one', AUTHOR => 1 }, # FIXME: fails due to aromaticity
+    { smiles => 'NC=1NC(C=2N=CNC2N1)=O', iupac => '2-amino-1,9-dihydro-6H-purin-6-one', AUTHOR => 1 },
+    { smiles => 'N1C(N)=NC=2N=CNC2C1=O', iupac => '2-amino-1,9-dihydro-6H-purin-6-one', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
