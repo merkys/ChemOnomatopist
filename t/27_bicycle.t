@@ -33,6 +33,8 @@ my @cases = (
     { smiles => 'O=C1c2ncnc2nc(N)N1', iupac => '2-amino-1,9-dihydro-6H-purin-6-one', AUTHOR => 1 }, # FIXME: fails due to aromaticity
     { smiles => 'NC=1NC(C=2N=CNC2N1)=O', iupac => '2-amino-1,9-dihydro-6H-purin-6-one', AUTHOR => 1 },
     { smiles => 'N1C(N)=NC=2N=CNC2C1=O', iupac => '2-amino-1,9-dihydro-6H-purin-6-one', AUTHOR => 1 },
+
+    { smiles => 'C1(=CC=C(C=2C(=CC=C(C12)C(=O)O)C(=O)O)C(=O)O)C(=O)O', iupac => 'naphthalene-1,4,5,8-tetracarboxylic acid', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
