@@ -29,7 +29,7 @@ our @names = (
     [ 'C=NC=CCC', 'CC=CC=CC=', 'isoquinoline' ],
     [ 'CC=CCNC',  'C=CC=CCN',  'quinolizine' ],
 
-    [ 'C=NC=NC=', 'N=CNC=C', 'purine' ], # TODO: Special rules apply
+    [ 'NC=NC=CC=', 'NC=NCC', 'purine' ], # Special rules apply
 
     [ 'NN=CCC',  'CC=CC=CC=', '1H-indazole' ],
     [ 'NC=CC=C', 'C=CC=CC=C', '1H-indole' ],
@@ -117,6 +117,7 @@ sub new
 
     if( join( ',', map { $_->backbone_SMILES } @cycles ) eq 'N=CNCC,CN=CN=CC=' ) { # TODO: purine exception
         @cycles = reverse map { $_->flipped } @cycles; # TODO: Adjust the numbering
+        $self->{cycles} = \@cycles;
     }
 
     return $self;
