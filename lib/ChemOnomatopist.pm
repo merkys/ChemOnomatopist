@@ -564,7 +564,7 @@ sub select_mainchain
         if( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
             return shift @groups;
         } elsif( @carbons == 1 ) {
-            if( blessed $carbons[0] && @groups == 1 &&
+            if( blessed $carbons[0] &&
                 ( $carbons[0]->isa( ChemOnomatopist::Group::Bicycle:: ) ||
                   $carbons[0]->isa( ChemOnomatopist::Group::Monocycle:: ) ||
                   $carbons[0]->isa( ChemOnomatopist::Group::Monospiro:: ) ) ) {
