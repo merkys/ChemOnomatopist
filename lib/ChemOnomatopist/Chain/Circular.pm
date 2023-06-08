@@ -260,7 +260,10 @@ sub _cmp
                        sort { $elements{$B_heteroatoms[$a]}->{seniority} <=>
                               $elements{$B_heteroatoms[$b]}->{seniority} } 0..$#B_positions;
 
-    return ChemOnomatopist::cmp_arrays( \@A_positions, \@B_positions );
+    return ChemOnomatopist::cmp_arrays( \@A_positions, \@B_positions )
+        if ChemOnomatopist::cmp_arrays( \@A_positions, \@B_positions );
+
+    return ChemOnomatopist::cmp_arrays( [ $A->multiple_bond_positions ], [ $B->multiple_bond_positions ] );
 }
 
 1;

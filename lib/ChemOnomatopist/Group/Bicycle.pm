@@ -116,6 +116,7 @@ sub new
     }
 
     if( join( ',', map { $_->backbone_SMILES } @cycles ) eq 'N=CNCC,CN=CN=CC=' ) { # TODO: purine exception
+        @cycles = reverse map { $_->flipped } @cycles; # TODO: Adjust the numbering
     }
 
     return $self;
