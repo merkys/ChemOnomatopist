@@ -47,22 +47,29 @@ sub new
 {
     my( $class, $graph, @vertices ) = @_;
 
-    # FIXME: For now we generate all possible traversals of the same cycle.
-    #        This is not optimal, some caching could be introduced.
+    return bless { graph => $graph, vertices => \@vertices }, $class;
+}
+
+# FIXME: For now we generate all possible traversals of the same cycle.
+#        This is not optimal, some caching could be introduced.
+sub candidates()
+{
+    my( $self ) = @_;
+
+    my $graph = $self->graph;
+    my @vertices = $self->vertices;
+
     my @chains;
     for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @vertices );
+        push @chains, ChemOnomatopist::Group::Monocycle->new( $graph, @vertices );
         push @vertices, shift @vertices;
     }
     @vertices = reverse @vertices;
     for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @vertices );
+        push @chains, ChemOnomatopist::Group::Monocycle->new( $graph, @vertices );
         push @vertices, shift @vertices;
     }
-
-    my( $chain ) = ChemOnomatopist::filter_chains( @chains );
-
-    return bless { graph => $graph, vertices => [ $chain->vertices ] }, $class;
+    return @chains;
 }
 
 sub needs_heteroatom_locants()

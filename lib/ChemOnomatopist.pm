@@ -562,9 +562,15 @@ sub select_mainchain
         my @carbons = uniq map { $_->C } @groups; # FIXME: Carbons with the most attachments should be preferred
 
         if( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
-            return shift @groups;
+            if( $groups[0]->can( 'candidates' ) ) {
+                @chains = $groups[0]->candidates;
+            } else {
+                return shift @groups;
+            }
         } elsif( @carbons == 1 ) {
-            if( blessed $carbons[0] &&
+            if( blessed $carbons[0] && $carbons[0]->can( 'candidates' ) ) {
+                @chains = $carbons[0]->candidates;
+            } elsif( blessed $carbons[0] &&
                 ( $carbons[0]->isa( ChemOnomatopist::Group::Bicycle:: ) ||
                   $carbons[0]->isa( ChemOnomatopist::Group::Monocycle:: ) ||
                   $carbons[0]->isa( ChemOnomatopist::Group::Monospiro:: ) ) ) {
