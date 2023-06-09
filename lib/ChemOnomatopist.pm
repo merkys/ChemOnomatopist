@@ -693,6 +693,7 @@ sub select_sidechain
     my( $graph, $start ) = @_;
 
     # Do this for non-carbons for now in order to represent attachments
+    # FIXME: Fails whenever $start is a heteroatom that is allowed to be part of chain
     return ChemOnomatopist::Chain->new( $graph, $start ) unless is_element( $start, 'C' );
 
     # Cleaning the graph from the heteroatom leaves
