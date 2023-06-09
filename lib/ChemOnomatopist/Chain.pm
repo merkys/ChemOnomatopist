@@ -32,6 +32,12 @@ sub graph()
     return $self->{graph};
 }
 
+sub parent()
+{
+    my( $self ) = @_;
+    return exists $self->{parent} ? $self->{parent} : undef;
+}
+
 sub substituents()
 {
     my( $self ) = @_;
