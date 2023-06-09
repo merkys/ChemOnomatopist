@@ -86,13 +86,7 @@ sub new
             @cycles = reverse @flipped;
         }
         $self->{cycles} = \@cycles;
-
-        # Reworking the vertice order in the bicyclic chain itself
-        $self->{vertices} = [];
-        push @{$self->{vertices}}, $cycles[0]->vertices;
-        pop  @{$self->{vertices}};
-        push @{$self->{vertices}}, $cycles[1]->vertices;
-        pop  @{$self->{vertices}};
+        $self->_adjust_vertices_to_cycles;
     } elsif( $nbenzene == 1 ) {
         # Numbering has to start from cycle other than benzene
         if( $cycles[0]->is_benzene ) {
@@ -100,19 +94,14 @@ sub new
             $self->{cycles} = \@cycles;
         }
 
-        my( $chain ) = sort { ChemOnomatopist::Chain::Circular::_cmp( $a, $b ) } ( $cycles[0], $cycles[0]->flipped );
+        my( $chain ) = sort { ChemOnomatopist::Chain::Circular::_cmp( $a, $b ) }
+                            ( $cycles[0], $cycles[0]->flipped );
 
         if( $chain != $cycles[0] ) {
             @cycles = map { $_->flipped } @cycles;
             $self->{cycles} = \@cycles;
         }
-
-        # Reworking the vertice order in the bicyclic chain itself
-        $self->{vertices} = [];
-        push @{$self->{vertices}}, $cycles[0]->vertices;
-        pop  @{$self->{vertices}};
-        push @{$self->{vertices}}, $cycles[1]->vertices;
-        pop  @{$self->{vertices}};
+        $self->_adjust_vertices_to_cycles;
     }
 
     if( join( ',', map { $_->backbone_SMILES } @cycles ) eq 'N=CNCC,CN=CN=CC=' ) {
@@ -126,7 +115,34 @@ sub new
 sub candidates()
 {
     my( $self ) = @_;
+
+    if( $self->suffix eq 'naphthalene' ) {
+        # Generates all variants
+        my @chains = ( $self, $self->copy, $self->copy, $self->copy );
+
+        $chains[1]->{cycles} = [ map { $_->flipped } $chains[1]->cycles ];
+        $chains[3]->{cycles} = [ map { $_->flipped } $chains[3]->cycles ];
+
+        $chains[2]->{cycles} = [ reverse $chains[2]->cycles ];
+        $chains[3]->{cycles} = [ reverse $chains[3]->cycles ];
+
+        for (@chains) {
+            $_->_adjust_vertices_to_cycles;
+        }
+
+        return @chains;
+    }
+
     return $self;
+}
+
+sub copy()
+{
+    my( $self ) = @_;
+    return bless { graph => $self->graph,
+                   cycles => [ $self->cycles ],
+                   vertices => [ $self->vertices ] },
+                 ChemOnomatopist::Group::Bicycle::;
 }
 
 sub cycles()
@@ -211,6 +227,21 @@ sub suffix()
     }
 
     die "cannot name complex bicyclic compounds\n";
+}
+
+sub _adjust_vertices_to_cycles()
+{
+    my( $self ) = @_;
+
+    my @cycles = $self->cycles;
+
+    $self->{vertices} = [];
+    push @{$self->{vertices}}, $cycles[0]->vertices;
+    pop  @{$self->{vertices}};
+    push @{$self->{vertices}}, $cycles[1]->vertices;
+    pop  @{$self->{vertices}};
+
+    return $self;
 }
 
 1;
