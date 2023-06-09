@@ -87,7 +87,8 @@ sub get_name
         my( $vertex ) = grep { $_->{number} == $curr_vertex } $graph->vertices;
         push @chain, $vertex;
     }
-    return get_mainchain_name( $graph->copy, ChemOnomatopist::Chain->new( $graph, @chain ) );
+
+    return get_mainchain_name( $graph->copy, ChemOnomatopist::Chain->new( $graph, undef, @chain ) );
 }
 
 # BFS is performed for the given graph after all vertices that are not carbons

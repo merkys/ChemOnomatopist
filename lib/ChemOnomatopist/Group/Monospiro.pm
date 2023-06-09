@@ -34,23 +34,31 @@ sub new
     my @chains;
     push @chains,
          ChemOnomatopist::Chain->new( $graph,
+                                      undef,
                                       @$A, $spiro_atom, @$B ),
          ChemOnomatopist::Chain->new( $graph,
+                                      undef,
                                       @$A, $spiro_atom, reverse(@$B) ),
          ChemOnomatopist::Chain->new( $graph,
+                                      undef,
                                       reverse(@$A), $spiro_atom, @$B ),
          ChemOnomatopist::Chain->new( $graph,
+                                      undef,
                                       reverse(@$A), $spiro_atom, reverse(@$B) );
 
     if( @$A == @$B ) {
         push @chains,
              ChemOnomatopist::Chain->new( $graph,
+                                          undef,
                                           @$B, $spiro_atom, @$A ),
              ChemOnomatopist::Chain->new( $graph,
+                                          undef,
                                           @$B, $spiro_atom, reverse(@$A) ),
              ChemOnomatopist::Chain->new( $graph,
+                                          undef,
                                           reverse(@$B), $spiro_atom, @$A ),
              ChemOnomatopist::Chain->new( $graph,
+                                          undef,
                                           reverse(@$B), $spiro_atom, reverse(@$A) );
     }
 

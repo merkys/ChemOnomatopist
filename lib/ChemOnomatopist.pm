@@ -578,8 +578,8 @@ sub select_mainchain
                 # containing this particular carbon:
                 my $chain = select_sidechain( $graph, @carbons );
                 my @vertices = blessed $chain && $chain->can( 'vertices' ) ? $chain->vertices : $chain;
-                push @chains, ChemOnomatopist::Chain->new( $graph, @vertices ),
-                              ChemOnomatopist::Chain->new( $graph, reverse @vertices );
+                push @chains, ChemOnomatopist::Chain->new( $graph, undef, @vertices ),
+                              ChemOnomatopist::Chain->new( $graph, undef, reverse @vertices );
             }
         } else {
             my @paths;
@@ -618,10 +618,12 @@ sub select_mainchain
                     for my $j (0..$#{$longest_paths{$B}}) {
                         push @chains,
                              ChemOnomatopist::Chain->new( $graph,
+                                                          undef,
                                                           reverse( @{$longest_paths{$A}->[$i]} ),
                                                           @$path,
                                                           @{$longest_paths{$B}->[$j]} ),
                              ChemOnomatopist::Chain->new( $graph,
+                                                          undef,
                                                           reverse( @{$longest_paths{$B}->[$j]} ),
                                                           reverse( @$path ),
                                                           @{$longest_paths{$A}->[$j]} );
@@ -684,7 +686,7 @@ sub select_mainchain
 
         shift @vertices;
         pop @vertices;
-        $chain = ChemOnomatopist::Chain->new( $graph, @vertices );
+        $chain = ChemOnomatopist::Chain->new( $graph, undef, @vertices );
     }
 
     return $chain;
@@ -697,7 +699,7 @@ sub select_sidechain
 
     # Do this for non-carbons for now in order to represent attachments
     # FIXME: Fails whenever $start is a heteroatom that is allowed to be part of chain
-    return ChemOnomatopist::Chain->new( $graph, $start ) unless is_element( $start, 'C' );
+    return ChemOnomatopist::Chain->new( $graph, undef, $start ) unless is_element( $start, 'C' );
 
     # Cleaning the graph from the heteroatom leaves
     my $C_graph = copy $graph;
@@ -728,9 +730,9 @@ sub select_sidechain
             }
         }
     } elsif( $C_graph->degree( $start ) == 1 ) {
-        @chains = map { ChemOnomatopist::Chain->new( $graph, $_->vertices ) } @path_parts;
+        @chains = map { ChemOnomatopist::Chain->new( $graph, undef, $_->vertices ) } @path_parts;
     } else {
-        return ChemOnomatopist::Chain->new( $graph, $start );
+        return ChemOnomatopist::Chain->new( $graph, undef, $start );
     }
 
     # From BBv2 P-29.2

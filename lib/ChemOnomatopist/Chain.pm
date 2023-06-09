@@ -18,8 +18,9 @@ sub vertices();
 
 sub new
 {
-    my( $class, $graph, @vertices ) = @_;
+    my( $class, $graph, $parent, @vertices ) = @_;
     my $self = { vertices => \@vertices, graph => $graph, cache => {} };
+    $self->{parent} = $parent if $parent;
     return bless $self, $class;
 }
 
