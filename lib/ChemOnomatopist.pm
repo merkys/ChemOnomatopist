@@ -132,10 +132,7 @@ sub get_sidechain_name
     for my $attachment_name (sort { $a cmp $b } keys %attachments) {
         my $attachment = $attachment_objects{$attachment_name};
 
-        if( $chain->length > 1 &&
-            ( !$chain->can( 'max_valence' ) ||
-              scalar keys %attachments > 1 ||
-              @{$attachments{$attachment_name}} != $chain->max_valence - 1 ) ) {
+        if( $chain->needs_substituent_locants ) {
             $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
         }
 
