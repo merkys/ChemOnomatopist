@@ -123,6 +123,12 @@ sub new
     return $self;
 }
 
+sub candidates()
+{
+    my( $self ) = @_;
+    return $self;
+}
+
 sub cycles()
 {
     my( $self ) = @_;
