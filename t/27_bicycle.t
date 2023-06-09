@@ -26,7 +26,7 @@ my @cases = (
     # From BBv2 P-25.2.2.4
     { smiles => 'C1=COC=CC2=C1C=CC=C2', iupac => '3-benzoxepine' },
     { smiles => 'O1C=CC2=C1C=CC=C2', iupac => '1-benzofuran' },
-    { smiles => 'C=1OC=C2C1C=CC=C2', iupac => '2-benzofuran', AUTHOR => 1 },
+    { smiles => 'C=1OC=C2C1C=CC=C2', iupac => '2-benzofuran', AUTHOR => 1 }, # FIXME: Fails to be detected as aromatic
     { smiles => 'C1=CC=COC=CC=CC=COC=CC=CC2=C1C=CC=C2', iupac => '5,12-benzodioxacyclooctadecine', AUTHOR => 1 },
 
     { smiles => 'C1=CC2=C(C=C1O)C(=CN2)CCN', iupac => '3-(2-aminoethyl)-1H-indol-5-ol' }, # serotonin
