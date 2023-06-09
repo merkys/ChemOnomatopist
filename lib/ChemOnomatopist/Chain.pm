@@ -5,6 +5,7 @@ use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
+use Chemistry::OpenSMILES qw( %normal_valence );
 use Graph::Traversal::DFS;
 use List::Util qw( all sum0 uniq );
 use Scalar::Util qw( blessed );
@@ -157,8 +158,21 @@ sub max_valence()
 {
     my( $self ) = @_;
 
-    return sum0 map { $_->{hcount} }
-                grep { !blessed $_ && exists $_->{hcount} } $self->vertices;
+    my $max_valence = 0;
+    for my $vertex ($self->vertices) {
+        next if blessed $vertex;
+        next if !exists $normal_valence{ucfirst $vertex->{symbol}};
+        $max_valence += $normal_valence{ucfirst $vertex->{symbol}}->[0];
+    }
+
+    for my $bond ($self->bonds) {
+        $max_valence -= 2 if $bond eq '-';
+        $max_valence -= 4 if $bond eq '=';
+        $max_valence -= 6 if $bond eq '#';
+        $max_valence -= 8 if $bond eq '$';
+    }
+
+    return $max_valence;
 }
 
 sub most_senior_groups()
