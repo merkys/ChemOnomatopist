@@ -801,7 +801,7 @@ sub filter_chains
                    \&rule_most_heteroatoms,
                    # P-44.3.2: Maximum number of skeletal atoms
                    \&rule_longest_chains,
-                   # P-44.3.3: Maximum number of the most senior heteroatom
+                   # P-44.3.3: Maximum number of the most senior skeletal heteroatom
                    \&rule_most_senior_heteroatoms,
 
                    # P-44.4.1.1: Maximum number of multiple bonds
