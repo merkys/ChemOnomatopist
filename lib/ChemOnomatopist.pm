@@ -88,7 +88,7 @@ sub get_sidechain_name
     my $branches_at_start = grep { !blessed $_ || $_->is_carbon }
                                  $graph->neighbours( $start );
 
-    my $chain = select_sidechain( $graph, $start );
+    my $chain = select_sidechain( $graph, undef, $start );
     my @chain = $chain->vertices;
 
     # Handle non-carbon substituents
@@ -576,7 +576,7 @@ sub select_mainchain
             } else {
                 # As the starting position is known, it is enough to take the "side chain"
                 # containing this particular carbon:
-                my $chain = select_sidechain( $graph, @carbons );
+                my $chain = select_sidechain( $graph, undef, @carbons );
                 my @vertices = blessed $chain && $chain->can( 'vertices' ) ? $chain->vertices : $chain;
                 push @chains, ChemOnomatopist::Chain->new( $graph, undef, @vertices ),
                               ChemOnomatopist::Chain->new( $graph, undef, reverse @vertices );
@@ -695,7 +695,7 @@ sub select_mainchain
 # Selects the best side chain
 sub select_sidechain
 {
-    my( $graph, $start ) = @_;
+    my( $graph, $parent, $start ) = @_;
 
     # Do this for non-carbons for now in order to represent attachments
     # FIXME: Fails whenever $start is a heteroatom that is allowed to be part of chain
