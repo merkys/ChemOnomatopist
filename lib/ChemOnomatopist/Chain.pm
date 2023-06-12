@@ -257,7 +257,12 @@ sub needs_suffix_locant()
 sub needs_substituent_locants()
 {
     my( $self ) = @_;
-    return $self->length != 1;
+    return '' if $self->length == 1;
+
+    # FIXME: Make sure the substituents are of the same kind
+    return '' if scalar( $self->substituents ) == $self->max_valence;
+
+    return 1;
 }
 
 sub heteroatoms()
