@@ -13,5 +13,6 @@ sub is_carbon { return 1 }
 sub prefix { return 'formyl' }
 sub suffix { return 'al' }
 sub multisuffix { return 'carbaldehyde' }
+sub suffix_if_cycle_substituent { return 'carbaldehyde' }
 
 1;

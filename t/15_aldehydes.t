@@ -12,6 +12,8 @@ my %SMILES_cases = (
     'O=CCCCC=O' => 'pentanedial',
 
     'O=CCC(C=O)CCC=O' => 'butane-1,2,4-tricarbaldehyde', # From BBv2 P-66.6.1.1.2
+
+    'CN(N=NN(C)C)C=O' => '1,4,4-trimethyltetraaz-2-ene-1-carbaldehyde', # From BBv2 P-66.6.1.1.3
 );
 
 plan tests => scalar( keys %SMILES_cases );
