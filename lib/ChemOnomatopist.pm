@@ -88,7 +88,7 @@ sub get_sidechain_name
     my $branches_at_start = grep { !blessed $_ || $_->is_carbon }
                                  $graph->neighbours( $start );
 
-    my $chain = select_sidechain( $graph, undef, $start );
+    my $chain = select_sidechain( $graph, $parent, $start );
     my @chain = $chain->vertices;
 
     # Handle non-carbon substituents
