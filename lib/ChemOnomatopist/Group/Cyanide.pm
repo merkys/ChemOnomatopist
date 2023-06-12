@@ -9,9 +9,8 @@ use warnings;
 use parent ChemOnomatopist::Group::;
 
 sub prefix { return 'cyano' }
-sub suffix { return 'cyanide' }
+sub suffix { return 'carbonitrile' }
 
 sub is_part_of_chain() { return '' }
-sub is_prefix_only() { return 1 } # FIXME: Possibly can act as prefix
 
 1;

@@ -7,6 +7,7 @@ use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Bicycle;
 use ChemOnomatopist::Group::Carboxyl;
+use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
@@ -38,6 +39,7 @@ our @order = (
     # Hydrazides
     # Imides
     # Nitriles
+    ChemOnomatopist::Group::Cyanide::,
     ChemOnomatopist::Group::Aldehyde::,
     ChemOnomatopist::Group::Ketone::,
     ChemOnomatopist::Group::Hydroxy::,

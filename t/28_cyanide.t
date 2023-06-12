@@ -7,6 +7,17 @@ use ChemOnomatopist;
 use Test::More;
 
 my @cases = (
+    # From BBv2 P-66.5.1.1.1
+    { smiles => 'C(CCCCC)#N', iupac => 'hexanenitrile', AUTHOR => 1 },
+    { smiles => 'C(CCCC#N)#N', iupac => 'pentanedinitrile', AUTHOR => 1 },
+
+    { smiles => 'C(CCC)(C#N)(C#N)C#N', iupac => 'butane-1,1,1-tricarbonitrile' }, # P-66.5.1.1.2
+
+    # From BBv2 P-66.5.1.1.3
+    { smiles => '[SiH3]C#N', iupac => 'silanecarbonitrile', AUTHOR => 1 },
+    { smiles => 'C1(CCCCC1)C#N', iupac => 'cyclohexanecarbonitrile' },
+    { smiles => 'N1(CCCCC1)C#N', iupac => 'piperidine-1-carbonitrile', AUTHOR => 1 },
+
     # From BBv2 P-66.5.1.1.4
     { smiles => 'C(#N)C1=CC=C(O1)C(=O)O', iupac => '5-cyanofuran-2-carboxylic acid' },
     { smiles => 'C(#N)CCC(=O)O', iupac => '3-cyanopropanoic acid' },
