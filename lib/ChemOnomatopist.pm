@@ -699,7 +699,7 @@ sub select_sidechain
 
     # Do this for non-carbons for now in order to represent attachments
     # FIXME: Fails whenever $start is a heteroatom that is allowed to be part of chain
-    return ChemOnomatopist::Chain->new( $graph, undef, $start ) unless is_element( $start, 'C' );
+    return ChemOnomatopist::Chain->new( $graph, $parent, $start ) unless is_element( $start, 'C' );
 
     # Cleaning the graph from the heteroatom leaves
     my $C_graph = copy $graph;
@@ -714,7 +714,7 @@ sub select_sidechain
         $graph_copy->delete_edge( $start, $neighbour );
         for my $path ( graph_longest_paths_from_vertex( $graph_copy, $neighbour ) ) {
             push @path_parts,
-                 ChemOnomatopist::ChainHalf->new( $graph, undef, $start, @$path );
+                 ChemOnomatopist::ChainHalf->new( $graph, $parent, $start, @$path );
         }
     }
 
@@ -730,9 +730,9 @@ sub select_sidechain
             }
         }
     } elsif( $C_graph->degree( $start ) == 1 ) {
-        @chains = map { ChemOnomatopist::Chain->new( $graph, undef, $_->vertices ) } @path_parts;
+        @chains = map { ChemOnomatopist::Chain->new( $graph, $parent, $_->vertices ) } @path_parts;
     } else {
-        return ChemOnomatopist::Chain->new( $graph, undef, $start );
+        return ChemOnomatopist::Chain->new( $graph, $parent, $start );
     }
 
     # From BBv2 P-29.2
