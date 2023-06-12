@@ -75,7 +75,7 @@ sub get_name
 # From that position it finds the longest chain and returns the constructed name.
 sub get_sidechain_name
 {
-    my( $graph, $start ) = @_;
+    my( $graph, $parent, $start ) = @_;
 
     # TODO: Extend to other subclasses of ChemOnomatopist::Group::
     if( blessed $start &&
@@ -119,7 +119,7 @@ sub get_sidechain_name
             }
             $graph->delete_edge( $atom, $neighbour );
 
-            my $attachment_name = get_sidechain_name( $graph, $neighbour );
+            my $attachment_name = get_sidechain_name( $graph, $atom, $neighbour );
             $attachment_name .= 'idene' if $bond eq '=';
             $attachment_name .= 'idyne' if $bond eq '#';
             push @{$attachments{$attachment_name}}, $i;
@@ -222,7 +222,7 @@ sub get_mainchain_name
             if( $most_senior_group && blessed $neighbour && $neighbour->isa( $most_senior_group ) ) {
                 push @senior_group_attachments, $i;
             } else {
-                my $attachment_name = get_sidechain_name( $graph, $neighbour );
+                my $attachment_name = get_sidechain_name( $graph, $atom, $neighbour );
                 $attachment_name .= 'idene' if $bond eq '=';
                 $attachment_name .= 'idyne' if $bond eq '#';
                 push @{$attachments{$attachment_name}}, $i;

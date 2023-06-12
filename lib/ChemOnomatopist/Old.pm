@@ -610,7 +610,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
                     # Find the name for a sidechain
                     my $graph_copy = $graph->copy;
                     $graph_copy->delete_edge( $vertex, $neighbour );
-                    my $attachment_name = get_sidechain_name( $graph_copy, $neighbour );
+                    my $attachment_name = get_sidechain_name( $graph_copy, $vertex, $neighbour );
                     $attachment_name = "($attachment_name)" if $attachment_name =~ /^[0-9]/;
 
                     push @attachments_only, $attachment_name;

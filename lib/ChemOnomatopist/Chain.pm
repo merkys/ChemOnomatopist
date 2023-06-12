@@ -286,7 +286,8 @@ sub locant_names()
             if( blessed $neighbour ) {
                 push @current_locants, $neighbour->prefix;
             } else {
-                push @current_locants, ChemOnomatopist::get_sidechain_name( $graph, $neighbour );
+                push @current_locants,
+                     ChemOnomatopist::get_sidechain_name( $graph, $vertex, $neighbour );
             }
         }
         push @locants, \@current_locants;

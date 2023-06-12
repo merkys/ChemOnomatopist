@@ -30,8 +30,8 @@ sub name
     $graph = copy $graph;
     $graph->delete_edge( $ester, $ester->{hydroxylic} );
 
-    my $hydroxylic_part = ChemOnomatopist::get_sidechain_name( $graph, $ester->{hydroxylic} );
-    my $acid_part       = ChemOnomatopist::get_sidechain_name( $graph, $ester );
+    my $hydroxylic_part = ChemOnomatopist::get_sidechain_name( $graph, undef, $ester->{hydroxylic} );
+    my $acid_part       = ChemOnomatopist::get_sidechain_name( $graph, undef, $ester );
 
     $acid_part =~ s/yl$/anoate/;
 
