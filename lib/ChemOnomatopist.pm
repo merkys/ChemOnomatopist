@@ -77,6 +77,8 @@ sub get_sidechain_name
 {
     my( $graph, $parent, $start ) = @_;
 
+    $graph->delete_edge( $parent, $start ) if $parent;
+
     # TODO: Extend to other subclasses of ChemOnomatopist::Group::
     if( blessed $start &&
         ( $start->isa( ChemOnomatopist::Group::Monocycle:: ) ||
@@ -117,7 +119,6 @@ sub get_sidechain_name
             if(         $graph->has_edge_attribute( $atom, $neighbour, 'bond' ) ) {
                 $bond = $graph->get_edge_attribute( $atom, $neighbour, 'bond' );
             }
-            $graph->delete_edge( $atom, $neighbour );
 
             my $attachment_name = get_sidechain_name( $graph, $atom, $neighbour );
             $attachment_name .= 'idene' if $bond eq '=';
@@ -217,7 +218,6 @@ sub get_mainchain_name
             if(         $graph->has_edge_attribute( $atom, $neighbour, 'bond' ) ) {
                 $bond = $graph->get_edge_attribute( $atom, $neighbour, 'bond' );
             }
-            $graph->delete_edge( $atom, $neighbour );
 
             if( $most_senior_group && blessed $neighbour && $neighbour->isa( $most_senior_group ) ) {
                 push @senior_group_attachments, $i;
