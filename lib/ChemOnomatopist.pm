@@ -564,7 +564,7 @@ sub select_mainchain
                 # As the starting position is known, it is enough to take the "sidechain"
                 # containing this particular parent:
                 my $chain = select_sidechain( $graph, undef, @parents );
-                my @vertices = blessed $chain && $chain->can( 'vertices' ) ? $chain->vertices : $chain;
+                my @vertices = $chain->can( 'vertices' ) ? $chain->vertices : $chain;
                 push @chains, ChemOnomatopist::Chain->new( $graph, undef, @vertices ),
                               ChemOnomatopist::Chain->new( $graph, undef, reverse @vertices );
             }
