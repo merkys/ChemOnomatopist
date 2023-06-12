@@ -65,7 +65,7 @@ sub new
 sub is_carbon { return '' }
 sub is_oxygen { return '' }
 
-sub is_part_of_chain() { return 1 }
+sub is_part_of_chain() { return '' }
 sub is_prefix_only() { return '' }
 
 sub needs_heteroatom_locants { return 1 }

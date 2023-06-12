@@ -10,6 +10,8 @@ use parent ChemOnomatopist::Group::;
 
 sub is_carbon { return 1 }
 
+sub is_part_of_chain() { return 1 }
+
 sub prefix { return 'formyl' }
 sub suffix { return 'al' }
 sub multisuffix { return 'carbaldehyde' }
