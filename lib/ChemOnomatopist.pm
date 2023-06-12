@@ -77,6 +77,10 @@ sub get_sidechain_name
 {
     my( $graph, $parent, $start ) = @_;
 
+    my $parent_bond = '-' if $parent;
+    if(                $graph->has_edge_attribute( $parent, $start, 'bond' ) ) {
+        $parent_bond = $graph->get_edge_attribute( $parent, $start, 'bond' );
+    }
     $graph->delete_edge( $parent, $start ) if $parent;
 
     # TODO: Extend to other subclasses of ChemOnomatopist::Group::
@@ -115,14 +119,7 @@ sub get_sidechain_name
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
-            my $bond = '-';
-            if(         $graph->has_edge_attribute( $atom, $neighbour, 'bond' ) ) {
-                $bond = $graph->get_edge_attribute( $atom, $neighbour, 'bond' );
-            }
-
             my $attachment_name = get_sidechain_name( $graph, $atom, $neighbour );
-            $attachment_name .= 'idene' if $bond eq '=';
-            $attachment_name .= 'idyne' if $bond eq '#';
             push @{$attachments{$attachment_name}}, $i;
             $attachment_objects{$attachment_name} = $attachment_name;
         }
@@ -167,6 +164,9 @@ sub get_sidechain_name
 
     $name .= 'yl';
     $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Dirty
+
+    $name .= 'idene' if $parent_bond && $parent_bond eq '=';
+    $name .= 'idyne' if $parent_bond && $parent_bond eq '#';
 
     return $name;
 }
@@ -214,17 +214,10 @@ sub get_mainchain_name
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
-            my $bond = '-';
-            if(         $graph->has_edge_attribute( $atom, $neighbour, 'bond' ) ) {
-                $bond = $graph->get_edge_attribute( $atom, $neighbour, 'bond' );
-            }
-
             if( $most_senior_group && blessed $neighbour && $neighbour->isa( $most_senior_group ) ) {
                 push @senior_group_attachments, $i;
             } else {
                 my $attachment_name = get_sidechain_name( $graph, $atom, $neighbour );
-                $attachment_name .= 'idene' if $bond eq '=';
-                $attachment_name .= 'idyne' if $bond eq '#';
                 push @{$attachments{$attachment_name}}, $i;
                 $attachment_objects{$attachment_name} = $attachment_name;
             }
