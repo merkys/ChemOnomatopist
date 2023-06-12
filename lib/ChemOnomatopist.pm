@@ -560,15 +560,9 @@ sub select_mainchain
         } elsif( @parents == 1 ) {
             if( blessed $parents[0] && $parents[0]->can( 'candidates' ) ) {
                 @chains = $parents[0]->candidates;
-            } elsif( blessed $parents[0] &&
-                ( $parents[0]->isa( ChemOnomatopist::Group::Bicycle:: ) ||
-                  $parents[0]->isa( ChemOnomatopist::Group::Monocycle:: ) ||
-                  $parents[0]->isa( ChemOnomatopist::Group::Monospiro:: ) ) ) {
-                # For senior attachments to cycles
-                push @chains, @parents;
             } else {
-                # As the starting position is known, it is enough to take the "side chain"
-                # containing this particular carbon:
+                # As the starting position is known, it is enough to take the "sidechain"
+                # containing this particular parent:
                 my $chain = select_sidechain( $graph, undef, @parents );
                 my @vertices = blessed $chain && $chain->can( 'vertices' ) ? $chain->vertices : $chain;
                 push @chains, ChemOnomatopist::Chain->new( $graph, undef, @vertices ),
