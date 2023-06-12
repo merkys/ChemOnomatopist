@@ -179,6 +179,8 @@ sub max_valence()
         $max_valence -= 8 if $bond eq '$';
     }
 
+    $max_valence-- if $self->parent; # TODO: Account for other bond orders
+
     return $max_valence;
 }
 
