@@ -549,7 +549,7 @@ sub select_mainchain
     my @chains;
     if( @groups ) {
         # TODO: Select a chain containing most of the senior groups
-        my @carbons = uniq map { $_->C } @groups; # FIXME: Carbons with the most attachments should be preferred
+        my @parents = uniq map { $_->C } @groups; # FIXME: parents with the most attachments should be preferred
 
         if( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
             if( $groups[0]->can( 'candidates' ) ) {
@@ -557,19 +557,19 @@ sub select_mainchain
             } else {
                 return shift @groups;
             }
-        } elsif( @carbons == 1 ) {
-            if( blessed $carbons[0] && $carbons[0]->can( 'candidates' ) ) {
-                @chains = $carbons[0]->candidates;
-            } elsif( blessed $carbons[0] &&
-                ( $carbons[0]->isa( ChemOnomatopist::Group::Bicycle:: ) ||
-                  $carbons[0]->isa( ChemOnomatopist::Group::Monocycle:: ) ||
-                  $carbons[0]->isa( ChemOnomatopist::Group::Monospiro:: ) ) ) {
+        } elsif( @parents == 1 ) {
+            if( blessed $parents[0] && $parents[0]->can( 'candidates' ) ) {
+                @chains = $parents[0]->candidates;
+            } elsif( blessed $parents[0] &&
+                ( $parents[0]->isa( ChemOnomatopist::Group::Bicycle:: ) ||
+                  $parents[0]->isa( ChemOnomatopist::Group::Monocycle:: ) ||
+                  $parents[0]->isa( ChemOnomatopist::Group::Monospiro:: ) ) ) {
                 # For senior attachments to cycles
-                push @chains, @carbons;
+                push @chains, @parents;
             } else {
                 # As the starting position is known, it is enough to take the "side chain"
                 # containing this particular carbon:
-                my $chain = select_sidechain( $graph, undef, @carbons );
+                my $chain = select_sidechain( $graph, undef, @parents );
                 my @vertices = blessed $chain && $chain->can( 'vertices' ) ? $chain->vertices : $chain;
                 push @chains, ChemOnomatopist::Chain->new( $graph, undef, @vertices ),
                               ChemOnomatopist::Chain->new( $graph, undef, reverse @vertices );
@@ -577,10 +577,10 @@ sub select_mainchain
         } else {
             my @paths;
             my $max_value;
-            for my $i (0..$#carbons) {
-                for my $j (($i+1)..$#carbons) {
-                    my @path = graph_path_between_vertices( $graph, $carbons[$i], $carbons[$j] );
-                    my $value = (set( @carbons ) * set( @path ))->size;
+            for my $i (0..$#parents) {
+                for my $j (($i+1)..$#parents) {
+                    my @path = graph_path_between_vertices( $graph, $parents[$i], $parents[$j] );
+                    my $value = (set( @parents ) * set( @path ))->size;
                     if(      !defined $max_value || $max_value < $value ) {
                         @paths = ( \@path );
                         $max_value = $value;
