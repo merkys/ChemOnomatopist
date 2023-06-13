@@ -1196,7 +1196,7 @@ sub unbranched_chain_name($)
         @double = grep { $bonds[$_] eq '=' } 0..$#bonds;
         @triple = grep { $bonds[$_] eq '#' } 0..$#bonds;
         if( @double ) {
-            if( ( !$chain->isa( ChemOnomatopist::Chain::Circular:: ) && @chain > 2 )||
+            if( ( !$chain->isa( ChemOnomatopist::Chain::Circular:: ) && @chain > 2 ) ||
                 @double > 1 || @triple ) {
                 $name->append_locants( map { $_ + 1 } @double );
             }
