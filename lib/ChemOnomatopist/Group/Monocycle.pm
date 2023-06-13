@@ -46,7 +46,6 @@ our %names = (
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
-
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
