@@ -7,7 +7,7 @@ use warnings;
 # VERSION
 
 use Chemistry::OpenSMILES qw( is_single_bond );
-use List::Util qw( all sum0 );
+use List::Util qw( all sum sum0 );
 
 sub AUTOLOAD {
     our $AUTOLOAD;
@@ -45,8 +45,8 @@ sub halves()
 sub length()
 {
     my( $self ) = @_;
-    my( $A, $B ) = $self->halves;
-    return $A->length + $B->length - !$A->{other_center};
+    my( $A ) = $self->halves;
+    return sum( map { $_->length } $self->halves ) - !$A->{other_center};
 }
 
 sub branch_positions()
