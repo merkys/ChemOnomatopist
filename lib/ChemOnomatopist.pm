@@ -231,8 +231,7 @@ sub get_mainchain_name
         my $attachment_name = $order[$i];
         my $attachment = $attachment_objects{$attachment_name};
 
-        # Locants are not important in single-substituted homogeneous cycles
-        if( @order > 1 || @{$attachments{$attachment_name}} > 1 || $chain->needs_substituent_locants ) {
+        if( $chain->needs_substituent_locants ) {
             $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
         }
 

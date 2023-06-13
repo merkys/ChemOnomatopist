@@ -14,8 +14,8 @@ my @cases = (
     { smiles => 'c1ccccc1',     iupac => 'benzene' },
 
     { smiles => 'FC1=CC=CC=C1', iupac => 'fluorobenzene' },
-    { smiles => 'FC=1C(=C(C(=C(C1)F)F)F)F', iupac => 'pentafluorobenzene', AUTHOR => 1 },
-    { smiles => 'FC1=C(C(=C(C(=C1F)F)F)F)F', iupac => 'hexafluorobenzene', AUTHOR => 1 },
+    { smiles => 'FC=1C(=C(C(=C(C1)F)F)F)F', iupac => 'pentafluorobenzene' },
+    { smiles => 'FC1=C(C(=C(C(=C1F)F)F)F)F', iupac => 'hexafluorobenzene' },
 
     # From BBv2 P-22.1.3
     { smiles => 'CC1=CC=CC=C1', iupac => 'toluene' },
