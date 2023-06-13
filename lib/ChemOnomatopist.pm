@@ -457,7 +457,8 @@ sub find_groups
         $graph->delete_vertex( $H );
     }
 
-    # Detecting monocyclic compounds
+    # Detecting cyclic compounds
+    # FIXME: Maybe aromatise bonds in cycles in order to simplify their handling further on?
     for my $core (cyclic_components( $graph )) {
         my %vertices_by_degree;
         for my $vertex ($core->vertices) {
