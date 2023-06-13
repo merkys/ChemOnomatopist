@@ -550,6 +550,11 @@ sub select_mainchain
         # TODO: Select a chain containing most of the senior groups
         my @parents = uniq map { $_->C } @groups; # FIXME: parents with the most attachments should be preferred
 
+        # Prefer circular structures
+        if( @parents > 1 && (grep { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents) == 1 ) {
+            @parents =       grep { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents;
+        }
+
         if( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
             if( $groups[0]->can( 'candidates' ) ) {
                 @chains = $groups[0]->candidates;
