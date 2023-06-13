@@ -13,6 +13,10 @@ my @cases = (
     { smiles => 'C=1C=CC=CC=1', iupac => 'benzene' },
     { smiles => 'c1ccccc1',     iupac => 'benzene' },
 
+    { smiles => 'FC1=CC=CC=C1', iupac => 'fluorobenzene' },
+    { smiles => 'FC=1C(=C(C(=C(C1)F)F)F)F', iupac => 'pentafluorobenzene', AUTHOR => 1 },
+    { smiles => 'FC1=C(C(=C(C(=C1F)F)F)F)F', iupac => 'hexafluorobenzene', AUTHOR => 1 },
+
     # From BBv2 P-22.1.3
     { smiles => 'CC1=CC=CC=C1', iupac => 'toluene' },
     { smiles => 'C=1(C(=CC=CC1)C)C', iupac => '1,2-xylene', AUTHOR => 1 }, # FIXME: Fails as 1,6-xylene
