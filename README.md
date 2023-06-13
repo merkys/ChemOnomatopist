@@ -25,6 +25,7 @@ Currently *ChemOnomatopist* supports:
 * Branched acyclic hydrocarbons
 * Monocycles
 * Monospiro compounds
+* Bicyclic compounds
 
 Issues known to produce names deviating from IUPAC guidelines:
 
