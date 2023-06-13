@@ -6,7 +6,6 @@ use warnings;
 # ABSTRACT: Chain formed by two halves
 # VERSION
 
-use ChemOnomatopist::Util::Graph qw( merge_graphs );
 use Chemistry::OpenSMILES qw( is_single_bond );
 use List::Util qw( all sum0 );
 
@@ -16,7 +15,7 @@ sub AUTOLOAD {
     $call =~ s/.*:://;
     return if $call eq 'DESTROY';
     if( $call =~ /^number_/ ) {
-        return int sum0 map { $_->can( $call )->( $_ ) } @{$_[0]->{halves}};
+        return int sum0 map { $_->can( $call )->( $_ ) } $_[0]->halves;
     } else {
         warn "$call called"; # This may be a source of future problems, it is better to throw a warning here
         return;
@@ -26,23 +25,27 @@ sub AUTOLOAD {
 sub new
 {
     my( $class, @halves ) = @_;
+    # FIXME: This check might be too weak
+    die "halves must belong to the same graph\n" if $halves[0]->graph ne $halves[1]->graph;
     return bless { halves => \@halves }, $class;
 }
 
 sub graph()
 {
     my( $self ) = @_;
-    my $merged = merge_graphs( @{$self->{halves}} );
-    if( $self->{halves}[0]{other_center} ) {
-        $merged->add_edge( map { $_->{other_center} } @{$self->{halves}} );
-    }
-    return $merged;
+    return $self->{halves}[0]->graph;
+}
+
+sub halves()
+{
+    my( $self ) = @_;
+    return @{$self->{halves}};
 }
 
 sub length()
 {
     my( $self ) = @_;
-    my( $A, $B ) = @{$self->{halves}};
+    my( $A, $B ) = $self->halves;
     return $A->length + $B->length - !$A->{other_center};
 }
 
@@ -85,10 +88,9 @@ sub bonds()
     my @bonds = reverse $self->{halves}[0]->bonds;
 
     if( $self->{halves}[0]->{other_center} ) {
-        my $graph = $self->{halves}[0]->{graph};
-        my @centers = map { $_->{other_center} } @{$self->{halves}};
-        if( $graph->has_edge_attribute( @centers, 'bond' ) ) {
-            push @bonds, $graph->get_edge_attribute( @centers, 'bond' );
+        my @centers = map { $_->{other_center} } $self->halves;
+        if( $self->graph->has_edge_attribute( @centers, 'bond' ) ) {
+            push @bonds, $self->graph->get_edge_attribute( @centers, 'bond' );
         } else {
             push @bonds, '-';
         }
@@ -108,9 +110,9 @@ sub heteroatoms()
 sub is_saturated()
 {
     my( $self ) = @_;
-    return '' unless all { $_->is_saturated } @{$self->{halves}};
+    return '' unless all { $_->is_saturated } $self->halves;
     return  1 unless $self->{halves}[0]{other_center};
-    return is_single_bond( $self->{halves}[0]->graph,
+    return is_single_bond( $self->graph,
                            $self->{halves}[0]->{other_center},
                            $self->{halves}[1]->{other_center} );
 }
