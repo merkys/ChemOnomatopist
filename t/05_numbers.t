@@ -8,7 +8,6 @@ use Test::More;
 
 # Collected by Miglė
 my @prefixes = qw(
-    ?
     meth
     eth
     prop
@@ -226,7 +225,7 @@ my %cases = (
 plan tests => scalar( @prefixes ) + scalar keys %cases;
 
 for (0..$#prefixes) {
-    is( ChemOnomatopist::alkane_chain_name( $_ ),
+    is( ChemOnomatopist::alkane_chain_name( $_ + 1 ),
         $prefixes[$_],
         "Number $_" );
 }

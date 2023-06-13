@@ -1173,6 +1173,8 @@ sub alkane_chain_name($)
 {
     my( $N ) = @_;
 
+    die "alkane chain of zero length detected\n" unless $N;
+
     my @names = qw( ? meth eth prop but );
 
     return $names[$N] if $N < @names;
