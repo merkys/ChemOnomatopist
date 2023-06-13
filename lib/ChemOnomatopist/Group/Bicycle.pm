@@ -139,8 +139,8 @@ sub candidates()
 sub copy()
 {
     my( $self ) = @_;
-    return bless { graph => $self->graph,
-                   cycles => [ $self->cycles ],
+    return bless { graph    => $self->graph,
+                   cycles   => [ $self->cycles ],
                    vertices => [ $self->vertices ] },
                  ChemOnomatopist::Group::Bicycle::;
 }
