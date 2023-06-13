@@ -69,10 +69,10 @@ sub is_homogeneous()
     my( $bond ) = @bonds;
 
     return '' if any { $_ ne $element } @elements;
-    return 1 if join( '', @bonds ) =~ /^((-=)+|(=-)+)$/; # FIXME: Simple aromaticity detection
+    return  1 if $self->is_aromatic;
 
     return '' if any { $_ ne $bond } @bonds;
-    return 1;
+    return  1;
 }
 
 sub name()
