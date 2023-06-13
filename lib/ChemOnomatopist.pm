@@ -77,18 +77,17 @@ sub get_sidechain_name
 {
     my( $graph, $parent, $start ) = @_;
 
+    # Groups know how to name themselves
+    if( blessed $start && $start->isa( ChemOnomatopist::Group:: ) ) {
+        return ChemOnomatopist::Name->new( $start->prefix );
+    }
+
+    # Record the type of parent bond
     my $parent_bond = '-' if $parent;
     if(                $graph->has_edge_attribute( $parent, $start, 'bond' ) ) {
         $parent_bond = $graph->get_edge_attribute( $parent, $start, 'bond' );
     }
     $graph->delete_edge( $parent, $start ) if $parent;
-
-    # TODO: Extend to other subclasses of ChemOnomatopist::Group::
-    if( blessed $start &&
-        ( $start->isa( ChemOnomatopist::Group::Monocycle:: ) ||
-          $start->isa( ChemOnomatopist::Group::Monospiro:: ) ) ) {
-        return ChemOnomatopist::Name->new( $start->prefix );
-    }
 
     # Groups that cannot be included in the chain do not matter
     my $branches_at_start = grep { !blessed $_ || $_->is_carbon }
@@ -100,6 +99,7 @@ sub get_sidechain_name
     # Handle non-carbon substituents
     if( @chain == 1 && !is_element( $chain[0], 'C' ) ) {
         if( blessed $chain[0] ) {
+            # FIXME: This is dead code, never reached
             return ChemOnomatopist::Name->new( $chain[0]->prefix );
         } elsif( exists $elements{$chain[0]->{symbol}} ) {
             my $element = $elements{$chain[0]->{symbol}}->{prefix};
