@@ -7,7 +7,8 @@ use warnings;
 # VERSION
 
 use ChemOnomatopist::Util::Graph qw( merge_graphs );
-use List::Util qw( sum0 );
+use Chemistry::OpenSMILES qw( is_single_bond );
+use List::Util qw( all sum0 );
 
 sub AUTOLOAD {
     our $AUTOLOAD;
@@ -102,6 +103,16 @@ sub heteroatoms()
     my( $self ) = @_;
     my @vertices = $self->vertices;
     return map { ucfirst $vertices[$_]->{symbol} } $self->heteroatom_positions;
+}
+
+sub is_saturated()
+{
+    my( $self ) = @_;
+    return '' unless all { $_->is_saturated } @{$self->{halves}};
+    return  1 unless $self->{halves}[0]{other_center};
+    return is_single_bond( $self->{halves}[0]->graph,
+                           $self->{halves}[0]->{other_center},
+                           $self->{halves}[1]->{other_center} );
 }
 
 sub locant_names()
