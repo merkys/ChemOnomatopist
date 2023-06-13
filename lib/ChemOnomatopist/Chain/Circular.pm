@@ -75,8 +75,6 @@ sub is_homogeneous()
     return 1;
 }
 
-# Returns undef for cycles not needing special treatment.
-# Those can be handled by ChemOnomatopist::get_mainchain_name().
 sub name()
 {
     my( $self ) = @_;
