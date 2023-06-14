@@ -45,11 +45,10 @@ sub backbone_SMILES()
     return $SMILES;
 }
 
-# FIXME: Implement Apodaca's algoritm to treat furan and others as aromatic
+# FIXME: What to do with furan and others?
 sub is_aromatic()
 {
     my( $self ) = @_;
-    return 1 if join( '', $self->bonds ) =~ /^((-=)+|(=-)+)$/; # FIXME: Simple aromaticity detection
     return 1 if all { $_ eq ':' } $self->bonds;
     return '';
 }
