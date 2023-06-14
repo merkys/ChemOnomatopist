@@ -9,6 +9,7 @@ use Test::More;
 my @cases = (
     # From BBv2 P-25.0
     { smiles => 'C1=CC=CC2=CC=CC=C12', iupac => 'naphthalene' },
+    { smiles => 'C=12C=CC=CC=1C=CC=C2', iupac => 'naphthalene' },
 
     # From BBv2 P-25.2.1
     { smiles => 'N1=CN=CC2=NC=CN=C12', iupac => 'pteridine' },
