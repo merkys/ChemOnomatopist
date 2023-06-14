@@ -35,12 +35,12 @@ our %names = (
     'C=CC=CS'  => 'thiophene',
 
     # 6-membered aromatic
-    'C=CC=CC=C' => 'benzene',
+    'c:c:c:c:c:c:' => 'benzene',
     'C=CC=CCO'  => '2H-pyran', # FIXME: Adjust for isomerism
-    'C=CN=CC=N' => 'pyrazine',
-    'C=CC=CN=N' => 'pyridazine',
-    'C=CC=CC=N' => 'pyridine',
-    'C=CC=NC=N' => 'pyrimidine',
+    'c:c:n:c:c:n:' => 'pyrazine',
+    'c:c:c:c:n:n:' => 'pyridazine',
+    'c:c:c:c:c:n:' => 'pyridine',
+    'c:c:c:n:c:n:' => 'pyrimidine',
 );
 
 sub new
