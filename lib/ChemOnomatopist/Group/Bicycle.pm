@@ -29,7 +29,7 @@ our @names = (
     [ 'C=NC=CCC', 'c:c:c:c:c:c:', 'isoquinoline' ],
     [ 'CC=CCNC',  'C=CC=CCN',  'quinolizine' ],
 
-    [ 'NC=NC=CC=', 'NC=NCC', 'purine' ], # Special rules apply
+    [ 'c:n:c:n:c:c:', 'N=CNc:c', 'purine' ], # Special rules apply
 
     [ 'NN=Cc:c', 'c:c:c:c:c:c:', '1H-indazole' ],
     [ 'NC=Cc:c', 'c:c:c:c:c:c:', '1H-indole' ],
@@ -108,7 +108,7 @@ sub new
         $self->_adjust_vertices_to_cycles;
     }
 
-    if( join( ',', map { $_->backbone_SMILES } @cycles ) eq 'N=CNc:c,c:n:c:n:c:c:' ) {
+    if( join( ',', map { $_->backbone_SMILES } @cycles ) eq 'n:c:n:c:c:c:,NC=Nc:c' ) {
         @cycles = reverse map { $_->flipped } @cycles;
         $self->{cycles} = \@cycles;
     }
