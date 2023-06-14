@@ -264,8 +264,8 @@ sub _aromatise()
     for ($subgraph->edges) {
         $self->graph->set_edge_attribute( @$_, 'bond', ':' );
     }
-    for (@delocalised_cycles) {
-        delete $_->{bonds}; # Need to invalidate cache
+    for ($self, $self->cycles) { # Need to invalidate bond cache
+        delete $_->{bonds};
     }
 
     return 1;
