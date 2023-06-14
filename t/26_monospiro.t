@@ -16,7 +16,7 @@ my @cases = (
     { smiles => 'C1CCCC12NCCOC2', iupac => '9-oxa-6-azaspiro[4.5]decane' },
     { smiles => 'C1CCCC12CSCNC2', iupac => '7-thia-9-azaspiro[4.5]decane' },
 
-    { smiles => 'C1CC2(C1)C(C2(C#N)C#N)(C#N)C#N', iupac => 'spiro[2.3]hexane-1,1,2,2-tetracarbonitrile', AUTHOR => 1 }, # PubChem 263661
+    { smiles => 'C1CC2(C1)C(C2(C#N)C#N)(C#N)C#N', iupac => 'spiro[2.3]hexane-1,1,2,2-tetracarbonitrile' }, # PubChem 263661
     { smiles => 'CC(C)(C)C1CCC2(C(C1)(CCCO)O)OCCO2', iupac => '8-tert-butyl-6-(3-hydroxypropyl)-1,4-dioxaspiro[4.5]decan-6-ol', AUTHOR => 1 }, # PubChem 496485
     { smiles => 'CCCN1C(=O)C(NC(=O)C12CCNCC2)CC(C)C', iupac => '3-(2-methylpropyl)-1-propyl-1,4,9-triazaspiro[5.5]undecane-2,5-dione' }, # PubChem 9856956
     { smiles => 'C1CCOC2(C1)CC(=O)CCO2', iupac => '1,7-dioxaspiro[5.5]undecan-4-one' }, # PubChem 11217490
