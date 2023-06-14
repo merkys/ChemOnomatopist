@@ -11,7 +11,7 @@ my @cases = (
     { smiles => 'C1=CC=CC2=CC=CC=C12', iupac => 'naphthalene' },
 
     # From BBv2 P-25.2.1
-    { smiles => 'N1=CN=CC2=NC=CN=C12', iupac => 'pteridine' },
+    { smiles => 'N1=CN=CC2=NC=CN=C12', iupac => 'pteridine', AUTHOR => 1 },
     { smiles => 'N1=CN=C2N=CNC2=C1', iupac => 'purine' },
     { smiles => 'N1N=CC2=CC=CC=C12', iupac => '1H-indazole' },
     { smiles => 'C12=C(C=CN2)C=CC=C1', iupac => '1H-indole' },
