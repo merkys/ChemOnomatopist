@@ -6,7 +6,7 @@ use warnings;
 # ABSTRACT: Fused bicyclic group
 # VERSION
 
-use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
+use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Chain::Circular;
