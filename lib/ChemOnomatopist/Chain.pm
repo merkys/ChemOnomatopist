@@ -174,6 +174,7 @@ sub max_valence()
 
     for my $bond ($self->bonds) {
         $max_valence -= 2 if $bond eq '-';
+        $max_valence -= 3 if $bond eq ':'; # Aromatic bond is 1.5
         $max_valence -= 4 if $bond eq '=';
         $max_valence -= 6 if $bond eq '#';
         $max_valence -= 8 if $bond eq '$';
