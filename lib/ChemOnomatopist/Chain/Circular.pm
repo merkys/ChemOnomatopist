@@ -249,6 +249,7 @@ sub _aromatise()
             $vertices[$_]->{symbol} = lcfirst $vertices[$_]->{symbol};
         }
     }
+    delete $self->{bonds}; # Need to invalidate cache
 
     return 1;
 }

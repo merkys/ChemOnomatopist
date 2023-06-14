@@ -255,6 +255,7 @@ sub _aromatise()
         my $subgraph = $self->graph->subgraph( [ $self->vertices ] );
         my @bridge = grep { $subgraph->degree( $_ ) == 3 } $subgraph->vertices;
         $self->graph->set_edge_attribute( @bridge, 'bond', ':' );
+        delete $self->{bonds}; # Need to invalidate cache
         return 1;
     } else {
         return '';

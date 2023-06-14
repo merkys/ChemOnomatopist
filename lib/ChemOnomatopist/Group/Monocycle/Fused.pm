@@ -32,13 +32,6 @@ sub backbone_SMILES()
     return cycle_SMILES( $self->graph, $self->vertices );
 }
 
-sub is_aromatic()
-{
-    my( $self ) = @_;
-    return 1 if $self->SUPER::is_aromatic;
-    return $self->system->is_aromatic;
-}
-
 # Returns a copy of the monocycle flipped around the bridge
 sub flipped()
 {
