@@ -46,7 +46,9 @@ our %names = (
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
-    return bless { graph => $graph, vertices => \@vertices }, $class;
+    my $self = bless { graph => $graph, vertices => \@vertices }, $class;
+    $self->_aromatise;
+    return $self;
 }
 
 # FIXME: For now we generate all possible traversals of the same cycle.

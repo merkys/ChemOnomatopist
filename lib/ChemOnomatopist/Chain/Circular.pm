@@ -19,7 +19,9 @@ use parent ChemOnomatopist::Chain::;
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
-    return bless { graph => $graph, vertices => \@vertices }, $class;
+    my $self = bless { graph => $graph, vertices => \@vertices }, $class;
+    $self->_aromatise;
+    return $self;
 }
 
 # Selecting the candidate with the lowest alphabetical order
@@ -229,6 +231,26 @@ sub bonds()
         push @bonds, '-';
     }
     return @bonds;
+}
+
+sub _aromatise()
+{
+    my( $self ) = @_;
+    return '' if $self->length % 2;
+    return '' unless join( '', $self->bonds ) =~ /^((-=)+|(=-)+)$/;
+
+    my @vertices = $self->vertices;
+    for (0..$#vertices) {
+        $self->graph->set_edge_attribute( $vertices[$_],
+                                          $vertices[($_ + 1) % $self->length],
+                                          'bond',
+                                          ':' );
+        if( $vertices[$_]->{symbol} =~ /^(Se|As|[BCNOPS])$/ ) {
+            $vertices[$_]->{symbol} = lcfirst $vertices[$_]->{symbol};
+        }
+    }
+
+    return 1;
 }
 
 sub _disconnected_chain_graph()
