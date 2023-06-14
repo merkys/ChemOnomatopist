@@ -15,9 +15,7 @@ use List::Util qw( all );
 sub new
 {
     my( $class, $graph, $system, @vertices ) = @_;
-    my $self = bless { graph => $graph, system => $system, vertices => \@vertices }, $class;
-    $self->_aromatise;
-    return $self;
+    return bless { graph => $graph, system => $system, vertices => \@vertices }, $class;
 }
 
 sub system()

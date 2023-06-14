@@ -58,8 +58,6 @@ sub new
     $self->{vertices} = [ Graph::Traversal::DFS->new( $subgraph, start => $bridge[0] )->dfs ];
     $subgraph->delete_vertices( @bridge );
 
-    $self->_aromatise;
-
     # Graph is broken into components.
     # Each component is represented as an array of vertices in the order of traverse.
     my @components = sort { @$a <=> @$b } $subgraph->connected_components;
@@ -73,6 +71,8 @@ sub new
     my @cycles = map { ChemOnomatopist::Group::Monocycle::Fused->new( $graph, $self, @$_ ) }
                      @components;
     $self->{cycles} = \@cycles;
+
+    $self->_aromatise;
 
     my $nbenzene = scalar grep { $_->is_benzene } @cycles;
 
@@ -251,15 +251,24 @@ sub _adjust_vertices_to_cycles()
 sub _aromatise()
 {
     my( $self ) = @_;
-    if( $self->SUPER::_aromatise ) {
-        my $subgraph = $self->graph->subgraph( [ $self->vertices ] );
-        my @bridge = grep { $subgraph->degree( $_ ) == 3 } $subgraph->vertices;
-        $self->graph->set_edge_attribute( @bridge, 'bond', ':' );
-        delete $self->{bonds}; # Need to invalidate cache
-        return 1;
-    } else {
-        return '';
+
+    my @delocalised_cycles = grep { join( '', $_->bonds ) =~ /^((-=)+|(=-)+)$/ }
+                                  ( $self, $self->cycles );
+    return '' unless @delocalised_cycles;
+
+    my $subgraph = $self->graph->subgraph( [ map { $_->vertices } @delocalised_cycles ] );
+    for ($subgraph->vertices) {
+        next unless $_->{symbol} =~ /^(Se|As|[BCNOPS])$/;
+        $_->{symbol} = lcfirst $_->{symbol};
     }
+    for ($subgraph->edges) {
+        $self->graph->set_edge_attribute( @$_, 'bond', ':' );
+    }
+    for (@delocalised_cycles) {
+        delete $_->{bonds}; # Need to invalidate cache
+    }
+
+    return 1;
 }
 
 1;
