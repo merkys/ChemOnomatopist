@@ -54,7 +54,11 @@ sub new
 
     my $subgraph = $graph->subgraph( \@vertices );
     my @bridge = grep { $subgraph->degree( $_ ) == 3 } @vertices;
+    $subgraph->delete_edge( @bridge );
+    $self->{vertices} = [ Graph::Traversal::DFS->new( $subgraph, start => $bridge[0] )->dfs ];
     $subgraph->delete_vertices( @bridge );
+
+    $self->_aromatise;
 
     # Graph is broken into components.
     # Each component is represented as an array of vertices in the order of traverse.
