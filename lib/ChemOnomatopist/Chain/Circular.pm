@@ -30,12 +30,12 @@ sub backbone_SMILES()
     my @vertices = $self->vertices;
     my @candidates;
     for (0..$#vertices) {
-        push @candidates, cycle_SMILES( $self->{graph}, @vertices );
+        push @candidates, cycle_SMILES( $self->graph, @vertices );
         push @vertices, shift @vertices;
     }
     @vertices = reverse @vertices;
     for (0..$#vertices) {
-        push @candidates, cycle_SMILES( $self->{graph}, @vertices );
+        push @candidates, cycle_SMILES( $self->graph, @vertices );
         push @vertices, shift @vertices;
     }
 
