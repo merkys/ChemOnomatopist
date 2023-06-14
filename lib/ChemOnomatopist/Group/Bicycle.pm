@@ -248,4 +248,17 @@ sub _adjust_vertices_to_cycles()
     return $self;
 }
 
+sub _aromatise()
+{
+    my( $self ) = @_;
+    if( $self->SUPER::_aromatise ) {
+        my $subgraph = $self->graph->subgraph( [ $self->vertices ] );
+        my @bridge = grep { $subgraph->degree( $_ ) == 3 } $subgraph->vertices;
+        $self->graph->set_edge_attribute( @bridge, 'bond', ':' );
+        return 1;
+    } else {
+        return '';
+    }
+}
+
 1;
