@@ -20,19 +20,19 @@ use Set::Object qw( set );
 # From BBv2 P-25.2.1
 our @names = (
     [ 'N=CN=CCC', 'NC=CN=CC=', 'pteridine' ],
-    [ 'N=NC=CCC', 'CC=CC=CC=', 'cinnoline' ],
-    [ 'N=CN=CCC', 'CC=CC=CC=', 'quinazoline' ],
-    [ 'N=CC=NCC', 'CC=CC=CC=', 'quinoxaline' ],
+    [ 'N=NC=CCC', 'c:c:c:c:c:c:', 'cinnoline' ],
+    [ 'N=CN=CCC', 'c:c:c:c:c:c:', 'quinazoline' ],
+    [ 'N=CC=NCC', 'c:c:c:c:c:c:', 'quinoxaline' ],
     [ 'N=CC=CCC', 'NC=CC=CC=', '1,5-naphthyridine' ], # TODO: There are isomers
-    [ 'C=NN=CCC', 'CC=CC=CC=', 'phthalazine' ],
-    [ 'N=CC=CCC', 'CC=CC=CC=', 'quinoline' ],
-    [ 'C=NC=CCC', 'CC=CC=CC=', 'isoquinoline' ],
+    [ 'C=NN=CCC', 'c:c:c:c:c:c:', 'phthalazine' ],
+    [ 'N=CC=CCC', 'c:c:c:c:c:c:', 'quinoline' ],
+    [ 'C=NC=CCC', 'c:c:c:c:c:c:', 'isoquinoline' ],
     [ 'CC=CCNC',  'C=CC=CCN',  'quinolizine' ],
 
     [ 'NC=NC=CC=', 'NC=NCC', 'purine' ], # Special rules apply
 
-    [ 'NN=CCC',  'CC=CC=CC=', '1H-indazole' ],
-    [ 'NC=CC=C', 'C=CC=CC=C', '1H-indole' ],
+    [ 'NN=Cc:c', 'c:c:c:c:c:c:', '1H-indazole' ],
+    [ 'NC=Cc:c', 'c:c:c:c:c:c:', '1H-indole' ],
     [ 'CNC=CC=', 'C=CC=CCC',  'isoindole' ],
     [ 'CC=CNC=', 'C=CC=CCN',  'indolizine', ],
     [ 'CC=CNC',  'C=CC=CN',   '1H-pyrrolizine' ], # TODO: There are isomers
@@ -108,7 +108,7 @@ sub new
         $self->_adjust_vertices_to_cycles;
     }
 
-    if( join( ',', map { $_->backbone_SMILES } @cycles ) eq 'N=CNCC,CN=CN=CC=' ) {
+    if( join( ',', map { $_->backbone_SMILES } @cycles ) eq 'N=CNc:c,c:n:c:n:c:c:' ) {
         @cycles = reverse map { $_->flipped } @cycles;
         $self->{cycles} = \@cycles;
     }
