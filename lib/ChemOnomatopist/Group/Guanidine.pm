@@ -8,6 +8,7 @@ use warnings;
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
+use Algorithm::Combinatorics qw( permutations );
 use Chemistry::OpenSMILES qw( is_double_bond );
 
 sub new
@@ -21,6 +22,29 @@ sub new
     my $self = bless { graph => $graph, vertices => \@vertices, is_double_bond => \@orders }, $class;
     $graph->delete_vertices( $atom, grep { ChemOnomatopist::is_element( $_, 'H' ) } $graph->vertices );
     return $self;
+}
+
+sub candidates()
+{
+    my( $self ) = @_;
+
+    if( $self->{is_double_bond}[2] ) {
+        my @candidates = ( $self, $self->copy );
+        $candidates[1]->{vertices} = [ map { $self->{vertices}[$_] } ( 1, 0, 2 ) ];
+        return @candidates;
+    } else {
+        my @candidates;
+        for (permutations([0, 1, 2])) {
+            push @candidates, $self->copy;
+            $candidates[-1]->{vertices} = [ map { $self->{vertices}[$_] } @$_ ];
+        }
+        return @candidates;
+    }
+}
+
+sub copy() {
+    my( $self ) = @_;
+    return bless { %$self };
 }
 
 sub needs_heteroatom_locants() { return '' }
