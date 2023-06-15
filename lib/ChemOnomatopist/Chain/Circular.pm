@@ -12,7 +12,7 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
-use List::Util qw( all any );
+use List::Util qw( all any uniq );
 
 use parent ChemOnomatopist::Chain::;
 
@@ -198,6 +198,13 @@ sub name()
     }
 
     return 'cyclo' . ChemOnomatopist::unbranched_chain_name( $self );
+}
+
+sub needs_multiple_bond_locants()
+{
+    my( $self ) = @_;
+    return 1 if $self->number_of_multiple_bonds > 1;
+    return scalar( uniq map { $_->{symbol} } $self->vertices ) > 1;
 }
 
 sub needs_substituent_locants()

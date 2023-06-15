@@ -137,6 +137,12 @@ sub multiple_bond_positions()
     return grep { $bonds[$_] =~ /^[=#\$]$/ } 0..$#bonds;
 }
 
+sub needs_multiple_bond_locants() # FIXME: Inherit from ChemOnomatopist::Chain
+{
+    my( $self ) = @_;
+    return $self->length > 2;
+}
+
 sub needs_heteroatom_locants()
 {
     my( $self ) = @_;

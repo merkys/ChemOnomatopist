@@ -1206,16 +1206,14 @@ sub unbranched_chain_name($)
         @double = grep { $bonds[$_] eq '=' } 0..$#bonds;
         @triple = grep { $bonds[$_] eq '#' } 0..$#bonds;
         if( @double ) {
-            if( ( !$chain->isa( ChemOnomatopist::Chain::Circular:: ) && @chain > 2 ) ||
-                @double > 1 || @triple ) {
+            if( $chain->needs_multiple_bond_locants || @double > 1 || @triple ) {
                 $name->append_locants( map { $_ + 1 } @double );
             }
             $name->append_multiplier( IUPAC_numerical_multiplier( scalar @double ) ) if @double > 1;
             $name .= 'en';
         }
         if( @triple ) {
-            if( ( !$chain->isa( ChemOnomatopist::Chain::Circular:: ) && @chain > 2 ) ||
-                @triple > 1 || @double ) {
+            if( $chain->needs_multiple_bond_locants || @triple > 1 || @double ) {
                 $name->append_locants( map { $_ + 1 } @triple );
             }
             $name->append_multiplier( IUPAC_numerical_multiplier( scalar @triple ) ) if @triple > 1;
