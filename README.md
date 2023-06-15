@@ -34,6 +34,10 @@ Issues known to produce names deviating from IUPAC guidelines:
 * Incorrect addition/omission of parentheses
 * Monocycles with multiple substituents are sometimes named incorrectly
 
+## Contributors
+
+* Miglė Urbonaitė
+
 ## License
 
 *ChemOnomatopist* is free software licensed under BSD-3-Clause license.
