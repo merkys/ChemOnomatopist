@@ -345,7 +345,10 @@ sub find_groups
         if( is_element( $atom, 'C' ) && @neighbours == 3 && @N == 3 ) {
             # Detecting guanidine
             # FIXME: Check if not in any ring
-            ChemOnomatopist::Group::Guanidine->new( $graph, $atom );
+            my $guanidine = ChemOnomatopist::Group::Guanidine->new( copy $graph, $atom );
+            for (map { $graph->neighbours( $_ ) } @N) {
+                $graph->add_edge( $guanidine, $_ );
+            }
             $graph->delete_vertices( $atom, @N );
         }
     }
