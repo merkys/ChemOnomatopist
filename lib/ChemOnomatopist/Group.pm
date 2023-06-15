@@ -9,6 +9,7 @@ use ChemOnomatopist::Group::Bicycle;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
+use ChemOnomatopist::Group::Guanidine;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
@@ -36,6 +37,7 @@ our @order = (
     ChemOnomatopist::Group::Ester::,
     # Acid halides and pseudohalides
     # Amides
+    ChemOnomatopist::Group::Guanidine::,
     # Hydrazides
     # Imides
     # Nitriles

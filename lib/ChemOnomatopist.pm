@@ -17,6 +17,7 @@ use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
+use ChemOnomatopist::Group::Guanidine;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
@@ -344,12 +345,7 @@ sub find_groups
         if( is_element( $atom, 'C' ) && @neighbours == 3 && @N == 3 ) {
             # Detecting guanidine
             # FIXME: Check if not in any ring
-            my @single = grep { is_single_bond( $atom, $_ ) } @N;
-            my @double = grep { is_double_bond( $atom, $_ ) } @N;
-            my $guanidine; # FIXME: Add class
-            for (map { $graph->neighbours($_) } @N) {
-                $graph->add_edge( $guanidine, $_ ) unless $_ == $atom;
-            }
+            ChemOnomatopist::Group::Guanidine->new( $graph, $atom );
             $graph->delete_vertices( $atom, @N );
         }
     }
