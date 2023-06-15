@@ -25,9 +25,6 @@ while (<$inp>) {
     next if $iupac =~ /edial$/;
     next if $iupac =~ /acetyl/;
 
-    # Separate molecular entities, not sure if we want to support them at all
-    next if $iupac =~ /;/ || $smiles =~ /\./;
-
     next if $smiles =~ /[\[\]\\\/]/; # TODO: Cannot process these
     next if $smiles =~ /[0-9]/; # TODO: Only a small subset of cycles can be handled now
 

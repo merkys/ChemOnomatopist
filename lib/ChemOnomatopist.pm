@@ -61,7 +61,9 @@ sub get_name
         # Assume SMILES string
         require Chemistry::OpenSMILES::Parser;
         my $parser = Chemistry::OpenSMILES::Parser->new;
-        ( $graph ) = $parser->parse( $what ); # Taking only the first graph
+        my @graphs = $parser->parse( $what );
+        die "separate molecular entities are not handled yet\n" if @graphs > 1;
+        $graph = shift @graphs;
     }
     die "nothing supplied for get_name()\n" unless $graph;
 
