@@ -40,7 +40,10 @@ use ChemOnomatopist::Util::Graph qw(
     tree_branch_positions
     tree_number_of_branches
 );
-use Chemistry::OpenSMILES qw( is_double_bond );
+use Chemistry::OpenSMILES qw(
+    is_double_bond
+    is_single_bond
+);
 use Graph::Traversal::DFS;
 use Graph::Undirected;
 use List::Util qw( all any max min sum0 uniq );
@@ -337,7 +340,21 @@ sub find_groups
         my @neighbours = $graph->neighbours( $atom );
         my @C = grep { is_element( $_, 'C' ) } @neighbours;
         my @H = grep { is_element( $_, 'H' ) } @neighbours;
+        my @N = grep { is_element( $_, 'N' ) } @neighbours;
         my @O = grep { is_element( $_, 'O' ) } @neighbours;
+
+        # C-based groups
+        if( is_element( $atom, 'C' ) && @neighbours == 3 && @N == 3 ) {
+            # Detecting guanidine
+            # FIXME: Check if not in any ring
+            my @single = grep { is_single_bond( $atom, $_ ) } @N;
+            my @double = grep { is_double_bond( $atom, $_ ) } @N;
+            my $guanidine; # FIXME: Add class
+            for (map { $graph->neighbours($_) } @N) {
+                $graph->add_edge( $guanidine, $_ ) unless $_ == $atom;
+            }
+            $graph->delete_vertices( $atom, @N );
+        }
 
         # N-based groups
         if( is_element( $atom, 'N' ) && @neighbours == 3 && @C == 1 && @H == 2 ) {
@@ -516,6 +533,8 @@ sub is_element
         if( $atom->isa( ChemOnomatopist::Group:: ) ) {
             if(      $element eq 'C' ) {
                 return $atom->is_carbon;
+            } elsif( $element eq 'N' ) {
+                return $atom->is_nitrogen;
             } elsif( $element eq 'O' ) {
                 return $atom->is_oxygen;
             } elsif( $element eq 'H' ) {

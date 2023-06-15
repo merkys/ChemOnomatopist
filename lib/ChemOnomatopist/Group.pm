@@ -63,6 +63,7 @@ sub new
 
 # Neither of these by default
 sub is_carbon { return '' }
+sub is_nitrogen { return '' }
 sub is_oxygen { return '' }
 
 sub is_part_of_chain() { return '' }
