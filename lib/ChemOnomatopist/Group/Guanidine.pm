@@ -23,6 +23,12 @@ sub new
 
 sub needs_heteroatom_locants() { return '' }
 sub needs_heteroatom_names() { return '' }
+sub needs_substituent_locants() { return 1 } # FIXME: There may be identical substituents, what to do then?
+
+sub locants(@) {
+    my $self = shift;
+    return ('N') x scalar @_;
+}
 
 sub prefix { return 'carbamimidoylamino' } # FIXME: Two kinds exist, BBv2 P-66.4.1.2.1.3
 sub suffix { return 'guanidine' }
