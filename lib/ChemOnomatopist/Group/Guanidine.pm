@@ -27,18 +27,14 @@ sub new
                        imino_neighbours => \@imino_neighbours,
                        graph => $graph }, $class;
 
-    for (@amino_neighbours, @imino_neighbours) {
+    for (@imino_neighbours, map { @$_ } @amino_neighbours) {
         $graph->add_edge( $self, $_ );
     }
 
     return $self;
 }
 
-sub candidates() { return ( $_[0] ) }
-
-sub is_carbon() { return 1 }
-
-sub is_part_of_chain() { return 1 }
+sub C() { return $_[0] }
 
 sub prefix { return 'carbamimidoylamino' } # FIXME: Two kinds exist, BBv2 P-66.4.1.2.1.3
 sub suffix { return 'guanidine' }
