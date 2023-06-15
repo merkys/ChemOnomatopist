@@ -27,7 +27,7 @@ sub needs_substituent_locants() { return 1 } # FIXME: There may be identical sub
 
 sub locants(@) {
     my $self = shift;
-    return ('N') x scalar @_;
+    return map { 'N' . "'" x $_ } @_;
 }
 
 sub prefix { return 'carbamimidoylamino' } # FIXME: Two kinds exist, BBv2 P-66.4.1.2.1.3
