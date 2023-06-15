@@ -56,7 +56,16 @@ sub locants(@) {
     return map { 'N' . "'" x $_ } @_;
 }
 
-sub prefix { return 'carbamimidoylamino' } # FIXME: Two kinds exist, BBv2 P-66.4.1.2.1.3
+# Two kinds exist per BBv2 P-66.4.1.2.1.3
+sub prefix {
+    my( $self ) = @_;
+    if( $self->{is_double_bond}[2] && $self->graph->degree( $self->{vertices}[2] ) ) {
+        return '[(diaminomethylidene)amino]';
+    } else {
+        return 'carbamimidoylamino';
+    }
+}
+
 sub suffix { return 'guanidine' }
 
 1;
