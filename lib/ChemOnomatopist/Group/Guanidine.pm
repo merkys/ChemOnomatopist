@@ -8,15 +8,17 @@ use warnings;
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
-use Chemistry::OpenSMILES qw(
-    is_double_bond
-    is_single_bond
-);
+use Chemistry::OpenSMILES qw( is_double_bond );
 
 sub new
 {
     my( $class, $graph, $atom ) = @_;
-    my $self = bless { graph => $graph, vertices => [ $graph->neighbours( $atom ) ] }, $class;
+    # Double ! is used here as is_double_bond() returns 1 or undef which is a bug in Chemistry::OpenSMILES?
+    my @vertices = sort { !!is_double_bond( $graph, $atom, $a ) <=>
+                          !!is_double_bond( $graph, $atom, $b ) }
+                        $graph->neighbours( $atom );
+    my @orders = map { !!is_double_bond( $graph, $atom, $_ ) } @vertices;
+    my $self = bless { graph => $graph, vertices => \@vertices, is_double_bond => \@orders }, $class;
     $graph->delete_vertices( $atom, grep { ChemOnomatopist::is_element( $_, 'H' ) } $graph->vertices );
     return $self;
 }
