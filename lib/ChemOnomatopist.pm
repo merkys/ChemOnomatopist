@@ -336,14 +336,11 @@ sub find_groups
 {
     my( $graph ) = @_;
 
+    # First pass is to detect guanidine
     for my $atom ($graph->vertices) {
         my @neighbours = $graph->neighbours( $atom );
-        my @C = grep { is_element( $_, 'C' ) } @neighbours;
-        my @H = grep { is_element( $_, 'H' ) } @neighbours;
         my @N = grep { is_element( $_, 'N' ) } @neighbours;
-        my @O = grep { is_element( $_, 'O' ) } @neighbours;
 
-        # C-based groups
         if( is_element( $atom, 'C' ) && @neighbours == 3 && @N == 3 ) {
             # Detecting guanidine
             # FIXME: Check if not in any ring
@@ -355,6 +352,13 @@ sub find_groups
             }
             $graph->delete_vertices( $atom, @N );
         }
+    }
+
+    for my $atom ($graph->vertices) {
+        my @neighbours = $graph->neighbours( $atom );
+        my @C = grep { is_element( $_, 'C' ) } @neighbours;
+        my @H = grep { is_element( $_, 'H' ) } @neighbours;
+        my @O = grep { is_element( $_, 'O' ) } @neighbours;
 
         # N-based groups
         if( is_element( $atom, 'N' ) && @neighbours == 3 && @C == 1 && @H == 2 ) {
