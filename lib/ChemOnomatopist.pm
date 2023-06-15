@@ -59,6 +59,8 @@ sub get_name
         $graph = $what;
     } else {
         # Assume SMILES string
+        die "cannot handle stereochemistry now\n" if $what =~ /[\\\/@]/;
+
         require Chemistry::OpenSMILES::Parser;
         my $parser = Chemistry::OpenSMILES::Parser->new;
         my @graphs = $parser->parse( $what );

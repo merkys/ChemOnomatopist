@@ -25,9 +25,6 @@ while (<$inp>) {
     next if $iupac =~ /edial$/;
     next if $iupac =~ /acetyl/;
 
-    next if $smiles =~ /[\[\]\\\/]/; # TODO: Cannot process these
-    next if $smiles =~ /[0-9]/; # TODO: Only a small subset of cycles can be handled now
-
     my $parser = Chemistry::OpenSMILES::Parser->new;
     my( @graphs ) = $parser->parse( $smiles );
 
