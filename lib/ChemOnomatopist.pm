@@ -513,6 +513,7 @@ sub find_groups
             # Reattach groups
             if( blessed $neighbour &&
                 $neighbour->isa( ChemOnomatopist::Group:: ) &&
+                $neighbour->C &&
                 $core->has_vertex( $neighbour->C ) ) {
                 $neighbour->{C} = $compound;
             }
