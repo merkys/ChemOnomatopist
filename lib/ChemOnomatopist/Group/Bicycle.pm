@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Group::Monocycle::Fused;
 use ChemOnomatopist::Name;
@@ -226,9 +227,23 @@ sub suffix()
     if( any { $_->is_benzene } $self->cycles ) {
         my( $other ) = grep { !$_->is_benzene } $self->cycles;
         $other = ChemOnomatopist::Group::Monocycle->new( $other->graph, $other->vertices );
-        my $suffix = $other->suffix;
-        $suffix =~ s/^o//;
-        return 'benzo' . $suffix;
+
+        my $SMILES = $other->backbone_SMILES;
+        if( $SMILES =~ /^C=C((?<el>O|S|\[Se\]|\[Te\])C|C(?<el>O|S|\[Se\]|\[Te\]))c:c$/ ) {
+            # Names according to BBv2 P-25.2.1, Table 2.8, (23) and (24)
+            my $element = $+{el};
+            my $name = ($1 =~ /^C/ ? '2H-1-' : '1H-2-') . 'benzo';
+            $element =~ s/[\[\]]//g;
+            if( $element ne 'O' ) {
+                $name .= $elements{$element}->{prefix};
+                $name =~ s/a$/o/;
+            }
+            return $name . 'pyran';
+        } else {
+            my $suffix = $other->suffix;
+            $suffix =~ s/^o//;
+            return 'benzo' . $suffix;
+        }
     }
 
     die "cannot name complex bicyclic compounds\n";
