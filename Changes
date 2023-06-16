@@ -1,4 +1,4 @@
-0.5.0 unreleased
+0.5.0 2023-06-16
 
     - Implement support for bicyclic compounds.
     - Implement support for ketone analogues, nitro, nitroso and XO3 groups.
