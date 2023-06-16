@@ -38,7 +38,12 @@ our %names = (
 
     # 6-membered aromatic
     'c:c:c:c:c:c:' => 'benzene',
+
     'C=CC=CCO'     => '2H-pyran', # FIXME: Adjust for isomerism
+
+    'C=CCOc:c'     => '2H-pyran', # For fused cycles
+    'C=COCc:c'     => '1H-pyran', # For fused cycles
+
     'c:c:n:c:c:n:' => 'pyrazine',
     'c:c:c:c:n:n:' => 'pyridazine',
     'c:c:c:c:c:n:' => 'pyridine',
