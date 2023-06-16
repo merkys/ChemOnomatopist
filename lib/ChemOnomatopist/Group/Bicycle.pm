@@ -19,7 +19,7 @@ use Set::Object qw( set );
 
 # From BBv2 P-25.2.1
 our @names = (
-    [ 'N=CN=CCC', 'NC=CN=CC=', 'pteridine' ],
+    [ 'n:c:n:c:c:c:', 'n:c:c:n:c:c:', 'pteridine' ],
     [ 'N=NC=CCC', 'c:c:c:c:c:c:', 'cinnoline' ],
     [ 'N=CN=CCC', 'c:c:c:c:c:c:', 'quinazoline' ],
     [ 'N=CC=NCC', 'c:c:c:c:c:c:', 'quinoxaline' ],
