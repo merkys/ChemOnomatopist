@@ -20,6 +20,9 @@ my @cases = (
     { smiles => 'C1OC=CC2=C1C=CC=C2', iupac => '1H-2-benzopyran' },
     { smiles => 'C1[Se]C=CC2=C1C=CC=C2', iupac => '1H-2-benzoselenopyran' },
 
+    { smiles => 'P1C=CC2=CC=CC=C12', iupac => 'phosphindole' }, # Not sure if H prefix is not needed
+    { smiles => 'C1=CC=C2C(=C1)C(=C(P2(Cl)(Cl)Cl)Cl)Cl', iupac => '1,1,1,2,3-pentachlorophosphindole' }, # PubChem 2784508
+
     { smiles => 'C1=CC=C2C(C(C=CC2=C1)O)O', iupac => 'naphthalene-1,2-diol' }, # PubChem 362 has 1,2-dihydronaphthalene-1,2-diol, which is clearly incorrect
     { smiles => 'C12(C(C(C(C(C1(F)F)(F)F)(F)F)(F)F)(C(C(C(C2(F)F)(F)F)(F)F)(F)F)F)F', iupac => '1,1,2,2,3,3,4,4,4a,5,5,6,6,7,7,8,8,8a-octadecafluoronaphthalene', AUTHOR => 1 }, # PubChem 9386
 

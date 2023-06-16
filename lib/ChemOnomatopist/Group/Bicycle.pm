@@ -40,6 +40,24 @@ our @names = (
     [ 'CC=CNC',  'C=CC=CN',   '1H-pyrrolizine' ], # TODO: There are isomers
 );
 
+for my $name (qw( 1H-indole indolizine isoindole isoquinoline quinoline quinolizine )) {
+    for (grep { $_->[2] eq $name } @names) {
+        my @As_parts = @$_;
+        $As_parts[0] =~ s/N/\[As\]/g;
+        $As_parts[1] =~ s/N/\[As\]/g;
+        $As_parts[2] =~ s/^1H-//;
+        $As_parts[2] = 'ars' . $As_parts[2] unless $As_parts[2] =~ s/^iso/isoars/;
+        push @names, \@As_parts;
+
+        my @P_parts = @$_;
+        $P_parts[0] =~ s/N/P/g;
+        $P_parts[1] =~ s/N/P/g;
+        $P_parts[2] =~ s/^1H-//;
+        $P_parts[2] = 'phosph' . $P_parts[2] unless $P_parts[2] =~ s/^iso/isophosph/;
+        push @names, \@P_parts;
+    }
+}
+
 # From BBv2 P-25.1.1, order of decreasing seniority
 our %hydrocarbons_by_size = (
     '5,7' => 'azulene',
