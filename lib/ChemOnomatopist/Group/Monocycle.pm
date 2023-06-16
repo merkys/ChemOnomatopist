@@ -24,7 +24,9 @@ our %names = (
     CCNCCO => 'morpholine',
 
     # 5-membered aromatic
-    'C=CC=CO'  => 'furan',
+    'C=CC=CO' => 'furan',
+    'C=COc:c' => 'furan', # For fused rings
+
     'C=CC=NC'  => '1H-imidazole', # FIXME: Adjust for isomerism
     'C=CN=CO'  => '1,3-oxazole',
     'C=CC=NO'  => '1,2-oxazole',
