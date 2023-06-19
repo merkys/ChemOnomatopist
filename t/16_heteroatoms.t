@@ -13,6 +13,8 @@ my @cases = (
     { smiles => 'ClC(C(Cl)(Cl)Cl)(Cl)Cl', iupac => 'hexachloroethane', AUTHOR => 1 },
     { smiles => 'ClC(=C(Cl)Cl)Cl', iupac => 'tetrachloroethene', AUTHOR => 1 },
 
+    { smiles => 'C1CCCCC1CCOCC', iupac => '3-oxapentylcyclohexane', AUTHOR => 1 },
+
     # From BBv2 P-15.4.3.1
     { smiles => 'COCSSCCOCC[Se]C', iupac => '2,8-dioxa-4,5-dithia-11-selenadodecane' },
     { smiles => '[Si]OCS[Si]', iupac => '2-oxa-4-thia-1,5-disilapentane' },
