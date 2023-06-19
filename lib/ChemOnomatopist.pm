@@ -576,7 +576,7 @@ sub select_mainchain
     my @chains;
     if( @groups ) {
         # TODO: Select a chain containing most of the senior groups
-        my @parents = uniq map { $_->C } @groups; # FIXME: parents with the most attachments should be preferred
+        my @parents = uniq grep { defined $_ } map { $_->C } @groups; # FIXME: parents with the most attachments should be preferred
 
         # Prefer circular structures
         if( @parents > 1 && (grep { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents) == 1 ) {
