@@ -13,6 +13,7 @@ use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Aldehyde;
+use ChemOnomatopist::Group::Amine::SecondaryTertiary;
 use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
@@ -454,6 +455,15 @@ sub find_groups
             my $XO3 = ChemOnomatopist::Group::XO3->new( @C, $atom );
             $graph->add_edge( @C, $XO3 );
             $graph->delete_vertices( $atom, @O );
+        }
+
+        # Secondary and tertiary amines
+        if( $graph->has_vertex( $atom ) && is_element( $atom, 'N' ) && @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
+            my $amine = ChemOnomatopist::Group::Amine::SecondaryTertiary->new;
+            for (@neighbours) {
+                $graph->add_edge( $amine, $_ );
+            }
+            $graph->delete_vertex( $atom );
         }
     }
 

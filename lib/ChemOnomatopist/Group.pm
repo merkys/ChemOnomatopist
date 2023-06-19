@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Group::Aldehyde;
+use ChemOnomatopist::Group::Amine::SecondaryTertiary;
 use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Bicycle;
 use ChemOnomatopist::Group::Carboxyl;
@@ -47,6 +48,7 @@ our @order = (
     ChemOnomatopist::Group::Hydroxy::,
     ChemOnomatopist::Group::Hydroperoxide::,
     ChemOnomatopist::Group::Amino::,
+    ChemOnomatopist::Group::Amine::SecondaryTertiary::, # FIXME: Is this correct?
     ChemOnomatopist::Group::Imino::,
 
     # TODO: Classes denoted by the senior atom in heterane nomenclature should go here
