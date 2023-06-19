@@ -123,9 +123,16 @@ sub get_sidechain_name
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_sidechain_name()
     my %attachments;
+    my %heteroatoms;
     my %attachment_objects;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
+
+        if( !blessed $atom && !is_element( $atom, 'C' ) &&
+            $atom->{symbol} && exists $elements{$atom->{symbol}} ) {
+            push @{$heteroatoms{$atom->{symbol}}}, $i;
+        }
+
         for my $neighbour ($graph->neighbours( $atom )) {
             my $attachment_name = get_sidechain_name( $graph, $atom, $neighbour );
             push @{$attachments{$attachment_name}}, $i;
@@ -158,6 +165,26 @@ sub get_sidechain_name
 
         $name .= $attachment;
     }
+
+    # Collecting names of all heteroatoms
+    for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
+                          keys %heteroatoms) {
+
+        if( $chain->needs_heteroatom_locants ) {
+            $name->append_locants( $chain->locants( @{$heteroatoms{$element}} ) );
+        }
+
+        if( $chain->needs_heteroatom_names ) {
+            if( @{$heteroatoms{$element}} > 1 ) {
+                my $number = IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} );
+                $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
+                $name .= $number;
+            }
+
+            $name->append_element( $elements{$element}->{prefix} );
+        }
+    }
+
     $name .= unbranched_chain_name( $chain );
     $name->{name} =~ s/(an)?e$//; # FIXME: Dirty
 
