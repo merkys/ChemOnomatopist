@@ -19,6 +19,7 @@ my @cases = (
     { smiles => 'O1CC=CC2=C1C=CC=C2', iupac => '2H-1-benzopyran' },
     { smiles => 'C1OC=CC2=C1C=CC=C2', iupac => '1H-2-benzopyran' },
     { smiles => 'C1[Se]C=CC2=C1C=CC=C2', iupac => '1H-2-benzoselenopyran' },
+    { smiles => 'N1=CC=CC2=CC=CC=C12', iupac => 'quinoline', AUTHOR => 1 },
 
     { smiles => 'P1C=CC2=CC=CC=C12', iupac => 'phosphindole' }, # Not sure if H prefix is not needed
     { smiles => 'C1=CC=C2C(=C1)C(=C(P2(Cl)(Cl)Cl)Cl)Cl', iupac => '1,1,1,2,3-pentachlorophosphindole' }, # PubChem 2784508
