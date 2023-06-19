@@ -14,6 +14,7 @@ my @cases = (
     { smiles => 'ClC(=C(Cl)Cl)Cl', iupac => 'tetrachloroethene', AUTHOR => 1 },
 
     { smiles => 'C1CCCCC1CCOCC', iupac => '(3-oxapentyl)cyclohexane' },
+    { smiles => 'C1CCCCC1OCCCC', iupac => '(1-oxapentyl)cyclohexane' },
 
     # From BBv2 P-15.4.3.1
     { smiles => 'COCSSCCOCC[Se]C', iupac => '2,8-dioxa-4,5-dithia-11-selenadodecane' },

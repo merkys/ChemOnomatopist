@@ -744,13 +744,15 @@ sub select_sidechain
     my( $graph, $parent, $start ) = @_;
 
     # Do this for non-carbons for now in order to represent attachments
-    # FIXME: Fails whenever $start is a heteroatom that is allowed to be part of chain
-    return ChemOnomatopist::Chain->new( $graph, $parent, $start ) unless is_element( $start, 'C' );
+    if( !is_element( $start, 'C' ) && $graph->degree( $start ) == 0 ) {
+        return ChemOnomatopist::Chain->new( $graph, $parent, $start );
+    }
 
     # Cleaning the graph from the heteroatom leaves
     my $C_graph = copy $graph;
     $C_graph->delete_vertices( grep { blessed $_ && !is_element( $_, 'C' ) } $C_graph->vertices );
-    while( my @leaves = grep { !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 } $C_graph->vertices ) {
+    # FIXME: Removal of heteroatoms ruins naming of sidechains with them
+    while( my @leaves = grep { !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 && $_ != $start } $C_graph->vertices ) {
         $C_graph->delete_vertices( @leaves );
     }
 
