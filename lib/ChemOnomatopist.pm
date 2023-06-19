@@ -181,7 +181,7 @@ sub get_sidechain_name
 
 sub get_mainchain_name
 {
-    my( $graph, $chain, $options ) = @_;
+    my( $graph, $chain ) = @_;
 
     my @vertices = $graph->vertices;
     my @chain = $chain->vertices;
