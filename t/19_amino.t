@@ -6,16 +6,20 @@ use warnings;
 use ChemOnomatopist;
 use Test::More;
 
-my %SMILES_cases = (
-    'CC(CN)O' => '1-aminopropan-2-ol',
-    'C(CC(=O)N)C(=O)C(=O)O' => '5-amino-2,5-dioxopentanoic acid',
-    'CC(CC(C(=O)O)N)N' => '2,4-diaminopentanoic acid',
-    'C(CN)C=O' => '3-aminopropanal',
-    'C(CCN)CCN' => 'pentane-1,5-diamine',
+my @cases = (
+    { smiles => 'CC(CN)O', iupac => '1-aminopropan-2-ol' },
+    { smiles => 'C(CC(=O)N)C(=O)C(=O)O', iupac => '5-amino-2,5-dioxopentanoic acid' },
+    { smiles => 'CC(CC(C(=O)O)N)N', iupac => '2,4-diaminopentanoic acid' },
+    { smiles => 'C(CN)C=O', iupac => '3-aminopropanal' },
+    { smiles => 'C(CCN)CCN', iupac => 'pentane-1,5-diamine' },
 );
 
-plan tests => scalar( keys %SMILES_cases );
+@cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
+plan skip_all => 'No available cases' unless @cases;
+plan tests => scalar @cases;
 
-for my $case (sort keys %SMILES_cases) {
-    is ChemOnomatopist::get_name( $case ), $SMILES_cases{$case};
+for my $case (@cases) {
+    eval { is ChemOnomatopist::get_name( $case->{smiles} ), $case->{iupac} };
+    $@ =~ s/\n$// if $@;
+    fail $case->{smiles} . ": $@" if $@;
 }
