@@ -45,6 +45,7 @@ use Chemistry::OpenSMILES qw(
     is_double_bond
     is_ring_atom
     is_single_bond
+    is_triple_bond
 );
 use Graph::Traversal::DFS;
 use Graph::Undirected;
@@ -582,13 +583,6 @@ sub is_element
     return ref $atom eq 'HASH' &&
            exists $atom->{symbol} &&
            ucfirst $atom->{symbol} eq $element;
-}
-
-sub is_triple_bond
-{
-    my( $graph, $A, $B ) = @_;
-    return $graph->has_edge_attribute( $A, $B, 'bond' ) &&
-           $graph->get_edge_attribute( $A, $B, 'bond' ) eq '#';
 }
 
 # Given a graph, selects the main chain.
