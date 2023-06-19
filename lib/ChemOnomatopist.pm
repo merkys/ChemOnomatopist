@@ -434,7 +434,7 @@ sub find_groups
 
         # Ketones and their chalcogen analogues
         if( @neighbours == 1 && @C == 1 && is_double_bond( $graph, $atom, @C ) &&
-            any { is_element( $atom, $_ ) } ( 'O', 'S', 'Se', 'Te' ) ) {
+            any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
             my $ketone = ChemOnomatopist::Group::Ketone->new( @C, $atom );
             $graph->add_edge( @C, $ketone );
             $graph->delete_vertices( $atom );
