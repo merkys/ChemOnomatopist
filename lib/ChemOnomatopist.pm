@@ -43,6 +43,7 @@ use ChemOnomatopist::Util::Graph qw(
 );
 use Chemistry::OpenSMILES qw(
     is_double_bond
+    is_ring_atom
     is_single_bond
 );
 use Graph::Traversal::DFS;
@@ -369,9 +370,9 @@ sub find_groups
         my @neighbours = $graph->neighbours( $atom );
         my @N = grep { is_element( $_, 'N' ) } @neighbours;
 
-        if( is_element( $atom, 'C' ) && @neighbours == 3 && @N == 3 ) {
+        if( is_element( $atom, 'C' ) && @neighbours == 3 && @N == 3 &&
+            !is_ring_atom( $graph, $atom ) ) {
             # Detecting guanidine
-            # FIXME: Check if not in any ring
             my $guanidine = ChemOnomatopist::Group::Guanidine->new( copy $graph, $atom );
             for (map { $graph->neighbours( $_ ) } @N) {
                 $graph->add_edge( $guanidine, $_ );
