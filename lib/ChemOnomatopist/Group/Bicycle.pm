@@ -26,7 +26,7 @@ our @names = (
     [ 'N=CC=NCC', 'c:c:c:c:c:c:', 'quinoxaline' ],
     [ 'N=CC=CCC', 'NC=CC=CC=', '1,5-naphthyridine' ], # TODO: There are isomers
     [ 'C=NN=CCC', 'c:c:c:c:c:c:', 'phthalazine' ],
-    [ 'N=CC=CCC', 'c:c:c:c:c:c:', 'quinoline' ],
+    [ 'n:c:c:c:c:c:', 'c:c:c:c:c:c:', 'quinoline' ],
     [ 'C=NC=CCC', 'c:c:c:c:c:c:', 'isoquinoline' ],
     [ 'CC=CCNC',  'C=CC=CCN',  'quinolizine' ],
 
