@@ -371,7 +371,7 @@ sub find_groups
         my @N = grep { is_element( $_, 'N' ) } @neighbours;
 
         if( is_element( $atom, 'C' ) && @neighbours == 3 && @N == 3 &&
-            !is_ring_atom( $graph, $atom ) ) {
+            !is_ring_atom( $graph, $atom, -1 ) ) {
             # Detecting guanidine
             my $guanidine = ChemOnomatopist::Group::Guanidine->new( copy $graph, $atom );
             for (map { $graph->neighbours( $_ ) } @N) {
