@@ -499,6 +499,11 @@ sub find_groups
             $graph->add_edges( $ester, $acid );
             $graph->delete_vertices( $atom, @O );
         }
+
+        if( !blessed $atom && is_element( $atom, 'N' ) &&
+            @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
+            die "cannot process secondary and tertiary amines yet\n";
+        }
     }
 
     # Hydrogen atoms are no longer important.
