@@ -103,7 +103,8 @@ sub vertices()
     my @B = $self->{halves}[1]->vertices;
     # If there is only one center atom, it appears in both chains
     shift @B unless $self->{halves}[0]->{other_center};
-    return reverse( @A ), @B;
+    my @vertices = ( reverse( @A ), @B ); # Otherwise scalar is returned sometimes
+    return @vertices;
 }
 
 1;
