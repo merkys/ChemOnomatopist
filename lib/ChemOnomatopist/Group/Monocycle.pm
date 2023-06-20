@@ -92,7 +92,10 @@ sub needs_heteroatom_names()
 sub prefix()
 {
     my( $self ) = @_;
+
     my $name = $self->name;
+    return 'phenyl' if $name eq 'benzene';
+
     $name =~ s/ane$/yl/;
     return $name;
 }
