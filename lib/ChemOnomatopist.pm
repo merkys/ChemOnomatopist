@@ -88,11 +88,6 @@ sub get_sidechain_name
 {
     my( $graph, $parent, $start ) = @_;
 
-    # Groups know how to name themselves
-    if( blessed $start && $start->isa( ChemOnomatopist::Group:: ) ) {
-        return ChemOnomatopist::Name->new( $start->prefix );
-    }
-
     # Record the type of parent bond
     my $parent_bond = '-' if $parent;
     if(                $graph->has_edge_attribute( $parent, $start, 'bond' ) ) {
