@@ -459,7 +459,7 @@ sub find_groups
 
         # Secondary and tertiary amines
         if( $graph->has_vertex( $atom ) && is_element( $atom, 'N' ) && @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
-            my $amine = ChemOnomatopist::Group::Amine::SecondaryTertiary->new;
+            my $amine = ChemOnomatopist::Group::Amine::SecondaryTertiary->new( $graph );
             for (@neighbours) {
                 $graph->add_edge( $amine, $_ );
             }
