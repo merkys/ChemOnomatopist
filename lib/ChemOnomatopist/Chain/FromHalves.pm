@@ -31,7 +31,6 @@ sub halves()
     return @{$self->{halves}};
 }
 
-# FIXME: Check if the central atom qualifies
 sub branch_positions()
 {
     my( $self ) = @_;
@@ -43,19 +42,18 @@ sub branch_positions()
            ( map { $self->{halves}[1]->length + $_ - !defined $self->{halves}[0]{other_center} } @half1_positions );
 }
 
-# FIXME: Check if the central atom qualifies
-sub heteroatom_positions()
-{
-    my( $self ) = @_;
-    my @half0_positions = $self->{halves}[0]->heteroatom_positions;
-    my @half1_positions = $self->{halves}[1]->heteroatom_positions;
-    # If path parts start at the same atom, its attachments get duplicated
-    @half1_positions = grep { $_ } @half1_positions unless $self->{halves}[0]{other_center};
-    return ( map { $self->{halves}[0]->length - $_ - 1 }                                 reverse @half0_positions ),
-           ( map { $self->{halves}[1]->length + $_ - !defined $self->{halves}[0]{other_center} } @half1_positions );
-}
+# FIXME: Somewhy this fails '2,8-dioxa-4,5-dithia-11-selenadodecane' test in t/16_heteroatoms.t
+#~ sub heteroatom_positions()
+#~ {
+    #~ my( $self ) = @_;
+    #~ my @half0_positions = $self->{halves}[0]->heteroatom_positions;
+    #~ my @half1_positions = $self->{halves}[1]->heteroatom_positions;
+    #~ # If path parts start at the same atom, its attachments get duplicated
+    #~ @half1_positions = grep { $_ } @half1_positions unless $self->{halves}[0]{other_center};
+    #~ return ( map { $self->{halves}[0]->length - $_ - 1 }                                 reverse @half0_positions ),
+           #~ ( map { $self->{halves}[1]->length + $_ - !defined $self->{halves}[0]{other_center} } @half1_positions );
+#~ }
 
-# FIXME: Check if the central atom qualifies
 sub most_senior_group_positions()
 {
     my( $self ) = @_;
