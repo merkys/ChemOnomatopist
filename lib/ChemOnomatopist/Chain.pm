@@ -275,7 +275,8 @@ sub needs_substituent_locants()
 sub heteroatoms()
 {
     my( $self ) = @_;
-    return map { ucfirst $self->{vertices}[$_]{symbol} } $self->heteroatom_positions;
+    my @vertices = $self->vertices;
+    return map { ucfirst $vertices[$_]->{symbol} } $self->heteroatom_positions;
 }
 
 sub length()
