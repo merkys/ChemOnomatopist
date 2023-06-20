@@ -106,6 +106,13 @@ sub needs_heteroatom_locants()
 sub needs_heteroatom_names() { return 1 }
 sub needs_substituent_locants() { return 1 }
 
+# Not sure why this has to be overriden
+sub number_of_branches()
+{
+    my( $self ) = @_;
+    return int sum0 map { $_->number_of_branches } $self->halves;
+}
+
 sub vertices()
 {
     my( $self ) = @_;
