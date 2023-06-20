@@ -522,6 +522,7 @@ sub find_groups
 
     # Detecting cyclic compounds
     # FIXME: Maybe aromatise bonds in cycles in order to simplify their handling further on?
+    my @cyclic_compounds;
     for my $core (cyclic_components( $graph )) {
         my %vertices_by_degree;
         for my $vertex ($core->vertices) {
@@ -545,19 +546,23 @@ sub find_groups
         } else {
             die "cannot handle cyclic compounds other than monocycles and monospiro\n";
         }
+        push @cyclic_compounds, $compound;
+    }
 
-        for my $neighbour ( map { $graph->neighbours( $_ ) } $core->vertices ) {
+    # Updating the graph by inserting and reconnecting compounds instead of cyclic components
+    for my $compound (@cyclic_compounds) {
+        for my $neighbour ( map { $graph->neighbours( $_ ) } $compound->vertices ) {
             $graph->add_edge( $compound, $neighbour );
 
             # Reattach groups
             if( blessed $neighbour &&
                 $neighbour->isa( ChemOnomatopist::Group:: ) &&
                 $neighbour->C &&
-                $core->has_vertex( $neighbour->C ) ) {
+                any { $_ == $neighbour->C } $compound->vertices ) {
                 $neighbour->{C} = $compound;
             }
         }
-        $graph->delete_vertices( $core->vertices );
+        $graph->delete_vertices( $compound->vertices );
         $graph->delete_edge( $compound, $compound ); # May have been added, must be removed
     }
 
