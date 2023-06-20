@@ -105,7 +105,6 @@ sub get_sidechain_name
     # Handle non-carbon substituents
     if( @chain == 1 && !is_element( $chain[0], 'C' ) ) {
         if( blessed $chain[0] ) {
-            # FIXME: This is dead code, never reached
             return ChemOnomatopist::Name->new( $chain[0]->prefix );
         } elsif( exists $elements{$chain[0]->{symbol}} ) {
             my $element = $elements{$chain[0]->{symbol}}->{prefix};
