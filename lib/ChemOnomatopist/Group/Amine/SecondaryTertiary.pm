@@ -50,6 +50,7 @@ sub suffix()
     my $remaining_chain = ChemOnomatopist::Chain->new( $self->graph, $self->vertices );
     my $name = ChemOnomatopist::unbranched_chain_name( $remaining_chain );
     $name =~ s/e$//;
+    $name .= '-1-' if $self->length > 3;
     return $name . 'amine';
 }
 
