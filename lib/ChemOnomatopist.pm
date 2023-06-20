@@ -99,7 +99,12 @@ sub get_sidechain_name
     my $branches_at_start = grep { !blessed $_ || $_->is_carbon }
                                  $graph->neighbours( $start );
 
-    my $chain = select_sidechain( $graph, $parent, $start );
+    my $chain;
+    if( blessed $start && $start->isa( ChemOnomatopist::Chain:: ) ) {
+        $chain = $start;
+    } else {
+        $chain = select_sidechain( $graph, $parent, $start );
+    }
     my @chain = $chain->vertices;
 
     # Handle non-carbon substituents
@@ -179,7 +184,9 @@ sub get_sidechain_name
         }
     }
 
-    if( @chain == 1 && blessed $chain[0] ) {
+    if( $chain->isa( ChemOnomatopist::Group:: ) ) {
+        $name .= $chain->prefix;
+    } elsif( @chain == 1 && blessed $chain[0] ) {
         $name .= $chain[0]->prefix;
     } else {
         $name .= unbranched_chain_name( $chain );
