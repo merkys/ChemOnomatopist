@@ -31,6 +31,7 @@ sub halves()
     return @{$self->{halves}};
 }
 
+# FIXME: Check if the central atom qualifies
 sub branch_positions()
 {
     my( $self ) = @_;
@@ -42,6 +43,7 @@ sub branch_positions()
            ( map { $self->{halves}[1]->length + $_ - !defined $self->{halves}[0]{other_center} } @half1_positions );
 }
 
+# FIXME: Check if the central atom qualifies
 sub heteroatom_positions()
 {
     my( $self ) = @_;
@@ -53,6 +55,7 @@ sub heteroatom_positions()
            ( map { $self->{halves}[1]->length + $_ - !defined $self->{halves}[0]{other_center} } @half1_positions );
 }
 
+# FIXME: Check if the central atom qualifies
 sub most_senior_group_positions()
 {
     my( $self ) = @_;
