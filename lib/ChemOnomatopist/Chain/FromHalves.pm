@@ -9,18 +9,7 @@ use warnings;
 use Chemistry::OpenSMILES qw( is_single_bond );
 use List::Util qw( all sum sum0 );
 
-sub AUTOLOAD {
-    our $AUTOLOAD;
-    my $call = $AUTOLOAD;
-    $call =~ s/.*:://;
-    return if $call eq 'DESTROY';
-    if( $call =~ /^number_/ ) {
-        return int sum0 map { $_->can( $call )->( $_ ) } $_[0]->halves;
-    } else {
-        warn "$call called"; # This may be a source of future problems, it is better to throw a warning here
-        return;
-    }
-}
+use parent ChemOnomatopist::Chain::;
 
 sub new
 {
@@ -40,13 +29,6 @@ sub halves()
 {
     my( $self ) = @_;
     return @{$self->{halves}};
-}
-
-sub length()
-{
-    my( $self ) = @_;
-    my( $A ) = $self->halves;
-    return sum( map { $_->length } $self->halves ) - !$A->{other_center};
 }
 
 sub branch_positions()
@@ -100,41 +82,11 @@ sub bonds()
     return @bonds;
 }
 
-sub heteroatoms()
-{
-    my( $self ) = @_;
-    my @vertices = $self->vertices;
-    return map { ucfirst $vertices[$_]->{symbol} } $self->heteroatom_positions;
-}
-
-sub is_saturated()
-{
-    my( $self ) = @_;
-    return '' unless all { $_->is_saturated } $self->halves;
-    return  1 unless $self->{halves}[0]{other_center};
-    return is_single_bond( $self->graph,
-                           $self->{halves}[0]->{other_center},
-                           $self->{halves}[1]->{other_center} );
-}
-
 sub locant_names()
 {
     my( $self ) = @_;
     return reverse( $self->{halves}[0]->locant_names ),
            $self->{halves}[1]->locant_names;
-}
-
-sub locants()
-{
-    my $self = shift;
-    return map { $_ + 1 } @_;
-}
-
-sub multiple_bond_positions()
-{
-    my( $self ) = @_;
-    my @bonds = $self->bonds;
-    return grep { $bonds[$_] =~ /^[=#\$]$/ } 0..$#bonds;
 }
 
 sub needs_multiple_bond_locants() # FIXME: Inherit from ChemOnomatopist::Chain
@@ -152,7 +104,6 @@ sub needs_heteroatom_locants()
 }
 
 sub needs_heteroatom_names() { return 1 }
-
 sub needs_substituent_locants() { return 1 }
 
 sub vertices()
@@ -163,18 +114,6 @@ sub vertices()
     # If there is only one center atom, it appears in both chains
     shift @B unless $self->{halves}[0]->{other_center};
     return reverse( @A ), @B;
-}
-
-sub number_of_double_bonds()
-{
-    my( $self ) = @_;
-    return scalar grep { $_ eq '=' } $self->bonds;
-}
-
-sub number_of_multiple_bonds()
-{
-    my( $self ) = @_;
-    return scalar grep { $_ =~ /^[=#\$]$/ } $self->bonds;
 }
 
 1;
