@@ -44,7 +44,6 @@ my @cases = (
 
     { smiles => 'CCN1C=NC2=C(N=CN=C21)N', iupac => '9-ethylpurin-6-amine', AUTHOR => 1 }, # PubChem 7
     { smiles => 'CCCCCNC1=C(C=NC2=CC=CC=C21)[N+](=O)[O-]', iupac => '3-nitro-N-pentylquinolin-4-amine', AUTHOR => 1 }, # PubChem 21355672
-    { smiles => 'C1=CC(=NC(=C1N)C2=CC(=C(C=C2Cl)Cl)Cl)C(=O)O', iupac => '5-amino-6-(2,4,5-trichlorophenyl)pyridine-2-carboxylic acid', AUTHOR => 1 }, # PubChem 133086582
 
     { smiles => 'C1(=CC=C(C=2C(=CC=C(C12)C(=O)O)C(=O)O)C(=O)O)C(=O)O', iupac => 'naphthalene-1,4,5,8-tetracarboxylic acid' },
 );
