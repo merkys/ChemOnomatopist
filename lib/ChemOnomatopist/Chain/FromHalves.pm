@@ -89,23 +89,6 @@ sub locant_names()
            $self->{halves}[1]->locant_names;
 }
 
-sub needs_multiple_bond_locants() # FIXME: Inherit from ChemOnomatopist::Chain
-{
-    my( $self ) = @_;
-    return $self->length > 2;
-}
-
-sub needs_heteroatom_locants()
-{
-    my( $self ) = @_;
-    return '' if $self->length == 1;
-
-    return 1; # FIXME: Port or inherit from ChemOnomatopist::Chain
-}
-
-sub needs_heteroatom_names() { return 1 }
-sub needs_substituent_locants() { return 1 }
-
 # Not sure why this has to be overriden
 sub number_of_branches()
 {
