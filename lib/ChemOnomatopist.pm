@@ -103,14 +103,11 @@ sub get_sidechain_name
     my @chain = $chain->vertices;
 
     # Handle non-carbon substituents
-    if( @chain == 1 && !is_element( $chain[0], 'C' ) ) {
-        if( blessed $chain[0] ) {
-            return ChemOnomatopist::Name->new( $chain[0]->prefix );
-        } elsif( exists $elements{$chain[0]->{symbol}} ) {
-            my $element = $elements{$chain[0]->{symbol}}->{prefix};
-            $element =~ s/a$/o/; # TODO: Is this a general rule? BBv2 seems silent.
-            return ChemOnomatopist::Name->new( $element );
-        }
+    if( @chain == 1 && !is_element( $chain[0], 'C' ) && !blessed $chain[0] &&
+        exists $elements{$chain[0]->{symbol}} ) {
+        my $element = $elements{$chain[0]->{symbol}}->{prefix};
+        $element =~ s/a$/o/; # TODO: Is this a general rule? BBv2 seems silent.
+        return ChemOnomatopist::Name->new( $element );
     }
 
     $graph = copy $graph;
@@ -182,23 +179,27 @@ sub get_sidechain_name
         }
     }
 
-    $name .= unbranched_chain_name( $chain );
-    $name->{name} =~ s/(an)?e$//; # FIXME: Dirty
+    if( @chain == 1 && blessed $chain[0] ) {
+        $name .= $chain[0]->prefix;
+    } else {
+        $name .= unbranched_chain_name( $chain );
+        $name->{name} =~ s/(an)?e$//; # FIXME: Dirty
 
-    if( $branches_at_start > 1 ) {
-        my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
-        if( $branch_point || !$chain->is_saturated ) {
-            # According to BBv2 P-29.2 (1)
-            $name .= 'an' unless $name->{name} =~ /-en$/; # FIXME: Dirty
-            $name->append_substituent_locant( $branch_point + 1 );
+        if( $branches_at_start > 1 ) {
+            my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
+            if( $branch_point || !$chain->is_saturated ) {
+                # According to BBv2 P-29.2 (1)
+                $name .= 'an' unless $name->{name} =~ /-en$/; # FIXME: Dirty
+                $name->append_substituent_locant( $branch_point + 1 );
+            }
         }
+
+        $name .= 'yl';
+        $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Dirty
+
+        $name .= 'idene' if $parent_bond && $parent_bond eq '=';
+        $name .= 'idyne' if $parent_bond && $parent_bond eq '#';
     }
-
-    $name .= 'yl';
-    $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Dirty
-
-    $name .= 'idene' if $parent_bond && $parent_bond eq '=';
-    $name .= 'idyne' if $parent_bond && $parent_bond eq '#';
 
     return $name;
 }
