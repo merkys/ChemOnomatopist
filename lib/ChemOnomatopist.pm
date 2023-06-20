@@ -758,13 +758,10 @@ sub select_sidechain
         return ChemOnomatopist::Chain->new( $graph, $parent, $start );
     }
 
-    # Cleaning the graph from the heteroatom leaves
     my $C_graph = copy $graph;
-    $C_graph->delete_vertices( grep { blessed $_ && !is_element( $_, 'C' ) } $C_graph->vertices );
-    # FIXME: Removal of heteroatoms ruins naming of sidechains with them
-    while( my @leaves = grep { !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 && $_ != $start } $C_graph->vertices ) {
-        $C_graph->delete_vertices( @leaves );
-    }
+    # Delete non-carbon groups and leaves
+    $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && !is_element( $_, 'C' ) } $C_graph->vertices );
+    $C_graph->delete_vertices( grep { $_ != $start && !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 } $C_graph->vertices );
 
     my @path_parts;
     for my $neighbour ($C_graph->neighbours( $start )) {
