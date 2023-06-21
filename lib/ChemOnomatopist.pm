@@ -356,6 +356,7 @@ sub get_mainchain_name
     $name = 'benzoic acid' if $name eq 'benzenecarboxylic acid';
     $name = 'toluene'      if $name eq 'methylbenzene';
     $name =~ s/^(\d,\d-)dimethylbenzene$/$1xylene/;
+    $name =~ s/ethanoic acid$/acetic acid/;
 
     return $name;
 }
