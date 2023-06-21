@@ -485,11 +485,12 @@ sub find_groups
             $graph->delete_vertices( @groups, @H ); # FIXME: Be careful!
             $graph->add_edges( map { $aldehyde, $_ } $graph->neighbours( $atom ) );
             $graph->delete_vertex( $atom );
-        } elsif( is_element( $atom, 'C' ) && @neighbours == 3 && @groups >= 1 && @O == 2 &&
+        } elsif( is_element( $atom, 'C' ) && @neighbours == 3 && @groups >= 1 && @O == 2 && @H == 0 &&
             (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) &&
             ( (any { $_->isa( ChemOnomatopist::Group::Hydroxy:: ) } @groups) ||
               (all { $graph->degree( $_ ) == 1 } @O) ) ) {
             # Detecting carboxyl
+            # FIXME: Detect formic acid
             my( $parent ) = grep { !is_element( $_, 'O' ) } @neighbours;
             my $carboxyl = ChemOnomatopist::Group::Carboxyl->new( $parent );
             $graph->delete_vertices( $atom, @O ); # FIXME: Be careful!
