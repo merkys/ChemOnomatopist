@@ -23,6 +23,7 @@ our @EXPORT_OK = qw(
     graph_longest_paths
     graph_longest_paths_from_vertex
     graph_path_between_vertices
+    graph_replace
     merge_graphs
     tree_branch_positions
     tree_number_of_branches
@@ -213,6 +214,20 @@ sub graph_longest_paths_from_vertex
     }
 
     return @longest_paths;
+}
+
+# Replace one or more old vertices with a single new one
+sub graph_replace
+{
+    my( $graph, $new, @old ) = @_;
+
+    my $neighbours = set( map { $graph->neighbours( $_ ) } @old ) - set( @old );
+    for my $neighbour (@$neighbours) {
+        $graph->add_edge( $new, $neighbour ); # FIXME: Migrate edge attributes
+    }
+    $graph->delete_vertices( @old );
+
+    return $graph;
 }
 
 sub merge_graphs
