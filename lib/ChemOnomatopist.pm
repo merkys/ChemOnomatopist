@@ -124,9 +124,6 @@ sub get_sidechain_name
         return ChemOnomatopist::Name->new( $element );
     }
 
-    $graph = copy $graph;
-    $graph->delete_path( @chain );
-
     # Examine the attachments to the main chain: delete the edges
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_sidechain_name()
