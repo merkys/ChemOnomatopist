@@ -55,6 +55,26 @@ sub substituents()
     return @substituents;
 }
 
+# To replace substituents()
+sub substituents_struct()
+{
+    my( $self ) = @_;
+
+    my @vertices = $self->vertices;
+    my $vertices = set( @vertices );
+
+    my @substituents;
+    for my $i (0..$#vertices) {
+        my $vertex = $vertices[$i];
+        for my $neighbour ($self->graph->neighbours( $vertex )) {
+            next if $vertices->has( $neighbour );
+            push @substituents, { position => $i, substituent => $neighbour };
+        }
+    }
+
+    return @substituents;
+}
+
 sub vertices()
 {
     my( $self ) = @_;

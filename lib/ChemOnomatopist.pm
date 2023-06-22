@@ -93,6 +93,10 @@ sub get_sidechain_name
 {
     my( $graph, $parent, $start ) = @_;
 
+    if( $parent && blessed $parent ) {
+        ( $parent ) = grep { $graph->has_edge( $_, $start ) } $parent->vertices;
+    }
+
     # Record the type of parent bond
     my $parent_bond = '-' if $parent;
     if(                $graph->has_edge_attribute( $parent, $start, 'bond' ) ) {
@@ -251,16 +255,13 @@ sub get_mainchain_name
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_sidechain_name()
     my @senior_group_attachments;
-    for my $i (0..$#chain) {
-        my $atom = $chain[$i];
-        for my $neighbour ($graph->neighbours( $atom )) {
-            if( $most_senior_group && blessed $neighbour && $neighbour->isa( $most_senior_group ) ) {
-                push @senior_group_attachments, $i;
-            } else {
-                my $attachment_name = get_sidechain_name( $graph, $atom, $neighbour );
-                push @{$attachments{$attachment_name}}, $i;
-                $attachment_objects{$attachment_name} = $attachment_name;
-            }
+    for my $sub ($chain->substituents_struct) {
+        if( $most_senior_group && blessed $sub->{substituent} && $sub->{substituent}->isa( $most_senior_group ) ) {
+            push @senior_group_attachments, $sub->{position};
+        } else {
+            my $name = get_sidechain_name( $graph, $chain, $sub->{substituent} );
+            push @{$attachments{$name}}, $sub->{position};
+            $attachment_objects{$name} = $name;
         }
     }
 
