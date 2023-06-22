@@ -93,13 +93,13 @@ sub get_sidechain_name
 {
     my( $graph, $parent, $start ) = @_;
 
-    if( $parent && blessed $parent ) {
+    if( $parent && !$graph->has_edge( $parent, $start ) && blessed $parent ) {
         ( $parent ) = grep { $graph->has_edge( $_, $start ) } $parent->vertices;
     }
 
     # Record the type of parent bond
     my $parent_bond = '-' if $parent;
-    if(                $graph->has_edge_attribute( $parent, $start, 'bond' ) ) {
+    if( $parent &&     $graph->has_edge_attribute( $parent, $start, 'bond' ) ) {
         $parent_bond = $graph->get_edge_attribute( $parent, $start, 'bond' );
     }
     $graph->delete_edge( $parent, $start ) if $parent;
