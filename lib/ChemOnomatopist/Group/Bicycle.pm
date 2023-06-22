@@ -222,6 +222,12 @@ sub needs_heteroatom_locants()
 
 sub needs_heteroatom_names() { return '' } # FIXME: This is not always correct
 
+sub prefix()
+{
+    my( $self ) = @_;
+    return $self->suffix;
+}
+
 # FIXME: This is a bit strange: class and object method with the same name
 sub suffix()
 {
