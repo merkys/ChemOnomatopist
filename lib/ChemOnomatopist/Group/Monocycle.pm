@@ -34,7 +34,8 @@ our %names = (
     'C=CC=CN'  => '1H-pyrrole', # FIXME: Adjust for isomerism
     'C=CC=C[Se]' => 'selenophene',
     'C=CC=C[Te]' => 'tellurophene',
-    'C=CC=CS'  => 'thiophene',
+    'C=CC=CS' => 'thiophene',
+    'C=CSc:c' => 'thiophene', # For fused rings
 
     # 6-membered aromatic
     'c:c:c:c:c:c:' => 'benzene',
