@@ -226,10 +226,8 @@ sub get_mainchain_name
     my @groups = most_senior_groups( $graph->vertices );
     my $most_senior_group = blessed $groups[0] if @groups;
 
-    # Disconnect the main chain: this way every main chain atom remains
-    # connected only to the side chains.
+    # Switch to the chain's internal graph
     $graph = copy $chain->graph;
-    $graph->delete_edges( map { @$_ } $graph->subgraph( \@chain )->edges );
 
     my %attachments;
     my %heteroatoms;
