@@ -76,6 +76,11 @@ sub get_name
     }
     die "nothing supplied for get_name()\n" unless $graph;
 
+    if( any { $_ ne 'H' && !exists $elements{$_} }
+        map { ucfirst $_->{symbol} } $graph->vertices ) {
+        die "unknown elements detected\n";
+    }
+
     find_groups( $graph );
 
     my $main_chain = select_mainchain( $graph );
