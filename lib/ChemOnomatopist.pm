@@ -749,6 +749,10 @@ sub select_mainchain
     my $chain = filter_chains( @chains );
     my @vertices = $chain->vertices;
 
+    if( $chain->isa( ChemOnomatopist::Group:: ) && $chain->candidate_for ) {
+        # TODO: Replace the original group with this candidate
+    }
+
     # If there is at least one of carbon-based senior group attachment,
     # it means both ends are already senior, prompting to follow the
     # exception of three or more carbon-based groups.

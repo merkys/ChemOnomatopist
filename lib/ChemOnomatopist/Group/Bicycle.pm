@@ -152,6 +152,7 @@ sub candidates()
 
         for (@chains) {
             $_->_adjust_vertices_to_cycles;
+            $_->{candidate_for} = $self unless $_ == $self;
         }
 
         return @chains;

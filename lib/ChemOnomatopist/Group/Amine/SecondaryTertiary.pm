@@ -27,6 +27,7 @@ sub candidates()
     my @chains;
     for ($self->graph->neighbours( $self )) {
         my $chain = ChemOnomatopist::select_sidechain( $self->graph, $self, $_ );
+        $chain->{candidate_for} = $self;
         push @chains, ChemOnomatopist::Group::Amine::SecondaryTertiary->new( $self->graph,
                                                                              $self,
                                                                              $chain->vertices );
