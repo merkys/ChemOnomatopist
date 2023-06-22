@@ -39,6 +39,7 @@ use ChemOnomatopist::Util::Graph qw(
     graph_has_cycle
     graph_longest_paths_from_vertex
     graph_path_between_vertices
+    graph_replace
     tree_branch_positions
     tree_number_of_branches
 );
@@ -463,10 +464,7 @@ sub find_groups
         # Secondary and tertiary amines
         if( $graph->has_vertex( $atom ) && is_element( $atom, 'N' ) && @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
             my $amine = ChemOnomatopist::Group::Amine::SecondaryTertiary->new( $graph );
-            for (@neighbours) {
-                $graph->add_edge( $amine, $_ );
-            }
-            $graph->delete_vertex( $atom );
+            graph_replace( $graph, $amine, $atom );
         }
     }
 

@@ -10,6 +10,7 @@ use ChemOnomatopist::Util qw( copy );
 use Exporter;
 use Graph::Traversal::BFS;
 use List::Util qw( sum0 );
+use Set::Object qw( set );
 
 use parent Exporter::;
 
