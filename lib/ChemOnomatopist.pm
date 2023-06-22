@@ -558,12 +558,12 @@ sub find_groups
     }
 
     # Updating the graph by inserting and reconnecting compounds instead of cyclic components
-    for my $compound (@cyclic_compounds) {
-        my @graphs_to_update = ( $graph, map { $_->graph } grep { $_ != $compound } @cyclic_compounds );
-        push @graphs_to_update,
-             map  { $_->graph }
-             grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Guanidine:: ) }
-                  $graph->vertices;
+    my @compounds_with_graphs = ( @cyclic_compounds,
+                                  grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Guanidine:: ) }
+                                       $graph->vertices );
+    for my $compound (@compounds_with_graphs) {
+        my @graphs_to_update =
+            ( $graph, map { $_->graph } grep { $_ != $compound } @compounds_with_graphs );
         for my $graph (@graphs_to_update) {
             for my $neighbour ( map { $graph->neighbours( $_ ) } $compound->vertices ) {
                 $graph->add_edge( $compound, $neighbour );
