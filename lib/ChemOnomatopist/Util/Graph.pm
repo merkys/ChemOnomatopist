@@ -222,9 +222,15 @@ sub graph_replace
 {
     my( $graph, $new, @old ) = @_;
 
-    my $neighbours = set( map { $graph->neighbours( $_ ) } @old ) - set( @old );
-    for my $neighbour (@$neighbours) {
-        $graph->add_edge( $new, $neighbour ); # FIXME: Migrate edge attributes
+    my $old = set( @old );
+    for my $edge (grep { ($old->has( $_->[0] ) && !$old->has( $_->[1] )) ||
+                         ($old->has( $_->[1] ) && !$old->has( $_->[0] )) }
+                       $graph->edges) {
+        my( $vertex, $neighbour ) = $old->has( $edge->[0] ) ? @$edge : reverse @$edge;
+        next if $graph->has_edge( $new, $neighbour );
+        $graph->add_edge( $new, $neighbour );
+        next unless $graph->has_edge_attributes( @$edge );
+        $graph->set_edge_attributes( $new, $neighbour, $graph->get_edge_attributes( @$edge ) );
     }
     $graph->delete_vertices( @old );
 
