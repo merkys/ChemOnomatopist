@@ -130,22 +130,21 @@ sub get_sidechain_name
     # Examine the attachments to the main chain: delete the edges
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_sidechain_name()
-    my %attachments;
     my %heteroatoms;
-    my %attachment_objects;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
-
         if( !blessed $atom && !is_element( $atom, 'C' ) &&
             $atom->{symbol} && exists $elements{$atom->{symbol}} ) {
             push @{$heteroatoms{$atom->{symbol}}}, $i;
         }
+    }
 
-        for my $neighbour ($graph->neighbours( $atom )) {
-            my $attachment_name = get_sidechain_name( $graph, $atom, $neighbour );
-            push @{$attachments{$attachment_name}}, $i;
-            $attachment_objects{$attachment_name} = $attachment_name;
-        }
+    my %attachments;
+    my %attachment_objects;
+    for my $sub ($chain->substituents_struct) {
+        my $name = get_sidechain_name( $graph, $chain, $sub->{substituent} );
+        push @{$attachments{$name}}, $sub->{position};
+        $attachment_objects{$name} = $name;
     }
 
     # Collecting names of all the attachments
