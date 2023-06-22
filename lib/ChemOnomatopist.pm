@@ -142,6 +142,7 @@ sub get_sidechain_name
     my %attachments;
     my %attachment_objects;
     for my $sub ($chain->substituents_struct) {
+        next if $parent && $parent == $sub->{substituent}; # Skip backlink
         my $name = get_sidechain_name( $graph, $chain, $sub->{substituent} );
         push @{$attachments{$name}}, $sub->{position};
         $attachment_objects{$name} = $name;
