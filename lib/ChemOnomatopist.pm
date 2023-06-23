@@ -1289,11 +1289,21 @@ sub unbranched_chain_name($)
         return $name;
     }
 
-    $name->append_stem( alkane_chain_name scalar @chain );
-
     my @bonds = $chain->bonds;
     my @double = grep { $bonds[$_] eq '=' } 0..$#bonds;
     my @triple = grep { $bonds[$_] eq '#' } 0..$#bonds;
+
+    # BBv2 P-63.2.2.2
+    # FIXME: This does not work for now
+    if( 0 && $chain->parent && $chain->length <= 5 && (all { !blessed $_ } @chain) && is_element( $chain[0], 'O' ) &&
+        !@double && !@triple && all { is_element( $_, 'C' ) } @chain[1..$#chain] ) {
+        $name->append_stem( alkane_chain_name( $chain->length - 1 ) );
+        $name .= 'oxy';
+        return $name;
+    }
+
+    $name->append_stem( alkane_chain_name $chain->length );
+
     if( @double ) {
         if( $chain->needs_multiple_bond_locants || @double > 1 || @triple ) {
             $name->append_locants( map { $_ + 1 } @double );
