@@ -409,9 +409,10 @@ sub find_groups
             $graph->add_edge( @C, $nitro );
             $graph->delete_vertices( $atom, @O );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 1 && @C == 1 &&
+                 $graph->degree( @C ) >= 2 &&
                  is_triple_bond( $graph, $atom, @C ) ) {
             # Detecting cyanide
-            my( $C ) = grep { is_element( $_, 'C' ) } $graph->neighbours( @C );
+            my( $C ) = grep { $_ != $atom } $graph->neighbours( @C );
             my $cyanide = ChemOnomatopist::Group::Cyanide->new( $C );
             $graph->add_edge( $C, $cyanide );
             $graph->delete_vertices( $atom, @C );
@@ -836,6 +837,9 @@ sub select_sidechain
                    \&rule_longest_chains,
                    \&rule_greatest_number_of_side_chains, # After this rule we are left with a set of longest chains all having the same number of side chains
                    $rule_lowest_free_valence,
+                   \&rule_most_multiple_bonds,
+                   \&rule_most_double_bonds,
+                   \&rule_lowest_numbered_multiple_bonds,
                    \&rule_lowest_numbered_locants,
                    \&rule_most_carbon_in_side_chains,
                    \&rule_least_branched_side_chains,
@@ -1273,6 +1277,11 @@ sub unbranched_chain_name($)
     my @chain = blessed $chain ? $chain->vertices : @$chain;
 
     my $name = ChemOnomatopist::Name->new;
+    if( @chain == 1 && !blessed $chain[0] && !is_element( @chain, 'C' ) ) {
+        $name .= 'ne'; # Leaving element prefix appending to the caller
+        return $name;
+    }
+
     $name->append_stem( alkane_chain_name scalar @chain );
 
     my( @double, @triple );

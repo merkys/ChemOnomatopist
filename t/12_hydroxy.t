@@ -4,15 +4,21 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
-use List::Util qw( all );
 use Test::More;
 
-my %SMILES_cases = (
-    'OCC(CO)(CO)CO' => '2,2-bis(hydroxymethyl)propane-1,3-diol',
+my @cases = (
+    { smiles => 'OCC(CO)(CO)CO', iupac => '2,2-bis(hydroxymethyl)propane-1,3-diol' },
+    { smiles => 'CC(C)(C)O', iupac => '2-methylpropan-2-ol' }, # From BBv2 P-63.1.2
 );
 
-plan tests => scalar( keys %SMILES_cases );
+@cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
+plan skip_all => 'No available cases' unless @cases;
+plan tests => scalar @cases;
 
-for my $case (sort keys %SMILES_cases) {
-    is ChemOnomatopist::get_name( $case ), $SMILES_cases{$case};
+for my $case (@cases) {
+    my $ok;
+    eval { $ok = is ChemOnomatopist::get_name( $case->{smiles} ), $case->{iupac} };
+    $@ =~ s/\n$// if $@;
+    fail $case->{smiles} . ": $@" if $@;
+    diag 'test supposed to fail with AUTHOR_TESTING' if $case->{AUTHOR} && $ok;
 }

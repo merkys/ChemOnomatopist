@@ -41,7 +41,7 @@ sub is_nitrogen() { return 1 }
 sub locants(@)
 {
     my $self = shift;
-    return map { $_ ? $_ + 1 : 'N' } @_;
+    return map { $_ ? $_ : 'N' } @_;
 }
 
 sub prefix() { return 'amino' }
