@@ -1281,6 +1281,11 @@ sub unbranched_chain_name($)
     my @chain = blessed $chain ? $chain->vertices : @$chain;
 
     my $name = ChemOnomatopist::Name->new;
+    if( @chain == 1 && !blessed $chain[0] && !is_element( @chain, 'C' ) ) {
+        $name .= 'ne'; # Leaving element prefix appending to the caller
+        return $name;
+    }
+
     $name->append_stem( alkane_chain_name scalar @chain );
 
     my( @double, @triple );
