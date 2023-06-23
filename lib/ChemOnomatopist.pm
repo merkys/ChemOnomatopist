@@ -840,6 +840,9 @@ sub select_sidechain
                    \&rule_longest_chains,
                    \&rule_greatest_number_of_side_chains, # After this rule we are left with a set of longest chains all having the same number of side chains
                    $rule_lowest_free_valence,
+                   \&rule_most_multiple_bonds,
+                   \&rule_most_double_bonds,
+                   \&rule_lowest_numbered_multiple_bonds,
                    \&rule_lowest_numbered_locants,
                    \&rule_most_carbon_in_side_chains,
                    \&rule_least_branched_side_chains,
