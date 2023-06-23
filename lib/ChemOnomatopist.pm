@@ -227,9 +227,6 @@ sub get_mainchain_name
     my @groups = most_senior_groups( $graph->vertices );
     my $most_senior_group = blessed $groups[0] if @groups;
 
-    # Switch to the chain's internal graph
-    $graph = copy $chain->graph;
-
     my %attachments;
     my %heteroatoms;
     my %attachment_objects;
