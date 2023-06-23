@@ -222,6 +222,8 @@ sub graph_replace
 {
     my( $graph, $new, @old ) = @_;
 
+    $graph->add_vertex( $new );
+
     my $old = set( @old );
     for my $edge (grep { ($old->has( $_->[0] ) && !$old->has( $_->[1] )) ||
                          ($old->has( $_->[1] ) && !$old->has( $_->[0] )) }
