@@ -747,8 +747,9 @@ sub select_mainchain
     my $chain = filter_chains( @chains );
     my @vertices = $chain->vertices;
 
+    # Replace the original chain with the selected candidate
     if( $chain->isa( ChemOnomatopist::Group:: ) && $chain->candidate_for ) {
-        # TODO: Replace the original group with this candidate
+        graph_replace( $graph, $chain, $chain->candidate_for );
     }
 
     # If there is at least one of carbon-based senior group attachment,
