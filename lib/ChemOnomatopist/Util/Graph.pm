@@ -10,6 +10,7 @@ use ChemOnomatopist::Util qw( copy );
 use Exporter;
 use Graph::Traversal::BFS;
 use List::Util qw( sum0 );
+use Set::Object qw( set );
 
 use parent Exporter::;
 
@@ -23,6 +24,7 @@ our @EXPORT_OK = qw(
     graph_longest_paths
     graph_longest_paths_from_vertex
     graph_path_between_vertices
+    graph_replace
     merge_graphs
     tree_branch_positions
     tree_number_of_branches
@@ -213,6 +215,26 @@ sub graph_longest_paths_from_vertex
     }
 
     return @longest_paths;
+}
+
+# Replace one or more old vertices with a single new one
+sub graph_replace
+{
+    my( $graph, $new, @old ) = @_;
+
+    my $old = set( @old );
+    for my $edge (grep { ($old->has( $_->[0] ) && !$old->has( $_->[1] )) ||
+                         ($old->has( $_->[1] ) && !$old->has( $_->[0] )) }
+                       $graph->edges) {
+        my( $vertex, $neighbour ) = $old->has( $edge->[0] ) ? @$edge : reverse @$edge;
+        next if $graph->has_edge( $new, $neighbour );
+        $graph->add_edge( $new, $neighbour );
+        next unless $graph->has_edge_attributes( @$edge );
+        $graph->set_edge_attributes( $new, $neighbour, $graph->get_edge_attributes( @$edge ) );
+    }
+    $graph->delete_vertices( @old );
+
+    return $graph;
 }
 
 sub merge_graphs

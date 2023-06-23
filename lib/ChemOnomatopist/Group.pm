@@ -81,6 +81,13 @@ sub suffix { return '' }
 sub multisuffix { return $_[0]->suffix }
 sub suffix_if_cycle_substituent() { return $_[0]->suffix }
 
+sub candidate_for()
+{
+    my( $self ) = @_;
+    return undef unless exists $self->{candidate_for};
+    return $self->{candidate_for};
+}
+
 # Return the attached carbon
 sub C {
     my( $self ) = @_;

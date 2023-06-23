@@ -75,6 +75,11 @@ sub candidates()
         push @chains, ChemOnomatopist::Group::Monocycle->new( $graph, @vertices );
         push @vertices, shift @vertices;
     }
+
+    for (@chains) {
+        $_->{candidate_for} = $self;
+    }
+
     return @chains;
 }
 
