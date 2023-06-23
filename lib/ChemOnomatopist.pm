@@ -413,9 +413,10 @@ sub find_groups
             $graph->add_edge( @C, $nitro );
             $graph->delete_vertices( $atom, @O );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 1 && @C == 1 &&
+                 $graph->degree( @C ) >= 2 &&
                  is_triple_bond( $graph, $atom, @C ) ) {
             # Detecting cyanide
-            my( $C ) = grep { is_element( $_, 'C' ) } $graph->neighbours( @C );
+            my( $C ) = grep { $_ != $atom } $graph->neighbours( @C );
             my $cyanide = ChemOnomatopist::Group::Cyanide->new( $C );
             $graph->add_edge( $C, $cyanide );
             $graph->delete_vertices( $atom, @C );
