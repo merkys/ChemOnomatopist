@@ -750,7 +750,7 @@ sub select_mainchain
 
     # Replace the original chain with the selected candidate
     if( $chain->isa( ChemOnomatopist::Group:: ) && $chain->candidate_for ) {
-        graph_replace( $graph, $chain, $chain->candidate_for );
+        graph_replace_all( $graph, $chain, $chain->candidate_for );
     }
 
     # If there is at least one of carbon-based senior group attachment,
@@ -938,6 +938,34 @@ sub filter_chains
 
     # TODO: Handle the case when none of the rules select proper chains
     return ();
+}
+
+sub graph_replace_all
+{
+    my( $graph, $new, @old ) = @_;
+
+    # Replace in the main graph
+    graph_replace( $graph, $new, @old );
+
+    my $old = set( @old );
+    for my $vertex ($graph->vertices) {
+        next unless blessed $vertex;
+
+        # Update parents
+        if( $vertex->isa( ChemOnomatopist::Group:: ) && $vertex->C && $old->has( $vertex->C ) ) {
+            $vertex->{C} = $new;
+        }
+
+        # Update internal graphs
+        if( $vertex->isa( ChemOnomatopist::Group::Bicycle:: ) ||
+            $vertex->isa( ChemOnomatopist::Group::Guanidine:: ) ||
+            $vertex->isa( ChemOnomatopist::Group::Monocycle:: ) ||
+            $vertex->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
+            graph_replace( $vertex->graph, $new, @old );
+        }
+    }
+
+    return $graph;
 }
 
 sub rule_most_groups
