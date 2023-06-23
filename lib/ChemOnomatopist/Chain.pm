@@ -236,6 +236,13 @@ sub needs_heteroatom_locants()
     my( $self ) = @_;
     return '' if $self->length == 1;
 
+    my @vertices = $self->vertices;
+    # Check if this is -oxy substituent
+    if( $self->parent && !$self->number_of_branches && $self->number_of_heteroatoms == 1 &&
+        $vertices[0]->{symbol} eq 'O' ) {
+        return '';
+    }
+
     if(      scalar( uniq $self->heteroatoms ) == 1 ) {
         return $self->number_of_heteroatoms != $self->max_valence;
     } elsif( scalar( uniq $self->heteroatoms ) >  1 ) {
@@ -243,7 +250,19 @@ sub needs_heteroatom_locants()
     }
 }
 
-sub needs_heteroatom_names() { return 1 }
+sub needs_heteroatom_names()
+{
+    my( $self ) = @_;
+
+    my @vertices = $self->vertices;
+    # Check if this is -oxy substituent
+    if( $self->parent && !$self->number_of_branches && $self->number_of_heteroatoms == 1 &&
+        $vertices[0]->{symbol} eq 'O' ) {
+        return '';
+    }
+
+    return 1;
+}
 
 sub needs_suffix_locant()
 {

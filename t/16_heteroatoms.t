@@ -13,9 +13,8 @@ my @cases = (
     { smiles => 'ClC(C(Cl)(Cl)Cl)(Cl)Cl', iupac => 'hexachloroethane', AUTHOR => 1 },
     { smiles => 'ClC(=C(Cl)Cl)Cl', iupac => 'tetrachloroethene', AUTHOR => 1 },
 
-    # FIXME: These are probably incorrect, at least the (1-oxapentyl) one, should be butoxy
     { smiles => 'C1CCCCC1CCOCC', iupac => '(3-oxapentyl)cyclohexane' },
-    { smiles => 'C1CCCCC1OCCCC', iupac => '(1-oxapentyl)cyclohexane' },
+    { smiles => 'C1CCCCC1OCCCC', iupac => 'butoxycyclohexane' }, # PubChem 13299482
 
     # From BBv2 P-15.4.3.1
     { smiles => 'COCSSCCOCC[Se]C', iupac => '2,8-dioxa-4,5-dithia-11-selenadodecane' },

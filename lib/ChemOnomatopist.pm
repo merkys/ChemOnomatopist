@@ -207,7 +207,7 @@ sub get_sidechain_name
             }
         }
 
-        $name .= 'yl';
+        $name .= 'yl' unless $name =~ /y$/;
         $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Dirty
 
         $name .= 'idene' if $parent_bond && $parent_bond eq '=';
@@ -1294,8 +1294,7 @@ sub unbranched_chain_name($)
     my @triple = grep { $bonds[$_] eq '#' } 0..$#bonds;
 
     # BBv2 P-63.2.2.2
-    # FIXME: This does not work for now
-    if( 0 && $chain->parent && $chain->length <= 5 && (all { !blessed $_ } @chain) && is_element( $chain[0], 'O' ) &&
+    if( $chain->parent && (all { !blessed $_ } @chain) && is_element( $chain[0], 'O' ) &&
         !@double && !@triple && all { is_element( $_, 'C' ) } @chain[1..$#chain] ) {
         $name->append_stem( alkane_chain_name( $chain->length - 1 ) );
         $name .= 'oxy';
