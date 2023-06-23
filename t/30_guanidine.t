@@ -21,7 +21,9 @@ plan skip_all => 'No available cases' unless @cases;
 plan tests => scalar @cases;
 
 for my $case (@cases) {
-    eval { is ChemOnomatopist::get_name( $case->{smiles} ), $case->{iupac} };
+    my $ok;
+    eval { $ok = is ChemOnomatopist::get_name( $case->{smiles} ), $case->{iupac} };
     $@ =~ s/\n$// if $@;
     fail $case->{smiles} . ": $@" if $@;
+    diag 'test supposed to fail with AUTHOR_TESTING' if $case->{AUTHOR} && $ok;
 }
