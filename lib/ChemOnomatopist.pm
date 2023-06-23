@@ -376,10 +376,8 @@ sub find_groups
             !is_ring_atom( $graph, $atom, -1 ) ) {
             # Detecting guanidine
             my $guanidine = ChemOnomatopist::Group::Guanidine->new( copy $graph, $atom );
-            for (map { $graph->neighbours( $_ ) } @N) {
-                $graph->add_edge( $guanidine, $_ );
-            }
-            $graph->delete_vertices( $atom, @N );
+            $graph->delete_vertex( $atom );
+            graph_replace_all( $graph, $guanidine, $atom, @N );
         }
     }
 
@@ -527,7 +525,6 @@ sub find_groups
 
     # Detecting cyclic compounds
     # FIXME: Maybe aromatise bonds in cycles in order to simplify their handling further on?
-    my @cyclic_compounds;
     for my $core (cyclic_components( $graph )) {
         my %vertices_by_degree;
         for my $vertex ($core->vertices) {
@@ -551,31 +548,7 @@ sub find_groups
         } else {
             die "cannot handle cyclic compounds other than monocycles and monospiro\n";
         }
-        push @cyclic_compounds, $compound;
-    }
-
-    # Updating the graph by inserting and reconnecting compounds instead of cyclic components
-    my @compounds_with_graphs = ( @cyclic_compounds,
-                                  grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Guanidine:: ) }
-                                       $graph->vertices );
-    for my $compound (@compounds_with_graphs) {
-        my @graphs_to_update =
-            ( $graph, map { $_->graph } grep { $_ != $compound } @compounds_with_graphs );
-        for my $graph (@graphs_to_update) {
-            for my $neighbour ( map { $graph->neighbours( $_ ) } $compound->vertices ) {
-                $graph->add_edge( $compound, $neighbour );
-
-                # Reattach groups
-                if( blessed $neighbour &&
-                    $neighbour->isa( ChemOnomatopist::Group:: ) &&
-                    $neighbour->C &&
-                    any { $_ == $neighbour->C } $compound->vertices ) {
-                    $neighbour->{C} = $compound;
-                }
-            }
-            $graph->delete_vertices( $compound->vertices );
-            $graph->delete_edge( $compound, $compound ); # May have been added, must be removed
-        }
+        graph_replace_all( $graph, $compound, $compound->vertices );
     }
 
     return;
@@ -746,7 +719,7 @@ sub select_mainchain
 
     # Replace the original chain with the selected candidate
     if( $chain->isa( ChemOnomatopist::Group:: ) && $chain->candidate_for ) {
-        graph_replace( $graph, $chain, $chain->candidate_for );
+        graph_replace_all( $graph, $chain, $chain->candidate_for );
     }
 
     # If there is at least one of carbon-based senior group attachment,
@@ -934,6 +907,36 @@ sub filter_chains
 
     # TODO: Handle the case when none of the rules select proper chains
     return ();
+}
+
+sub graph_replace_all
+{
+    my( $graph, $new, @old ) = @_;
+
+    # Replace in the main graph
+    graph_replace( $graph, $new, @old );
+
+    my $old = set( @old );
+    for my $vertex ($graph->vertices) {
+        next if $vertex == $new;
+        next if $old->has( $vertex );
+        next unless blessed $vertex;
+
+        # Update parents
+        if( $vertex->isa( ChemOnomatopist::Group:: ) && $vertex->C && $old->has( $vertex->C ) ) {
+            $vertex->{C} = $new;
+        }
+
+        # Update internal graphs
+        if( $vertex->isa( ChemOnomatopist::Group::Bicycle:: ) ||
+            $vertex->isa( ChemOnomatopist::Group::Guanidine:: ) ||
+            $vertex->isa( ChemOnomatopist::Group::Monocycle:: ) ||
+            $vertex->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
+            graph_replace( $vertex->graph, $new, @old );
+        }
+    }
+
+    return $graph;
 }
 
 sub rule_most_groups
