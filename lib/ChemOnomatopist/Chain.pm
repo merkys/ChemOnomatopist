@@ -5,9 +5,10 @@ use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Graph::Traversal::DFS;
-use List::Util qw( all sum0 uniq );
+use List::Util qw( all any sum0 uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
@@ -291,6 +292,13 @@ sub needs_substituent_locants()
 
     # FIXME: Make sure the substituents are of the same kind
     return '' if scalar( $self->substituents ) == $self->max_valence;
+
+    # Ad-hoc fix for acetic acid substituents
+    if( $self->length == 2 &&
+        any { blessed $_ && $_->isa( ChemOnomatopist::Group::Carboxyl:: ) }
+            $self->vertices ) {
+        return '';
+    }
 
     return 1;
 }
