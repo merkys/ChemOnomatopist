@@ -317,11 +317,7 @@ sub get_mainchain_name
         }
     }
 
-    if( $chain->isa( ChemOnomatopist::Group:: ) ) {
-        $name .= $chain->suffix;
-    } else {
-        $name .= unbranched_chain_name( $chain );
-    }
+    $name .= $chain->suffix;
 
     if( $most_senior_group && !$most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
         if( $most_senior_group->is_carbon ) {

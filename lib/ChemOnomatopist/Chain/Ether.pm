@@ -20,12 +20,16 @@ sub new
     return bless $self, $class;
 }
 
+sub needs_heteroatom_locants() { return '' }
+sub needs_heteroatom_names() { return '' }
+
 sub suffix()
 {
     my( $self ) = @_;
 
     my @vertices = $self->vertices;
-    my( $cut_position ) = grep { !blessed $_ && ChemOnomatopist::is_element( $_, 'O' ) } @vertices;
+    my( $cut_position ) = grep { !blessed $vertices[$_] &&
+                                 ChemOnomatopist::is_element( $vertices[$_], 'O' ) } 0..$#vertices;
 
     my @chains = ( ChemOnomatopist::Chain->new( $self->graph,
                                                 $self->parent,
