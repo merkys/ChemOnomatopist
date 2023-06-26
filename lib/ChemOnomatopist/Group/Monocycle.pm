@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name;
 use List::Util qw( all );
 use Scalar::Util qw( blessed );
@@ -122,6 +123,31 @@ sub suffix()
     my( $self ) = @_;
     return '' unless ref $self;
     return $self->name;
+}
+
+# FIXME: Pay attention to bond orders
+sub _cmp
+{
+    my( $A, $B ) = @_;
+
+    my @A_heteroatoms = $A->heteroatoms;
+    my @A_positions = $A->heteroatom_positions;
+
+    @A_positions = map { $A_positions[$_] }
+                       sort { $elements{$A_heteroatoms[$a]}->{seniority} <=>
+                              $elements{$A_heteroatoms[$b]}->{seniority} } 0..$#A_positions;
+
+    my @B_heteroatoms = $B->heteroatoms;
+    my @B_positions = $B->heteroatom_positions;
+
+    @B_positions = map { $B_positions[$_] }
+                       sort { $elements{$B_heteroatoms[$a]}->{seniority} <=>
+                              $elements{$B_heteroatoms[$b]}->{seniority} } 0..$#B_positions;
+
+    return ChemOnomatopist::cmp_arrays( \@A_positions, \@B_positions )
+        if ChemOnomatopist::cmp_arrays( \@A_positions, \@B_positions );
+
+    return ChemOnomatopist::cmp_arrays( [ $A->multiple_bond_positions ], [ $B->multiple_bond_positions ] );
 }
 
 1;

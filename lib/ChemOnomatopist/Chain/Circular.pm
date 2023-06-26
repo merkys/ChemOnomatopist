@@ -132,7 +132,7 @@ sub name()
             push @vertices, shift @vertices;
         }
         # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
-        my( $chain ) = sort { _cmp( $a, $b ) } @chains;
+        my( $chain ) = sort { ChemOnomatopist::Group::Monocycle::_cmp( $a, $b ) } @chains;
         @vertices = $chain->vertices;
 
         # Collect the types of heteroatoms and their attachment positions
@@ -268,31 +268,6 @@ sub _disconnected_chain_graph()
     $graph->delete_cycle( $self->vertices );
 
     return $graph;
-}
-
-# FIXME: Pay attention to bond orders
-sub _cmp
-{
-    my( $A, $B ) = @_;
-
-    my @A_heteroatoms = $A->heteroatoms;
-    my @A_positions = $A->heteroatom_positions;
-
-    @A_positions = map { $A_positions[$_] }
-                       sort { $elements{$A_heteroatoms[$a]}->{seniority} <=>
-                              $elements{$A_heteroatoms[$b]}->{seniority} } 0..$#A_positions;
-
-    my @B_heteroatoms = $B->heteroatoms;
-    my @B_positions = $B->heteroatom_positions;
-
-    @B_positions = map { $B_positions[$_] }
-                       sort { $elements{$B_heteroatoms[$a]}->{seniority} <=>
-                              $elements{$B_heteroatoms[$b]}->{seniority} } 0..$#B_positions;
-
-    return ChemOnomatopist::cmp_arrays( \@A_positions, \@B_positions )
-        if ChemOnomatopist::cmp_arrays( \@A_positions, \@B_positions );
-
-    return ChemOnomatopist::cmp_arrays( [ $A->multiple_bond_positions ], [ $B->multiple_bond_positions ] );
 }
 
 1;
