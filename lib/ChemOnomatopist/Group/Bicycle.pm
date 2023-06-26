@@ -226,7 +226,9 @@ sub needs_heteroatom_names() { return '' } # FIXME: This is not always correct
 sub prefix()
 {
     my( $self ) = @_;
-    return $self->suffix;
+    my $prefix = $self->suffix;
+    $prefix =~ s/e$//;
+    return $prefix . 'yl';
 }
 
 # FIXME: This is a bit strange: class and object method with the same name
