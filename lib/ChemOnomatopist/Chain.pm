@@ -23,14 +23,14 @@ sub new
     my( $class, $graph, $parent, @vertices ) = @_;
 
     my $self;
-    if( any { !blessed $_ && ChemOnomatopist::is_element( $_, 'O' ) } @vertices ) {
+    if( 0 && any { !blessed $_ && ChemOnomatopist::is_element( $_, 'O' ) } @vertices ) {
         $self = ChemOnomatopist::Chain::Ether->new( $graph, $parent, @vertices );
     } else {
         $self = { vertices => \@vertices, graph => $graph, cache => {} };
         $self->{parent} = $parent if $parent;
         $self = bless $self, $class;
     }
-    return bless $self, $class;
+    return $self;
 }
 
 # Accessors
@@ -425,6 +425,14 @@ sub number_of_multiple_bonds()
 {
     my( $self ) = @_;
     return scalar grep { $_ =~ /^[=#\$]$/ } $self->bonds;
+}
+
+sub prefix()
+{
+    my( $self ) = @_;
+    my $name = ChemOnomatopist::unbranched_chain_name( $self );
+    $name =~ s/ane$/yl/;
+    return $name;
 }
 
 sub suffix()
