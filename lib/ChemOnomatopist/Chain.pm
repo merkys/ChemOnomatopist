@@ -427,6 +427,12 @@ sub number_of_multiple_bonds()
     return scalar grep { $_ =~ /^[=#\$]$/ } $self->bonds;
 }
 
+sub suffix()
+{
+    my( $self ) = @_;
+    return ChemOnomatopist::unbranched_chain_name( $self );
+}
+
 sub _disconnected_chain_graph()
 {
     my( $self ) = @_;
