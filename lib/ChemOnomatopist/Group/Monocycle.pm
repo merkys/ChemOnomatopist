@@ -102,7 +102,7 @@ sub prefix()
 {
     my( $self ) = @_;
 
-    my $name = $self->name;
+    my $name = $self->suffix;
     return 'phenyl' if $name eq 'benzene';
 
     $name = ChemOnomatopist::Name->new( $name ) unless blessed $name;
