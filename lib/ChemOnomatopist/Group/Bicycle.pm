@@ -230,7 +230,7 @@ sub prefix()
 
     my $name = ChemOnomatopist::Name->new( $self->suffix );
     $name->{name} =~ s/e$//;
-    if( $self->parent ) { # FIXME: This does not work as expected
+    if( $self->parent ) { # FIXME: Not stable for naphthalene
         my @vertices = $self->vertices;
         my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
         $name->append_substituent_locant( $self->locants( $position ) );

@@ -126,7 +126,7 @@ sub prefix()
     $name = ChemOnomatopist::Name->new( $name ) unless blessed $name;
     $name->{name} =~ s/(an)?e$//;
 
-    if( $self->parent && !$self->is_homogeneous ) { # FIXME: This does not work as expected
+    if( $self->parent && !$self->is_homogeneous ) {
         my @vertices = $self->vertices;
         my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
         $name->append_substituent_locant( $self->locants( $position ) );
