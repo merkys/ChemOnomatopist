@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
@@ -20,8 +21,15 @@ sub vertices();
 sub new
 {
     my( $class, $graph, $parent, @vertices ) = @_;
-    my $self = { vertices => \@vertices, graph => $graph, cache => {} };
-    $self->{parent} = $parent if $parent;
+
+    my $self;
+    if( any { !blessed $_ && ChemOnomatopist::is_element( $_, 'O' ) } @vertices ) {
+        $self = ChemOnomatopist::Chain::Ether->new( $graph, $parent, @vertices );
+    } else {
+        $self = { vertices => \@vertices, graph => $graph, cache => {} };
+        $self->{parent} = $parent if $parent;
+        $self = bless $self, $class;
+    }
     return bless $self, $class;
 }
 
