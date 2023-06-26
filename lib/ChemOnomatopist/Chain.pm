@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
-use Chemistry::OpenSMILES qw( %normal_valence );
 use Graph::Traversal::DFS;
 use List::Util qw( all sum0 uniq );
 use Scalar::Util qw( blessed );
@@ -188,8 +188,9 @@ sub max_valence()
     my $max_valence = 0;
     for my $vertex ($self->vertices) {
         next if blessed $vertex;
-        next if !exists $normal_valence{ucfirst $vertex->{symbol}};
-        $max_valence += $normal_valence{ucfirst $vertex->{symbol}}->[0];
+        next if !exists $elements{ucfirst $vertex->{symbol}};
+        next if !exists $elements{ucfirst $vertex->{symbol}}->{standard_bonding_number};
+        $max_valence += $elements{ucfirst $vertex->{symbol}}->{standard_bonding_number};
     }
 
     for my $bond ($self->bonds) {
@@ -256,6 +257,13 @@ sub needs_heteroatom_locants()
     my( $self ) = @_;
     return '' if $self->length == 1;
 
+    my @vertices = $self->vertices;
+    # Check if this is -oxy substituent
+    if( $self->parent && !$self->number_of_branches && $self->number_of_heteroatoms == 1 &&
+        $vertices[0]->{symbol} eq 'O' ) {
+        return '';
+    }
+
     if(      scalar( uniq $self->heteroatoms ) == 1 ) {
         return $self->number_of_heteroatoms != $self->max_valence;
     } elsif( scalar( uniq $self->heteroatoms ) >  1 ) {
@@ -263,7 +271,19 @@ sub needs_heteroatom_locants()
     }
 }
 
-sub needs_heteroatom_names() { return 1 }
+sub needs_heteroatom_names()
+{
+    my( $self ) = @_;
+
+    my @vertices = $self->vertices;
+    # Check if this is -oxy substituent
+    if( $self->parent && !$self->number_of_branches && $self->number_of_heteroatoms == 1 &&
+        $vertices[0]->{symbol} eq 'O' ) {
+        return '';
+    }
+
+    return 1;
+}
 
 sub needs_suffix_locant()
 {
@@ -277,6 +297,7 @@ sub needs_suffix_locant()
 
     my @most_senior_groups = $self->most_senior_groups;
     return '' unless @most_senior_groups;
+    return 1 if $self->number_of_heteroatoms; # P-15.4.3.2.3: Characteristic groups cited as suffixes are given locants
     return 1 if !$most_senior_groups[0]->is_carbon || @most_senior_groups > 2;
     return '';
 }
