@@ -9,7 +9,9 @@ use warnings;
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Name;
 use List::Util qw( all );
+use Scalar::Util qw( blessed );
 
 # From BBv2 P-22.2.1
 our %names = (
@@ -102,8 +104,16 @@ sub prefix()
     my $name = $self->name;
     return 'phenyl' if $name eq 'benzene';
 
-    $name =~ s/ane$/yl/;
-    return $name;
+    $name = ChemOnomatopist::Name->new( $name ) unless blessed $name;
+    $name->{name} =~ s/(an)?e$//;
+
+    if( $self->parent && !$self->is_homogeneous ) { # FIXME: This does not work as expected
+        my @vertices = $self->vertices;
+        my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
+        $name->append_substituent_locant( $self->locants( $position ) );
+    }
+
+    return $name . 'yl';
 }
 
 # FIXME: This is a bit strange: class and object method with the same name
