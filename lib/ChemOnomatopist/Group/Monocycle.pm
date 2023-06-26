@@ -9,7 +9,10 @@ use warnings;
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Name;
 use List::Util qw( all );
+use Scalar::Util qw( blessed );
 
 # From BBv2 P-22.2.1
 our %names = (
@@ -102,8 +105,16 @@ sub prefix()
     my $name = $self->name;
     return 'phenyl' if $name eq 'benzene';
 
-    $name =~ s/ane$/yl/;
-    return $name;
+    $name = ChemOnomatopist::Name->new( $name ) unless blessed $name;
+    $name->{name} =~ s/(an)?e$//;
+
+    if( $self->parent && !$self->is_homogeneous ) { # FIXME: This does not work as expected
+        my @vertices = $self->vertices;
+        my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
+        $name->append_substituent_locant( $self->locants( $position ) );
+    }
+
+    return $name . 'yl';
 }
 
 # FIXME: This is a bit strange: class and object method with the same name
@@ -112,6 +123,31 @@ sub suffix()
     my( $self ) = @_;
     return '' unless ref $self;
     return $self->name;
+}
+
+# FIXME: Pay attention to bond orders
+sub _cmp
+{
+    my( $A, $B ) = @_;
+
+    my @A_heteroatoms = $A->heteroatoms;
+    my @A_positions = $A->heteroatom_positions;
+
+    @A_positions = map { $A_positions[$_] }
+                       sort { $elements{$A_heteroatoms[$a]}->{seniority} <=>
+                              $elements{$A_heteroatoms[$b]}->{seniority} } 0..$#A_positions;
+
+    my @B_heteroatoms = $B->heteroatoms;
+    my @B_positions = $B->heteroatom_positions;
+
+    @B_positions = map { $B_positions[$_] }
+                       sort { $elements{$B_heteroatoms[$a]}->{seniority} <=>
+                              $elements{$B_heteroatoms[$b]}->{seniority} } 0..$#B_positions;
+
+    return ChemOnomatopist::cmp_arrays( \@A_positions, \@B_positions )
+        if ChemOnomatopist::cmp_arrays( \@A_positions, \@B_positions );
+
+    return ChemOnomatopist::cmp_arrays( [ $A->multiple_bond_positions ], [ $B->multiple_bond_positions ] );
 }
 
 1;

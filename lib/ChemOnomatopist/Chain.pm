@@ -32,10 +32,12 @@ sub graph()
     return $self->{graph};
 }
 
-sub parent()
+sub parent(;$)
 {
-    my( $self ) = @_;
-    return exists $self->{parent} ? $self->{parent} : undef;
+    my( $self, $parent ) = @_;
+    my $old_parent = exists $self->{parent} ? $self->{parent} : undef;
+    $self->{parent} = $parent if $parent; # TODO: Maybe invalidate the related cache
+    return $old_parent;
 }
 
 sub substituents()

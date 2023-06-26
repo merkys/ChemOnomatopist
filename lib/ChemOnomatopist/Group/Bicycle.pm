@@ -11,6 +11,7 @@ use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 use ChemOnomatopist;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Chain::Circular;
+use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monocycle::Fused;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
@@ -100,7 +101,7 @@ sub new
     if( $nbenzene == 0 ) {
         my @flipped = map { $_->flipped } @cycles;
         # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
-        my( $chain ) = sort { ChemOnomatopist::Chain::Circular::_cmp( $a, $b ) } ( @cycles, @flipped );
+        my( $chain ) = sort { ChemOnomatopist::Group::Monocycle::_cmp( $a, $b ) } ( @cycles, @flipped );
 
         if(      $chain == $cycles[1] ) {
             @cycles = reverse @cycles;
@@ -118,7 +119,7 @@ sub new
             $self->{cycles} = \@cycles;
         }
 
-        my( $chain ) = sort { ChemOnomatopist::Chain::Circular::_cmp( $a, $b ) }
+        my( $chain ) = sort { ChemOnomatopist::Group::Monocycle::_cmp( $a, $b ) }
                             ( $cycles[0], $cycles[0]->flipped );
 
         if( $chain != $cycles[0] ) {
@@ -226,9 +227,16 @@ sub needs_heteroatom_names() { return '' } # FIXME: This is not always correct
 sub prefix()
 {
     my( $self ) = @_;
-    my $prefix = $self->suffix;
-    $prefix =~ s/e$//;
-    return $prefix . 'yl';
+
+    my $name = ChemOnomatopist::Name->new( $self->suffix );
+    $name->{name} =~ s/e$//;
+    if( $self->parent ) { # FIXME: This does not work as expected
+        my @vertices = $self->vertices;
+        my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
+        $name->append_substituent_locant( $self->locants( $position ) );
+    }
+
+    return $name . 'yl';
 }
 
 # FIXME: This is a bit strange: class and object method with the same name
