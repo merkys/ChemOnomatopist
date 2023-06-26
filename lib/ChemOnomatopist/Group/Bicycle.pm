@@ -6,11 +6,10 @@ use warnings;
 # ABSTRACT: Fused bicyclic group
 # VERSION
 
-use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
-
 use ChemOnomatopist;
-use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Chain::Circular;
+
+use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monocycle::Fused;
 use ChemOnomatopist::Name;
@@ -18,6 +17,8 @@ use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Graph::Traversal::DFS;
 use List::Util qw( all any );
 use Set::Object qw( set );
+
+use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
 # From BBv2 P-25.2.1
 our @names = (
@@ -230,7 +231,7 @@ sub prefix()
 
     my $name = ChemOnomatopist::Name->new( $self->suffix );
     $name->{name} =~ s/e$//;
-    if( $self->parent ) { # FIXME: This does not work as expected
+    if( $self->parent ) { # FIXME: Not stable for naphthalene
         my @vertices = $self->vertices;
         my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
         $name->append_substituent_locant( $self->locants( $position ) );

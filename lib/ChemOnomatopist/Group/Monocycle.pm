@@ -56,7 +56,25 @@ sub new
     my( $class, $graph, @vertices ) = @_;
     my $self = bless { graph => $graph, vertices => \@vertices }, $class;
     $self->_aromatise;
-    return $self;
+    return $self if $self->is_homogeneous;
+
+    # Select the best numbering for heteroatoms
+    my @chains;
+    my $cycle = $self->graph->subgraph( \@vertices ); # TODO: Add attributes
+    for (0..$#vertices) {
+        push @chains,
+             ChemOnomatopist::Chain::Circular->new( $cycle, @vertices );
+        push @vertices, shift @vertices;
+    }
+    @vertices = reverse @vertices;
+    for (0..$#vertices) {
+        push @chains,
+             ChemOnomatopist::Chain::Circular->new( $cycle, @vertices );
+        push @vertices, shift @vertices;
+    }
+    # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
+    my( $chain ) = sort { ChemOnomatopist::Group::Monocycle::_cmp( $a, $b ) } @chains;
+    return bless { graph => $graph, vertices => [ $chain->vertices ] }, $class;
 }
 
 # FIXME: For now we generate all possible traversals of the same cycle.
@@ -102,13 +120,13 @@ sub prefix()
 {
     my( $self ) = @_;
 
-    my $name = $self->name;
+    my $name = $self->suffix;
     return 'phenyl' if $name eq 'benzene';
 
     $name = ChemOnomatopist::Name->new( $name ) unless blessed $name;
     $name->{name} =~ s/(an)?e$//;
 
-    if( $self->parent && !$self->is_homogeneous ) { # FIXME: This does not work as expected
+    if( $self->parent && !$self->is_homogeneous ) {
         my @vertices = $self->vertices;
         my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
         $name->append_substituent_locant( $self->locants( $position ) );

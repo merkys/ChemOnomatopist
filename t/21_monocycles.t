@@ -113,7 +113,8 @@ my @cases = (
 
     { smiles => 'O=CCCCCCCC1CC(CCC1)C=O', iupac => '3-(7-oxoheptyl)cyclohexane-1-carbaldehyde', AUTHOR => 1 }, # From BBv2 P-59.2.1.7
 
-    { smiles => 'S1C(=NC=C1)CC(=O)O', iupac => '(1,3-thiazol-2-yl)acetic acid', AUTHOR => 1 }, # From BBv2 P-15.6.1.2
+    { smiles => 'S1C(=NC=C1)CC(=O)O', iupac => '(1,3-thiazol-2-yl)acetic acid' }, # From BBv2 P-15.6.1.2
+    { smiles => 'S1C(=NC=C1)CCCCC(=O)O', iupac => '5-(1,3-thiazol-2-yl)pentanoic acid' } # Synthetic, based on BBv2 P-15.6.1.2
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
