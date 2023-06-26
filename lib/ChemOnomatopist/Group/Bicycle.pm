@@ -226,9 +226,16 @@ sub needs_heteroatom_names() { return '' } # FIXME: This is not always correct
 sub prefix()
 {
     my( $self ) = @_;
-    my $prefix = $self->suffix;
-    $prefix =~ s/e$//;
-    return $prefix . 'yl';
+
+    my $name = ChemOnomatopist::Name->new( $self->suffix );
+    $name->{name} =~ s/e$//;
+    if( $self->parent ) { # FIXME: This does not work as expected
+        my @vertices = $self->vertices;
+        my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
+        $name->append_substituent_locant( $self->locants( $position ) );
+    }
+
+    return $name . 'yl';
 }
 
 # FIXME: This is a bit strange: class and object method with the same name
