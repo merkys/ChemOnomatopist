@@ -116,27 +116,9 @@ sub name()
         any { $_->{symbol} =~ /^[cC]$/ } $self->vertices ) {
         # Hantzsch-Widman names (BBv2 P-22.2.2.1)
 
-        # Select the best numbering for heteroatoms
-        my @chains;
-        my @vertices = $self->vertices;
-        my $cycle = $self->{graph}->subgraph( \@vertices ); # TODO: Add attributes
-        for (0..$#vertices) {
-            push @chains,
-                 ChemOnomatopist::Chain::Circular->new( $cycle, @vertices );
-            push @vertices, shift @vertices;
-        }
-        @vertices = reverse @vertices;
-        for (0..$#vertices) {
-            push @chains,
-                 ChemOnomatopist::Chain::Circular->new( $cycle, @vertices );
-            push @vertices, shift @vertices;
-        }
-        # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
-        my( $chain ) = sort { ChemOnomatopist::Group::Monocycle::_cmp( $a, $b ) } @chains;
-        @vertices = $chain->vertices;
-
         # Collect the types of heteroatoms and their attachment positions
         my %heteroatoms;
+        my @vertices = $self->vertices;
         for my $i (0..$#vertices) {
             next if ChemOnomatopist::is_element( $vertices[$i], 'C' );
             my $symbol = ucfirst $vertices[$i]->{symbol};
