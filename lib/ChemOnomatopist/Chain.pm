@@ -277,6 +277,7 @@ sub needs_suffix_locant()
 
     my @most_senior_groups = $self->most_senior_groups;
     return '' unless @most_senior_groups;
+    return 1 if $self->number_of_heteroatoms; # P-15.4.3.2.3: Characteristic groups cited as suffixes are given locants
     return 1 if !$most_senior_groups[0]->is_carbon || @most_senior_groups > 2;
     return '';
 }
