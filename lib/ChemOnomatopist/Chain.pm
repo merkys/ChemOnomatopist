@@ -22,8 +22,12 @@ sub new
 {
     my( $class, $graph, $parent, @vertices ) = @_;
 
+    # TODO: For now only chains with a single oxygen atom are detected as ethers.
+    # First of all, ChemOnomatopist::Chain::Ether is not very clever.
+    # Second, BBv2 P-63.2.4.1 does not draw a clear line between ether naming and skeletal replacement nomenclature.
     my $self;
-    if( any { !blessed $_ && ChemOnomatopist::is_element( $_, 'O' ) } @vertices ) {
+    if( (grep { !blessed $_ && !ChemOnomatopist::is_element( $_, 'C' ) } @vertices) == 1 &&
+        (grep { !blessed $_ &&  ChemOnomatopist::is_element( $_, 'O' ) } @vertices) == 1 ) {
         $self = ChemOnomatopist::Chain::Ether->new( $graph, $parent, @vertices );
     } else {
         $self = { vertices => \@vertices, graph => $graph, cache => {} };

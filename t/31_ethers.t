@@ -8,8 +8,8 @@ use Test::More;
 
 my @cases = (
     # From BBv2 P-63.2.4.1
-    { smiles => 'COC',  iupac => 'methoxymethane', AUTHOR => 1 },
-    { smiles => 'CCOC', iupac => 'methoxyethane', AUTHOR => 1 },
+    { smiles => 'COC',  iupac => 'methoxymethane' },
+    { smiles => 'CCOC', iupac => 'methoxyethane' },
     { smiles => 'C1(=CC=CC=C1)OC', iupac => 'anisole' },
     { smiles => 'COC1=CC2=CC=CC=C2C=C1', iupac => '2-methoxynaphthalene' },
     { smiles => 'ClCCOCC', iupac => '1-chloro-2-ethoxyethane', AUTHOR => 1 },

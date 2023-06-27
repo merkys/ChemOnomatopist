@@ -719,6 +719,12 @@ sub select_mainchain
     my $chain = filter_chains( @chains );
     my @vertices = $chain->vertices;
 
+    # This is needed to detect ethers.
+    # However, it clears the cache of chains, thus is quite suboptimal.
+    if( blessed $chain eq ChemOnomatopist::Chain::FromHalves:: ) {
+        $chain = ChemOnomatopist::Chain->new( $graph, undef, @vertices );
+    }
+
     # Replace the original chain with the selected candidate
     if( $chain->isa( ChemOnomatopist::Group:: ) && $chain->candidate_for ) {
         graph_replace_all( $graph, $chain, $chain->candidate_for );

@@ -63,7 +63,11 @@ sub suffix()
                                                 $self->parent,
                                                 @vertices[$cut_position+1..$#vertices] ) );
     @chains = reverse @chains if $chains[0]->length > $chains[1]->length;
-    return $chains[0]->prefix . 'oxy' . $chains[1]->suffix;
+    my $name = $chains[0]->prefix;
+    $name =~ s/ane$//;
+    $name .= 'oxy';
+    $name .= $chains[1]->suffix;
+    return $name;
 }
 
 1;
