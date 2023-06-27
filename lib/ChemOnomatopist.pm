@@ -356,6 +356,7 @@ sub get_mainchain_name
     }
 
     $name =~ s/benzen(-1-)?ol$/phenol/;
+    $name = 'anisole'      if $name eq 'methoxybenzene';         # BBv2 P-63.2.4.1
     $name = 'benzoic acid' if $name eq 'benzenecarboxylic acid'; # BBv2 P-65.1.1.1
     $name = 'toluene'      if $name eq 'methylbenzene';
     $name =~ s/^(\d,\d-)dimethylbenzene$/$1xylene/;
