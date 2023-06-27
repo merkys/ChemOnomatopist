@@ -141,7 +141,8 @@ sub suffix()
 {
     my( $self ) = @_;
     return '' unless ref $self;
-    return $self->name;
+    my $name = $self->name;
+    return blessed $name ? $name : ChemOnomatopist::Name->new( $name );
 }
 
 # FIXME: Pay attention to bond orders
