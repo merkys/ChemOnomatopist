@@ -300,6 +300,15 @@ sub get_mainchain_name
                   $attachment->has_substituent_locant ) ) {
                 $attachment->bracket;
             }
+        } else {
+            # This is an attempt to implement rules from P-16.5.1.
+            # However, they are quite vague, thus there is not much of guarantee the following code is correct.
+            if( $attachment !~ /^[\(\[\{]/ &&
+                $attachment->has_substituent_locant &&
+                $chain->needs_substituent_locants &&
+                $attachment ne 'tert-butyl' ) {
+                $attachment->bracket;
+            }
         }
 
         $name .= $attachment;
