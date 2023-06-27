@@ -54,6 +54,7 @@ sub prefix(;$)
     my @neighbours = $self->graph->neighbours( $self );
     die "cannot process tertiary amines for now\n" if @neighbours == 3;
     die "cannot process complicated secondary amines for now\n" unless any { $_ == $parent } @neighbours;
+    return ChemOnomatopist::Name->new( 'amino' ) if @neighbours == 1;
 
     my $name = ChemOnomatopist::get_sidechain_name( $self->graph, $self, grep { $_ != $parent } @neighbours );
     if( $name eq 'phenyl' ) {
