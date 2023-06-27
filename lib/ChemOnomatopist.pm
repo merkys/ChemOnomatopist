@@ -491,7 +491,7 @@ sub find_groups
         if( is_element( $atom, 'C' ) && @groups == 1 && @H == 1 &&
             $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) ) {
             # Detecting aldehyde
-            my $aldehyde = ChemOnomatopist::Group::Aldehyde->new( $atom );
+            my $aldehyde = ChemOnomatopist::Group::Aldehyde->new( $atom, @groups );
             $graph->delete_vertices( @groups, @H ); # FIXME: Be careful!
             $graph->add_edges( map { $aldehyde, $_ } $graph->neighbours( $atom ) );
             $graph->delete_vertex( $atom );
