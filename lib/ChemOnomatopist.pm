@@ -766,9 +766,9 @@ sub select_sidechain
     }
 
     my $C_graph = copy $graph;
-    # Delete non-carbon groups and leaves
-    $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && !is_element( $_, 'C' ) } $C_graph->vertices );
+    # Delete secondary/tertiary amines and non-carbon leaves
     $C_graph->delete_vertices( grep { $_ != $start && !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 } $C_graph->vertices );
+    $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } $C_graph->vertices );
 
     my @path_parts;
     for my $neighbour ($C_graph->neighbours( $start )) {
