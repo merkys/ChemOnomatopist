@@ -23,7 +23,7 @@ sub new
     my( $class, $graph, $parent, @vertices ) = @_;
 
     my $self;
-    if( 0 && any { !blessed $_ && ChemOnomatopist::is_element( $_, 'O' ) } @vertices ) {
+    if( any { !blessed $_ && ChemOnomatopist::is_element( $_, 'O' ) } @vertices ) {
         $self = ChemOnomatopist::Chain::Ether->new( $graph, $parent, @vertices );
     } else {
         $self = { vertices => \@vertices, graph => $graph, cache => {} };

@@ -13,7 +13,7 @@ my @cases = (
     { smiles => 'ClC(C(Cl)(Cl)Cl)(Cl)Cl', iupac => 'hexachloroethane', AUTHOR => 1 },
     { smiles => 'ClC(=C(Cl)Cl)Cl', iupac => 'tetrachloroethene', AUTHOR => 1 },
 
-    { smiles => 'C1CCCCC1CCOCC', iupac => '(3-oxapentyl)cyclohexane' },
+    { smiles => 'C1CCCCC1CCOCC', iupac => '(2-ethoxyethyl)cyclohexane' },
     { smiles => 'C1CCCCC1OCCCC', iupac => 'butoxycyclohexane' }, # PubChem 13299482
 
     # From BBv2 P-15.4.3.1

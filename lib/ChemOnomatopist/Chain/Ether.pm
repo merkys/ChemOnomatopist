@@ -23,6 +23,31 @@ sub new
 sub needs_heteroatom_locants() { return '' }
 sub needs_heteroatom_names() { return '' }
 
+sub prefix()
+{
+    my( $self ) = @_;
+
+    my @vertices = $self->vertices;
+    my( $cut_position ) = grep { !blessed $vertices[$_] &&
+                                 ChemOnomatopist::is_element( $vertices[$_], 'O' ) } 0..$#vertices;
+    if( $cut_position ) {
+        my @chains = ( ChemOnomatopist::Chain->new( $self->graph,
+                                                    $self->parent,
+                                                    reverse @vertices[0..$cut_position-1] ),
+                       ChemOnomatopist::Chain->new( $self->graph,
+                                                    $self->parent,
+                                                    @vertices[$cut_position+1..$#vertices] ) );
+        my @prefixes = map { $_->prefix } @chains;
+        $prefixes[0] =~ s/ane$//;
+        return $cut_position . '-' . $prefixes[0] . 'oxy' . $prefixes[1];
+    } else {
+        my $chain = ChemOnomatopist::Chain->new( $self->graph, @vertices );
+        my $name = $chain->prefix;
+        $name =~ s/ane$//;
+        return $name . 'oxy';
+    }
+}
+
 sub suffix()
 {
     my( $self ) = @_;
