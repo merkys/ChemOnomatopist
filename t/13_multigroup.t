@@ -8,7 +8,7 @@ use Test::More;
 
 my @cases = (
     { smiles => 'CC(=O)CC(=O)CCCO', iupac => '7-hydroxyheptane-2,4-dione' },
-    { smiles => 'CC(C)C(CCC(C)O)CCC(=O)C', iupac => '8-hydroxy-5-propan-2-ylnonan-2-one' },
+    { smiles => 'CC(C)C(CCC(C)O)CCC(=O)C', iupac => '8-hydroxy-5-propan-2-ylnonan-2-one', AUTHOR => 1 }, # PubChem 537619
 
     { smiles => 'C(O)OO', iupac => 'hydroperoxymethanol' },
     { smiles => 'OOCC(=O)C', iupac => '1-hydroperoxypropan-2-one' }, # Unchecked

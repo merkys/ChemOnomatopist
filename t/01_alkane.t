@@ -23,11 +23,11 @@ my @cases = (
     { smiles => 'C(C)C(C(CC)(C)C)CCC', iupac => '4-ethyl-3,3-dimethylheptane' },
 
     { smiles => 'CCCC(CCC)(C(C)C)C(C)C', iupac => '4,4-di(propan-2-yl)heptane' },
-    { smiles => 'CCCC(CCC)C(C)C', iupac => '4-propan-2-ylheptane' },
+    { smiles => 'CCCC(CCC)C(C)C', iupac => '4-propan-2-ylheptane', AUTHOR => 1 }, # PubChem 142981
     { smiles => 'CCCCC(CCCC)C(C)C(C)C', iupac => '5-(3-methylbutan-2-yl)nonane' },
-    { smiles => 'CCCCCC(CC(C)CC)CC(CCCCC)C(C)CCC', iupac => '6-(2-methylbutyl)-8-pentan-2-yltridecane' },
+    { smiles => 'CCCCCC(CC(C)CC)CC(CCCCC)C(C)CCC', iupac => '6-(2-methylbutyl)-8-pentan-2-yltridecane', AUTHOR => 1 }, # PubChem 54207584
     { smiles => 'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC(CCCCCCCCCC)CCCCCCCCCCCCC', iupac => '14-decyltritetracontane' },
-    { smiles => 'CCCCCCCC(CCCCCCC)(CCCCCCC)C(C)CC', iupac => '8-butan-2-yl-8-heptylpentadecane' },
+    { smiles => 'CCCCCCCC(CCCCCCC)(CCCCCCC)C(C)CC', iupac => '8-butan-2-yl-8-heptylpentadecane', AUTHOR => 1 }, # PubChem 154365261
     { smiles => 'CCC(C)C(CC(C(C)CC)C(C)CC)C(C)CC', iupac => '4,6-di(butan-2-yl)-3,7-dimethylnonane' },
     { smiles => 'CCCCCCCCCCCCC(CCC)(CCC)C(C(C)(C)C)C(CCCC)(CCCCCC)C(CC)(CCC)C(C)CCCC', iupac => '7-butyl-8-tert-butyl-6-ethyl-7-hexyl-5-methyl-6,9,9-tripropylhenicosane', AUTHOR => 1 },
     { smiles => 'CC(CC(CC(CCCC)CC)CCCCCC)CC(C)C', iupac => '7-(2,4-dimethylpentyl)-5-ethyltridecane' }, # BBv2 P-14.5.2
@@ -48,7 +48,7 @@ my @cases = (
     { smiles => 'CCCCC(CC)C(CCCC)C(C)(C)C', iupac => '5-ethyl-6-tert-butyldecane' },
     { smiles => 'CCCCC(CCCC)CCCCCCCC(C(C)CCC)C(C)(C)C', iupac => '5-tert-butyl-13-butyl-4-methylheptadecane', AUTHOR => 1 },
 
-    { smiles => 'CC(CC)C(CCCC)(CCCCCCCCCCCCCCCCCCCCCCCCCC)CCCC', iupac => '5-(butan-2-yl)-5-butylhentriacontane', AUTHOR => 1 }, # BBv2 P-14.5.1
+    { smiles => 'CC(CC)C(CCCC)(CCCCCCCCCCCCCCCCCCCCCCCCCC)CCCC', iupac => '5-(butan-2-yl)-5-butylhentriacontane' }, # BBv2 P-14.5.1
 
     { smiles => 'CCCCCC(C)(C)C(C)CC(CC)CC(CCC(CC)CC)C(CCC(CC)CCC)(CC(CC)CCCC)C(CC)(CCCC(CC)CC)C(CC(C)C(CC)CC)(CC(C)(CC)CCC)C(C)C(CC(C)CC(C)CC)(CC(C)C(CC)CCC)CC(C)(CC)CCCC', iupac => '10,14-diethyl-11-(2-ethylhexyl)-11-(3-ethylhexyl)-10-(4-ethylhexyl)-7-(2-ethyl-2-methylhexyl)-7-(3-ethyl-2-methylhexyl)-9-(2-ethyl-2-methylpentyl)-9-(3-ethyl-2-methylpentyl)-12-(3-ethylpentyl)-3,5,8,16,17,17-hexamethyldocosane' },
 );
