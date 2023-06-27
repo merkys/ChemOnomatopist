@@ -431,7 +431,7 @@ sub number_of_multiple_bonds()
     return scalar grep { $_ =~ /^[=#\$]$/ } $self->bonds;
 }
 
-sub prefix()
+sub prefix(;$)
 {
     my( $self ) = @_;
     return ChemOnomatopist::unbranched_chain_name( $self ); # FIXME: Add proper suffix

@@ -192,11 +192,11 @@ sub get_sidechain_name
     }
 
     if( $chain->isa( ChemOnomatopist::Group:: ) ) {
-        $name .= $chain->prefix;
+        $name .= $chain->prefix( $parent );
     } elsif( @chain == 1 && blessed $chain[0] ) {
-        $name .= $chain[0]->prefix;
+        $name .= $chain[0]->prefix( $parent );
     } else {
-        $name .= $chain->prefix;
+        $name .= $chain->prefix( $parent );
         $name->{name} =~ s/(an)?e$//; # FIXME: Dirty
 
         if( $branches_at_start > 1 ) {

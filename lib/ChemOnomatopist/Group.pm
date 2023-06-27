@@ -76,9 +76,9 @@ sub is_prefix_only() { return '' }
 sub needs_heteroatom_locants { return 1 }
 sub needs_heteroatom_names { return 1 }
 
-sub prefix { return '' }
-sub suffix { return '' }
-sub multisuffix { return $_[0]->suffix }
+sub prefix(;$) { return '' }
+sub suffix() { return '' }
+sub multisuffix() { return $_[0]->suffix }
 sub suffix_if_cycle_substituent() { return $_[0]->suffix }
 
 sub candidate_for()
