@@ -517,6 +517,12 @@ sub find_groups
             $graph->add_edges( $ester, $hydroxylic );
             $graph->add_edges( $ester, $acid );
             $graph->delete_vertices( $atom, @O );
+        } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
+                 (any { $_->isa( ChemOnomatopist::Group::Amino:: ) } @groups) &&
+                 (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
+            my $amide = ChemOnomatopist::Group::Amide->new( $atom );
+            graph_replace( $graph, $amide, $atom );
+            $graph->delete_vertices( $atom, @groups );
         }
 
         if( !blessed $atom && is_element( $atom, 'N' ) &&

@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Group::Aldehyde;
+use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine::SecondaryTertiary;
 use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Bicycle;
@@ -38,6 +39,7 @@ our @order = (
     ChemOnomatopist::Group::Ester::,
     # Acid halides and pseudohalides
     # Amides
+    ChemOnomatopist::Group::Amide::,
     ChemOnomatopist::Group::Guanidine::,
     # Hydrazides
     # Imides
