@@ -430,9 +430,7 @@ sub number_of_multiple_bonds()
 sub prefix()
 {
     my( $self ) = @_;
-    my $name = ChemOnomatopist::unbranched_chain_name( $self );
-    $name =~ s/ane$/yl/;
-    return $name;
+    return ChemOnomatopist::unbranched_chain_name( $self ); # FIXME: Add proper suffix
 }
 
 sub suffix()

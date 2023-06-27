@@ -196,7 +196,7 @@ sub get_sidechain_name
     } elsif( @chain == 1 && blessed $chain[0] ) {
         $name .= $chain[0]->prefix;
     } else {
-        $name .= unbranched_chain_name( $chain );
+        $name .= $chain->prefix;
         $name->{name} =~ s/(an)?e$//; # FIXME: Dirty
 
         if( $branches_at_start > 1 ) {
