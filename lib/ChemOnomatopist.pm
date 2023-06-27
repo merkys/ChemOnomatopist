@@ -623,11 +623,7 @@ sub select_mainchain
         }
 
         if( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
-            if( $groups[0]->can( 'candidates' ) ) {
-                @chains = $groups[0]->candidates;
-            } else {
-                return shift @groups;
-            }
+            @chains = map { $_->can( 'candidates' ) ? $_->candidates : $_ } @groups;
         } elsif( @parents == 1 ) {
             if( blessed $parents[0] && $parents[0]->can( 'candidates' ) ) {
                 @chains = $parents[0]->candidates;
