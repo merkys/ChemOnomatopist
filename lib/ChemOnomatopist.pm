@@ -240,8 +240,8 @@ sub get_mainchain_name
         my $atom = $chain[$i];
         if( blessed $atom ) {
             next if $most_senior_group && $atom->isa( $most_senior_group );
-            push @{$attachments{$atom->prefix}}, $i;
-            $attachment_objects{$atom->prefix} = ChemOnomatopist::Name->new( $atom->prefix );
+            push @{$attachments{$atom->prefix( $chain )}}, $i;
+            $attachment_objects{$atom->prefix( $chain )} = ChemOnomatopist::Name->new( $atom->prefix( $chain ) );
         } elsif( !is_element( $atom, 'C' ) &&
                  exists $atom->{symbol} &&
                  exists $elements{$atom->{symbol}} ) {
