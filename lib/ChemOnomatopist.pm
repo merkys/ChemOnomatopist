@@ -277,7 +277,7 @@ sub get_mainchain_name
             $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
         }
 
-        # FIXME: More rules from BBv2 P-16.3.4 should be added
+        # FIXME: More rules from BBv2 P-16.3.4 and P-16.5.1 should be added
         if( $attachment !~ /^[\(\[\{]/ &&
             ( $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
               $attachment =~ /^[0-9]/ ) ) {
