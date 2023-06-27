@@ -21,6 +21,8 @@ my @cases = (
     # From BBv2 P-62.2.2.2
     { smiles => 'CC(C#CCN(CCC)CCC)=C', iupac => '4-methyl-N,N-dipropylpent-4-en-2-yn-1-amine' },
     { smiles => 'CN(C(C)C=CC1CC=C(CC1)C)C', iupac => 'N,N-dimethyl-4-(4-methylcyclohex-3-en-1-yl)but-3-en-2-amine', AUTHOR => 1 },
+
+    { smiles => 'CC(C)C(C)N1CCCCC(C1=O)NC', iupac => '3-(methylamino)-1-(3-methylbutan-2-yl)azepan-2-one', AUTHOR => 1 }, # PubChem 58916315 # FIXME: Misses methyl
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
