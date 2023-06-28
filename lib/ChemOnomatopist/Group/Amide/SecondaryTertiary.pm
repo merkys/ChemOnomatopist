@@ -39,7 +39,8 @@ sub candidates()
 sub locants(@)
 {
     my $self = shift;
-    return map { $_ ? $_ : 'N' } @_;
+    # Locant '1' is the carbon with ketone attachment, it is probably never used
+    return map { $_ ? $_ + 1 : 'N' } @_;
 }
 
 sub suffix()
