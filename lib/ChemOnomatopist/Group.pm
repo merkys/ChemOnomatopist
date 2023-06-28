@@ -75,13 +75,15 @@ sub is_nitrogen { return '' }
 sub is_oxygen { return '' }
 
 sub is_part_of_chain() { return '' }
+
+# Certain groups can only be expressed as prefixes
 sub is_prefix_only() { return '' }
 
 sub needs_heteroatom_locants { return 1 }
 sub needs_heteroatom_names { return 1 }
 
 sub prefix(;$) { return '' }
-sub suffix() { return '' }
+sub suffix() { return $_[0]->is_prefix_only ? undef : '' }
 sub multisuffix() { return $_[0]->suffix }
 sub suffix_if_cycle_substituent() { return $_[0]->suffix }
 
