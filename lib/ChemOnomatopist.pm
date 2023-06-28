@@ -116,8 +116,8 @@ sub get_sidechain_name
     my @chain = $chain->vertices;
 
     # Handle non-carbon substituents
-    if( @chain == 1 && !is_element( $chain[0], 'C' ) && !blessed $chain[0] &&
-        exists $elements{$chain[0]->{symbol}} ) {
+    if( @chain == 1 && !$graph->degree( @chain ) && !blessed $chain[0] &&
+        !is_element( $chain[0], 'C' ) && exists $elements{$chain[0]->{symbol}} ) {
         my $element = $elements{$chain[0]->{symbol}}->{prefix};
         $element =~ s/a$/o/; # TODO: Is this a general rule? BBv2 seems silent.
         return ChemOnomatopist::Name->new( $element );
@@ -800,8 +800,10 @@ sub select_sidechain
     }
 
     my $C_graph = copy $graph;
-    # Delete secondary/tertiary amines and non-carbon leaves
+    # Delete formed chains and non-carbon leaves
+    # FIXME: Some other chains should as well be excluded
     $C_graph->delete_vertices( grep { $_ != $start && !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 } $C_graph->vertices );
+    $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && $_->isa( ChemOnomatopist::Group::Monocycle:: ) } $C_graph->vertices );
     $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } $C_graph->vertices );
 
     my @path_parts;
