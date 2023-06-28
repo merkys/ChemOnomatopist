@@ -583,6 +583,25 @@ sub find_groups
     return;
 }
 
+# Derive the chemical element of atom or group representation
+# TODO: Replace object methods is_...
+sub element($)
+{
+    my( $atom_or_group ) = @_;
+    return undef unless ref $atom_or_group;
+
+    if( !blessed $atom_or_group ) {
+        die "unknown value '$atom_or_group' given for element()\n" unless ref $atom_or_group eq 'HASH';
+        return ucfirst $atom_or_group->{symbol};
+    }
+
+    if( $atom_or_group->isa( 'Chemistry::Atom' ) ) { # PerlMol Atom
+        return $atom_or_group->symbol;
+    }
+
+    return $atom_or_group->element;
+}
+
 # Check if an object or Perl hash is of certain chemical element
 sub is_element
 {
