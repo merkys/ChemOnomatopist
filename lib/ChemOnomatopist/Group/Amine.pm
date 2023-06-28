@@ -1,4 +1,4 @@
-package ChemOnomatopist::Group::Amino;
+package ChemOnomatopist::Group::Amine;
 
 use strict;
 use warnings;

@@ -14,8 +14,8 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide::SecondaryTertiary;
+use ChemOnomatopist::Group::Amine;
 use ChemOnomatopist::Group::Amine::SecondaryTertiary;
-use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
@@ -401,9 +401,9 @@ sub find_groups
 
         # N-based groups
         if( is_element( $atom, 'N' ) && @neighbours == 3 && @C == 1 && @H == 2 ) {
-            # Detecting amino
-            my $amino = ChemOnomatopist::Group::Amino->new( @C );
-            $graph->add_edge( @C, $amino );
+            # Detecting amines
+            my $amine = ChemOnomatopist::Group::Amine->new( @C );
+            $graph->add_edge( @C, $amine );
             $graph->delete_vertices( $atom, @H );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C == 1 && @H == 1 &&
                  is_double_bond( $graph, $atom, @C ) ) {
@@ -523,7 +523,7 @@ sub find_groups
             $graph->add_edges( $ester, $acid );
             $graph->delete_vertices( $atom, @O );
         } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
-                 (any { $_->isa( ChemOnomatopist::Group::Amino:: ) } @groups) &&
+                 (any { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups) &&
                  (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
             # Detecting primary amides
             my $amide = ChemOnomatopist::Group::Amide->new( $atom );

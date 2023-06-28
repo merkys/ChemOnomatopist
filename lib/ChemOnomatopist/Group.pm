@@ -6,8 +6,8 @@ use warnings;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amide::SecondaryTertiary;
+use ChemOnomatopist::Group::Amine;
 use ChemOnomatopist::Group::Amine::SecondaryTertiary;
-use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Bicycle;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
@@ -51,7 +51,7 @@ our @order = (
     ChemOnomatopist::Group::Ketone::,
     ChemOnomatopist::Group::Hydroxy::,
     ChemOnomatopist::Group::Hydroperoxide::,
-    ChemOnomatopist::Group::Amino::,
+    ChemOnomatopist::Group::Amine::,
     ChemOnomatopist::Group::Amine::SecondaryTertiary::, # FIXME: Is this correct?
     ChemOnomatopist::Group::Imino::,
 
