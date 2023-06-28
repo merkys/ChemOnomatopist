@@ -28,18 +28,19 @@ sub candidates()
 {
     my( $self ) = @_;
 
+    my @candidates;
     if( $self->{is_double_bond}[2] ) {
-        my @candidates = ( $self, $self->copy );
+        @candidates = ( $self, $self->copy );
         $candidates[1]->{vertices} = [ map { $self->{vertices}[$_] } ( 1, 0, 2 ) ];
-        return @candidates;
+        $candidates[1]->{candidate_for} = $self;
     } else {
-        my @candidates;
         for (permutations([0, 1, 2])) {
             push @candidates, $self->copy;
             $candidates[-1]->{vertices} = [ map { $self->{vertices}[$_] } @$_ ];
+            $candidates[-1]->{candidate_for} = $self;
         }
-        return @candidates;
     }
+    return @candidates;
 }
 
 sub copy() {
