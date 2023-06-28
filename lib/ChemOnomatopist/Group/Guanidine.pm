@@ -62,7 +62,7 @@ sub prefix {
     if( $self->{is_double_bond}[2] && $self->graph->degree( $self->{vertices}[2] ) ) {
         return '[(diaminomethylidene)amino]';
     } else {
-        return 'carbamimidoylamino';
+        return '(carbamimidoylamino)';
     }
 }
 
