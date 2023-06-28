@@ -5,6 +5,7 @@ use warnings;
 
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
+use ChemOnomatopist::Group::Amide::SecondaryTertiary;
 use ChemOnomatopist::Group::Amine::SecondaryTertiary;
 use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Bicycle;
@@ -40,6 +41,7 @@ our @order = (
     # Acid halides and pseudohalides
     # Amides
     ChemOnomatopist::Group::Amide::,
+    ChemOnomatopist::Group::Amide::SecondaryTertiary::, # FIXME: Is this correct?
     ChemOnomatopist::Group::Guanidine::,
     # Hydrazides
     # Imides

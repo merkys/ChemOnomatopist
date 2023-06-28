@@ -13,6 +13,7 @@ use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Aldehyde;
+use ChemOnomatopist::Group::Amide::SecondaryTertiary;
 use ChemOnomatopist::Group::Amine::SecondaryTertiary;
 use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Carboxyl;
@@ -520,9 +521,16 @@ sub find_groups
         } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
                  (any { $_->isa( ChemOnomatopist::Group::Amino:: ) } @groups) &&
                  (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
+            # Detecting primary amides
             my $amide = ChemOnomatopist::Group::Amide->new( $atom );
             graph_replace( $graph, $amide, $atom );
             $graph->delete_vertices( $atom, @groups );
+        } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
+                 (any { $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } @groups) &&
+                 (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
+            # Detecting secondary and tertiary amides
+            my $amide = ChemOnomatopist::Group::Amide::SecondaryTertiary->new( $graph );
+            graph_replace( $graph, $amide, $atom, @groups );
         }
 
         if( !blessed $atom && is_element( $atom, 'N' ) &&
