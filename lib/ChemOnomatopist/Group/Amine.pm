@@ -8,6 +8,8 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
+sub is_nitrogen() { return 1 }
+
 sub prefix { return 'amino' }
 sub suffix { return 'amine' }
 
