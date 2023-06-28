@@ -4,6 +4,8 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Group::Aldehyde;
+use ChemOnomatopist::Group::Amide;
+use ChemOnomatopist::Group::Amide::SecondaryTertiary;
 use ChemOnomatopist::Group::Amine::SecondaryTertiary;
 use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Bicycle;
@@ -38,6 +40,8 @@ our @order = (
     ChemOnomatopist::Group::Ester::,
     # Acid halides and pseudohalides
     # Amides
+    ChemOnomatopist::Group::Amide::,
+    ChemOnomatopist::Group::Amide::SecondaryTertiary::, # FIXME: Is this correct?
     ChemOnomatopist::Group::Guanidine::,
     # Hydrazides
     # Imides
@@ -76,9 +80,9 @@ sub is_prefix_only() { return '' }
 sub needs_heteroatom_locants { return 1 }
 sub needs_heteroatom_names { return 1 }
 
-sub prefix { return '' }
-sub suffix { return '' }
-sub multisuffix { return $_[0]->suffix }
+sub prefix(;$) { return '' }
+sub suffix() { return '' }
+sub multisuffix() { return $_[0]->suffix }
 sub suffix_if_cycle_substituent() { return $_[0]->suffix }
 
 sub candidate_for()

@@ -13,6 +13,7 @@ use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Aldehyde;
+use ChemOnomatopist::Group::Amide::SecondaryTertiary;
 use ChemOnomatopist::Group::Amine::SecondaryTertiary;
 use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Carboxyl;
@@ -193,11 +194,11 @@ sub get_sidechain_name
     }
 
     if( $chain->isa( ChemOnomatopist::Group:: ) ) {
-        $name .= $chain->prefix;
+        $name .= $chain->prefix( $parent );
     } elsif( @chain == 1 && blessed $chain[0] ) {
-        $name .= $chain[0]->prefix;
+        $name .= $chain[0]->prefix( $parent );
     } else {
-        $name .= unbranched_chain_name( $chain );
+        $name .= $chain->prefix( $parent );
         $name->{name} =~ s/(an)?e$//; # FIXME: Dirty
 
         if( $branches_at_start > 1 ) {
@@ -236,8 +237,8 @@ sub get_mainchain_name
         my $atom = $chain[$i];
         if( blessed $atom ) {
             next if $most_senior_group && $atom->isa( $most_senior_group );
-            push @{$attachments{$atom->prefix}}, $i;
-            $attachment_objects{$atom->prefix} = ChemOnomatopist::Name->new( $atom->prefix );
+            push @{$attachments{$atom->prefix( $chain )}}, $i;
+            $attachment_objects{$atom->prefix( $chain )} = ChemOnomatopist::Name->new( $atom->prefix( $chain ) );
         } elsif( !is_element( $atom, 'C' ) &&
                  exists $atom->{symbol} &&
                  exists $elements{$atom->{symbol}} ) {
@@ -270,7 +271,7 @@ sub get_mainchain_name
             $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
         }
 
-        # FIXME: More rules from BBv2 P-16.3.4 should be added
+        # FIXME: More rules from BBv2 P-16.3.4 and P-16.5.1 should be added
         if( $attachment !~ /^[\(\[\{]/ &&
             ( $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
               $attachment =~ /^[0-9]/ ) ) {
@@ -291,6 +292,15 @@ sub get_mainchain_name
             if( $attachment !~ /^[\(\[\{]/ &&
                 ( $attachment =~ /^dec/ || # BBv2 P-16.3.4 (d)
                   $attachment->has_substituent_locant ) ) {
+                $attachment->bracket;
+            }
+        } else {
+            # This is an attempt to implement rules from P-16.5.1.
+            # However, they are quite vague, thus there is not much of guarantee the following code is correct.
+            if( $attachment !~ /^[\(\[\{]/ &&
+                $attachment->has_substituent_locant &&
+                $chain->needs_substituent_locants &&
+                $attachment ne 'tert-butyl' ) {
                 $attachment->bracket;
             }
         }
@@ -349,6 +359,7 @@ sub get_mainchain_name
     }
 
     $name =~ s/benzen(-1-)?ol$/phenol/;
+    $name = 'anisole'      if $name eq 'methoxybenzene';         # BBv2 P-63.2.4.1
     $name = 'benzoic acid' if $name eq 'benzenecarboxylic acid'; # BBv2 P-65.1.1.1
     $name = 'toluene'      if $name eq 'methylbenzene';
     $name =~ s/^(\d,\d-)dimethylbenzene$/$1xylene/;
@@ -457,6 +468,10 @@ sub find_groups
         }
     }
 
+    if( any { !blessed $_ && exists $_->{charge} } $graph->vertices ) {
+        die "cannot handle charges for now\n";
+    }
+
     # Due to the issue in Graph, bridges() returns strings instead of real objects.
     # Graph issue: https://github.com/graphviz-perl/Graph/issues/29
     my %vertices_by_name = map { $_ => $_ } $graph->vertices;
@@ -474,7 +489,7 @@ sub find_groups
         if( is_element( $atom, 'C' ) && @groups == 1 && @H == 1 &&
             $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) ) {
             # Detecting aldehyde
-            my $aldehyde = ChemOnomatopist::Group::Aldehyde->new( $atom );
+            my $aldehyde = ChemOnomatopist::Group::Aldehyde->new( $atom, @groups );
             $graph->delete_vertices( @groups, @H ); # FIXME: Be careful!
             $graph->add_edges( map { $aldehyde, $_ } $graph->neighbours( $atom ) );
             $graph->delete_vertex( $atom );
@@ -500,6 +515,19 @@ sub find_groups
             $graph->add_edges( $ester, $hydroxylic );
             $graph->add_edges( $ester, $acid );
             $graph->delete_vertices( $atom, @O );
+        } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
+                 (any { $_->isa( ChemOnomatopist::Group::Amino:: ) } @groups) &&
+                 (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
+            # Detecting primary amides
+            my $amide = ChemOnomatopist::Group::Amide->new( $atom );
+            graph_replace( $graph, $amide, $atom );
+            $graph->delete_vertices( $atom, @groups );
+        } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
+                 (any { $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } @groups) &&
+                 (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
+            # Detecting secondary and tertiary amides
+            my $amide = ChemOnomatopist::Group::Amide::SecondaryTertiary->new( $graph );
+            graph_replace( $graph, $amide, $atom, @groups );
         }
 
         if( !blessed $atom && is_element( $atom, 'N' ) &&
@@ -600,11 +628,7 @@ sub select_mainchain
         }
 
         if( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
-            if( $groups[0]->can( 'candidates' ) ) {
-                @chains = $groups[0]->candidates;
-            } else {
-                return shift @groups;
-            }
+            @chains = map { $_->can( 'candidates' ) ? $_->candidates : $_ } @groups;
         } elsif( @parents == 1 ) {
             if( blessed $parents[0] && $parents[0]->can( 'candidates' ) ) {
                 @chains = $parents[0]->candidates;
@@ -711,6 +735,12 @@ sub select_mainchain
     my $chain = filter_chains( @chains );
     my @vertices = $chain->vertices;
 
+    # This is needed to detect ethers.
+    # However, it clears the cache of chains, thus is quite suboptimal.
+    if( blessed $chain eq ChemOnomatopist::Chain::FromHalves:: ) {
+        $chain = ChemOnomatopist::Chain->new( $graph, undef, @vertices );
+    }
+
     # Replace the original chain with the selected candidate
     if( $chain->isa( ChemOnomatopist::Group:: ) && $chain->candidate_for ) {
         graph_replace_all( $graph, $chain, $chain->candidate_for );
@@ -743,9 +773,9 @@ sub select_sidechain
     }
 
     my $C_graph = copy $graph;
-    # Delete non-carbon groups and leaves
-    $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && !is_element( $_, 'C' ) } $C_graph->vertices );
+    # Delete secondary/tertiary amines and non-carbon leaves
     $C_graph->delete_vertices( grep { $_ != $start && !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 } $C_graph->vertices );
+    $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } $C_graph->vertices );
 
     my @path_parts;
     for my $neighbour ($C_graph->neighbours( $start )) {

@@ -88,10 +88,10 @@ my @cases = (
 
     { smiles => 'C(=O)(O)CC([Br])([Br])C1CCCCC1', iupac => '3,3-dibromo-3-cyclohexylpropanoic acid' },
     { smiles => 'ClC=1C=CC=CC=1C(F)(F)C(F)(F)F',  iupac => '1-chloro-2-(pentafluoroethyl)benzene' }, # From BBv2 P-14.3.4.5
-    { smiles => 'CC(CCC)C1=CC=C(C=C1)C(CC)CC', iupac => '1-(pentan-2-yl)-4-(pentan-3-yl)benzene', AUTHOR => 1 }, # From BBv2 P-14.5.4
+    { smiles => 'CC(CCC)C1=CC=C(C=C1)C(CC)CC', iupac => '1-(pentan-2-yl)-4-(pentan-3-yl)benzene', AUTHOR => 1 }, # From BBv2 P-14.5.4 # FIXME: Unstable
 
     # From BBv2 P-14.5.3
-    { smiles => 'C(C)(C)(C)C=1C=CC=C(C(C)CC)C=1', iupac => '1-(butan-2-yl)-3-tert-butylbenzene', AUTHOR => 1 },
+    { smiles => 'C(C)(C)(C)C=1C=CC=C(C(C)CC)C=1', iupac => '1-(butan-2-yl)-3-tert-butylbenzene' },
 
     { smiles => 'O=C1NC(=O)NC=C1C', iupac => '5-methylpyrimidine-2,4(1H,3H)-dione', AUTHOR => 1 }, # thymine
     { smiles => 'c1cc(oc1)C=O', iupac => 'furan-2-carbaldehyde', AUTHOR => 1 }, # furfural
@@ -114,7 +114,8 @@ my @cases = (
     { smiles => 'O=CCCCCCCC1CC(CCC1)C=O', iupac => '3-(7-oxoheptyl)cyclohexane-1-carbaldehyde', AUTHOR => 1 }, # From BBv2 P-59.2.1.7
 
     { smiles => 'S1C(=NC=C1)CC(=O)O', iupac => '(1,3-thiazol-2-yl)acetic acid' }, # From BBv2 P-15.6.1.2
-    { smiles => 'S1C(=NC=C1)CCCCC(=O)O', iupac => '5-(1,3-thiazol-2-yl)pentanoic acid' } # Synthetic, based on BBv2 P-15.6.1.2
+    { smiles => 'S1C(=NC=C1)CCCCC(=O)O', iupac => '5-(1,3-thiazol-2-yl)pentanoic acid' }, # Synthetic, based on BBv2 P-15.6.1.2
+    { smiles => 'CC1=C(C=C(C=C1)C(C)C)O', iupac => '2-methyl-5-(propan-2-yl)phenol' }, # From BBv2 P-63.1.1.2
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};

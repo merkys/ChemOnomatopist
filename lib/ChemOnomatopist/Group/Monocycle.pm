@@ -116,9 +116,9 @@ sub needs_heteroatom_names()
     return $self->needs_heteroatom_locants;
 }
 
-sub prefix()
+sub prefix(;$)
 {
-    my( $self ) = @_;
+    my( $self, $parent ) = @_;
 
     my $name = $self->suffix;
     return 'phenyl' if $name eq 'benzene';
@@ -126,9 +126,10 @@ sub prefix()
     $name = ChemOnomatopist::Name->new( $name ) unless blessed $name;
     $name->{name} =~ s/(an)?e$//;
 
-    if( $self->parent && !$self->is_homogeneous ) {
+    if( $parent && !$self->is_homogeneous ) {
         my @vertices = $self->vertices;
-        my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
+        my( $position ) = grep { $self->graph->has_edge( $parent, $vertices[$_] ) } 0..$#vertices;
+        die "unknown locant in multicyclic compound\n" unless defined $position;
         $name->append_substituent_locant( $self->locants( $position ) );
     }
 
@@ -140,7 +141,8 @@ sub suffix()
 {
     my( $self ) = @_;
     return '' unless ref $self;
-    return $self->name;
+    my $name = $self->name;
+    return blessed $name ? $name : ChemOnomatopist::Name->new( $name );
 }
 
 # FIXME: Pay attention to bond orders
