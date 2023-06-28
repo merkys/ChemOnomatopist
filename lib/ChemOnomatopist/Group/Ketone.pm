@@ -19,8 +19,6 @@ sub is_oxygen() {
     return ChemOnomatopist::is_element( $self->{atom}, 'O' );
 }
 
-sub is_part_of_chain() { return '' }
-
 # From BBv2 P-64.6.1
 my %prefixes = ( O => 'oxo', S => 'sulfanylidene', Se => 'selanylidene', Te => 'tellanylidene' );
 my %suffixes = ( O => 'one', S => 'thione', Se => 'selone', Te => 'tellone' );
