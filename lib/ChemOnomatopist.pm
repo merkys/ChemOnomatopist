@@ -475,6 +475,10 @@ sub find_groups
         }
     }
 
+    if( any { !blessed $_ && exists $_->{charge} } $graph->vertices ) {
+        die "cannot handle charges for now\n";
+    }
+
     # Due to the issue in Graph, bridges() returns strings instead of real objects.
     # Graph issue: https://github.com/graphviz-perl/Graph/issues/29
     my %vertices_by_name = map { $_ => $_ } $graph->vertices;
