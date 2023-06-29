@@ -257,7 +257,7 @@ sub get_mainchain_name
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
-            if( $most_senior_group && blessed $neighbour && grep { $_ eq $neighbour } @groups ) {
+            if( grep { $_ == $neighbour } @groups ) {
                 push @senior_group_attachments, $i;
             } else {
                 my $attachment_name = get_sidechain_name( $graph, $atom, $neighbour );
