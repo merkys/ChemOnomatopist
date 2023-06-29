@@ -277,8 +277,8 @@ sub needs_heteroatom_names()
         return '';
     }
 
-    # Sulfanyl and others
-    if( @vertices == 1 && ChemOnomatopist::element( @vertices ) =~ /^Se?$/ ) {
+    # Chalcogen analogues of ethers
+    if( @vertices == 1 && grep { ChemOnomatopist::element( @vertices ) eq $_ } qw( S Se Te ) ) {
         return '';
     }
 
@@ -440,10 +440,11 @@ sub prefix(;$)
 {
     my( $self ) = @_;
 
-    # FIXME: Extend
+    # Chalcogen analogues of ethers
     if( $self->length == 1 ) {
-        return 'sulfan' if ChemOnomatopist::is_element( $self->vertices, 'S' );
-        return 'selan'  if ChemOnomatopist::is_element( $self->vertices, 'Se' );
+        return ChemOnomatopist::Name->new( 'sulfan' ) if ChemOnomatopist::is_element( $self->vertices, 'S' );
+        return ChemOnomatopist::Name->new( 'selan'  ) if ChemOnomatopist::is_element( $self->vertices, 'Se' );
+        return ChemOnomatopist::Name->new( 'tellan' ) if ChemOnomatopist::is_element( $self->vertices, 'Te' );
     }
 
     return ChemOnomatopist::unbranched_chain_name( $self ); # FIXME: Add proper suffix
