@@ -613,21 +613,7 @@ sub is_element
     $element = ucfirst $element;
 
     if( blessed $atom ) {
-        if( $atom->isa( ChemOnomatopist::Group:: ) ) {
-            if(      $element eq 'C' ) {
-                return $atom->is_carbon;
-            } elsif( $element eq 'N' ) {
-                return $atom->is_nitrogen;
-            } elsif( $element eq 'O' ) {
-                return $atom->is_oxygen;
-            } elsif( $element eq 'H' ) {
-                return '';
-            }
-            warn "cannot say whether $atom is $element\n";
-        } elsif( $atom->isa( 'Chemistry::Atom' ) ) {
-            return $atom->symbol eq $element;
-        }
-        return '';
+        return element( $atom ) && element( $atom ) eq $element;
     }
 
     return ref $atom eq 'HASH' &&
