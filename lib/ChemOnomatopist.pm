@@ -429,12 +429,7 @@ sub find_groups
         }
 
         # O-based groups
-        if( is_element( $atom, 'O' ) && @neighbours == 2 && @C == 1 && @H == 1 ) {
-            # Detecting hydroxy
-            my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C );
-            $graph->add_edge( @C, $hydroxy );
-            $graph->delete_vertices( $atom, @H );
-        } elsif( is_element( $atom, 'O' ) && @neighbours == 2 && @H == 1 && @O == 1 ) {
+        if( is_element( $atom, 'O' ) && @neighbours == 2 && @H == 1 && @O == 1 ) {
             # Detecting hydroperoxide
             my @C = grep { is_element( $_, 'C' ) } $graph->neighbours( @O );
             if( @C == 1 ) {
@@ -442,6 +437,13 @@ sub find_groups
                 $graph->add_edge( @C, $hydroperoxide );
                 $graph->delete_vertices( $atom, @H, @O );
             }
+        }
+
+        # Hydroxy groups and their chalcogen analogues
+        if( @neighbours == 2 && @C == 1 && @H == 1 &&
+            any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
+            my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C, $atom );
+            graph_replace( $graph, $hydroxy, $atom, @H );
         }
 
         # Ketones and their chalcogen analogues
