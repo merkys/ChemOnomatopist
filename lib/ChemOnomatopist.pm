@@ -786,6 +786,11 @@ sub select_sidechain
         return ChemOnomatopist::Chain->new( $graph, $parent, $start );
     }
 
+    # FIXME: Extend to O and others
+    if( element( $start ) =~ /^Se?$/ && $graph->degree( $start ) == 1 ) {
+        return ChemOnomatopist::Chain->new( $graph, $parent, $start );
+    }
+
     my $C_graph = copy $graph;
     # Delete formed chains and non-carbon leaves
     # FIXME: Some other chains should as well be excluded

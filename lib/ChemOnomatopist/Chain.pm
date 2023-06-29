@@ -277,6 +277,11 @@ sub needs_heteroatom_names()
         return '';
     }
 
+    # Sulfanyl and others
+    if( @vertices == 1 && ChemOnomatopist::element( @vertices ) =~ /^Se?$/ ) {
+        return '';
+    }
+
     return 1;
 }
 
@@ -434,6 +439,13 @@ sub number_of_multiple_bonds()
 sub prefix(;$)
 {
     my( $self ) = @_;
+
+    # FIXME: Extend
+    if( $self->length == 1 ) {
+        return 'sulfan' if ChemOnomatopist::is_element( $self->vertices, 'S' );
+        return 'selan'  if ChemOnomatopist::is_element( $self->vertices, 'Se' );
+    }
+
     return ChemOnomatopist::unbranched_chain_name( $self ); # FIXME: Add proper suffix
 }
 
