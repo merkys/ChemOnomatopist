@@ -337,7 +337,7 @@ sub get_mainchain_name
     $name .= $chain->suffix;
 
     if( $most_senior_group && !$most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
-        if( $most_senior_group->is_carbon ) {
+        if( $groups[0]->is_carbon ) {
             # Most senior group is carbon, thus it is in the chain as well
             my @senior_group_positions =
                 grep { blessed $chain[$_] && $chain[$_]->isa( $most_senior_group ) }
@@ -778,8 +778,7 @@ sub select_mainchain
     # If there is at least one of carbon-based senior group attachment,
     # it means both ends are already senior, prompting to follow the
     # exception of three or more carbon-based groups.
-    if( $most_senior_group &&
-        $most_senior_group->is_carbon &&
+    if( $most_senior_group && $groups[0]->is_carbon &&
         !$chain->isa( ChemOnomatopist::Group:: ) &&
          $chain->number_of_groups( $most_senior_group ) ) {
 

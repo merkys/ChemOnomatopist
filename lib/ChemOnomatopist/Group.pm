@@ -70,9 +70,25 @@ sub new
 }
 
 # Neither of these by default
-sub is_carbon { return '' }
-sub is_nitrogen { return '' }
-sub is_oxygen { return '' }
+sub element() { return undef }
+
+sub is_carbon()
+{
+    my( $self ) = @_;
+    return $self->element && $self->element eq 'C';
+}
+
+sub is_nitrogen()
+{
+    my( $self ) = @_;
+    return $self->element && $self->element eq 'N';
+}
+
+sub is_oxygen()
+{
+    my( $self ) = @_;
+    return $self->element && $self->element eq 'O';
+}
 
 sub is_part_of_chain() { return '' }
 

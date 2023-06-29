@@ -16,11 +16,6 @@ sub new
 
 sub element() { return ucfirst $_[0]->{atom}{symbol} }
 
-sub is_oxygen() {
-    my( $self ) = @_;
-    return ChemOnomatopist::is_element( $self->{atom}, 'O' );
-}
-
 # From BBv2 P-63.1.5
 my %prefixes = ( O => 'hydroxy', S => 'sulfanyl', Se => 'selanyl', Te => 'tellanyl' );
 my %suffixes = ( O => 'ol', S => 'thiol', Se => 'selenol', Te => 'tellurol' );
