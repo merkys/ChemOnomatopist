@@ -8,7 +8,7 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-sub is_carbon() { return 1 }
+sub element() { return 'C' }
 
 sub is_part_of_chain() { return 1 }
 

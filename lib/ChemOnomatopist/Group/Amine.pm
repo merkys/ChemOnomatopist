@@ -10,8 +10,6 @@ use parent ChemOnomatopist::Group::;
 
 sub element() { return 'N' }
 
-sub is_nitrogen() { return 1 }
-
 sub prefix { return 'amino' }
 sub suffix { return 'amine' }
 

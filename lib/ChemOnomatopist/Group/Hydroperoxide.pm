@@ -10,8 +10,6 @@ use parent ChemOnomatopist::Group::;
 
 sub element() { return 'O' }
 
-sub is_oxygen { return 1 }
-
 sub prefix { return 'hydroperoxy' }
 sub suffix { return 'peroxol' }
 
