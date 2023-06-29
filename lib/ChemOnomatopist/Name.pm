@@ -30,10 +30,19 @@ sub append($)
     if( $self->{name} ne '' && blessed $string && $string->isa( ChemOnomatopist::Name:: ) && $string =~ /^\d/ ) {
         $self->{name} .= '-';
     }
-
     $self->{name} .= $string;
+
     delete $self->{ends_with_multiplier};
     delete $self->{ends_with_stem};
+
+    # Inherit locant
+    if( blessed $string && $string->isa( ChemOnomatopist::Name:: ) ) {
+        $self->{has_locant} = 1 if $string->has_locant;
+        $self->{has_substituent_locant} = 1 if $string->has_substituent_locant;
+        $self->{ends_with_multiplier} = 1 if $string->ends_with_multiplier;
+        $self->{ends_with_stem} = 1 if $string->{ends_with_stem};
+    }
+
     return $self;
 }
 
@@ -46,6 +55,7 @@ sub append_element($)
 sub append_locants
 {
     my( $self, @locants ) = @_;
+    $self->{has_locant} = 1;
     $self->append( 'a' ) if $self->{ends_with_stem} && @locants == 2;
     $self->append( '-' ) if $self->{name};
     return $self->append( join( ',', @locants ) . '-' );
@@ -73,6 +83,7 @@ sub append_stem($)
 sub append_substituent_locant($)
 {
     my( $self, $locant ) = @_;
+    $self->{has_locant} = 1;
     $self->{has_substituent_locant} = 1;
     $self->append( '-' . $locant . '-' );
     $self->{name} = 'tert-but' if $self->{name} eq '2-methylpropan-2-';
@@ -91,6 +102,12 @@ sub bracket()
 {
     my( $self ) = @_;
     $self->{name} = _bracket( $self->{name} );
+}
+
+sub has_locant()
+{
+    my( $self ) = @_;
+    return exists $self->{has_locant};
 }
 
 sub has_substituent_locant()

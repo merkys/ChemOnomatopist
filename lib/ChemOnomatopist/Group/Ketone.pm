@@ -14,12 +14,7 @@ sub new
     return bless { C => $carbon, atom => $atom }, $class;
 }
 
-sub is_oxygen() {
-    my( $self ) = @_;
-    return ChemOnomatopist::is_element( $self->{atom}, 'O' );
-}
-
-sub is_part_of_chain() { return '' }
+sub element() { return ucfirst $_[0]->{atom}{symbol} }
 
 # From BBv2 P-64.6.1
 my %prefixes = ( O => 'oxo', S => 'sulfanylidene', Se => 'selanylidene', Te => 'tellanylidene' );
@@ -28,19 +23,19 @@ my %suffixes = ( O => 'one', S => 'thione', Se => 'selone', Te => 'tellone' );
 sub prefix
 {
     my( $self ) = @_;
-    return $prefixes{$self->{atom}{symbol}};
+    return $prefixes{$self->element};
 }
 
 sub suffix
 {
     my( $self ) = @_;
-    return $suffixes{$self->{atom}{symbol}};
+    return $suffixes{$self->element};
 }
 
 sub _cmp_instances
 {
     my( $A, $B ) = @_;
-    return $A->{atom}{symbol} cmp $B->{atom}{symbol};
+    return $A->element cmp $B->element;
 }
 
 1;

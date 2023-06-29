@@ -8,11 +8,34 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-sub is_oxygen() { return 1 }
+sub new
+{
+    my( $class, $carbon, $atom ) = @_;
+    return bless { C => $carbon, atom => $atom }, $class;
+}
 
-sub is_part_of_chain() { return '' }
+sub element() { return ucfirst $_[0]->{atom}{symbol} }
 
-sub prefix() { return 'hydroxy' }
-sub suffix() { return 'ol' }
+# From BBv2 P-63.1.5
+my %prefixes = ( O => 'hydroxy', S => 'sulfanyl', Se => 'selanyl', Te => 'tellanyl' );
+my %suffixes = ( O => 'ol', S => 'thiol', Se => 'selenol', Te => 'tellurol' );
+
+sub prefix
+{
+    my( $self ) = @_;
+    return $prefixes{$self->element};
+}
+
+sub suffix
+{
+    my( $self ) = @_;
+    return $suffixes{$self->element};
+}
+
+sub _cmp_instances
+{
+    my( $A, $B ) = @_;
+    return $A->element cmp $B->element
+}
 
 1;

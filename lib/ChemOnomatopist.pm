@@ -14,8 +14,8 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide::SecondaryTertiary;
+use ChemOnomatopist::Group::Amine;
 use ChemOnomatopist::Group::Amine::SecondaryTertiary;
-use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
@@ -120,8 +120,8 @@ sub get_sidechain_name
     my @chain = $chain->vertices;
 
     # Handle non-carbon substituents
-    if( @chain == 1 && !is_element( $chain[0], 'C' ) && !blessed $chain[0] &&
-        exists $elements{$chain[0]->{symbol}} ) {
+    if( @chain == 1 && !$graph->degree( @chain ) && !blessed $chain[0] &&
+        !is_element( $chain[0], 'C' ) && exists $elements{$chain[0]->{symbol}} ) {
         my $element = $elements{$chain[0]->{symbol}}->{prefix};
         $element =~ s/a$/o/; # TODO: Is this a general rule? BBv2 seems silent.
         return ChemOnomatopist::Name->new( $element );
@@ -251,7 +251,7 @@ sub get_mainchain_name
     # names according to their lengths via calls to get_sidechain_name()
     my @senior_group_attachments;
     for my $sub ($chain->substituents_struct) {
-        if( $most_senior_group && blessed $sub->{substituent} && $sub->{substituent}->isa( $most_senior_group ) ) {
+        if( grep { $_ == $sub->{substituent} } @groups ) {
             push @senior_group_attachments, $sub->{position};
         } else {
             my $name = get_sidechain_name( $graph, $chain, $sub->{substituent} );
@@ -298,7 +298,7 @@ sub get_mainchain_name
             # This is an attempt to implement rules from P-16.5.1.
             # However, they are quite vague, thus there is not much of guarantee the following code is correct.
             if( $attachment !~ /^[\(\[\{]/ &&
-                $attachment->has_substituent_locant &&
+                $attachment->has_locant &&
                 $chain->needs_substituent_locants &&
                 $attachment ne 'tert-butyl' ) {
                 $attachment->bracket;
@@ -330,7 +330,7 @@ sub get_mainchain_name
     $name .= $chain->suffix;
 
     if( $most_senior_group && !$most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
-        if( $most_senior_group->is_carbon ) {
+        if( $groups[0]->is_carbon ) {
             # Most senior group is carbon, thus it is in the chain as well
             my @senior_group_positions =
                 grep { blessed $chain[$_] && $chain[$_]->isa( $most_senior_group ) }
@@ -394,9 +394,9 @@ sub find_groups
 
         # N-based groups
         if( is_element( $atom, 'N' ) && @neighbours == 3 && @C == 1 && @H == 2 ) {
-            # Detecting amino
-            my $amino = ChemOnomatopist::Group::Amino->new( @C );
-            $graph->add_edge( @C, $amino );
+            # Detecting amines
+            my $amine = ChemOnomatopist::Group::Amine->new( @C );
+            $graph->add_edge( @C, $amine );
             $graph->delete_vertices( $atom, @H );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C == 1 && @H == 1 &&
                  is_double_bond( $graph, $atom, @C ) ) {
@@ -422,12 +422,7 @@ sub find_groups
         }
 
         # O-based groups
-        if( is_element( $atom, 'O' ) && @neighbours == 2 && @C == 1 && @H == 1 ) {
-            # Detecting hydroxy
-            my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C );
-            $graph->add_edge( @C, $hydroxy );
-            $graph->delete_vertices( $atom, @H );
-        } elsif( is_element( $atom, 'O' ) && @neighbours == 2 && @H == 1 && @O == 1 ) {
+        if( is_element( $atom, 'O' ) && @neighbours == 2 && @H == 1 && @O == 1 ) {
             # Detecting hydroperoxide
             my @C = grep { is_element( $_, 'C' ) } $graph->neighbours( @O );
             if( @C == 1 ) {
@@ -435,6 +430,13 @@ sub find_groups
                 $graph->add_edge( @C, $hydroperoxide );
                 $graph->delete_vertices( $atom, @H, @O );
             }
+        }
+
+        # Hydroxy groups and their chalcogen analogues
+        if( @neighbours == 2 && @C == 1 && @H == 1 &&
+            any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
+            my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C, $atom );
+            graph_replace( $graph, $hydroxy, $atom, @H );
         }
 
         # Ketones and their chalcogen analogues
@@ -516,7 +518,7 @@ sub find_groups
             $graph->add_edges( $ester, $acid );
             $graph->delete_vertices( $atom, @O );
         } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
-                 (any { $_->isa( ChemOnomatopist::Group::Amino:: ) } @groups) &&
+                 (any { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups) &&
                  (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
             # Detecting primary amides
             my $amide = ChemOnomatopist::Group::Amide->new( $atom );
@@ -576,6 +578,25 @@ sub find_groups
     return;
 }
 
+# Derive the chemical element of atom or group representation
+# TODO: Replace object methods is_...
+sub element($)
+{
+    my( $atom_or_group ) = @_;
+    return undef unless ref $atom_or_group;
+
+    if( !blessed $atom_or_group ) {
+        die "unknown value '$atom_or_group' given for element()\n" unless ref $atom_or_group eq 'HASH';
+        return ucfirst $atom_or_group->{symbol};
+    }
+
+    if( $atom_or_group->isa( 'Chemistry::Atom' ) ) { # PerlMol Atom
+        return $atom_or_group->symbol;
+    }
+
+    return $atom_or_group->element;
+}
+
 # Check if an object or Perl hash is of certain chemical element
 sub is_element
 {
@@ -585,21 +606,7 @@ sub is_element
     $element = ucfirst $element;
 
     if( blessed $atom ) {
-        if( $atom->isa( ChemOnomatopist::Group:: ) ) {
-            if(      $element eq 'C' ) {
-                return $atom->is_carbon;
-            } elsif( $element eq 'N' ) {
-                return $atom->is_nitrogen;
-            } elsif( $element eq 'O' ) {
-                return $atom->is_oxygen;
-            } elsif( $element eq 'H' ) {
-                return '';
-            }
-            warn "cannot say whether $atom is $element\n";
-        } elsif( $atom->isa( 'Chemistry::Atom' ) ) {
-            return $atom->symbol eq $element;
-        }
-        return '';
+        return element( $atom ) && element( $atom ) eq $element;
     }
 
     return ref $atom eq 'HASH' &&
@@ -619,8 +626,9 @@ sub select_mainchain
 
     my @chains;
     if( @groups ) {
-        # TODO: Select a chain containing most of the senior groups
-        my @parents = uniq grep { defined $_ } map { $_->C } @groups; # FIXME: parents with the most attachments should be preferred
+        # Select a chain containing most of the senior groups
+        # FIXME: Parents with the most attachments should be preferred
+        my @parents = uniq grep { defined $_ } map { $_->C } @groups;
 
         # Prefer circular structures
         if( @parents > 1 && (grep { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents) == 1 ) {
@@ -749,8 +757,7 @@ sub select_mainchain
     # If there is at least one of carbon-based senior group attachment,
     # it means both ends are already senior, prompting to follow the
     # exception of three or more carbon-based groups.
-    if( $most_senior_group &&
-        $most_senior_group->is_carbon &&
+    if( $most_senior_group && $groups[0]->is_carbon &&
         !$chain->isa( ChemOnomatopist::Group:: ) &&
          $chain->number_of_groups( $most_senior_group ) ) {
 
@@ -773,8 +780,10 @@ sub select_sidechain
     }
 
     my $C_graph = copy $graph;
-    # Delete secondary/tertiary amines and non-carbon leaves
+    # Delete formed chains and non-carbon leaves
+    # FIXME: Some other chains should as well be excluded
     $C_graph->delete_vertices( grep { $_ != $start && !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 } $C_graph->vertices );
+    $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && $_->isa( ChemOnomatopist::Group::Monocycle:: ) } $C_graph->vertices );
     $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } $C_graph->vertices );
 
     my @path_parts;
@@ -1128,7 +1137,7 @@ sub most_senior_groups
     return unless @groups;
 
     my( $most_senior_group ) = sort { ChemOnomatopist::Group::cmp( $a, $b ) } @groups;
-    return grep { $_->isa( blessed $most_senior_group ) } @groups;
+    return grep { !ChemOnomatopist::Group::cmp( $_, $most_senior_group ) } @groups;
 }
 
 # Given two lists of heteroatoms, return the one with the most senior ones

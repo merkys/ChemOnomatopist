@@ -14,7 +14,7 @@ sub new
     return bless { C => $carbon, ketone => $ketone }, $class;
 }
 
-sub is_carbon { return 1 }
+sub element { return 'C' }
 
 sub is_part_of_chain() { return 1 }
 

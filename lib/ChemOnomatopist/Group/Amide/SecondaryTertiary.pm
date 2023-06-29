@@ -16,8 +16,6 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
-sub C() { return @_ }
-
 sub candidates()
 {
     my( $self ) = @_;
@@ -35,6 +33,10 @@ sub candidates()
 
     return @chains;
 }
+
+sub element() { return 'N' }
+
+sub is_part_of_chain() { return 1 }
 
 sub locants(@)
 {

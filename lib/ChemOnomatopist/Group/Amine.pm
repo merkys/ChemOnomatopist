@@ -1,4 +1,4 @@
-package ChemOnomatopist::Group::Amino;
+package ChemOnomatopist::Group::Amine;
 
 use strict;
 use warnings;
@@ -7,6 +7,8 @@ use warnings;
 # VERSION
 
 use parent ChemOnomatopist::Group::;
+
+sub element() { return 'N' }
 
 sub prefix { return 'amino' }
 sub suffix { return 'amine' }

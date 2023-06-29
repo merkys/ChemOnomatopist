@@ -6,13 +6,14 @@ use warnings;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amide::SecondaryTertiary;
+use ChemOnomatopist::Group::Amine;
 use ChemOnomatopist::Group::Amine::SecondaryTertiary;
-use ChemOnomatopist::Group::Amino;
 use ChemOnomatopist::Group::Bicycle;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Guanidine;
+use ChemOnomatopist::Group::Hydrazine;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
@@ -44,6 +45,7 @@ our @order = (
     ChemOnomatopist::Group::Amide::SecondaryTertiary::, # FIXME: Is this correct?
     ChemOnomatopist::Group::Guanidine::,
     # Hydrazides
+    ChemOnomatopist::Group::Hydrazine::,
     # Imides
     # Nitriles
     ChemOnomatopist::Group::Cyanide::,
@@ -51,7 +53,7 @@ our @order = (
     ChemOnomatopist::Group::Ketone::,
     ChemOnomatopist::Group::Hydroxy::,
     ChemOnomatopist::Group::Hydroperoxide::,
-    ChemOnomatopist::Group::Amino::,
+    ChemOnomatopist::Group::Amine::,
     ChemOnomatopist::Group::Amine::SecondaryTertiary::, # FIXME: Is this correct?
     ChemOnomatopist::Group::Imino::,
 
@@ -70,18 +72,36 @@ sub new
 }
 
 # Neither of these by default
-sub is_carbon { return '' }
-sub is_nitrogen { return '' }
-sub is_oxygen { return '' }
+sub element() { return undef }
+
+sub is_carbon()
+{
+    my( $self ) = @_;
+    return $self->element && $self->element eq 'C';
+}
+
+sub is_nitrogen()
+{
+    my( $self ) = @_;
+    return $self->element && $self->element eq 'N';
+}
+
+sub is_oxygen()
+{
+    my( $self ) = @_;
+    return $self->element && $self->element eq 'O';
+}
 
 sub is_part_of_chain() { return '' }
+
+# Certain groups can only be expressed as prefixes
 sub is_prefix_only() { return '' }
 
 sub needs_heteroatom_locants { return 1 }
 sub needs_heteroatom_names { return 1 }
 
 sub prefix(;$) { return '' }
-sub suffix() { return '' }
+sub suffix() { return $_[0]->is_prefix_only ? undef : '' }
 sub multisuffix() { return $_[0]->suffix }
 sub suffix_if_cycle_substituent() { return $_[0]->suffix }
 
@@ -95,7 +115,7 @@ sub candidate_for()
 # Return the attached carbon
 sub C {
     my( $self ) = @_;
-    return $self->is_part_of_chain && $self->is_carbon ? $self : $self->{C};
+    return $self->is_part_of_chain ? $self : $self->{C};
 }
 
 # Compare seniority of two objects
@@ -109,7 +129,7 @@ sub cmp
     die "cannot compare\n" if !defined $A_pos || !defined $B_pos;
 
     return $A_pos <=> $B_pos if $A_pos <=> $B_pos;
-    return _cmp_instances( $A, $B );
+    return $A->_cmp_instances( $B );
 }
 
 # Two instances of the same group are thought to be of the same seniority

@@ -8,9 +8,7 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-sub is_carbon() { return 1 }
-
-sub is_part_of_chain() { return '' }
+sub element() { return 'C' }
 
 sub prefix() { return 'carboxy' }
 sub suffix() { return 'oic acid' } # FIXME: Should be 'carboxylic acid' if attached to cycles

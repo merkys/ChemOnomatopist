@@ -8,7 +8,7 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-sub is_oxygen { return 1 }
+sub element() { return 'O' }
 
 sub prefix { return 'hydroperoxy' }
 sub suffix { return 'peroxol' }

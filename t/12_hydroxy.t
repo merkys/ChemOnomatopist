@@ -9,6 +9,16 @@ use Test::More;
 my @cases = (
     { smiles => 'OCC(CO)(CO)CO', iupac => '2,2-bis(hydroxymethyl)propane-1,3-diol' },
     { smiles => 'CC(C)(C)O', iupac => '2-methylpropan-2-ol' }, # From BBv2 P-63.1.2
+
+    # From BBv2 P-63.1.5
+    { smiles => 'CC(C)S', iupac => 'propane-2-thiol' },
+    { smiles => 'C(C)[SeH]', iupac => 'ethaneselenol' },
+    { smiles => 'SCCCCS', iupac => 'butane-1,4-dithiol' },
+    { smiles => 'SC1=CC=CC=C1', iupac => 'benzenethiol' },
+    { smiles => 'SCCC(=O)O', iupac => '3-sulfanylpropanoic acid' },
+    { smiles => 'SC1=C(C=CC=C1)O', iupac => '2-sulfanylphenol' },
+    { smiles => 'OC(CS)C1CCC(C(C1)O)S', iupac => '5-(1-hydroxy-2-sulfanylethyl)-2-sulfanylcyclohexan-1-ol' },
+    { smiles => 'SC(CC(=O)O)CS', iupac => '3,4-bis(sulfanyl)butanoic acid', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};

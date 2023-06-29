@@ -18,7 +18,7 @@ sub new
     return bless { hydroxylic => $hydroxylic, acid => $acid }, $class;
 }
 
-sub is_carbon { return 1 }
+sub element { return 'C' }
 
 sub name
 {
