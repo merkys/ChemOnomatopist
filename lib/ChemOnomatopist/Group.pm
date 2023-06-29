@@ -127,7 +127,7 @@ sub cmp
     die "cannot compare\n" if !defined $A_pos || !defined $B_pos;
 
     return $A_pos <=> $B_pos if $A_pos <=> $B_pos;
-    return _cmp_instances( $A, $B );
+    return $A->_cmp_instances( $B );
 }
 
 # Two instances of the same group are thought to be of the same seniority

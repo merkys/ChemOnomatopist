@@ -1144,7 +1144,7 @@ sub most_senior_groups
     return unless @groups;
 
     my( $most_senior_group ) = sort { ChemOnomatopist::Group::cmp( $a, $b ) } @groups;
-    return grep { $_->isa( blessed $most_senior_group ) } @groups;
+    return grep { !ChemOnomatopist::Group::cmp( $_, $most_senior_group ) } @groups;
 }
 
 # Given two lists of heteroatoms, return the one with the most senior ones

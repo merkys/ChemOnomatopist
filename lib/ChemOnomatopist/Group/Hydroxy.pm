@@ -23,19 +23,19 @@ my %suffixes = ( O => 'ol', S => 'thiol', Se => 'selenol', Te => 'tellurol' );
 sub prefix
 {
     my( $self ) = @_;
-    return $prefixes{$self->{atom}{symbol}};
+    return $prefixes{$self->element};
 }
 
 sub suffix
 {
     my( $self ) = @_;
-    return $suffixes{$self->{atom}{symbol}};
+    return $suffixes{$self->element};
 }
 
 sub _cmp_instances
 {
     my( $A, $B ) = @_;
-    return $A->{atom}{symbol} cmp $B->{atom}{symbol};
+    return $A->element cmp $B->element
 }
 
 1;
