@@ -32,6 +32,8 @@ sub candidates()
     return @chains;
 }
 
+sub element() { return 'N' }
+
 sub is_nitrogen() { return 1 }
 
 sub is_part_of_chain() { return 1 }

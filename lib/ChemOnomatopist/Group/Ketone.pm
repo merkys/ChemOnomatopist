@@ -14,6 +14,8 @@ sub new
     return bless { C => $carbon, atom => $atom }, $class;
 }
 
+sub element() { return ucfirst $_[0]->{atom}{symbol} }
+
 sub is_oxygen() {
     my( $self ) = @_;
     return ChemOnomatopist::is_element( $self->{atom}, 'O' );
