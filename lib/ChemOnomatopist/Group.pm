@@ -13,6 +13,7 @@ use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Guanidine;
+use ChemOnomatopist::Group::Hydrazine;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
@@ -44,6 +45,7 @@ our @order = (
     ChemOnomatopist::Group::Amide::SecondaryTertiary::, # FIXME: Is this correct?
     ChemOnomatopist::Group::Guanidine::,
     # Hydrazides
+    ChemOnomatopist::Group::Hydrazine::,
     # Imides
     # Nitriles
     ChemOnomatopist::Group::Cyanide::,
