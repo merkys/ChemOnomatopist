@@ -1356,6 +1356,7 @@ sub unbranched_chain_name($)
     $name->append_stem( alkane_chain_name $chain->length );
 
     if( @double ) {
+        $name .= 'a' if @double >= 2; # BBv2 P-16.8.2
         if( $chain->needs_multiple_bond_locants || @double > 1 || @triple ) {
             $name->append_locants( map { $_ + 1 } @double );
         }
@@ -1363,6 +1364,7 @@ sub unbranched_chain_name($)
         $name .= 'en';
     }
     if( @triple ) {
+        $name .= 'a' if @triple >= 2 && !@double; # BBv2 P-16.8.2
         if( $chain->needs_multiple_bond_locants || @triple > 1 || @double ) {
             $name->append_locants( map { $_ + 1 } @triple );
         }
