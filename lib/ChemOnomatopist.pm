@@ -194,9 +194,15 @@ sub get_sidechain_name
     }
 
     if( $chain->isa( ChemOnomatopist::Group:: ) ) {
-        $name .= $chain->prefix( $parent );
+        my $prefix = $chain->prefix( $parent );
+        # All groups are most likely stems
+        $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
+        $name .= $prefix;
     } elsif( @chain == 1 && blessed $chain[0] ) {
-        $name .= $chain[0]->prefix( $parent );
+        my $prefix = $chain[0]->prefix( $parent );
+        # All group-containing chains are most likely stems
+        $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
+        $name .= $prefix;
     } else {
         $name .= $chain->prefix( $parent );
         pop @{$name->{name}} if $name->{name}[-1] eq 'e'; # FIXME: Dirty

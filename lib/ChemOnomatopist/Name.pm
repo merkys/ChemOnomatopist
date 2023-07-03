@@ -58,7 +58,7 @@ sub append_locants
 {
     my( $self, @locants ) = @_;
     $self->{has_locant} = 1;
-    $self->append( 'a' ) if $self->ends_with_stem && @locants == 2;
+    $self->append( 'a' ) if $self->ends_with_stem && $self =~ /[^aeiouy]$/ && @locants == 2; # BBv2 P-16.8.2
     $self->append( '-' ) if @{$_[0]->{name}};
     return $self->append( join( ',', @locants ) . '-' );
 }
