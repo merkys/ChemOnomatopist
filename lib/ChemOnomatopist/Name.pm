@@ -37,7 +37,7 @@ sub append($)
     if( @{$_[0]->{name}} && blessed $string && $string->isa( ChemOnomatopist::Name:: ) && $string =~ /^\d/ ) {
         push @{$self->{name}}, '-';
     }
-    push @{$self->{name}}, $string;
+    push @{$self->{name}}, blessed $string && $string->isa( ChemOnomatopist::Name:: ) ? @{$string->{name}} : $string;
 
     # Inherit locant
     if( blessed $string && $string->isa( ChemOnomatopist::Name:: ) ) {
