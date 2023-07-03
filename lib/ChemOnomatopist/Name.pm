@@ -11,6 +11,7 @@ use overload '""'  => sub { return join '', @{$_[0]->{name}} };
 use overload 'eq'  => sub { return  "$_[0]" eq  "$_[1]" };
 use overload 'cmp' => sub { return ("$_[0]" cmp "$_[1]") * ($_[2] ? -1 : 1) };
 
+use ChemOnomatopist::Name::Part::Stem;
 use Scalar::Util qw( blessed );
 
 sub new
@@ -34,14 +35,12 @@ sub append($)
     push @{$self->{name}}, $string;
 
     delete $self->{ends_with_multiplier};
-    delete $self->{ends_with_stem};
 
     # Inherit locant
     if( blessed $string && $string->isa( ChemOnomatopist::Name:: ) ) {
         $self->{has_locant} = 1 if $string->has_locant;
         $self->{has_substituent_locant} = 1 if $string->has_substituent_locant;
         $self->{ends_with_multiplier} = 1 if $string->ends_with_multiplier;
-        $self->{ends_with_stem} = 1 if $string->{ends_with_stem};
     }
 
     return $self;
@@ -57,7 +56,7 @@ sub append_locants
 {
     my( $self, @locants ) = @_;
     $self->{has_locant} = 1;
-    $self->append( 'a' ) if $self->{ends_with_stem} && @locants == 2;
+    $self->append( 'a' ) if $self->ends_with_stem && @locants == 2;
     $self->append( '-' ) if @{$_[0]->{name}};
     return $self->append( join( ',', @locants ) . '-' );
 }
@@ -76,8 +75,7 @@ sub append_multiplier($)
 sub append_stem($)
 {
     my( $self, $stem ) = @_;
-    $self->append( $stem );
-    $self->{ends_with_stem} = 1;
+    $self->append( ChemOnomatopist::Name::Part::Stem->new( $stem ) );
     return $self;
 }
 
@@ -155,6 +153,14 @@ sub ends_with_multiplier()
 {
     my( $self ) = @_;
     return exists $self->{ends_with_multiplier};
+}
+
+sub ends_with_stem()
+{
+    my( $self ) = @_;
+    return @{$self->{name}} &&
+           blessed $self->{name}[-1] &&
+           $self->{name}[-1]->isa( ChemOnomatopist::Name::Part::Stem:: );
 }
 
 1;
