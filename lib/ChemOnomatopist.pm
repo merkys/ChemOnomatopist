@@ -279,7 +279,7 @@ sub get_mainchain_name
         }
 
         # FIXME: More rules from BBv2 P-16.3.4 and P-16.5.1 should be added
-        if( $attachment !~ /^[\(\[\{]/ &&
+        if( !$attachment->is_enclosed &&
             ( $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
               $attachment =~ /^[0-9]/ ) ) {
               $attachment->bracket;
@@ -287,7 +287,7 @@ sub get_mainchain_name
 
         if( @{$attachments{$attachment_name}} > 1 ) {
             my $number;
-            if( $attachment =~ /^[\(\[\{]/ ) {
+            if( $attachment->is_enclosed ) {
                 $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
             } else {
                 $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
@@ -296,7 +296,7 @@ sub get_mainchain_name
             $name .= $number;
 
             # BBv2 P-16.3.4 (a)
-            if( $attachment !~ /^[\(\[\{]/ &&
+            if( !$attachment->is_enclosed &&
                 ( $attachment =~ /^dec/ || # BBv2 P-16.3.4 (d)
                   $attachment->has_substituent_locant ) ) {
                 $attachment->bracket;
@@ -304,7 +304,7 @@ sub get_mainchain_name
         } else {
             # This is an attempt to implement rules from P-16.5.1.
             # However, they are quite vague, thus there is not much of guarantee the following code is correct.
-            if( $attachment !~ /^[\(\[\{]/ &&
+            if( !$attachment->is_enclosed &&
                 $attachment->has_locant &&
                 $chain->needs_substituent_locants &&
                 $attachment ne 'tert-butyl' ) {

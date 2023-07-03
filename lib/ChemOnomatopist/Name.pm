@@ -116,6 +116,12 @@ sub has_substituent_locant()
     return exists $self->{has_substituent_locant};
 }
 
+sub is_enclosed()
+{
+    my( $self ) = @_;
+    return $self->{name} =~ /^[\(\[\{]/ && $self->{name} =~ /[\)\]\}]$/;
+}
+
 sub starts_with_multiplier()
 {
     my( $self ) = @_;
