@@ -143,6 +143,14 @@ sub is_enclosed()
     return $self->{name}[0] =~ /^[\(\[\{]/ && $self->{name}[-1] =~ /[\)\]\}]$/;
 }
 
+# FIXME: Incomplete, untested and unused
+# 0 if simple, 1 if compound
+sub level()
+{
+    my( $self ) = @_;
+    return 0 + ((grep { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Stem:: ) } @{$self->{name}}) > 1);
+}
+
 sub starts_with_multiplier()
 {
     my( $self ) = @_;
