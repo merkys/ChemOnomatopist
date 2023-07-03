@@ -198,13 +198,13 @@ sub get_sidechain_name
         $name .= $chain[0]->prefix( $parent );
     } else {
         $name .= $chain->prefix( $parent );
-        $name->{name} =~ s/(an)?e$//; # FIXME: Dirty
+        $name->{name}[-1] =~ s/(an)?e$//; # FIXME: Dirty
 
         if( $branches_at_start > 1 ) {
             my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
             if( $branch_point || !$chain->is_saturated ) {
                 # According to BBv2 P-29.2 (1)
-                $name .= 'an' unless $name->{name} =~ /-(di|tri)?en$/; # FIXME: Dirty
+                $name .= 'an' unless $name =~ /-(di|tri)?en$/; # FIXME: Dirty
                 $name->append_substituent_locant( $branch_point + 1 );
             }
         }

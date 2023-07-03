@@ -230,7 +230,7 @@ sub prefix()
     my( $self ) = @_;
 
     my $name = ChemOnomatopist::Name->new( $self->suffix );
-    $name->{name} =~ s/e$//;
+    $name->{name}[-1] =~ s/e$//;
     if( $self->parent ) { # FIXME: Not stable for naphthalene
         my @vertices = $self->vertices;
         my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
