@@ -18,9 +18,13 @@ use Scalar::Util qw( blessed );
 sub new
 {
     my( $class, $name ) = @_;
-    my @name;
-    push @name, $name if defined $name && $name ne '';
-    return bless { name => \@name }, $class;
+    my @name_parts;
+    if( defined $name && blessed $name ) {
+        push @name_parts, $name;
+    } elsif( defined $name && $name ne '' ) {
+        push @name_parts, $name;
+    }
+    return bless { name => \@name_parts }, $class;
 }
 
 # TODO: Implement vowel elision as written in BBv2 P-16.7

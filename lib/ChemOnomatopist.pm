@@ -30,6 +30,7 @@ use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
 use ChemOnomatopist::Group::XO3;
 use ChemOnomatopist::Name;
+use ChemOnomatopist::Name::Part::Stem;
 use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
@@ -242,7 +243,8 @@ sub get_mainchain_name
         if( blessed $atom ) {
             next if $most_senior_group && $atom->isa( $most_senior_group );
             my $prefix = $atom->prefix( $chain );
-            $prefix = ChemOnomatopist::Name->new( $prefix ) unless blessed $prefix;
+            # If not ChemOnomatopist::Name already, it is most likely a stem
+            $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
             push @{$attachments{$prefix}}, $i;
             $attachment_objects{$prefix} = $prefix;
         } elsif( !is_element( $atom, 'C' ) &&
