@@ -251,29 +251,21 @@ sub get_mainchain_name
     $graph = copy $chain->graph;
     $graph->delete_edges( map { @$_ } $graph->subgraph( \@chain )->edges );
 
-    my %attachments;
+    # Examine heteroatoms in the main chain
     my %heteroatoms;
-    my %attachment_objects;
-    # Examine the main chain
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
-        if( blessed $atom ) {
-            next if $most_senior_group && $atom->isa( $most_senior_group );
-            my $prefix = $atom->prefix( $chain );
-            # If not ChemOnomatopist::Name already, it is most likely a stem
-            $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
-            push @{$attachments{$prefix}}, $i;
-            $attachment_objects{$prefix} = $prefix;
-        } elsif( !is_element( $atom, 'C' ) &&
-                 exists $atom->{symbol} &&
-                 exists $elements{$atom->{symbol}} ) {
-            push @{$heteroatoms{$atom->{symbol}}}, $i;
-        }
+        next if blessed $atom;
+        next if is_element( $atom, 'C' );
+        next unless exists $atom->{symbol} && exists $elements{$atom->{symbol}};
+        push @{$heteroatoms{$atom->{symbol}}}, $i;
     }
 
     # Examine the attachments to the main chain: delete the edges
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_sidechain_name()
+    my %attachments;
+    my %attachment_objects;
     my @senior_group_attachments;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
