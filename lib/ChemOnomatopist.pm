@@ -251,7 +251,7 @@ sub get_mainchain_name
     $graph = copy $chain->graph;
     $graph->delete_edges( map { @$_ } $graph->subgraph( \@chain )->edges );
 
-    # Examine heteroatoms in the main chain
+    # Collect the heteroatoms in the chain
     my %heteroatoms;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
@@ -261,9 +261,7 @@ sub get_mainchain_name
         push @{$heteroatoms{$atom->{symbol}}}, $i;
     }
 
-    # Examine the attachments to the main chain: delete the edges
-    # connecting them to the main chain, at the same time giving them
-    # names according to their lengths via calls to get_sidechain_name()
+    # Collect the substituents
     my %attachments;
     my %attachment_objects;
     my @senior_group_attachments;
