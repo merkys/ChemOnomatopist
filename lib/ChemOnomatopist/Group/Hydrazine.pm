@@ -6,7 +6,7 @@ use warnings;
 # ABSTRACT: Hydrazine group
 # VERSION
 
-use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
+use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
 sub new
 {
@@ -24,7 +24,9 @@ sub candidates()
     return @chains;
 }
 
-sub is_part_of_chain() { return 1 }
+sub needs_heteroatom_locants() { return '' }
+sub needs_heteroatom_names() { return '' }
+sub needs_substituent_locants() { return 1 } # FIXME: Unless there is only one
 
 sub prefix(;$)
 {

@@ -124,7 +124,7 @@ sub prefix(;$)
     return 'phenyl' if $name eq 'benzene';
 
     $name = ChemOnomatopist::Name->new( $name ) unless blessed $name;
-    $name->{name} =~ s/(an)?e$//;
+    $name->{name}[-1] =~ s/(an)?e$//;
 
     if( $parent && !$self->is_homogeneous ) {
         my @vertices = $self->vertices;
@@ -133,7 +133,9 @@ sub prefix(;$)
         $name->append_substituent_locant( $self->locants( $position ) );
     }
 
-    return $name . 'yl';
+    $name .= 'yl';
+
+    return $name;
 }
 
 # FIXME: This is a bit strange: class and object method with the same name

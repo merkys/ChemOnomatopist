@@ -8,6 +8,7 @@ use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Chain;
+use ChemOnomatopist::Name;
 use Scalar::Util qw( blessed );
 
 use parent ChemOnomatopist::Chain::;
@@ -40,8 +41,16 @@ sub prefix()
                                                     $self->parent,
                                                     @vertices[$cut_position+1..$#vertices] ) );
         my @prefixes = map { $_->prefix } @chains;
-        $prefixes[0] =~ s/ane$//;
-        return $cut_position . '-' . $prefixes[0] . 'oxy' . $prefixes[1];
+        if( $prefixes[0] =~ /ane$/ ) {
+            pop @{$prefixes[0]->{name}};
+            pop @{$prefixes[0]->{name}};
+        }
+        my $name = ChemOnomatopist::Name->new;
+        $name->append_locants( $cut_position );
+        $name->append( $prefixes[0] );
+        $name->append( 'oxy' );
+        $name->append( $prefixes[1] );
+        return $name;
     } else {
         my $chain = ChemOnomatopist::Chain->new( $self->graph, @vertices );
         my $name = $chain->prefix;

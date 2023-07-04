@@ -20,6 +20,7 @@ use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Guanidine;
+use ChemOnomatopist::Group::Hydrazine;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
@@ -30,6 +31,7 @@ use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
 use ChemOnomatopist::Group::XO3;
 use ChemOnomatopist::Name;
+use ChemOnomatopist::Name::Part::Stem;
 use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
@@ -169,6 +171,12 @@ sub get_sidechain_name
                 $attachment =~ /^[0-9]/ ) {
                 $attachment->bracket;
             }
+        } else {
+            if( $chain->needs_substituent_locants &&
+                !$attachment->is_enclosed &&
+                ($attachment->has_locant || !$attachment->is_simple) ) {
+                $attachment->bracket;
+            }
         }
 
         $name .= $attachment;
@@ -194,18 +202,28 @@ sub get_sidechain_name
     }
 
     if( $chain->isa( ChemOnomatopist::Group:: ) ) {
-        $name .= $chain->prefix( $parent );
+        my $prefix = $chain->prefix( $parent );
+        # All groups are most likely stems
+        $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
+        $name .= $prefix;
     } elsif( @chain == 1 && blessed $chain[0] ) {
-        $name .= $chain[0]->prefix( $parent );
+        my $prefix = $chain[0]->prefix( $parent );
+        # All group-containing chains are most likely stems
+        $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
+        $name .= $prefix;
     } else {
+        if( $chain->isa( ChemOnomatopist::Chain::Ether:: ) && $name->has_locant ) {
+            $name->bracket;
+        }
         $name .= $chain->prefix( $parent );
-        $name->{name} =~ s/(an)?e$//; # FIXME: Dirty
+        pop @{$name->{name}} if $name->{name}[-1] eq 'e'; # FIXME: Dirty
+        pop @{$name->{name}} if $name->{name}[-1] eq 'an';
 
         if( $branches_at_start > 1 ) {
             my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
             if( $branch_point || !$chain->is_saturated ) {
                 # According to BBv2 P-29.2 (1)
-                $name .= 'an' unless $name->{name} =~ /-(di|tri)?en$/; # FIXME: Dirty
+                $name .= 'an' unless $name =~ /-(di|tri)?en$/; # FIXME: Dirty
                 $name->append_substituent_locant( $branch_point + 1 );
             }
         }
@@ -237,8 +255,11 @@ sub get_mainchain_name
         my $atom = $chain[$i];
         if( blessed $atom ) {
             next if $most_senior_group && $atom->isa( $most_senior_group );
-            push @{$attachments{$atom->prefix( $chain )}}, $i;
-            $attachment_objects{$atom->prefix( $chain )} = ChemOnomatopist::Name->new( $atom->prefix( $chain ) );
+            my $prefix = $atom->prefix( $chain );
+            # If not ChemOnomatopist::Name already, it is most likely a stem
+            $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
+            push @{$attachments{$prefix}}, $i;
+            $attachment_objects{$prefix} = $prefix;
         } elsif( !is_element( $atom, 'C' ) &&
                  exists $atom->{symbol} &&
                  exists $elements{$atom->{symbol}} ) {
@@ -272,7 +293,7 @@ sub get_mainchain_name
         }
 
         # FIXME: More rules from BBv2 P-16.3.4 and P-16.5.1 should be added
-        if( $attachment !~ /^[\(\[\{]/ &&
+        if( !$attachment->is_enclosed &&
             ( $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
               $attachment =~ /^[0-9]/ ) ) {
               $attachment->bracket;
@@ -280,7 +301,7 @@ sub get_mainchain_name
 
         if( @{$attachments{$attachment_name}} > 1 ) {
             my $number;
-            if( $attachment =~ /^[\(\[\{]/ ) {
+            if( $attachment->is_enclosed ) {
                 $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
             } else {
                 $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
@@ -289,7 +310,7 @@ sub get_mainchain_name
             $name .= $number;
 
             # BBv2 P-16.3.4 (a)
-            if( $attachment !~ /^[\(\[\{]/ &&
+            if( !$attachment->is_enclosed &&
                 ( $attachment =~ /^dec/ || # BBv2 P-16.3.4 (d)
                   $attachment->has_substituent_locant ) ) {
                 $attachment->bracket;
@@ -297,8 +318,8 @@ sub get_mainchain_name
         } else {
             # This is an attempt to implement rules from P-16.5.1.
             # However, they are quite vague, thus there is not much of guarantee the following code is correct.
-            if( $attachment !~ /^[\(\[\{]/ &&
-                $attachment->has_locant &&
+            if( !$attachment->is_enclosed &&
+                ($attachment->has_locant || !$attachment->is_simple) &&
                 $chain->needs_substituent_locants &&
                 $attachment ne 'tert-butyl' ) {
                 $attachment->bracket;
@@ -372,9 +393,10 @@ sub find_groups
 {
     my( $graph ) = @_;
 
-    # First pass is to detect guanidine
+    # First pass is to detect guanidine and hydrazine
     for my $atom ($graph->vertices) {
         my @neighbours = $graph->neighbours( $atom );
+        my @H = grep { is_element( $_, 'H' ) } @neighbours;
         my @N = grep { is_element( $_, 'N' ) } @neighbours;
 
         if( is_element( $atom, 'C' ) && @neighbours == 3 && @N == 3 &&
@@ -383,6 +405,12 @@ sub find_groups
             my $guanidine = ChemOnomatopist::Group::Guanidine->new( copy $graph, $atom );
             $graph->delete_vertex( $atom );
             graph_replace_all( $graph, $guanidine, $atom, @N );
+        }
+
+        if( is_element( $atom, 'N' ) && @neighbours == 3 && @N == 1 && @H == 2 ) {
+            # Detecting hydrazine
+            my $hydrazine = ChemOnomatopist::Group::Hydrazine->new( copy $graph, $atom, @N );
+            graph_replace_all( $graph, $hydrazine, $atom, @N );
         }
     }
 
@@ -776,6 +804,11 @@ sub select_sidechain
 
     # Do this for non-carbons for now in order to represent attachments
     if( !is_element( $start, 'C' ) && $graph->degree( $start ) == 0 ) {
+        return ChemOnomatopist::Chain->new( $graph, $parent, $start );
+    }
+
+    # Chalcogen analogues of ethers
+    if( $graph->degree( $start ) == 1 && grep { element( $start ) eq $_ } qw( S Se Te ) ) {
         return ChemOnomatopist::Chain->new( $graph, $parent, $start );
     }
 
@@ -1333,17 +1366,27 @@ sub unbranched_chain_name($)
     $name->append_stem( alkane_chain_name $chain->length );
 
     if( @double ) {
+        $name .= 'a' if @double >= 2; # BBv2 P-16.8.2
         if( $chain->needs_multiple_bond_locants || @double > 1 || @triple ) {
             $name->append_locants( map { $_ + 1 } @double );
         }
-        $name->append_multiplier( IUPAC_numerical_multiplier( scalar @double ) ) if @double > 1;
+        if( @double > 1 ) {
+            my $multiplier = IUPAC_numerical_multiplier scalar @double;
+            $multiplier .= 'a' unless $multiplier =~ /i$/; # BBv2 P-31.1.1.2
+            $name->append_multiplier( $multiplier );
+        }
         $name .= 'en';
     }
     if( @triple ) {
+        $name .= 'a' if @triple >= 2 && !@double; # BBv2 P-16.8.2
         if( $chain->needs_multiple_bond_locants || @triple > 1 || @double ) {
             $name->append_locants( map { $_ + 1 } @triple );
         }
-        $name->append_multiplier( IUPAC_numerical_multiplier( scalar @triple ) ) if @triple > 1;
+        if( @triple > 1 ) {
+            my $multiplier = IUPAC_numerical_multiplier scalar @triple;
+            $multiplier .= 'a' unless $multiplier =~ /i$/; # BBv2 P-31.1.1.2
+            $name->append_multiplier( $multiplier );
+        }
         $name .= 'yn';
     }
 

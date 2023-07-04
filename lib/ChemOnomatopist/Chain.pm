@@ -297,6 +297,11 @@ sub needs_heteroatom_names()
         return '';
     }
 
+    # Chalcogen analogues of ethers
+    if( @vertices == 1 && grep { ChemOnomatopist::element( @vertices ) eq $_ } qw( S Se Te ) ) {
+        return '';
+    }
+
     return 1;
 }
 
@@ -454,6 +459,14 @@ sub number_of_multiple_bonds()
 sub prefix(;$)
 {
     my( $self ) = @_;
+
+    # Chalcogen analogues of ethers
+    if( $self->length == 1 ) {
+        return ChemOnomatopist::Name->new( 'sulfan' ) if ChemOnomatopist::is_element( $self->vertices, 'S' );
+        return ChemOnomatopist::Name->new( 'selan'  ) if ChemOnomatopist::is_element( $self->vertices, 'Se' );
+        return ChemOnomatopist::Name->new( 'tellan' ) if ChemOnomatopist::is_element( $self->vertices, 'Te' );
+    }
+
     return ChemOnomatopist::unbranched_chain_name( $self ); # FIXME: Add proper suffix
 }
 

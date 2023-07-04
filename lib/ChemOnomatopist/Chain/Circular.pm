@@ -148,7 +148,7 @@ sub name()
             }
             $name->append_element( exists $elements{$element}->{HantzschWidman} ? $elements{$element}->{HantzschWidman} : $elements{$element}->{prefix} );
         }
-        $name->{name} =~ s/a$//;
+        $name->{name}[-1] =~ s/a$//;
 
         if(      $self->length <= 5 ) {
             my @stems = ( 'ir', 'et', 'ol' );

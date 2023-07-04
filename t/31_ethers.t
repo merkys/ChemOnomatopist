@@ -15,6 +15,10 @@ my @cases = (
     { smiles => 'ClCCOCC', iupac => '1-chloro-2-ethoxyethane', AUTHOR => 1 },
     { smiles => 'COCCOC', iupac => '1,2-dimethoxyethane', AUTHOR => 1 },
     { smiles => 'COCCOCCOC', iupac => '1-methoxy-2-(2-methoxyethoxy)ethane', AUTHOR => 1 },
+
+    # From P-63.2.5
+    { smiles => 'CSC1=CC=CC=C1', iupac => '(methylsulfanyl)benzene', AUTHOR => 1 },
+    { smiles => 'ClC1=CC=C(C=C1)[Se]CCl', iupac => '1-chloro-4-[(chloromethyl)selanyl]benzene', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
