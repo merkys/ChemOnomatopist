@@ -204,6 +204,9 @@ sub get_sidechain_name
         $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
         $name .= $prefix;
     } else {
+        if( $chain->isa( ChemOnomatopist::Chain::Ether:: ) && $name->has_locant ) {
+            $name->bracket;
+        }
         $name .= $chain->prefix( $parent );
         pop @{$name->{name}} if $name->{name}[-1] eq 'e'; # FIXME: Dirty
         pop @{$name->{name}} if $name->{name}[-1] eq 'an';

@@ -133,7 +133,9 @@ sub prefix(;$)
         $name->append_substituent_locant( $self->locants( $position ) );
     }
 
-    return $name . 'yl';
+    $name .= 'yl';
+
+    return $name;
 }
 
 # FIXME: This is a bit strange: class and object method with the same name
