@@ -10,6 +10,7 @@ use overload '.='  => \&append;
 use overload '""'  => sub { return join '', @{$_[0]->{name}} };
 use overload 'eq'  => sub { return  "$_[0]" eq  "$_[1]" };
 use overload 'cmp' => sub { return ("$_[0]" cmp "$_[1]") * ($_[2] ? -1 : 1) };
+use overload '@{}' => sub { return $_[0]->{name} };
 
 use ChemOnomatopist::Name::Part::Multiplier;
 use ChemOnomatopist::Name::Part::Stem;
@@ -31,8 +32,8 @@ sub new
 sub append($)
 {
     my( $self, $string ) = @_;
-    $self->{name}[-1] =~ s/a$// if $string =~ /^a/ && @{$_[0]->{name}};
-    $self->{name}[-1] =~ s/o$// if $string =~ /^o/ && @{$_[0]->{name}};
+    $self->{name}[-1] =~ s/a$// if $string =~ /^a/ && @$self;
+    $self->{name}[-1] =~ s/o$// if $string =~ /^o/ && @$self;
 
     # If names are combined and the second one starts with a number, a separator is added.
     if( @{$_[0]->{name}} && blessed $string && $string->isa( ChemOnomatopist::Name:: ) && $string =~ /^\d/ ) {
