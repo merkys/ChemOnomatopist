@@ -12,8 +12,10 @@ use overload 'eq'  => sub { return  "$_[0]" eq  "$_[1]" };
 use overload 'cmp' => sub { return ("$_[0]" cmp "$_[1]") * ($_[2] ? -1 : 1) };
 use overload '@{}' => sub { return $_[0]->{name} };
 
+use ChemOnomatopist::Name::Part::Locants;
 use ChemOnomatopist::Name::Part::Multiplier;
 use ChemOnomatopist::Name::Part::Stem;
+use List::Util qw( any );
 use Scalar::Util qw( blessed );
 
 sub new
@@ -44,7 +46,6 @@ sub append($)
 
     # Inherit locant
     if( blessed $name && $name->isa( ChemOnomatopist::Name:: ) ) {
-        $self->{has_locant} = 1 if $name->has_locant;
         $self->{has_substituent_locant} = 1 if $name->has_substituent_locant;
     }
 
@@ -60,9 +61,12 @@ sub append_element($)
 sub append_locants
 {
     my( $self, @locants ) = @_;
-    $self->{has_locant} = 1;
-    $self->append( '-' ) if @$self;
-    return $self->append( join( ',', @locants ) . '-' );
+    if( @$self ) {
+        $self->append( ChemOnomatopist::Name::Part::Locants->new( '-' . join( ',', @locants ) . '-' ) );
+    } else {
+        $self->append( ChemOnomatopist::Name::Part::Locants->new( join( ',', @locants ) . '-' ) );
+    }
+    return $self;
 }
 
 sub append_multiplier($)
@@ -84,7 +88,6 @@ sub append_stem($)
 sub append_substituent_locant($)
 {
     my( $self, $locant ) = @_;
-    $self->{has_locant} = 1;
     $self->{has_substituent_locant} = 1;
     $self->append( '-' . $locant . '-' );
     $self->{name} = [ 'tert-but' ] if $self eq '2-methylpropan-2-';
@@ -96,7 +99,7 @@ sub append_suffix($)
     my( $self, $suffix ) = @_;
     if( @$self ) {
         if( $suffix =~ /^[aeiouy]/ ) {
-            $self->[-3] =~ s/e$// if $self =~ /e-[0-9,]+-$/; # BBv2 P-16.7.1 (a)
+            $self->[-2] =~ s/e$// if $self =~ /e-[0-9,]+-$/; # BBv2 P-16.7.1 (a)
             $self->[-1] =~ s/e$// if $self =~ /e$/;
         }
         $self->[-1] =~ s/a$// if $self->ends_with_multiplier && $suffix =~ /^[ao]/; # BBv2 P-16.7.1 (b)
@@ -129,7 +132,8 @@ sub bracket()
 sub has_locant()
 {
     my( $self ) = @_;
-    return exists $self->{has_locant};
+    return $self->has_substituent_locant ||
+           any { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Locants:: ) } @$self;
 }
 
 sub has_substituent_locant()
