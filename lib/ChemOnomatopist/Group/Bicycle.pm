@@ -13,6 +13,7 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monocycle::Fused;
 use ChemOnomatopist::Name;
+use ChemOnomatopist::Name::Part::Stem;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Graph::Traversal::DFS;
 use List::Util qw( all any );
@@ -236,8 +237,9 @@ sub prefix()
         my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
         $name->append_substituent_locant( $self->locants( $position ) );
     }
+    $name .= 'yl';
 
-    return $name . 'yl';
+    return $name;
 }
 
 # FIXME: This is a bit strange: class and object method with the same name
@@ -251,14 +253,15 @@ sub suffix()
         return $hydrocarbons_by_size{$cycle_sizes} if exists $hydrocarbons_by_size{$cycle_sizes};
 
         if( $cycle_sizes =~ /^(\d+),\1$/ ) {
-            return ChemOnomatopist::alkane_chain_name( $1 ) . 'alene';
+            my $name = ChemOnomatopist::alkane_chain_name( $1 ) . 'alene';
+            return ChemOnomatopist::Name::Part::Stem->new( $name )->to_name;
         }
     }
 
     my @SMILES = map { $_->backbone_SMILES } $self->cycles;
     my( $retained ) = grep { ($_->[0] eq $SMILES[0] && $_->[1] eq $SMILES[1]) ||
                              ($_->[0] eq $SMILES[1] && $_->[1] eq $SMILES[0]) } @names;
-    return ChemOnomatopist::Name->new( $retained->[2] ) if $retained;
+    return ChemOnomatopist::Name::Part::Stem->new( $retained->[2] )->to_name if $retained;
 
     if( any { $_->is_benzene } $self->cycles ) {
         my( $other ) = grep { !$_->is_benzene } $self->cycles;
@@ -276,9 +279,9 @@ sub suffix()
             }
             return $name . 'pyran';
         } else {
-            my $suffix = $other->suffix;
-            $suffix =~ s/^o//;
-            return 'benzo' . $suffix;
+            my $name = ChemOnomatopist::Name->new( 'benzo' );
+            $name .= $other->suffix;
+            return $name;
         }
     }
 
