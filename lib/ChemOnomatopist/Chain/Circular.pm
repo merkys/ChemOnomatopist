@@ -152,7 +152,7 @@ sub name()
 
         if(      $self->length <= 5 ) {
             my @stems = ( 'ir', 'et', 'ol' );
-            $name .= $stems[$self->length - 3];
+            $name .= ChemOnomatopist::Name::Part::Stem->new( $stems[$self->length - 3] );
             if( $self->is_saturated ) {
                 $name .= $heteroatoms{N} ? 'idine' : 'ane';
             } elsif( $self->length == 3 ) {
@@ -164,16 +164,17 @@ sub name()
         } elsif( $self->length == 6 ) {
             if(      ($elements{$least_senior_element}->{seniority} >= 5 &&
                       $elements{$least_senior_element}->{seniority} <= 8) || $least_senior_element eq 'Bi' ) {
-                return $name . $self->is_saturated ? 'ane' : 'ine';
+                $name .= $self->is_saturated ? 'ane' : 'ine';
             } elsif( ($elements{$least_senior_element}->{seniority} >= 16 &&
                       $elements{$least_senior_element}->{seniority} <= 19) || $least_senior_element eq 'N' ) {
-                return $name . $self->is_saturated ? 'inane' : 'ine';
+                $name .= $self->is_saturated ? 'inane' : 'ine';
             } else {
-                return $name . $self->is_saturated ? 'inane' : 'inine';
+                $name .= $self->is_saturated ? 'inane' : 'inine';
             }
+            return $name;
         } elsif( $self->length >= 7 ) {
             my @stems = ( 'ep', 'oc', 'on', 'ec' );
-            $name .= $stems[$self->length - 7];
+            $name .= ChemOnomatopist::Name::Part::Stem->new( $stems[$self->length - 7] );
             $name .= $self->is_saturated ? 'ane' : 'ine';
             return $name;
         }
