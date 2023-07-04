@@ -42,8 +42,8 @@ sub prefix()
                                                     @vertices[$cut_position+1..$#vertices] ) );
         my @prefixes = map { $_->prefix } @chains;
         if( $prefixes[0] =~ /ane$/ ) {
-            pop @{$prefixes[0]->{name}};
-            pop @{$prefixes[0]->{name}};
+            pop @{$prefixes[0]};
+            pop @{$prefixes[0]};
         }
         my $name = ChemOnomatopist::Name->new;
         $name->append_locants( $cut_position );
