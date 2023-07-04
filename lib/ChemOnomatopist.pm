@@ -20,6 +20,7 @@ use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Guanidine;
+use ChemOnomatopist::Group::Hydrazine;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
@@ -399,9 +400,10 @@ sub find_groups
 {
     my( $graph ) = @_;
 
-    # First pass is to detect guanidine
+    # First pass is to detect guanidine and hydrazine
     for my $atom ($graph->vertices) {
         my @neighbours = $graph->neighbours( $atom );
+        my @H = grep { is_element( $_, 'H' ) } @neighbours;
         my @N = grep { is_element( $_, 'N' ) } @neighbours;
 
         if( is_element( $atom, 'C' ) && @neighbours == 3 && @N == 3 &&
@@ -410,6 +412,12 @@ sub find_groups
             my $guanidine = ChemOnomatopist::Group::Guanidine->new( copy $graph, $atom );
             $graph->delete_vertex( $atom );
             graph_replace_all( $graph, $guanidine, $atom, @N );
+        }
+
+        if( is_element( $atom, 'N' ) && @neighbours == 3 && @N == 1 && @H == 2 ) {
+            # Detecting hydrazine
+            my $hydrazine = ChemOnomatopist::Group::Hydrazine->new( copy $graph, $atom, @N );
+            graph_replace_all( $graph, $hydrazine, $atom, @N );
         }
     }
 
