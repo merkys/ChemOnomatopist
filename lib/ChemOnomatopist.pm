@@ -215,8 +215,8 @@ sub get_sidechain_name
             $name->bracket;
         }
         $name .= $chain->prefix( $parent );
-        pop @{$name->{name}} if $name->{name}[-1] eq 'e'; # FIXME: Dirty
-        pop @{$name->{name}} if $name->{name}[-1] eq 'an';
+        pop @$name if $name->[-1] eq 'e'; # FIXME: Dirty
+        pop @$name if $name->[-1] eq 'an';
 
         if( $branches_at_start > 1 ) {
             my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
