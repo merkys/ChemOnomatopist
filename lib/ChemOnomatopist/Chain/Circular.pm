@@ -164,13 +164,14 @@ sub name()
         } elsif( $self->length == 6 ) {
             if(      ($elements{$least_senior_element}->{seniority} >= 5 &&
                       $elements{$least_senior_element}->{seniority} <= 8) || $least_senior_element eq 'Bi' ) {
-                return $name . $self->is_saturated ? 'ane' : 'ine';
+                $name .= $self->is_saturated ? 'ane' : 'ine';
             } elsif( ($elements{$least_senior_element}->{seniority} >= 16 &&
                       $elements{$least_senior_element}->{seniority} <= 19) || $least_senior_element eq 'N' ) {
-                return $name . $self->is_saturated ? 'inane' : 'ine';
+                $name .= $self->is_saturated ? 'inane' : 'ine';
             } else {
-                return $name . $self->is_saturated ? 'inane' : 'inine';
+                $name .= $self->is_saturated ? 'inane' : 'inine';
             }
+            return $name;
         } elsif( $self->length >= 7 ) {
             my @stems = ( 'ep', 'oc', 'on', 'ec' );
             $name .= $stems[$self->length - 7];
