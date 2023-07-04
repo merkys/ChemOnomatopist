@@ -152,7 +152,7 @@ sub name()
 
         if(      $self->length <= 5 ) {
             my @stems = ( 'ir', 'et', 'ol' );
-            $name .= $stems[$self->length - 3];
+            $name .= ChemOnomatopist::Name::Part::Stem->new( $stems[$self->length - 3] );
             if( $self->is_saturated ) {
                 $name .= $heteroatoms{N} ? 'idine' : 'ane';
             } elsif( $self->length == 3 ) {
@@ -174,7 +174,7 @@ sub name()
             return $name;
         } elsif( $self->length >= 7 ) {
             my @stems = ( 'ep', 'oc', 'on', 'ec' );
-            $name .= $stems[$self->length - 7];
+            $name .= ChemOnomatopist::Name::Part::Stem->new( $stems[$self->length - 7] );
             $name .= $self->is_saturated ? 'ane' : 'ine';
             return $name;
         }
