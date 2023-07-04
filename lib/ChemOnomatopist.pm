@@ -1360,7 +1360,11 @@ sub unbranched_chain_name($)
         if( $chain->needs_multiple_bond_locants || @double > 1 || @triple ) {
             $name->append_locants( map { $_ + 1 } @double );
         }
-        $name->append_multiplier( IUPAC_numerical_multiplier( scalar @double ) ) if @double > 1;
+        if( @double > 1 ) {
+            my $multiplier = IUPAC_numerical_multiplier scalar @double;
+            $multiplier .= 'a' unless $multiplier =~ /i$/;
+            $name->append_multiplier( $multiplier );
+        }
         $name .= 'en';
     }
     if( @triple ) {
@@ -1368,7 +1372,11 @@ sub unbranched_chain_name($)
         if( $chain->needs_multiple_bond_locants || @triple > 1 || @double ) {
             $name->append_locants( map { $_ + 1 } @triple );
         }
-        $name->append_multiplier( IUPAC_numerical_multiplier( scalar @triple ) ) if @triple > 1;
+        if( @triple > 1 ) {
+            my $multiplier = IUPAC_numerical_multiplier scalar @triple;
+            $multiplier .= 'a' unless $multiplier =~ /i$/;
+            $name->append_multiplier( $multiplier );
+        }
         $name .= 'yn';
     }
 
