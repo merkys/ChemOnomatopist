@@ -32,6 +32,7 @@ sub append($)
 {
     my( $self, $string ) = @_;
     $self->{name}[-1] =~ s/a$// if $string =~ /^a/ && @{$_[0]->{name}};
+    $self->{name}[-1] =~ s/o$// if $string =~ /^o/ && @{$_[0]->{name}};
 
     # If names are combined and the second one starts with a number, a separator is added.
     if( @{$_[0]->{name}} && blessed $string && $string->isa( ChemOnomatopist::Name:: ) && $string =~ /^\d/ ) {

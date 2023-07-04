@@ -279,9 +279,9 @@ sub suffix()
             }
             return $name . 'pyran';
         } else {
-            my $suffix = $other->suffix;
-            $suffix =~ s/^o//;
-            return 'benzo' . $suffix;
+            my $name = ChemOnomatopist::Name->new( 'benzo' );
+            $name .= $other->suffix;
+            return $name;
         }
     }
 
