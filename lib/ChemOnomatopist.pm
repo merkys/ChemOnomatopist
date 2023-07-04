@@ -1362,7 +1362,7 @@ sub unbranched_chain_name($)
         }
         if( @double > 1 ) {
             my $multiplier = IUPAC_numerical_multiplier scalar @double;
-            $multiplier .= 'a' unless $multiplier =~ /i$/;
+            $multiplier .= 'a' unless $multiplier =~ /i$/; # BBv2 P-31.1.1.2
             $name->append_multiplier( $multiplier );
         }
         $name .= 'en';
@@ -1374,7 +1374,7 @@ sub unbranched_chain_name($)
         }
         if( @triple > 1 ) {
             my $multiplier = IUPAC_numerical_multiplier scalar @triple;
-            $multiplier .= 'a' unless $multiplier =~ /i$/;
+            $multiplier .= 'a' unless $multiplier =~ /i$/; # BBv2 P-31.1.1.2
             $name->append_multiplier( $multiplier );
         }
         $name .= 'yn';
