@@ -13,6 +13,7 @@ use overload 'cmp' => sub { return ("$_[0]" cmp "$_[1]") * ($_[2] ? -1 : 1) };
 use overload '@{}' => sub { return $_[0]->{name} };
 
 use ChemOnomatopist::Name::Part::Locants;
+use ChemOnomatopist::Name::Part::Locants::Substituent;
 use ChemOnomatopist::Name::Part::Multiplier;
 use ChemOnomatopist::Name::Part::Stem;
 use List::Util qw( any );
@@ -43,11 +44,6 @@ sub append($)
         push @$self, '-';
     }
     push @$self, blessed $name && $name->isa( ChemOnomatopist::Name:: ) ? @$name : $name;
-
-    # Inherit locant
-    if( blessed $name && $name->isa( ChemOnomatopist::Name:: ) ) {
-        $self->{has_substituent_locant} = 1 if $name->has_substituent_locant;
-    }
 
     return $self;
 }
@@ -88,8 +84,7 @@ sub append_stem($)
 sub append_substituent_locant($)
 {
     my( $self, $locant ) = @_;
-    $self->{has_substituent_locant} = 1;
-    $self->append( '-' . $locant . '-' );
+    $self->append( ChemOnomatopist::Name::Part::Locants::Substituent->new( '-' . $locant . '-' ) );
     $self->{name} = [ 'tert-but' ] if $self eq '2-methylpropan-2-';
     return $self;
 }
@@ -132,14 +127,13 @@ sub bracket()
 sub has_locant()
 {
     my( $self ) = @_;
-    return $self->has_substituent_locant ||
-           any { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Locants:: ) } @$self;
+    return any { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Locants:: ) } @$self;
 }
 
 sub has_substituent_locant()
 {
     my( $self ) = @_;
-    return exists $self->{has_substituent_locant};
+    return any { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Locants::Substituent:: ) } @$self;
 }
 
 sub is_enclosed()
