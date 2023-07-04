@@ -169,6 +169,12 @@ sub get_sidechain_name
                 $attachment =~ /^[0-9]/ ) {
                 $attachment->bracket;
             }
+        } else {
+            if( $chain->needs_substituent_locants &&
+                !$attachment->is_enclosed &&
+                ($attachment->has_locant || !$attachment->is_simple) ) {
+                $attachment->bracket;
+            }
         }
 
         $name .= $attachment;
@@ -319,7 +325,7 @@ sub get_mainchain_name
             # This is an attempt to implement rules from P-16.5.1.
             # However, they are quite vague, thus there is not much of guarantee the following code is correct.
             if( !$attachment->is_enclosed &&
-                $attachment->has_locant &&
+                ($attachment->has_locant || !$attachment->is_simple) &&
                 $chain->needs_substituent_locants &&
                 $attachment ne 'tert-butyl' ) {
                 $attachment->bracket;

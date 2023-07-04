@@ -142,6 +142,12 @@ sub is_enclosed()
     return $self->{name}[0] =~ /^[\(\[\{]/ && $self->{name}[-1] =~ /[\)\]\}]$/;
 }
 
+sub is_simple()
+{
+    my( $self ) = @_;
+    return (grep { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Stem:: ) } @{$self->{name}}) <= 1;
+}
+
 # FIXME: Incomplete, untested and unused
 # 0 if simple, 1 if compound
 sub level()
