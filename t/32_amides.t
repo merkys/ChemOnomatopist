@@ -18,7 +18,7 @@ my @cases = (
     { smiles => 'OC(C(=O)N)C', iupac => '2-hydroxypropanamide' },
 
     { smiles => 'CC(CCOC)NC(=O)CCCCCCN', iupac => '7-amino-N-(4-methoxybutan-2-yl)heptanamide', AUTHOR => 1 }, # PubChem 64604850
-    { smiles => 'C1CCN(CC1)CCCCC(=O)N=C(CC(=N)C2=CC=NC=C2)N', iupac => 'N-(1-amino-3-imino-3-pyridin-4-ylpropylidene)-5-piperidin-1-ylpentanamide' }, # PubChem 90937303
+    { smiles => 'C1CCN(CC1)CCCCC(=O)N=C(CC(=N)C2=CC=NC=C2)N', iupac => 'N-(1-amino-3-imino-3-pyridin-4-ylpropylidene)-5-piperidin-1-ylpentanamide', AUTHOR => 1 }, # PubChem 90937303
 
     { smiles => 'C(C)(=O)N(C(C1=CC=CC=C1)=O)C(CCCl)=O', iupac => 'N-acetyl-N-(3-chloropropanoyl)benzamide', AUTHOR => 1 }, # BBv2 P-66.1.2.1
 );
