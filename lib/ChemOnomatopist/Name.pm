@@ -31,20 +31,21 @@ sub new
 # TODO: Implement vowel elision as written in BBv2 P-16.7
 sub append($)
 {
-    my( $self, $string ) = @_;
-    $self->{name}[-1] =~ s/a$// if $string =~ /^a/ && @$self;
-    $self->{name}[-1] =~ s/o$// if $string =~ /^o/ && @$self;
+    my( $self, $name ) = @_;
+
+    $self->{name}[-1] =~ s/a$// if $name =~ /^a/ && @$self;
+    $self->{name}[-1] =~ s/o$// if $name =~ /^o/ && @$self;
 
     # If names are combined and the second one starts with a number, a separator is added.
-    if( @{$_[0]->{name}} && blessed $string && $string->isa( ChemOnomatopist::Name:: ) && $string =~ /^\d/ ) {
+    if( @$self && blessed $name && $name->isa( ChemOnomatopist::Name:: ) && $name =~ /^\d/ ) {
         push @{$self->{name}}, '-';
     }
-    push @{$self->{name}}, blessed $string && $string->isa( ChemOnomatopist::Name:: ) ? @{$string->{name}} : $string;
+    push @{$self->{name}}, blessed $name && $name->isa( ChemOnomatopist::Name:: ) ? @$name : $name;
 
     # Inherit locant
-    if( blessed $string && $string->isa( ChemOnomatopist::Name:: ) ) {
-        $self->{has_locant} = 1 if $string->has_locant;
-        $self->{has_substituent_locant} = 1 if $string->has_substituent_locant;
+    if( blessed $name && $name->isa( ChemOnomatopist::Name:: ) ) {
+        $self->{has_locant} = 1 if $name->has_locant;
+        $self->{has_substituent_locant} = 1 if $name->has_substituent_locant;
     }
 
     return $self;
