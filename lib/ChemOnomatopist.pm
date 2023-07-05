@@ -216,8 +216,8 @@ sub get_sidechain_name
             $name->bracket;
         }
         $name .= $chain->prefix( $parent );
-        pop @{$name->{name}} if $name->{name}[-1] eq 'e'; # FIXME: Dirty
-        pop @{$name->{name}} if $name->{name}[-1] eq 'an';
+        pop @$name if $name->[-1] eq 'e'; # FIXME: Dirty
+        pop @$name if $name->[-1] eq 'an';
 
         if( $branches_at_start > 1 ) {
             my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
@@ -247,29 +247,18 @@ sub get_mainchain_name
     my @groups = most_senior_groups( $graph->vertices );
     my $most_senior_group = blessed $groups[0] if @groups;
 
-    my %attachments;
     my %heteroatoms;
-    my %attachment_objects;
-    # Examine the main chain
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
-        if( blessed $atom ) {
-            next if $most_senior_group && $atom->isa( $most_senior_group );
-            my $prefix = $atom->prefix( $chain );
-            # If not ChemOnomatopist::Name already, it is most likely a stem
-            $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
-            push @{$attachments{$prefix}}, $i;
-            $attachment_objects{$prefix} = $prefix;
-        } elsif( !is_element( $atom, 'C' ) &&
-                 exists $atom->{symbol} &&
-                 exists $elements{$atom->{symbol}} ) {
-            push @{$heteroatoms{$atom->{symbol}}}, $i;
-        }
+        next if blessed $atom;
+        next if is_element( $atom, 'C' );
+        next unless exists $atom->{symbol} && exists $elements{$atom->{symbol}};
+        push @{$heteroatoms{$atom->{symbol}}}, $i;
     }
 
-    # Examine the attachments to the main chain: delete the edges
-    # connecting them to the main chain, at the same time giving them
-    # names according to their lengths via calls to get_sidechain_name()
+    # Collect the substituents
+    my %attachments;
+    my %attachment_objects;
     my @senior_group_attachments;
     for my $sub ($chain->substituents_struct) {
         if( grep { $_ == $sub->{substituent} } @groups ) {

@@ -8,6 +8,8 @@ use warnings;
 
 use ChemOnomatopist::Name;
 
+use overload '""' => sub { return $_[0]->{value} };
+
 sub new
 {
     my( $class, $value ) = @_;

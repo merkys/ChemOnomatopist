@@ -1,9 +1,9 @@
-package ChemOnomatopist::Name::Part::Stem;
+package ChemOnomatopist::Name::Part::Locants;
 
 use strict;
 use warnings;
 
-# ABSTRACT: Stem of a chemical name
+# ABSTRACT: Locants of a chemical name
 # VERSION
 
 use parent ChemOnomatopist::Name::Part::;

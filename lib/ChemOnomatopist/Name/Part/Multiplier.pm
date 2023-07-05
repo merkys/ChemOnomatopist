@@ -8,6 +8,4 @@ use warnings;
 
 use parent ChemOnomatopist::Name::Part::;
 
-use overload '""'  => sub { return $_[0]->{value} };
-
 1;

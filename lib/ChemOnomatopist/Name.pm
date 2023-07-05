@@ -10,9 +10,13 @@ use overload '.='  => \&append;
 use overload '""'  => sub { return join '', @{$_[0]->{name}} };
 use overload 'eq'  => sub { return  "$_[0]" eq  "$_[1]" };
 use overload 'cmp' => sub { return ("$_[0]" cmp "$_[1]") * ($_[2] ? -1 : 1) };
+use overload '@{}' => sub { return $_[0]->{name} };
 
+use ChemOnomatopist::Name::Part::Locants;
+use ChemOnomatopist::Name::Part::Locants::Substituent;
 use ChemOnomatopist::Name::Part::Multiplier;
 use ChemOnomatopist::Name::Part::Stem;
+use List::Util qw( any );
 use Scalar::Util qw( blessed );
 
 sub new
@@ -30,20 +34,16 @@ sub new
 # TODO: Implement vowel elision as written in BBv2 P-16.7
 sub append($)
 {
-    my( $self, $string ) = @_;
-    $self->{name}[-1] =~ s/a$// if $string =~ /^a/ && @{$_[0]->{name}};
+    my( $self, $name ) = @_;
+
+    $self->[-1] =~ s/a$// if $name =~ /^a/ && @$self;
+    $self->[-1] =~ s/o$// if $name =~ /^o/ && @$self;
 
     # If names are combined and the second one starts with a number, a separator is added.
-    if( @{$_[0]->{name}} && blessed $string && $string->isa( ChemOnomatopist::Name:: ) && $string =~ /^\d/ ) {
-        push @{$self->{name}}, '-';
+    if( @$self && blessed $name && $name->isa( ChemOnomatopist::Name:: ) && $name =~ /^\d/ ) {
+        push @$self, '-';
     }
-    push @{$self->{name}}, blessed $string && $string->isa( ChemOnomatopist::Name:: ) ? @{$string->{name}} : $string;
-
-    # Inherit locant
-    if( blessed $string && $string->isa( ChemOnomatopist::Name:: ) ) {
-        $self->{has_locant} = 1 if $string->has_locant;
-        $self->{has_substituent_locant} = 1 if $string->has_substituent_locant;
-    }
+    push @$self, blessed $name && $name->isa( ChemOnomatopist::Name:: ) ? @$name : $name;
 
     return $self;
 }
@@ -57,9 +57,12 @@ sub append_element($)
 sub append_locants
 {
     my( $self, @locants ) = @_;
-    $self->{has_locant} = 1;
-    $self->append( '-' ) if @{$_[0]->{name}};
-    return $self->append( join( ',', @locants ) . '-' );
+    if( @$self ) {
+        $self->append( ChemOnomatopist::Name::Part::Locants->new( '-' . join( ',', @locants ) . '-' ) );
+    } else {
+        $self->append( ChemOnomatopist::Name::Part::Locants->new( join( ',', @locants ) . '-' ) );
+    }
+    return $self;
 }
 
 sub append_multiplier($)
@@ -81,9 +84,7 @@ sub append_stem($)
 sub append_substituent_locant($)
 {
     my( $self, $locant ) = @_;
-    $self->{has_locant} = 1;
-    $self->{has_substituent_locant} = 1;
-    $self->append( '-' . $locant . '-' );
+    $self->append( ChemOnomatopist::Name::Part::Locants::Substituent->new( '-' . $locant . '-' ) );
     $self->{name} = [ 'tert-but' ] if $self eq '2-methylpropan-2-';
     return $self;
 }
@@ -91,12 +92,12 @@ sub append_substituent_locant($)
 sub append_suffix($)
 {
     my( $self, $suffix ) = @_;
-    if( @{$_[0]->{name}} ) {
+    if( @$self ) {
         if( $suffix =~ /^[aeiouy]/ ) {
-            $self->{name}[-3] =~ s/e$// if $self =~ /e-[0-9,]+-$/; # BBv2 P-16.7.1 (a)
-            $self->{name}[-1] =~ s/e$// if $self =~ /e$/;
+            $self->[-2] =~ s/e$// if $self =~ /e-[0-9,]+-$/; # BBv2 P-16.7.1 (a)
+            $self->[-1] =~ s/e$// if $self =~ /e$/;
         }
-        $self->{name}[-1] =~ s/a$// if $self->ends_with_multiplier && $suffix =~ /^[ao]/; # BBv2 P-16.7.1 (b)
+        $self->[-1] =~ s/a$// if $self->ends_with_multiplier && $suffix =~ /^[ao]/; # BBv2 P-16.7.1 (b)
     }
     return $self->append( $suffix );
 }
@@ -107,17 +108,17 @@ sub bracket()
     my( $self ) = @_;
 
     if( $self =~ /\{/ ) {
-        unshift @{$self->{name}}, '(';
-        push    @{$self->{name}}, ')';
+        unshift @$self, '(';
+        push    @$self, ')';
     } elsif( $self =~ /\[/ ) {
-        unshift @{$self->{name}}, '{';
-        push    @{$self->{name}}, '}';
+        unshift @$self, '{';
+        push    @$self, '}';
     } elsif( $self =~ /\(/ ) {
-        unshift @{$self->{name}}, '[';
-        push    @{$self->{name}}, ']';
+        unshift @$self, '[';
+        push    @$self, ']';
     } else {
-        unshift @{$self->{name}}, '(';
-        push    @{$self->{name}}, ')';
+        unshift @$self, '(';
+        push    @$self, ')';
     }
 
     return $self;
@@ -126,26 +127,26 @@ sub bracket()
 sub has_locant()
 {
     my( $self ) = @_;
-    return exists $self->{has_locant};
+    return any { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Locants:: ) } @$self;
 }
 
 sub has_substituent_locant()
 {
     my( $self ) = @_;
-    return exists $self->{has_substituent_locant};
+    return any { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Locants::Substituent:: ) } @$self;
 }
 
 sub is_enclosed()
 {
     my( $self ) = @_;
-    return '' unless @{$self->{name}};
-    return $self->{name}[0] =~ /^[\(\[\{]/ && $self->{name}[-1] =~ /[\)\]\}]$/;
+    return '' unless @$self;
+    return $self->[0] =~ /^[\(\[\{]/ && $self->[-1] =~ /[\)\]\}]$/;
 }
 
 sub is_simple()
 {
     my( $self ) = @_;
-    return (grep { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Stem:: ) } @{$self->{name}}) <= 1;
+    return (grep { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Stem:: ) } @$self) <= 1;
 }
 
 # FIXME: Incomplete, untested and unused
@@ -153,31 +154,31 @@ sub is_simple()
 sub level()
 {
     my( $self ) = @_;
-    return 0 + ((grep { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Stem:: ) } @{$self->{name}}) > 1);
+    return 0 + ((grep { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Stem:: ) } @$self) > 1);
 }
 
 sub starts_with_multiplier()
 {
     my( $self ) = @_;
-    return @{$self->{name}} &&
-           blessed $self->{name}[0] &&
-           $self->{name}[0]->isa( ChemOnomatopist::Name::Part::Multiplier:: );
+    return @$self &&
+           blessed $self->[0] &&
+           $self->[0]->isa( ChemOnomatopist::Name::Part::Multiplier:: );
 }
 
 sub ends_with_multiplier()
 {
     my( $self ) = @_;
-    return @{$self->{name}} &&
-           blessed $self->{name}[-1] &&
-           $self->{name}[-1]->isa( ChemOnomatopist::Name::Part::Multiplier:: );
+    return @$self &&
+           blessed $self->[-1] &&
+           $self->[-1]->isa( ChemOnomatopist::Name::Part::Multiplier:: );
 }
 
 sub ends_with_stem()
 {
     my( $self ) = @_;
-    return @{$self->{name}} &&
-           blessed $self->{name}[-1] &&
-           $self->{name}[-1]->isa( ChemOnomatopist::Name::Part::Stem:: );
+    return @$self &&
+           blessed $self->[-1] &&
+           $self->[-1]->isa( ChemOnomatopist::Name::Part::Stem:: );
 }
 
 1;
