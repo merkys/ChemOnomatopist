@@ -12,6 +12,7 @@ use overload 'eq'  => sub { return  "$_[0]" eq  "$_[1]" };
 use overload 'cmp' => sub { return ("$_[0]" cmp "$_[1]") * ($_[2] ? -1 : 1) };
 use overload '@{}' => sub { return $_[0]->{name} };
 
+use ChemOnomatopist::Name::Part::Element;
 use ChemOnomatopist::Name::Part::Locants;
 use ChemOnomatopist::Name::Part::Locants::Substituent;
 use ChemOnomatopist::Name::Part::Multiplier;
@@ -51,7 +52,7 @@ sub append($)
 sub append_element($)
 {
     my( $self, $element ) = @_;
-    return $self->append( $element );
+    return $self->append( ChemOnomatopist::Name::Part::Element->new( $element ) );
 }
 
 sub append_locants
