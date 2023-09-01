@@ -460,9 +460,15 @@ sub find_groups
         }
 
         # S-based groups
-        if( element( $atom ) eq 'S' && @neighbours == 4 && @O == 2 &&
+        if( is_element( $atom, 'S' ) && @neighbours == 3 && @O == 1 &&
+            is_double_bond( $graph, $atom, @O ) ) {
+            # Detecting sulfinyl group - TODO
+            # FIXME: Possibly cannot participate in rings
+            die "cannot handle sulfinyl group for now\n";
+        }
+        if( is_element( $atom, 'S' ) && @neighbours == 4 && @O == 2 &&
             all { is_double_bond( $graph, $atom, $_ ) } @O ) {
-            # Detecting sulfonyl - TODO
+            # Detecting sulfonyl group - TODO
             die "cannot handle sulfonyl group for now\n";
         }
 
