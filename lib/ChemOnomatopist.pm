@@ -514,10 +514,11 @@ sub find_groups
         my @O = grep { is_element( $_, 'O' ) } @neighbours;
 
         if( is_element( $atom, 'C' ) && @groups == 1 && @H == 1 &&
-            $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) ) {
+            $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) &&
+            all { $graph->degree( $_ ) == 1 } @H ) {
             # Detecting aldehyde
             my $aldehyde = ChemOnomatopist::Group::Aldehyde->new( $atom, @groups );
-            $graph->delete_vertices( @groups, @H ); # FIXME: Be careful!
+            $graph->delete_vertices( @groups, @H );
             $graph->add_edges( map { $aldehyde, $_ } $graph->neighbours( $atom ) );
             $graph->delete_vertex( $atom );
         } elsif( is_element( $atom, 'C' ) && @neighbours == 3 && @groups >= 1 && @O == 2 && @H == 0 &&
@@ -528,7 +529,7 @@ sub find_groups
             # FIXME: Detect formic acid
             my( $parent ) = grep { !is_element( $_, 'O' ) } @neighbours;
             my $carboxyl = ChemOnomatopist::Group::Carboxyl->new( $parent );
-            $graph->delete_vertices( $atom, @O ); # FIXME: Be careful!
+            $graph->delete_vertices( $atom, @O );
             $graph->add_edges( $carboxyl, $parent );
         } elsif( is_element( $atom, 'C' ) && @groups == 1 && @C == 1 && @O == 2 &&
                  $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) &&
