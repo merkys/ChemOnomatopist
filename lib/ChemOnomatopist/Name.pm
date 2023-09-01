@@ -70,16 +70,13 @@ sub append_multiplier($)
 {
     my( $self, $string ) = @_;
     return $self if $string eq '';
-
-    $self->append( ChemOnomatopist::Name::Part::Multiplier->new( $string ) );
-    return $self;
+    return $self->append( ChemOnomatopist::Name::Part::Multiplier->new( $string ) );
 }
 
 sub append_stem($)
 {
     my( $self, $stem ) = @_;
-    $self->append( ChemOnomatopist::Name::Part::Stem->new( $stem ) );
-    return $self;
+    return $self->append( ChemOnomatopist::Name::Part::Stem->new( $stem ) );
 }
 
 sub append_substituent_locant($)
