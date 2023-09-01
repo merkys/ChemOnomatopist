@@ -260,9 +260,7 @@ sub needs_heteroatom_locants()
     }
 
     if(      scalar( uniq $self->heteroatoms ) == 1 ) {
-        return '' if $self->number_of_heteroatoms == $self->length;
-        # FIXME: The following condition might be incorrect as heteroatoms are inside the examined chain, not attached to it
-        return $self->number_of_heteroatoms != $self->max_valence;
+        return $self->number_of_heteroatoms != $self->length;
     } elsif( scalar( uniq $self->heteroatoms ) >  1 ) {
         return 1;
     }
