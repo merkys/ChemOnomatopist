@@ -1360,7 +1360,10 @@ sub unbranched_chain_name($)
         return $name;
     }
 
-    $name->append_stem( alkane_chain_name $chain->length );
+    if( (any { is_element( $_, 'C' ) } @chain) ||
+        scalar( uniq map { element $_ } @chain ) > 1 ) {
+        $name->append_stem( alkane_chain_name $chain->length );
+    }
 
     if( @double ) {
         $name .= 'a' if @double >= 2; # BBv2 P-16.8.2

@@ -34,6 +34,10 @@ my @cases = (
     { smiles => 'ON(O)OC(C)(C)C(C(O)=O)NC(C)(C)C', iupac => '2-(tert-butylimino)-3-methyl-3-(nitrooxy)butanoic acid', AUTHOR => 1 },
 
     { smiles => 'FC(C(CC)F)C(CC(CCCC)CC)CCCCCC', iupac => '7-(1,2-difluorobutyl)-5-ethyltridecane' }, # BBv2 P-14.5.2
+
+    # From BBv2 P-31.1.2.2.1
+    { smiles => '[SiH3][SiH]=[SiH][SiH2][SiH2][SiH3]', iupac => 'hexasil-2-ene', AUTHOR => 1 }, # FIXME: Need to elide vowels
+    { smiles => '[SiH]#[SiH]', iupac => 'disilyne', AUTHOR => 1 }, # FIXME: Need to elide vowels
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
