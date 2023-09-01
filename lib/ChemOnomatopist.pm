@@ -674,7 +674,7 @@ sub select_mainchain
                 push @chains, ChemOnomatopist::Chain->new( $graph, undef, @vertices ),
                               ChemOnomatopist::Chain->new( $graph, undef, reverse @vertices );
             }
-        } else {
+        } elsif( @parents ) {
             my @paths;
             my $max_value;
             for my $i (0..$#parents) {
@@ -726,6 +726,8 @@ sub select_mainchain
             die "cannot determine the parent structure\n" unless @chains;
 
             @chains = rule_most_groups( $most_senior_group, @chains );
+        } else {
+            die "cannot determine the parent structure\n";
         }
     } else {
         # Here the candidate halves for the longest (and "best") path are placed in @path_parts.
