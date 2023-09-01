@@ -459,6 +459,13 @@ sub find_groups
             }
         }
 
+        # S-based groups
+        if( element( $atom ) eq 'S' && @neighbours == 4 && @O == 2 &&
+            all { is_double_bond( $graph, $atom, $_ ) } @O ) {
+            # Detecting sulfonyl - TODO
+            die "cannot handle sulfonyl group for now\n";
+        }
+
         # Hydroxy groups and their chalcogen analogues
         if( @neighbours == 2 && @C == 1 && @H == 1 &&
             any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
