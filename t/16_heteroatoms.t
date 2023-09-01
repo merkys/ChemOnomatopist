@@ -37,7 +37,7 @@ my @cases = (
 
     # From BBv2 P-31.1.2.2.1
     { smiles => '[SiH3][SiH]=[SiH][SiH2][SiH2][SiH3]', iupac => 'hexasil-2-ene', AUTHOR => 1 }, # FIXME: Need to elide vowels
-    { smiles => '[SiH]#[SiH]', iupac => 'disilyne', AUTHOR => 1 }, # FIXME: Need to elide vowels
+    { smiles => '[SiH]#[SiH]', iupac => 'disilyne' },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
