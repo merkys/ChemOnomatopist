@@ -381,6 +381,7 @@ sub get_mainchain_name
     $name = 'benzoic acid' if $name eq 'benzenecarboxylic acid'; # BBv2 P-65.1.1.1
     $name = 'toluene'      if $name eq 'methylbenzene';
     $name =~ s/^(\d,\d-)dimethylbenzene$/$1xylene/;
+    $name = 'formic acid' if $name eq 'methanoic acid';
     $name =~ s/ethanoic acid$/acetic acid/; # BBv2 P-65.1.1.1
 
     return $name;
@@ -726,6 +727,9 @@ sub select_mainchain
             die "cannot determine the parent structure\n" unless @chains;
 
             @chains = rule_most_groups( $most_senior_group, @chains );
+        } elsif( @groups ) {
+            # Attempt to build chains from functional groups
+            @chains = map { ChemOnomatopist::Chain->new( $graph, undef, $_ ) } @groups;
         } else {
             die "cannot determine the parent structure\n";
         }
