@@ -12,6 +12,7 @@ use overload 'eq'  => sub { return  "$_[0]" eq  "$_[1]" };
 use overload 'cmp' => sub { return ("$_[0]" cmp "$_[1]") * ($_[2] ? -1 : 1) };
 use overload '@{}' => sub { return $_[0]->{name} };
 
+use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Element;
 use ChemOnomatopist::Name::Part::Locants;
 use ChemOnomatopist::Name::Part::Locants::Substituent;
@@ -38,7 +39,7 @@ sub append($)
     my( $self, $name ) = @_;
 
     $self->[-1] =~ s/a$// if $name =~ /^a/ && @$self;
-    $self->[-1] =~ s/o$// if $name =~ /^o/ && @$self;
+    $self->[-1] =~ s/o$// if $name =~ /^o/ && @$self && $self->[-1] ne 'cyclo';
 
     # BBv2 P-16.7.1 (d)
     my $terminal_element;
@@ -160,6 +161,14 @@ sub level()
 {
     my( $self ) = @_;
     return 0 + ((grep { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Stem:: ) } @$self) > 1);
+}
+
+sub ends_with_alkane_an_suffix()
+{
+    my( $self ) = @_;
+    return @$self &&
+           blessed $self->[-1] &&
+           $self->[-1]->isa( ChemOnomatopist::Name::Part::AlkaneANSuffix:: );
 }
 
 sub starts_with_locant()

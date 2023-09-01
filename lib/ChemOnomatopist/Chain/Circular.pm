@@ -109,7 +109,9 @@ sub name()
 
     # Check for cycloalkanes
     if( $self->is_hydrocarbon ) {
-        return 'cyclo' . ChemOnomatopist::unbranched_chain_name( $self );
+        my $name = ChemOnomatopist::Name->new( 'cyclo' );
+        $name .= ChemOnomatopist::unbranched_chain_name( $self );
+        return $name;
     }
 
     if( $self->length >= 3 && $self->length <= 10 &&
@@ -180,7 +182,9 @@ sub name()
         }
     }
 
-    return 'cyclo' . ChemOnomatopist::unbranched_chain_name( $self );
+    my $name = ChemOnomatopist::Name->new( 'cyclo' );
+    $name .= ChemOnomatopist::unbranched_chain_name( $self );
+    return $name;
 }
 
 sub needs_multiple_bond_locants()

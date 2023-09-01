@@ -31,6 +31,7 @@ use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
 use ChemOnomatopist::Group::XO3;
 use ChemOnomatopist::Name;
+use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Stem;
 use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::Graph qw(
@@ -1397,7 +1398,7 @@ sub unbranched_chain_name($)
         $name .= 'yn';
     }
 
-    $name .= 'an' unless @double || @triple;
+    $name .= ChemOnomatopist::Name::Part::AlkaneANSuffix->new( 'an' ) unless @double || @triple;
     $name .= 'e';
     return $name;
 }

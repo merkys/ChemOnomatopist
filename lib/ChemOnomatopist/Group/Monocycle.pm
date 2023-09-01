@@ -124,7 +124,9 @@ sub prefix(;$)
     return 'phenyl' if $name eq 'benzene';
 
     $name = ChemOnomatopist::Name->new( $name ) unless blessed $name;
-    $name->{name}[-1] =~ s/(an)?e$//; # FIXME: Harms HW names
+    $name->{name}[-1] =~ s/e$//;
+    pop @$name if $name->{name}[-1] eq '';
+    pop @$name if $name->ends_with_alkane_an_suffix;
 
     if( $parent && !$self->is_homogeneous ) {
         my @vertices = $self->vertices;
