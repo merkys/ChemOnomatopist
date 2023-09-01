@@ -280,7 +280,11 @@ sub suffix()
             return $name . 'pyran';
         } else {
             my $name = ChemOnomatopist::Name->new( 'benzo' );
-            $name .= $other->suffix;
+            my  $other_name = $other->suffix;
+            if( $other_name->starts_with_locant ) { # Locants are moved to front
+                unshift @$name, shift @$other_name;
+            }
+            $name .= $other_name;
             return $name;
         }
     }

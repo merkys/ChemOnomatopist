@@ -162,6 +162,14 @@ sub level()
     return 0 + ((grep { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Stem:: ) } @$self) > 1);
 }
 
+sub starts_with_locant()
+{
+    my( $self ) = @_;
+    return @$self &&
+           blessed $self->[0] &&
+           $self->[0]->isa( ChemOnomatopist::Name::Part::Locants:: );
+}
+
 sub starts_with_multiplier()
 {
     my( $self ) = @_;
