@@ -139,6 +139,8 @@ sub prefix(;$)
     pop @$name if $name->ends_with_alkane_an_suffix;
 
     if( $parent && !$self->is_homogeneous ) {
+        # FIXME: Order of vertices seems to be established regardless of the attachments.
+        # This causes ambiguity, for example, in 1-(1,4-diazepan-1-ylsulfonyl)-8-methylisoquinoline
         my @vertices = $self->vertices;
         my( $position ) = grep { $self->graph->has_edge( $parent, $vertices[$_] ) } 0..$#vertices;
         die "unknown locant in multicyclic compound\n" unless defined $position;
