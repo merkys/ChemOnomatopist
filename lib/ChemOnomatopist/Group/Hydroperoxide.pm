@@ -36,6 +36,7 @@ sub prefix
         }
         $name .= 'sulfanyl' if $element eq 'S';
         $name .= 'selanyl'  if $element eq 'Se';
+        $name .= 'tellanyl' if $element eq 'Te';
     }
     return $name;
 }

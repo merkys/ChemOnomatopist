@@ -425,6 +425,7 @@ sub find_groups
         my @O  = grep { is_element( $_, 'O' ) } @neighbours;
         my @S  = grep { is_element( $_, 'S' ) } @neighbours;
         my @Se = grep { is_element( $_, 'Se' ) } @neighbours;
+        my @Te = grep { is_element( $_, 'Te' ) } @neighbours;
 
         # N-based groups
         if( is_element( $atom, 'N' ) && @neighbours == 3 && @C == 1 && @H == 2 ) {
@@ -456,9 +457,9 @@ sub find_groups
         }
 
         # Hydroxy groups and their chalcogen analogues
-        if( @neighbours == 2 && ( @C || @O || @S || @Se ) && @H == 1 &&
+        if( @neighbours == 2 && ( @C || @O || @S || @Se || @Te ) && @H == 1 &&
             any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
-            my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C, @O, @S, @Se, $atom );
+            my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C, @O, @S, @Se, @Te, $atom );
             graph_replace( $graph, $hydroxy, $atom, @H );
         }
 
@@ -577,7 +578,8 @@ sub find_groups
             die "cannot process secondary and tertiary amines yet\n";
         }
 
-        if( !blessed $atom && ( is_element( $atom, 'O' ) || is_element( $atom, 'S' ) || is_element( $atom, 'Se' ) ) && @C == 1 && @groups == 1 &&
+        if( !blessed $atom && @C == 1 && @groups == 1 &&
+            ( is_element( $atom, 'O' ) || is_element( $atom, 'S' ) || is_element( $atom, 'Se' ) || is_element( $atom, 'Te' ) ) && 
             $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) ) {
             my $hydroperoxide = ChemOnomatopist::Group::Hydroperoxide->new( @C, $atom, @groups );
             graph_replace( $graph, $hydroperoxide, $atom, @groups );
