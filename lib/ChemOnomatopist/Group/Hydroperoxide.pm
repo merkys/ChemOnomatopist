@@ -19,14 +19,31 @@ sub new
 
 sub element() { return $_[0]->{atoms}[0]{symbol} }
 
-sub prefix { return 'hydroperoxy' }
+sub prefix
+{
+    my( $self ) = @_;
+
+    my @elements = map { ChemOnomatopist::element( $_ ) } @{$self->{atoms}};
+
+    return 'hydroperoxy' if all { $_ eq 'O' } @elements;
+    return 'disulfanyl'  if all { $_ eq 'S' } @elements;
+
+    my $name = '';
+    for my $element (reverse @elements) { # FIXME: Incomplete
+        $name .= 'oxy' if $element eq 'O';
+        $name .= 'sulfanyl' if $element eq 'S';
+    }
+    return $name;
+}
 
 sub suffix
 {
     my( $self ) = @_;
-    return 'peroxol' if all { ChemOnomatopist::element( $_ ) eq 'O' } @{$self->{atoms}};
 
     my @elements = map { ChemOnomatopist::element( $_ ) } @{$self->{atoms}};
+
+    return 'peroxol' if all { $_ eq 'O' } @elements;
+
     my $name;
     if( $elements[0] eq $elements[1] ) {
         $name = 'di' . $elements{$elements[0]}->{prefix};
