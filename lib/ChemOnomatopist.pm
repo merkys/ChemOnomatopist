@@ -30,6 +30,7 @@ use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
 use ChemOnomatopist::Group::Sulfinyl;
+use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Group::XO3;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
@@ -466,15 +467,17 @@ sub find_groups
         # S-based groups
         if( is_element( $atom, 'S' ) && @neighbours == 3 && @O == 1 &&
             is_double_bond( $graph, $atom, @O ) ) {
-            # Detecting sulfinyl group - TODO
+            # Detecting sulfinyl group
             # FIXME: Possibly cannot participate in rings
             my $sulfinyl = ChemOnomatopist::Group::Sulfinyl->new( $atom );
             graph_replace( $graph, $sulfinyl, $atom, @O );
         }
         if( is_element( $atom, 'S' ) && @neighbours == 4 && @O == 2 &&
             all { is_double_bond( $graph, $atom, $_ ) } @O ) {
-            # Detecting sulfonyl group - TODO
-            die "cannot handle sulfonyl group for now\n";
+            # Detecting sulfonyl group
+            # FIXME: Possibly cannot participate in rings
+            my $sulfonyl = ChemOnomatopist::Group::Sulfonyl->new( $atom );
+            graph_replace( $graph, $sulfonyl, $atom, @O );
         }
 
         # Hydroxy groups and their chalcogen analogues
