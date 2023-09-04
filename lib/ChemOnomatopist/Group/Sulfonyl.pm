@@ -8,9 +8,15 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-sub element { return 'S' }
+sub element() { return $_[0]->C->{symbol} }
 
-sub prefix { return 'sulfonyl' }
+my %prefixes = (
+    S  => 'sulfonyl',
+    Se => 'selenonyl',
+    Te => 'telluronyl',
+);
+
+sub prefix { return $prefixes{$_[0]->element} }
 
 sub is_prefix_only() { return 1 }
 

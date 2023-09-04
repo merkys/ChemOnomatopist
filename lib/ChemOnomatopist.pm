@@ -464,14 +464,6 @@ sub find_groups
             }
         }
 
-        if( is_element( $atom, 'S' ) && @neighbours == 4 && @O == 2 &&
-            all { is_double_bond( $graph, $atom, $_ ) } @O ) {
-            # Detecting sulfonyl group
-            # FIXME: Possibly cannot participate in rings
-            my $sulfonyl = ChemOnomatopist::Group::Sulfonyl->new( $atom );
-            graph_replace( $graph, $sulfonyl, $atom, @O );
-        }
-
         # Hydroxy groups and their chalcogen analogues
         if( @neighbours == 2 && @C == 1 && @H == 1 &&
             any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
@@ -512,10 +504,17 @@ sub find_groups
         # Sulfinyl group and its analogues
         if( @neighbours == 3 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
             any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
-            # Detecting sulfinyl group
             # FIXME: Possibly cannot participate in rings
             my $sulfinyl = ChemOnomatopist::Group::Sulfinyl->new( $atom );
             graph_replace( $graph, $sulfinyl, $atom, @O );
+        }
+
+        # Sulfonyl group and its analogues
+        if( @neighbours == 4 && @O == 2 && (all { is_double_bond( $graph, $atom, $_ ) } @O) &&
+            any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
+            # FIXME: Possibly cannot participate in rings
+            my $sulfonyl = ChemOnomatopist::Group::Sulfonyl->new( $atom );
+            graph_replace( $graph, $sulfonyl, $atom, @O );
         }
     }
 

@@ -8,7 +8,7 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-sub element { return 'S' }
+sub element() { return $_[0]->C->{symbol} }
 
 my %prefixes = (
     S  => 'sulfinyl',
@@ -16,11 +16,7 @@ my %prefixes = (
     Te => 'tellurinyl',
 );
 
-sub prefix
-{
-    my( $self ) = @_;
-    return $prefixes{$self->C->{symbol}};
-}
+sub prefix { return $prefixes{$_[0]->element} }
 
 sub is_prefix_only() { return 1 }
 
