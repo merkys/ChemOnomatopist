@@ -656,7 +656,7 @@ sub is_element
 }
 
 # Given a graph, selects the main chain.
-# The returned chain is an object of ChemOnomatopist::ChainHalf or its subclasses.
+# The returned chain is an object of ChemOnomatopist::Chain or its subclasses.
 sub select_mainchain
 {
     my( $graph ) = @_;
