@@ -6,6 +6,8 @@ use warnings;
 # ABSTRACT: Hydroperoxide group
 # VERSION
 
+use List::Util qw( all );
+
 use parent ChemOnomatopist::Group::;
 
 sub new
@@ -17,6 +19,12 @@ sub new
 sub element() { return $_[0]->{atoms}[0]{symbol} }
 
 sub prefix { return 'hydroperoxy' }
-sub suffix { return 'peroxol' }
+
+sub suffix
+{
+    my( $self ) = @_;
+    return 'peroxol' if all { $_->{symbol} eq 'O' } @{$self->{atoms}};
+    return '-' . join( '', map { $_->{symbol} } @{$self->{atoms}} ) . '-peroxol'; # FIXME: Missing element names
+}
 
 1;
