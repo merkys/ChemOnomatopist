@@ -23,7 +23,7 @@ sub prefix { return 'hydroperoxy' }
 sub suffix
 {
     my( $self ) = @_;
-    return 'peroxol' if all { $_->{symbol} eq 'O' } @{$self->{atoms}};
+    return 'peroxol' if all { ChemOnomatopist::element( $_ ) eq 'O' } @{$self->{atoms}};
     return '-' . join( '', map { $_->{symbol} } @{$self->{atoms}} ) . '-peroxol'; # FIXME: Missing element names
 }
 
