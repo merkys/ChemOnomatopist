@@ -10,7 +10,17 @@ use parent ChemOnomatopist::Group::;
 
 sub element { return 'S' }
 
-sub prefix { return 'sulfinyl' }
+my %prefixes = (
+    S  => 'sulfinyl',
+    Se => 'seleninyl',
+    Te => 'tellurinyl',
+);
+
+sub prefix
+{
+    my( $self ) = @_;
+    return $prefixes{$self->C->{symbol}};
+}
 
 sub is_prefix_only() { return 1 }
 

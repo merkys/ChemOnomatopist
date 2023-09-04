@@ -464,14 +464,6 @@ sub find_groups
             }
         }
 
-        # S-based groups
-        if( is_element( $atom, 'S' ) && @neighbours == 3 && @O == 1 &&
-            is_double_bond( $graph, $atom, @O ) ) {
-            # Detecting sulfinyl group
-            # FIXME: Possibly cannot participate in rings
-            my $sulfinyl = ChemOnomatopist::Group::Sulfinyl->new( $atom );
-            graph_replace( $graph, $sulfinyl, $atom, @O );
-        }
         if( is_element( $atom, 'S' ) && @neighbours == 4 && @O == 2 &&
             all { is_double_bond( $graph, $atom, $_ ) } @O ) {
             # Detecting sulfonyl group
@@ -515,6 +507,15 @@ sub find_groups
         if( $graph->has_vertex( $atom ) && is_element( $atom, 'N' ) && @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
             my $amine = ChemOnomatopist::Group::Amine::SecondaryTertiary->new( $graph );
             graph_replace( $graph, $amine, $atom );
+        }
+
+        # Sulfinyl group and its analogues
+        if( @neighbours == 3 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
+            any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
+            # Detecting sulfinyl group
+            # FIXME: Possibly cannot participate in rings
+            my $sulfinyl = ChemOnomatopist::Group::Sulfinyl->new( $atom );
+            graph_replace( $graph, $sulfinyl, $atom, @O );
         }
     }
 

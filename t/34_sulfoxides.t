@@ -7,7 +7,10 @@ use ChemOnomatopist;
 use Test::More;
 
 my @cases = (
-    { smiles => 'C(C)S(=O)CCCC', iupac => '1-(ethanesulfinyl)butane' }, # BBv2 P-63.6
+    # From BBv2 P-63.6
+    { smiles => 'C(C)S(=O)CCCC', iupac => '1-(ethanesulfinyl)butane' },
+    { smiles => 'C(C)[Se](=O)C1=CC=CC=C1', iupac => '(ethaneseleninyl)benzene', AUTHOR => 1 },
+
     { smiles => 'C1(CCCCC1)S(=O)N1CC(OCC1)C(=O)O', iupac => '4-(cyclohexanesulfinyl)morpholine-2-carboxylic acid' }, # BBv2 P-65.4.1
 );
 
