@@ -9,6 +9,15 @@ use Test::More;
 my @cases = (
     { smiles => 'CCOO', iupac => 'ethaneperoxol' },
 
+    # From BBv2 P-63.4.2.1
+    { smiles => 'CSO', iupac => 'methane-SO-thioperoxol' },
+    { smiles => 'CCCOS', iupac => 'propane-1-OS-thioperoxol', AUTHOR => 1 },
+    { smiles => 'CCSS', iupac => 'ethanedithioperoxol' },
+    { smiles => 'CS[Se][H]', iupac => 'methane-SSe-selenothioperoxol' },
+
+    # From BBv2 P-63.4.2.2
+    { smiles => 'OOCCO', iupac => '2-hydroperoxyethan-1-ol' },
+
     # From BBv2 P-63.7
     { smiles => '[SeH]OCCOO', iupac => '2-(selanyloxy)ethane-1-peroxol', AUTHOR => 1 },
     { smiles => 'NCC(C)(OO)C', iupac => '1-amino-2-methylpropane-2-peroxol' },
