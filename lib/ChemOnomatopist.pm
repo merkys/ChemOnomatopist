@@ -29,6 +29,7 @@ use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
+use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::XO3;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
@@ -464,7 +465,8 @@ sub find_groups
             is_double_bond( $graph, $atom, @O ) ) {
             # Detecting sulfinyl group - TODO
             # FIXME: Possibly cannot participate in rings
-            die "cannot handle sulfinyl group for now\n";
+            my $sulfinyl = ChemOnomatopist::Group::Sulfinyl->new( $atom );
+            graph_replace( $graph, $sulfinyl, $atom, @O );
         }
         if( is_element( $atom, 'S' ) && @neighbours == 4 && @O == 2 &&
             all { is_double_bond( $graph, $atom, $_ ) } @O ) {
