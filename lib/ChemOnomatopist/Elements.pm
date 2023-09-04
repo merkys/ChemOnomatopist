@@ -203,7 +203,7 @@ our %elements = (
         prefix => 'mangana',
         seniority => 47,
     },
-    Te => {
+    Tc => {
         prefix => 'techneta',
         seniority => 48,
     },
