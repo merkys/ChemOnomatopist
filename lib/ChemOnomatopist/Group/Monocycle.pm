@@ -10,6 +10,8 @@ use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Group::Sulfinyl;
+use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Name;
 use List::Util qw( all );
 use Scalar::Util qw( blessed );
@@ -121,7 +123,15 @@ sub prefix(;$)
     my( $self, $parent ) = @_;
 
     my $name = $self->suffix;
-    return 'phenyl' if $name eq 'benzene';
+    if( $name eq 'benzene' ) {
+        if( $parent && blessed $parent &&
+            ( $parent->isa( ChemOnomatopist::Group::Sulfinyl:: ) ||
+              $parent->isa( ChemOnomatopist::Group::Sulfonyl:: ) ) ) {
+            # Rule derived from examples in BBv2 P-63.6
+            return $name;
+        }
+        return 'phenyl';
+    }
 
     $name = ChemOnomatopist::Name->new( $name ) unless blessed $name;
     $name->{name}[-1] =~ s/e$//;
