@@ -30,8 +30,12 @@ sub prefix
 
     my $name = '';
     for my $element (reverse @elements) { # FIXME: Incomplete
-        $name .= 'oxy' if $element eq 'O';
+        if( $element eq 'O' ) {
+            $name .= 'hydr' unless $name;
+            $name .= 'oxy';
+        }
         $name .= 'sulfanyl' if $element eq 'S';
+        $name .= 'selanyl'  if $element eq 'Se';
     }
     return $name;
 }
