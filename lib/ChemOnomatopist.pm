@@ -458,7 +458,7 @@ sub find_groups
             # Detecting hydroperoxide
             my @C = grep { is_element( $_, 'C' ) } $graph->neighbours( @O );
             if( @C == 1 ) {
-                my $hydroperoxide = ChemOnomatopist::Group::Hydroperoxide->new( @C );
+                my $hydroperoxide = ChemOnomatopist::Group::Hydroperoxide->new( @C, @O, $atom );
                 $graph->add_edge( @C, $hydroperoxide );
                 $graph->delete_vertices( $atom, @H, @O );
             }
