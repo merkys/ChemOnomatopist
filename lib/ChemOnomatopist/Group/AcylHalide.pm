@@ -29,4 +29,10 @@ sub suffix()
     return $name;
 }
 
+sub _cmp_instances
+{
+    my( $A, $B ) = @_;
+    return $A->{halide}{symbol} cmp $B->{halide}{symbol};
+}
+
 1;
