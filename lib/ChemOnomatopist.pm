@@ -422,6 +422,7 @@ sub find_groups
         my @neighbours = $graph->neighbours( $atom );
         my @C  = grep { is_element( $_, 'C' ) } @neighbours;
         my @H  = grep { is_element( $_, 'H' ) } @neighbours;
+        my @N  = grep { is_element( $_, 'N' ) } @neighbours;
         my @O  = grep { is_element( $_, 'O' ) } @neighbours;
         my @S  = grep { is_element( $_, 'S' ) } @neighbours;
         my @Se = grep { is_element( $_, 'Se' ) } @neighbours;
@@ -457,9 +458,9 @@ sub find_groups
         }
 
         # Hydroxy groups and their chalcogen analogues
-        if( @neighbours == 2 && ( @C || @O || @S || @Se || @Te ) && @H == 1 &&
+        if( @neighbours == 2 && ( @C || @N || @O || @S || @Se || @Te ) && @H == 1 &&
             any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
-            my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C, @O, @S, @Se, @Te, $atom );
+            my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C, @N, @O, @S, @Se, @Te, $atom );
             graph_replace( $graph, $hydroxy, $atom, @H );
         }
 
