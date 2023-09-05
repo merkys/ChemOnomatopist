@@ -18,8 +18,13 @@ sub new
 
 sub element() { return 'C' }
 
-# FIXME
-sub prefix() { return 'sulfino' }
+sub prefix()
+{
+    my( $self ) = @_;
+    my $name = 'carbono' . $elements{$self->{halide}{symbol}}->{prefix};
+    $name =~ s/a$/idoyl/;
+    return $name;
+}
 
 sub suffix()
 {
