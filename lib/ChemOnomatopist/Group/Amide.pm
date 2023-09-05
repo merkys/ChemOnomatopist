@@ -14,5 +14,6 @@ sub is_part_of_chain() { return 1 }
 
 sub prefix { return 'amido' } # FIXME: Not sure if really
 sub suffix { return 'amide' }
+sub multisuffix() { return 'carboxamide' }
 
 1;
