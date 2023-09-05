@@ -8,6 +8,8 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
+# FIXME: When part of chain, suffix is 'nitrile'; when an attachment - 'carbonitrile'.
+
 sub prefix { return 'cyano' }
 sub suffix { return 'carbonitrile' }
 
