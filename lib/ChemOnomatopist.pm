@@ -833,7 +833,7 @@ sub select_sidechain
     }
 
     # Chalcogen analogues of ethers
-    if( $graph->degree( $start ) == 1 && grep { element( $start ) eq $_ } qw( S Se Te ) ) {
+    if( $graph->degree( $start ) == 1 && grep { element( $start ) && element( $start ) eq $_ } qw( S Se Te ) ) {
         return ChemOnomatopist::Chain->new( $graph, $parent, $start );
     }
 
