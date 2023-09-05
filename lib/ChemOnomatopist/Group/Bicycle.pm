@@ -295,6 +295,8 @@ sub suffix()
         }
     }
 
+    # TODO: Implement P-25.3.1.3 here
+
     die "cannot name complex bicyclic compounds\n";
 }
 
