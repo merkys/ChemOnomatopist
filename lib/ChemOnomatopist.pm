@@ -454,10 +454,8 @@ sub find_groups
                  $graph->degree( @C ) >= 2 &&
                  is_triple_bond( $graph, $atom, @C ) ) {
             # Detecting cyanide
-            my( $C ) = grep { $_ != $atom } $graph->neighbours( @C );
-            my $cyanide = ChemOnomatopist::Group::Cyanide->new( $C );
-            $graph->add_edge( $C, $cyanide );
-            $graph->delete_vertices( $atom, @C );
+            my $cyanide = ChemOnomatopist::Group::Cyanide->new( @C );
+            graph_replace( $graph, $cyanide, $atom );
         }
 
         # Hydroxy groups and their chalcogen analogues
