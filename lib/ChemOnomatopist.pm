@@ -29,8 +29,9 @@ use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
-use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::SulfinicAcid;
+use ChemOnomatopist::Group::Sulfinyl;
+use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Group::XO3;
 use ChemOnomatopist::Name;
@@ -585,6 +586,13 @@ sub find_groups
             @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
             is_double_bond( $graph, $atom, grep { !blessed $_ } @O ) ) {
             my $acid = ChemOnomatopist::Group::SulfinicAcid->new( @C );
+            graph_replace( $graph, $acid, $atom, @O );
+        }
+        # Detecting sulfonic acids
+        if( !blessed $atom && is_element( $atom, 'S' ) && @neighbours == 4 && @C == 1 && @O == 3 &&
+            @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
+            all { is_double_bond( $graph, $atom, $_ ) } grep { !blessed $_ } @O ) {
+            my $acid = ChemOnomatopist::Group::SulfonicAcid->new( @C );
             graph_replace( $graph, $acid, $atom, @O );
         }
 

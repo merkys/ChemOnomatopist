@@ -21,6 +21,7 @@ use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::SulfinicAcid;
+use ChemOnomatopist::Group::SulfonicAcid;
 
 use List::Util qw( any );
 use Scalar::Util qw( blessed );
@@ -38,6 +39,7 @@ our @order = (
     # Cations
     # Acids
     ChemOnomatopist::Group::Carboxyl::,
+    ChemOnomatopist::Group::SulfonicAcid::,
     ChemOnomatopist::Group::SulfinicAcid::,
     # Anhydrides
     ChemOnomatopist::Group::Ester::,
