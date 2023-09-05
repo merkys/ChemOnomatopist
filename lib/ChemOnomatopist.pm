@@ -12,6 +12,7 @@ use ChemOnomatopist::Chain::FromHalves;
 use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group;
+use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide::SecondaryTertiary;
 use ChemOnomatopist::Group::Amine;
@@ -574,6 +575,12 @@ sub find_groups
             # Detecting secondary and tertiary amides
             my $amide = ChemOnomatopist::Group::Amide::SecondaryTertiary->new( $graph );
             graph_replace( $graph, $amide, $atom, @groups );
+        } elsif( is_element( $atom, 'C' ) && @neighbours == 3 && @C == 1 &&
+                 @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) && is_element( @groups, 'O' ) &&
+                 element(   grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours ) =~ /^(F|Cl|Br|I)$/ ) {
+            my( $halide ) = grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours;
+            my $acyl_halide = ChemOnomatopist::Group::AcylHalide->new( @C, $halide );
+            graph_replace( $graph, $acyl_halide, $atom, grep { blessed $_ || !is_element( $_, 'C' ) } @neighbours );
         }
 
         if( !blessed $atom && is_element( $atom, 'N' ) &&

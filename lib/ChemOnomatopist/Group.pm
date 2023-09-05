@@ -3,6 +3,7 @@ package ChemOnomatopist::Group;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amide::SecondaryTertiary;
@@ -41,6 +42,7 @@ our @order = (
     ChemOnomatopist::Group::Carboxyl::,
     ChemOnomatopist::Group::SulfonicAcid::,
     ChemOnomatopist::Group::SulfinicAcid::,
+    ChemOnomatopist::Group::AcylHalide::, # FIXME: Is this correct?
     # Anhydrides
     ChemOnomatopist::Group::Ester::,
     # Acid halides and pseudohalides
