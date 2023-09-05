@@ -296,6 +296,8 @@ sub suffix()
     }
 
     # TODO: Implement P-25.3.1.3 here
+    my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
+                    $self->cycles;
 
     die "cannot name complex bicyclic compounds\n";
 }
