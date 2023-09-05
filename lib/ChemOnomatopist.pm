@@ -30,6 +30,7 @@ use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
 use ChemOnomatopist::Group::Sulfinyl;
+use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Group::XO3;
 use ChemOnomatopist::Name;
@@ -577,6 +578,14 @@ sub find_groups
         if( !blessed $atom && is_element( $atom, 'N' ) &&
             @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
             die "cannot process secondary and tertiary amines yet\n";
+        }
+
+        # Detecting sulfinic acids
+        if( !blessed $atom && is_element( $atom, 'S' ) && @neighbours == 3 && @C == 1 && @O == 2 &&
+            @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
+            is_double_bond( $graph, $atom, grep { !blessed $_ } @O ) ) {
+            my $acid = ChemOnomatopist::Group::SulfinicAcid->new( @C );
+            graph_replace( $graph, $acid, $atom, @O );
         }
 
         if( !blessed $atom && @C == 1 && @groups == 1 &&

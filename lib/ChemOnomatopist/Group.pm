@@ -20,6 +20,7 @@ use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
+use ChemOnomatopist::Group::SulfinicAcid;
 
 use List::Util qw( any );
 use Scalar::Util qw( blessed );
@@ -37,6 +38,7 @@ our @order = (
     # Cations
     # Acids
     ChemOnomatopist::Group::Carboxyl::,
+    ChemOnomatopist::Group::SulfinicAcid::,
     # Anhydrides
     ChemOnomatopist::Group::Ester::,
     # Acid halides and pseudohalides
