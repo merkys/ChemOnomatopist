@@ -52,6 +52,9 @@ sub append($)
     if( @$self && blessed $name && $name->isa( ChemOnomatopist::Name:: ) && $name =~ /^\d/ ) {
         push @$self, '-';
     }
+    # FIXME: The following needlessly converts $name into string
+    $name =~ s/^-// if @$self && $self->[-1] =~ /-$/ && $name =~ /^-/;
+
     push @$self, blessed $name && $name->isa( ChemOnomatopist::Name:: ) ? @$name : $name;
 
     return $self;

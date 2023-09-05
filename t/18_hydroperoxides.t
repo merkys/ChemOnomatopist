@@ -11,7 +11,7 @@ my @cases = (
 
     # From BBv2 P-63.4.2.1
     { smiles => 'CSO', iupac => 'methane-SO-thioperoxol' },
-    { smiles => 'CCCOS', iupac => 'propane-1-OS-thioperoxol', AUTHOR => 1 },
+    { smiles => 'CCCOS', iupac => 'propane-1-OS-thioperoxol' },
     { smiles => 'CCSS', iupac => 'ethanedithioperoxol' },
     { smiles => 'CS[Se][H]', iupac => 'methane-SSe-selenothioperoxol' },
 
