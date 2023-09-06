@@ -295,8 +295,13 @@ sub suffix()
         }
     }
 
-    # TODO: Implement P-25.3.1.3 here
+    # TODO: Complete implementing BBv2 P-25.3.1.3 (fusion naming)
     my @cycles = $self->cycles;
+
+    if( $cycles[0]->length > $cycles[1]->length ) { # BBv2 P-25.3.2.4 (c)
+        @cycles = reverse @cycles;
+    }
+
     my @current = map { [ $_->vertices ] } @cycles;
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) } @cycles;
 
