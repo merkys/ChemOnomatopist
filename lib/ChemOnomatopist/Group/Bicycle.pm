@@ -313,27 +313,43 @@ sub suffix()
         }
     }
 
-    my @current = map { [ $_->vertices ] } @cycles;
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, reverse $_->vertices ) } @cycles;
 
     # TODO: These are ad-hoc rules as for the moment generalisation is hard to make
     my $fusion = '';
 
-    if( $ideal[0]->{vertices}[0] == $cycles[0]->{vertices}[0] ) {
+    if(     $ideal[0]->{vertices}[0] == $cycles[0]->{vertices}[0] ) {
         if( $ideal[0]->{vertices}[1] == $cycles[0]->{vertices}[1] ) {
             $fusion .= '[' . join( ',', $ideal[0]->length, $ideal[0]->length - 1 );
         }
         if( $ideal[0]->{vertices}[1] == $cycles[0]->{vertices}[-1] ) {
             $fusion .= '[3,2';
         }
+    } else {
+        my $flipped = $cycles[0]->flipped;
+        if( $ideal[0]->{vertices}[0] == $flipped->{vertices}[0] ) {
+            if( $ideal[0]->{vertices}[1] == $flipped->{vertices}[1] ) {
+                $fusion .= '[2,3';
+            }
+            if( $ideal[0]->{vertices}[1] == $cycles[0]->{vertices}[-1] ) {
+                $fusion .= '[' . join( ',', $ideal[0]->length - 1, $ideal[0]->length );
+            }
+        }
     }
 
-    if( $ideal[1]->{vertices}[0] == $cycles[1]->{vertices}[0] ) {
+    if(     $ideal[1]->{vertices}[0] == $cycles[1]->{vertices}[0] ) {
         if( $ideal[1]->{vertices}[1] == $cycles[1]->{vertices}[1] ) {
             $fusion .= '-' . chr( 95 + $cycles[1]->length ) . ']';
         }
         if( $ideal[1]->{vertices}[1] == $cycles[1]->{vertices}[-1] ) {
             $fusion .= '-b]';
+        }
+    } else {
+        my $flipped = $cycles[1]->flipped;
+        if( $ideal[1]->{vertices}[0] == $flipped->{vertices}[0] ) {
+            if( $ideal[1]->{vertices}[1] == $flipped->{vertices}[1] ) {
+                $fusion .= '-' . chr( 95 + $cycles[1]->length ) . ']';
+            }
         }
     }
 
