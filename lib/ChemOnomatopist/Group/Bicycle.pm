@@ -306,6 +306,8 @@ sub suffix()
                    \&ChemOnomatopist::rule_most_senior_heteroatoms,
                    # P-25.3.2.4 (h): Lower locants for heteroatoms
                    \&ChemOnomatopist::rule_lowest_numbered_heteroatoms,
+                   # P-25.3.2.4 (i): Lower locants for senior heteroatoms
+                   \&ChemOnomatopist::rule_lowest_numbered_most_senior_heteroatoms,
                  ) {
         my @cycles_now = $rule->( @cycles );
         last unless @cycles_now; # Did not succeed, quit
