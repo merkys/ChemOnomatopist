@@ -298,12 +298,17 @@ sub suffix()
     # TODO: Complete implementing BBv2 P-25.3.1.3 (fusion naming)
     my @cycles = $self->cycles;
 
-    for my $rule ( # P-25.3.2.4 (c)
-                   \&ChemOnomatopist::rule_longest_chains) {
+    for my $rule ( # P-25.3.2.4 (c): Second ring has to be larger
+                   \&ChemOnomatopist::rule_longest_chains,
+                   # P-25.3.2.4 (d): Greater number of heteroatoms of any kind
+                   \&ChemOnomatopist::rule_most_heteroatoms,
+                   # P-25.3.2.4 (f): Greater number of most senior heteroatoms
+                   \&ChemOnomatopist::rule_most_senior_heteroatoms,
+                 ) {
         my @cycles_now = $rule->( @cycles );
         last unless @cycles_now; # Did not succeed, quit
         if( @cycles_now == 1 ) { # Filtering completed
-            @cycles = reverse @cycles unless $cycles[0] == $cycles_now[0];
+            @cycles = reverse @cycles if $cycles[0] == $cycles_now[0];
         }
     }
 
