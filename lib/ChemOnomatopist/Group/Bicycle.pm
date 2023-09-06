@@ -316,23 +316,17 @@ sub suffix()
     my @current = map { [ $_->vertices ] } @cycles;
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, reverse $_->vertices ) } @cycles;
 
-    my @rotations_needed = ( 0, 0 );
-
-    #~ while( join( '', @{$current[0]} ) ne join( '', $ideal[0]->vertices ) ) {
-        #~ push @{$current[0]}, shift @{$current[0]};
-        #~ $rotations_needed[0]++;
-        #~ die if $rotations_needed[0] == @{$current[0]};
-    #~ }
-    #~ while( join( '', @{$current[1]} ) ne join( '', $ideal[1]->vertices ) ) {
-        #~ push @{$current[1]}, shift @{$current[1]};
-        #~ $rotations_needed[1]++;
-        #~ die if $rotations_needed[1] == @{$current[1]};
-    #~ }
-
     # TODO: These are ad-hoc rules as for the moment generalisation is hard to make
     my $fusion = '';
-    $fusion .= '[3,2' if $rotations_needed[0] == 0;
-    $fusion .= '[3,4' if $rotations_needed[0] == 1 && @{$current[0]} == 5;
+
+    if( $ideal[0]->{vertices}[0] == $cycles[0]->{vertices}[0] ) {
+        if( $ideal[0]->{vertices}[1] == $cycles[0]->{vertices}[1] ) {
+            $fusion .= '[' . join( ',', $ideal[0]->length, $ideal[0]->length - 1 );
+        }
+        if( $ideal[0]->{vertices}[1] == $cycles[0]->{vertices}[-1] ) {
+            $fusion .= '[3,2';
+        }
+    }
 
     if( $ideal[1]->{vertices}[0] == $cycles[1]->{vertices}[0] ) {
         if( $ideal[1]->{vertices}[1] == $cycles[1]->{vertices}[1] ) {
