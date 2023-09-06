@@ -298,16 +298,21 @@ sub suffix()
     # TODO: Complete implementing BBv2 P-25.3.1.3 (fusion naming)
     my @cycles = $self->cycles;
 
-    for my $rule ( # P-25.3.2.4 (c): Second ring has to be larger
+    for my $rule ( # TODO: P-25.3.2.4 (a): Senior heteroatom
+                   # TODO: P-25.3.2.4 (b): Concerns fusions of more than two rings
+                   # P-25.3.2.4 (c): Second ring has to be larger
                    \&ChemOnomatopist::rule_longest_chains,
                    # P-25.3.2.4 (d): Greater number of heteroatoms of any kind
                    \&ChemOnomatopist::rule_most_heteroatoms,
+                   # TODO: P-25.3.2.4 (e): Greater variety of heteroatoms
                    # P-25.3.2.4 (f): Greater number of most senior heteroatoms
                    \&ChemOnomatopist::rule_most_senior_heteroatoms,
+                   # TODO: P-25.3.2.4 (g): Concerns fusions of more than two rings
                    # P-25.3.2.4 (h): Lower locants for heteroatoms
                    \&ChemOnomatopist::rule_lowest_numbered_heteroatoms,
                    # P-25.3.2.4 (i): Lower locants for senior heteroatoms
                    \&ChemOnomatopist::rule_lowest_numbered_most_senior_heteroatoms,
+                   # TODO: P-25.3.2.4 (j): Concerns fusions of more than two rings
                  ) {
         my @cycles_now = $rule->( @cycles );
         last unless @cycles_now; # Did not succeed, quit
