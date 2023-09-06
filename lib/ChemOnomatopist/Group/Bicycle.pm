@@ -313,9 +313,9 @@ sub suffix()
 
     # TODO: These are ad-hoc rules as for the moment generalisation is hard to make
     my $fusion = '';
-    $fusion .= '[3,2' if $rotations_needed[1] == 0;
-    $fusion .= '[3,4' if $rotations_needed[1] == 1 && @{$current[1]} == 5;
-    $fusion .= '-b]'  if $rotations_needed[0] == 0;
+    $fusion .= '[3,2' if $rotations_needed[0] == 0;
+    $fusion .= '[3,4' if $rotations_needed[0] == 1 && @{$current[0]} == 5;
+    $fusion .= '-' . chr( 98 + $rotations_needed[1] ) . ']';
 
     die "cannot name complex bicyclic compounds\n" unless $fusion =~ /^\[.+\]$/; # Full fusion is known
 
