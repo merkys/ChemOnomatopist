@@ -296,10 +296,34 @@ sub suffix()
     }
 
     # TODO: Implement P-25.3.1.3 here
-    my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
-                    $self->cycles;
+    my @cycles = $self->cycles;
+    my @current = map { [ $_->vertices ] } @cycles;
+    my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) } @cycles;
 
-    die "cannot name complex bicyclic compounds\n";
+    my @rotations_needed = ( 0, 0 );
+
+    while( join( '', @{$current[0]} ) ne join( '', $ideal[0]->vertices ) ) {
+        push @{$current[0]}, shift @{$current[0]};
+        $rotations_needed[0]++;
+    }
+    while( join( '', @{$current[1]} ) ne join( '', $ideal[1]->vertices ) ) {
+        push @{$current[1]}, shift @{$current[1]};
+        $rotations_needed[1]++;
+    }
+
+    # TODO: These are ad-hoc rules as for the moment generalisation is hard to make
+    my $fusion = '';
+    $fusion .= '[3,2' if $rotations_needed[1] == 0;
+    $fusion .= '[3,4' if $rotations_needed[1] == 1 && @{$current[1]} == 5;
+    $fusion .= '-b]'  if $rotations_needed[0] == 0;
+
+    die "cannot name complex bicyclic compounds\n" unless $fusion =~ /^\[.+\]$/; # Full fusion is known
+
+    my $name = $ideal[0]->name;
+    $name =~ s/e$/o/;
+    $name .= $fusion;
+    $name .= $ideal[1]->name;
+    return $name;
 }
 
 sub _adjust_vertices_to_cycles()
