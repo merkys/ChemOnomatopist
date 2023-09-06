@@ -322,7 +322,7 @@ sub suffix()
     die "cannot name complex bicyclic compounds\n" unless $fusion =~ /^\[.+\]$/; # Full fusion is known
 
     my $name = $ideal[0]->name;
-    $name =~ s/e$/o/;
+    $name->[-1] =~ s/e$/o/;
     $name .= $fusion;
     $name .= $ideal[1]->name;
     return $name;
