@@ -322,8 +322,11 @@ sub suffix()
     }
 
     # TODO: Complete implementing BBv2 P-25.3.1.3 (fusion naming)
-    my @cycles = reverse $self->cycles;
+    my $switched = $self->copy;
+    $switched->{cycles} = [ reverse $switched->cycles ];
+    $switched->_adjust_vertices_to_cycles;
 
+    my @cycles = $switched->cycles;
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, reverse $_->vertices ) } @cycles;
 
     # FIXME: Numeric fusion identifier is sometimes incorrect
