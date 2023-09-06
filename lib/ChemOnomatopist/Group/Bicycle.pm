@@ -322,7 +322,10 @@ sub suffix()
     die "cannot name complex bicyclic compounds\n" unless $fusion =~ /^\[.+\]$/; # Full fusion is known
 
     my $name = $ideal[0]->name;
-    $name->[-1] =~ s/e$/o/;
+    # TODO: Preserve retained prefixes from BBv2 P-25.3.2.2.3
+    unless( $name->[-1] =~ s/e$/o/ ) { # BBv2 P-25.3.2.2.2
+        $name->[-1] .= 'o';
+    }
     $name .= $fusion;
     $name .= $ideal[1]->name;
     $name->bracket_numeric_locants;
