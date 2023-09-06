@@ -15,7 +15,7 @@ use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::Stem;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Graph::Traversal::DFS;
-use List::Util qw( all any );
+use List::Util qw( all any min );
 use Set::Object qw( set );
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
@@ -328,36 +328,24 @@ sub suffix()
     my @cycles = $switched->cycles;
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, reverse $_->vertices ) } @cycles;
 
-    # FIXME: Numeric fusion identifier is sometimes incorrect
-    my $fusion = '';
-
     # Locate the bridge vertices
-    my $bridge = set( $self->{cycles}[0]->vertices ) * set( $self->{cycles}[1]->vertices );
+    my @bridge = (set( $self->{cycles}[0]->vertices ) * set( $self->{cycles}[1]->vertices ))->members;
 
-    if(     $ideal[0]->{vertices}[0] == $cycles[0]->{vertices}[0] ) {
-        if( $ideal[0]->{vertices}[1] == $cycles[0]->{vertices}[1] ) {
-            $fusion .= '[' . join( ',', $ideal[0]->length, $ideal[0]->length - 1 );
-        }
-        if( $ideal[0]->{vertices}[1] == $cycles[0]->{vertices}[-1] ) {
-            $fusion .= '[3,2';
-        }
+    my @ideal_vertices_A = $ideal[0]->vertices;
+    my @ideal_vertices_B = $ideal[1]->vertices;
+    my @bridge_indices_A = ( ( grep { $ideal_vertices_A[$_] == $bridge[0] } 0..$#ideal_vertices_A ),
+                             ( grep { $ideal_vertices_A[$_] == $bridge[1] } 0..$#ideal_vertices_A ) );
+    my @bridge_indices_B = ( ( grep { $ideal_vertices_B[$_] == $bridge[0] } 0..$#ideal_vertices_B ),
+                             ( grep { $ideal_vertices_B[$_] == $bridge[1] } 0..$#ideal_vertices_B ) );
+    my $min_A = min @bridge_indices_A;
+    my $min_B = min @bridge_indices_B;
+    my $fusion;
+    if( ($bridge_indices_A[0] <=> $bridge_indices_A[1]) ==
+        ($bridge_indices_B[0] <=> $bridge_indices_B[1]) ) {
+        $fusion = '[' . ($min_A+1) . ',' . ($min_A+2) . '-' . chr( 97 + $min_B ) . ']';
     } else {
-        my $flipped = $cycles[0]->flipped;
-        if( $ideal[0]->{vertices}[0] == $flipped->{vertices}[0] ) {
-            if( $ideal[0]->{vertices}[1] == $flipped->{vertices}[1] ) {
-                $fusion .= '[2,3';
-            }
-            if( $ideal[0]->{vertices}[1] == $cycles[0]->{vertices}[-1] ) {
-                $fusion .= '[' . join( ',', $ideal[0]->length - 1, $ideal[0]->length );
-            }
-        }
+        $fusion = '[' . ($min_A+2) . ',' . ($min_A+1) . '-' . chr( 97 + $min_B ) . ']';
     }
-
-    my @ideal_vertices = $ideal[1]->vertices;
-    my( $min ) = grep { $bridge->has( $ideal_vertices[$_] ) } 0..$#ideal_vertices;
-    $fusion .= '-' . chr( 97 + $min ) . ']';
-
-    die "cannot name complex bicyclic compounds\n" unless $fusion =~ /^\[.+\]$/; # Full fusion is known
 
     my $name = $ideal[0]->name;
     # TODO: Preserve retained prefixes from BBv2 P-25.3.2.2.3
