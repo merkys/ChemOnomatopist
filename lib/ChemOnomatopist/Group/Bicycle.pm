@@ -298,8 +298,13 @@ sub suffix()
     # TODO: Complete implementing BBv2 P-25.3.1.3 (fusion naming)
     my @cycles = $self->cycles;
 
-    if( $cycles[0]->length > $cycles[1]->length ) { # BBv2 P-25.3.2.4 (c)
-        @cycles = reverse @cycles;
+    for my $rule ( # P-25.3.2.4 (c)
+                   \&ChemOnomatopist::rule_longest_chains) {
+        my @cycles_now = $rule->( @cycles );
+        last unless @cycles_now; # Did not succeed, quit
+        if( @cycles_now == 1 ) { # Filtering completed
+            @cycles = reverse @cycles unless $cycles[0] == $cycles_now[0];
+        }
     }
 
     my @current = map { [ $_->vertices ] } @cycles;
