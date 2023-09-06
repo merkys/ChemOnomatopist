@@ -309,30 +309,39 @@ sub suffix()
         last unless @cycles_now; # Did not succeed, quit
         if( @cycles_now == 1 ) { # Filtering completed
             @cycles = reverse @cycles if $cycles[0] == $cycles_now[0];
+            last;
         }
     }
 
     my @current = map { [ $_->vertices ] } @cycles;
-    my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) } @cycles;
+    my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, reverse $_->vertices ) } @cycles;
 
     my @rotations_needed = ( 0, 0 );
 
-    while( join( '', @{$current[0]} ) ne join( '', $ideal[0]->vertices ) ) {
-        push @{$current[0]}, shift @{$current[0]};
-        $rotations_needed[0]++;
-        die if $rotations_needed[0] == @{$current[0]};
-    }
-    while( join( '', @{$current[1]} ) ne join( '', $ideal[1]->vertices ) ) {
-        push @{$current[1]}, shift @{$current[1]};
-        $rotations_needed[1]++;
-        die if $rotations_needed[1] == @{$current[1]};
-    }
+    #~ while( join( '', @{$current[0]} ) ne join( '', $ideal[0]->vertices ) ) {
+        #~ push @{$current[0]}, shift @{$current[0]};
+        #~ $rotations_needed[0]++;
+        #~ die if $rotations_needed[0] == @{$current[0]};
+    #~ }
+    #~ while( join( '', @{$current[1]} ) ne join( '', $ideal[1]->vertices ) ) {
+        #~ push @{$current[1]}, shift @{$current[1]};
+        #~ $rotations_needed[1]++;
+        #~ die if $rotations_needed[1] == @{$current[1]};
+    #~ }
 
     # TODO: These are ad-hoc rules as for the moment generalisation is hard to make
     my $fusion = '';
     $fusion .= '[3,2' if $rotations_needed[0] == 0;
     $fusion .= '[3,4' if $rotations_needed[0] == 1 && @{$current[0]} == 5;
-    $fusion .= '-' . chr( 98 + $rotations_needed[1] ) . ']';
+
+    if( $ideal[1]->{vertices}[0] == $cycles[1]->{vertices}[0] ) {
+        if( $ideal[1]->{vertices}[1] == $cycles[1]->{vertices}[1] ) {
+            $fusion .= '-' . chr( 95 + $cycles[1]->length ) . ']';
+        }
+        if( $ideal[1]->{vertices}[1] == $cycles[1]->{vertices}[-1] ) {
+            $fusion .= '-b]';
+        }
+    }
 
     die "cannot name complex bicyclic compounds\n" unless $fusion =~ /^\[.+\]$/; # Full fusion is known
 
