@@ -305,10 +305,12 @@ sub suffix()
     while( join( '', @{$current[0]} ) ne join( '', $ideal[0]->vertices ) ) {
         push @{$current[0]}, shift @{$current[0]};
         $rotations_needed[0]++;
+        die if $rotations_needed[0] == @{$current[0]};
     }
     while( join( '', @{$current[1]} ) ne join( '', $ideal[1]->vertices ) ) {
         push @{$current[1]}, shift @{$current[1]};
         $rotations_needed[1]++;
+        die if $rotations_needed[1] == @{$current[1]};
     }
 
     # TODO: These are ad-hoc rules as for the moment generalisation is hard to make
