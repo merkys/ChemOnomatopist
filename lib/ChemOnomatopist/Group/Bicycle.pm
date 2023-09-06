@@ -108,8 +108,34 @@ sub new
     # The ordering should not be done if one of the cycles is benzene
     if( $nbenzene == 0 ) {
         my @flipped = map { $_->flipped } @cycles;
-        # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
-        my( $chain ) = sort { ChemOnomatopist::Group::Monocycle::_cmp( $a, $b ) } ( @cycles, @flipped );
+        my @candidates = ( @cycles, @flipped );
+        for my $rule ( # TODO: P-25.3.2.4 (a): Senior heteroatom
+                       # TODO: P-25.3.2.4 (b): Concerns fusions of more than two rings
+                       # P-25.3.2.4 (c): Second ring has to be larger
+                       \&ChemOnomatopist::rule_longest_chains,
+                       # P-25.3.2.4 (d): Greater number of heteroatoms of any kind
+                       \&ChemOnomatopist::rule_most_heteroatoms,
+                       # TODO: P-25.3.2.4 (e): Greater variety of heteroatoms
+                       # P-25.3.2.4 (f): Greater number of most senior heteroatoms
+                       \&ChemOnomatopist::rule_most_senior_heteroatoms,
+                       # TODO: P-25.3.2.4 (g): Concerns fusions of more than two rings
+                       # P-25.3.2.4 (h): Lower locants for heteroatoms
+                       \&ChemOnomatopist::rule_lowest_numbered_heteroatoms,
+                       # P-25.3.2.4 (i): Lower locants for senior heteroatoms
+                       \&ChemOnomatopist::rule_lowest_numbered_most_senior_heteroatoms,
+                       # TODO: P-25.3.2.4 (j): Concerns fusions of more than two rings
+                     ) {
+            my @candidates_now = $rule->( @candidates );
+            if( @candidates_now == 1 ) {
+                @candidates = @candidates_now;
+                last;
+            } elsif( @candidates ) {
+                @candidates = @candidates_now;
+            } else {
+                last;
+            }
+        }
+        my $chain = shift @candidates;
 
         if(      $chain == $cycles[1] ) {
             @cycles = reverse @cycles;
@@ -296,35 +322,11 @@ sub suffix()
     }
 
     # TODO: Complete implementing BBv2 P-25.3.1.3 (fusion naming)
-    my @cycles = $self->cycles;
-
-    for my $rule ( # TODO: P-25.3.2.4 (a): Senior heteroatom
-                   # TODO: P-25.3.2.4 (b): Concerns fusions of more than two rings
-                   # P-25.3.2.4 (c): Second ring has to be larger
-                   \&ChemOnomatopist::rule_longest_chains,
-                   # P-25.3.2.4 (d): Greater number of heteroatoms of any kind
-                   \&ChemOnomatopist::rule_most_heteroatoms,
-                   # TODO: P-25.3.2.4 (e): Greater variety of heteroatoms
-                   # P-25.3.2.4 (f): Greater number of most senior heteroatoms
-                   \&ChemOnomatopist::rule_most_senior_heteroatoms,
-                   # TODO: P-25.3.2.4 (g): Concerns fusions of more than two rings
-                   # P-25.3.2.4 (h): Lower locants for heteroatoms
-                   \&ChemOnomatopist::rule_lowest_numbered_heteroatoms,
-                   # P-25.3.2.4 (i): Lower locants for senior heteroatoms
-                   \&ChemOnomatopist::rule_lowest_numbered_most_senior_heteroatoms,
-                   # TODO: P-25.3.2.4 (j): Concerns fusions of more than two rings
-                 ) {
-        my @cycles_now = $rule->( @cycles );
-        last unless @cycles_now; # Did not succeed, quit
-        if( @cycles_now == 1 ) { # Filtering completed
-            @cycles = reverse @cycles if $cycles[0] == $cycles_now[0];
-            last;
-        }
-    }
+    my @cycles = reverse $self->cycles;
 
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, reverse $_->vertices ) } @cycles;
 
-    # TODO: These are ad-hoc rules as for the moment generalisation is hard to make
+    # FIXME: Numeric fusion identifier is sometimes incorrect
     my $fusion = '';
 
     if(     $ideal[0]->{vertices}[0] == $cycles[0]->{vertices}[0] ) {
