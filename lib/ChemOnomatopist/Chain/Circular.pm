@@ -85,7 +85,7 @@ sub name()
     my %names = %ChemOnomatopist::Group::Monocycle::names;
 
     # Check the preserved names
-    return $names{$SMILES} if exists $names{$SMILES};
+    return ChemOnomatopist::Name->new( $names{$SMILES} ) if exists $names{$SMILES};
 
     # Check for aromatic notation
     if( $SMILES =~ /:/ ) {
@@ -95,7 +95,7 @@ sub name()
             next unless $SMILES_for_name =~ /=/;
             my $name = $names{$SMILES_for_name};
             $SMILES_for_name =~ s/=//g;
-            return $name if $SMILES eq $SMILES_for_name;
+            return ChemOnomatopist::Name->new( $name ) if $SMILES eq $SMILES_for_name;
         }
     }
 
