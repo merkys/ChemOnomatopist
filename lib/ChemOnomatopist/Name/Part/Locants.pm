@@ -8,4 +8,6 @@ use warnings;
 
 use parent ChemOnomatopist::Name::Part::;
 
+sub is_numeric() { return $_[0]->{value} =~ /^\]?\d+(,\d+)*[-\]]?$/ }
+
 1;

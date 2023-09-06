@@ -133,6 +133,23 @@ sub bracket()
     return $self;
 }
 
+sub bracket_numeric_locants()
+{
+    my( $self ) = @_;
+
+    if( $self->starts_with_locant && $self->[0]->is_numeric ) {
+        $self->[0]->{value} = '[' . $self->[0]->{value};
+        $self->[0]->{value} =~ s/-$/]/;
+    }
+
+    for my $i (1..$#$self) {
+        next unless blessed $self->[$i];
+        next unless $self->[$i]->isa( ChemOnomatopist::Name::Part::Locants:: );
+        $self->[$i-1] = '[';
+        $self->[$i]->{value} =~ s/-$/]/;
+    }
+}
+
 sub has_locant()
 {
     my( $self ) = @_;

@@ -325,6 +325,7 @@ sub suffix()
     $name->[-1] =~ s/e$/o/;
     $name .= $fusion;
     $name .= $ideal[1]->name;
+    $name->bracket_numeric_locants;
     return $name;
 }
 
