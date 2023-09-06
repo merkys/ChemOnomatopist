@@ -8,7 +8,6 @@ use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Chain::Circular;
-
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monocycle::Fused;
@@ -332,6 +331,9 @@ sub suffix()
     # FIXME: Numeric fusion identifier is sometimes incorrect
     my $fusion = '';
 
+    # Locate the bridge vertices
+    my $bridge = set( $self->{cycles}[0]->vertices ) * set( $self->{cycles}[1]->vertices );
+
     if(     $ideal[0]->{vertices}[0] == $cycles[0]->{vertices}[0] ) {
         if( $ideal[0]->{vertices}[1] == $cycles[0]->{vertices}[1] ) {
             $fusion .= '[' . join( ',', $ideal[0]->length, $ideal[0]->length - 1 );
@@ -351,21 +353,9 @@ sub suffix()
         }
     }
 
-    if(     $ideal[1]->{vertices}[0] == $cycles[1]->{vertices}[0] ) {
-        if( $ideal[1]->{vertices}[1] == $cycles[1]->{vertices}[1] ) {
-            $fusion .= '-' . chr( 95 + $cycles[1]->length ) . ']';
-        }
-        if( $ideal[1]->{vertices}[1] == $cycles[1]->{vertices}[-1] ) {
-            $fusion .= '-b]';
-        }
-    } else {
-        my $flipped = $cycles[1]->flipped;
-        if( $ideal[1]->{vertices}[0] == $flipped->{vertices}[0] ) {
-            if( $ideal[1]->{vertices}[1] == $flipped->{vertices}[1] ) {
-                $fusion .= '-' . chr( 95 + $cycles[1]->length ) . ']';
-            }
-        }
-    }
+    my @ideal_vertices = $ideal[1]->vertices;
+    my( $min ) = grep { $bridge->has( $ideal_vertices[$_] ) } 0..$#ideal_vertices;
+    $fusion .= '-' . chr( 97 + $min ) . ']';
 
     die "cannot name complex bicyclic compounds\n" unless $fusion =~ /^\[.+\]$/; # Full fusion is known
 
