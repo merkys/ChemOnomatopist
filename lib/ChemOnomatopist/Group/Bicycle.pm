@@ -15,7 +15,7 @@ use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::Stem;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Graph::Traversal::DFS;
-use List::Util qw( all any min );
+use List::Util qw( all any min uniq );
 use Set::Object qw( set );
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
@@ -117,7 +117,8 @@ sub new
                        \&ChemOnomatopist::rule_longest_chains,
                        # P-25.3.2.4 (d): Greater number of heteroatoms of any kind
                        \&ChemOnomatopist::rule_most_heteroatoms,
-                       # TODO: P-25.3.2.4 (e): Greater variety of heteroatoms
+                       # P-25.3.2.4 (e): Greater variety of heteroatoms
+                       \&rule_greatest_variety_of_heteroatoms,
                        # P-25.3.2.4 (f): Greater number of most senior heteroatoms
                        \&ChemOnomatopist::rule_greatest_number_of_most_senior_heteroatoms,
                        # TODO: P-25.3.2.4 (g): Concerns fusions of more than two rings
@@ -371,6 +372,15 @@ sub rule_most_senior_heteroatom
                        map  { $_->heteroatoms } @chains;
     return @chains unless $max_value;
     return grep { any { $_ eq $max_value } $_->heteroatoms } @chains;
+}
+
+sub rule_greatest_variety_of_heteroatoms
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = reverse sort map { scalar uniq $_->heteroatoms } @chains;
+    return @chains unless $max_value;
+    return grep { scalar( uniq $_->heteroatoms ) == $max_value } @chains;
 }
 
 sub _adjust_vertices_to_cycles()
