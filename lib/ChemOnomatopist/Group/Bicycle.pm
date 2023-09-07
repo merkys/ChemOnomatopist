@@ -330,17 +330,19 @@ sub suffix()
     my $switched = $self->copy;
     $switched->{cycles} = [ reverse $switched->cycles ];
     $switched->_adjust_vertices_to_cycles;
+    $switched = $self;
 
     my $graph = $switched->graph;
 
-    # Collect implicit hydrogen atoms
-    # TODO: Incorporate into the program
+    # Collect implicit hydrogen atoms.
+    # Currently only works with C atoms
     my @H;
     for my $i (0..$switched->length-1) {
         my $atom = $switched->{vertices}[$i];
         next unless $atom->{symbol} eq 'C';
         next unless $graph->degree( $atom ) == 2;
-        next if any { is_double_bond( $graph, $atom, $_ ) } $graph->neighbours( $atom );
+        next if any { is_double_bond( $graph, $atom, $_ ) }
+                    $graph->neighbours( $atom );
         push @H, $i;
     }
 
@@ -363,18 +365,22 @@ sub suffix()
     my $fusion;
     if( ($bridge_indices_A[0] <=> $bridge_indices_A[1]) ==
         ($bridge_indices_B[0] <=> $bridge_indices_B[1]) ) {
-        $fusion = '[' . ($min_A+1) . ',' . ($min_A+2) . '-' . chr( 97 + $min_B ) . ']';
+        $fusion = '[' . ($min_B+1) . ',' . ($min_B+2) . '-' . chr( 97 + $min_A ) . ']';
     } else {
-        $fusion = '[' . ($min_A+2) . ',' . ($min_A+1) . '-' . chr( 97 + $min_B ) . ']';
+        $fusion = '[' . ($min_B+2) . ',' . ($min_B+1) . '-' . chr( 97 + $min_A ) . ']';
     }
 
-    my $name = $ideal[0]->name;
+    my $name = ChemOnomatopist::Name->new;
+    if( @H ) {
+        $name->append_locants( map { $_ . 'H' } $self->locants( @H ) );
+    }
+    $name .= $ideal[1]->name;
     # TODO: Preserve retained prefixes from BBv2 P-25.3.2.2.3
     unless( $name->[-1] =~ s/e$/o/ ) { # BBv2 P-25.3.2.2.2
         $name->[-1] .= 'o';
     }
     $name .= $fusion;
-    $name .= $ideal[1]->name;
+    $name .= $ideal[0]->name;
     $name->bracket_numeric_locants;
     return $name;
 }
