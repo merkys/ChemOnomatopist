@@ -17,7 +17,6 @@ use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_double_bond );
 use Graph::Traversal::DFS;
 use List::Util qw( all any min uniq );
-use Set::Object qw( set );
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
@@ -341,6 +340,10 @@ sub suffix()
         push @H, $i;
     }
 
+    # Find the bridge vertices
+    my @bridge = $self->{cycles}[0]->vertices;
+    @bridge = @bridge[-2..-1];
+
     # FIXME: The "ideal" numbering should be pushed to prefer the shortest initial distance from the primary atom to the bridge.
     # This is important for the ring number 0 as for ring number 1 it is enough just to reverse the suggested order.
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, reverse $_->vertices ) }
@@ -348,8 +351,6 @@ sub suffix()
 
     my @ideal_vertices_A = $ideal[0]->vertices;
     my @ideal_vertices_B = $ideal[1]->vertices;
-
-    my @bridge = (set( @ideal_vertices_A ) * set( @ideal_vertices_B ))->members;
 
     my @bridge_indices_A = ( ( grep { $ideal_vertices_A[$_] == $bridge[0] } 0..$#ideal_vertices_A ),
                              ( grep { $ideal_vertices_A[$_] == $bridge[1] } 0..$#ideal_vertices_A ) );
