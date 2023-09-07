@@ -346,11 +346,11 @@ sub suffix()
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, reverse $_->vertices ) }
                     $self->cycles;
 
-    # Locate the bridge vertices
-    my @bridge = (set( $self->{cycles}[0]->vertices ) * set( $self->{cycles}[1]->vertices ))->members;
-
     my @ideal_vertices_A = $ideal[0]->vertices;
     my @ideal_vertices_B = $ideal[1]->vertices;
+
+    my @bridge = (set( @ideal_vertices_A ) * set( @ideal_vertices_B ))->members;
+
     my @bridge_indices_A = ( ( grep { $ideal_vertices_A[$_] == $bridge[0] } 0..$#ideal_vertices_A ),
                              ( grep { $ideal_vertices_A[$_] == $bridge[1] } 0..$#ideal_vertices_A ) );
     my @bridge_indices_B = ( ( grep { $ideal_vertices_B[$_] == $bridge[0] } 0..$#ideal_vertices_B ),
