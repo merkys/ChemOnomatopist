@@ -108,6 +108,7 @@ sub new
     if( $nbenzene == 0 ) {
         my @flipped = map { $_->flipped } @cycles;
         my @candidates = ( @cycles, @flipped );
+        # FIXME: Plain detached monocycles should be given instead of fused ones
         for my $rule ( # TODO: P-25.3.2.4 (a): Senior heteroatom
                        # TODO: P-25.3.2.4 (b): Concerns fusions of more than two rings
                        # P-25.3.2.4 (c): Second ring has to be larger
