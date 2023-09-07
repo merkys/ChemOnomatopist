@@ -14,6 +14,7 @@ use ChemOnomatopist::Group::Monocycle::Fused;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::Stem;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
+use Chemistry::OpenSMILES qw( is_double_bond );
 use Graph::Traversal::DFS;
 use List::Util qw( all any min uniq );
 use Set::Object qw( set );
@@ -282,6 +283,7 @@ sub suffix()
 {
     my( $self ) = @_;
     return '' unless ref $self;
+
     if( $self->is_hydrocarbon ) {
         # FIXME: Check if aromatic, but with caution, as substitutions will break aromaticity
         my $cycle_sizes = join ',', map { $_->length } $self->cycles;
@@ -328,6 +330,19 @@ sub suffix()
     my $switched = $self->copy;
     $switched->{cycles} = [ reverse $switched->cycles ];
     $switched->_adjust_vertices_to_cycles;
+
+    my $graph = $switched->graph;
+
+    # Collect implicit hydrogen atoms
+    # TODO: Incorporate into the program
+    my @H;
+    for my $i (0..$switched->length-1) {
+        my $atom = $switched->{vertices}[$i];
+        next unless $atom->{symbol} eq 'C';
+        next unless $graph->degree( $atom ) == 2;
+        next if any { is_double_bond( $graph, $atom, $_ ) } $graph->neighbours( $atom );
+        push @H, $i;
+    }
 
     # FIXME: The "ideal" numbering should be pushed to prefer the shortest initial distance from the primary atom to the bridge.
     # This is important for the ring number 0 as for ring number 1 it is enough just to reverse the suggested order.
