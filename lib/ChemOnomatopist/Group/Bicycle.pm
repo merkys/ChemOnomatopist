@@ -358,19 +358,19 @@ sub suffix()
     my @ideal_vertices_BB = ChemOnomatopist::Group::Monocycle->new( $self->{cycles}[1]->graph,
                                                             reverse $self->{cycles}[1]->vertices )->vertices;
 
-    my @bridge_indices_A  = ( ( grep { $ideal_vertices_AA[$_] == $bridge[0] } 0..$#ideal_vertices_AA ),
-                              ( grep { $ideal_vertices_AA[$_] == $bridge[1] } 0..$#ideal_vertices_AA ),
-                              ( grep { $ideal_vertices_AB[$_] == $bridge[1] } 0..$#ideal_vertices_AB ),
+    my @bridge_indices_AA = ( ( grep { $ideal_vertices_AA[$_] == $bridge[0] } 0..$#ideal_vertices_AA ),
+                              ( grep { $ideal_vertices_AA[$_] == $bridge[1] } 0..$#ideal_vertices_AA ) );
+    my @bridge_indices_AB = ( ( grep { $ideal_vertices_AB[$_] == $bridge[1] } 0..$#ideal_vertices_AB ),
                               ( grep { $ideal_vertices_AB[$_] == $bridge[1] } 0..$#ideal_vertices_AB ) );
     my @bridge_indices_BA = ( ( grep { $ideal_vertices_BA[$_] == $bridge[0] } 0..$#ideal_vertices_BA ),
                               ( grep { $ideal_vertices_BA[$_] == $bridge[1] } 0..$#ideal_vertices_BA ) );
     my @bridge_indices_BB = ( ( grep { $ideal_vertices_BA[$_] == $bridge[0] } 0..$#ideal_vertices_BA ),
                               ( grep { $ideal_vertices_BA[$_] == $bridge[1] } 0..$#ideal_vertices_BA ) );
-    my $fusion = '-' . chr( 97 + min @bridge_indices_A ) . ']';
-    if( min( @bridge_indices_BA ) <= min( @bridge_indices_BB ) ) {
-        $fusion = '[' . (min( @bridge_indices_BA )+1) . ',' . (min( @bridge_indices_BA )+2) . $fusion;
+    my $fusion = '-' . chr( 97 + min @bridge_indices_AA, @bridge_indices_AB ) . ']';
+    if( (min( @bridge_indices_AA ) <= min( @bridge_indices_AB )) == (min( @bridge_indices_BA ) <= min( @bridge_indices_BB )) ) {
+        $fusion = '[' . (min( @bridge_indices_BA, @bridge_indices_BB )+2) . ',' . (min( @bridge_indices_BA, @bridge_indices_BB )+1) . $fusion;
     } else {
-        $fusion = '[' . (min( @bridge_indices_BB )+2) . ',' . (min( @bridge_indices_BB )+1) . $fusion;
+        $fusion = '[' . (min( @bridge_indices_BA, @bridge_indices_BB )+1) . ',' . (min( @bridge_indices_BA, @bridge_indices_BB )+2) . $fusion;
     }
 
     my $name = ChemOnomatopist::Name->new;
