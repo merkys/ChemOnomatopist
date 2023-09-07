@@ -325,6 +325,8 @@ sub suffix()
     $switched->{cycles} = [ reverse $switched->cycles ];
     $switched->_adjust_vertices_to_cycles;
 
+    # FIXME: The "ideal" numbering should be pushed to prefer the shortest initial distance from the primary atom to the bridge.
+    # This is important for the ring number 0 as for ring number 1 it is enough just to reverse the suggested order.
     my @cycles = $switched->cycles;
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, reverse $_->vertices ) } @cycles;
 
