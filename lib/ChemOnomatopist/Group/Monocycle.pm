@@ -60,23 +60,8 @@ sub new
     $self->_aromatise;
     return $self if $self->is_homogeneous;
 
-    # Select the best numbering for heteroatoms
-    my @chains;
-    my $cycle = $self->graph->subgraph( \@vertices ); # TODO: Add attributes
-    for (0..$#vertices) {
-        push @chains,
-             ChemOnomatopist::Chain::Circular->new( $cycle, @vertices );
-        push @vertices, shift @vertices;
-    }
-    @vertices = reverse @vertices;
-    for (0..$#vertices) {
-        push @chains,
-             ChemOnomatopist::Chain::Circular->new( $cycle, @vertices );
-        push @vertices, shift @vertices;
-    }
-    # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
-    my( $chain ) = sort { ChemOnomatopist::Group::Monocycle::_cmp( $a, $b ) } @chains;
-    return bless { graph => $graph, vertices => [ $chain->vertices ] }, $class;
+    ( $self ) = $self->autosymmetric_equivalents;
+    return $self;
 }
 
 # FIXME: For now we generate all possible traversals of the same cycle.
@@ -104,6 +89,30 @@ sub candidates()
     }
 
     return @chains;
+}
+
+sub autosymmetric_equivalents()
+{
+    my( $self ) = @_;
+
+    my @vertices = $self->vertices;
+    my $cycle = $self->graph->subgraph( \@vertices ); # TODO: Add attributes
+    my @chains;
+    for (0..$#vertices) {
+        push @chains,
+             ChemOnomatopist::Chain::Circular->new( $cycle, @vertices );
+        push @vertices, shift @vertices;
+    }
+    @vertices = reverse @vertices;
+    for (0..$#vertices) {
+        push @chains,
+             ChemOnomatopist::Chain::Circular->new( $cycle, @vertices );
+        push @vertices, shift @vertices;
+    }
+    # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
+    @chains = sort {  ChemOnomatopist::Group::Monocycle::_cmp( $a, $b ) } @chains;
+    @chains = grep { !ChemOnomatopist::Group::Monocycle::_cmp( $_, $chains[0] ) } @chains;
+    return map { bless { graph => $self->graph, vertices => [ $_->vertices ] } }  @chains;
 }
 
 sub needs_heteroatom_locants()
