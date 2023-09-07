@@ -349,11 +349,16 @@ sub suffix()
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, reverse $_->vertices ) }
                     $self->cycles;
 
-    my @ideal_vertices_A = $ideal[0]->vertices;
+    my @ideal_vertices_AA = ChemOnomatopist::Group::Monocycle->new( $self->{cycles}[0]->graph,
+                                                                    $self->{cycles}[0]->vertices )->vertices;
+    my @ideal_vertices_AB = ChemOnomatopist::Group::Monocycle->new( $self->{cycles}[0]->graph,
+                                                            reverse $self->{cycles}[0]->vertices )->vertices;
     my @ideal_vertices_B = $ideal[1]->vertices;
 
-    my @bridge_indices_A = ( ( grep { $ideal_vertices_A[$_] == $bridge[0] } 0..$#ideal_vertices_A ),
-                             ( grep { $ideal_vertices_A[$_] == $bridge[1] } 0..$#ideal_vertices_A ) );
+    my @bridge_indices_A = ( ( grep { $ideal_vertices_AA[$_] == $bridge[0] } 0..$#ideal_vertices_AA ),
+                             ( grep { $ideal_vertices_AA[$_] == $bridge[1] } 0..$#ideal_vertices_AA ),
+                             ( grep { $ideal_vertices_AB[$_] == $bridge[1] } 0..$#ideal_vertices_AB ),
+                             ( grep { $ideal_vertices_AB[$_] == $bridge[1] } 0..$#ideal_vertices_AB ) );
     my @bridge_indices_B = ( ( grep { $ideal_vertices_B[$_] == $bridge[0] } 0..$#ideal_vertices_B ),
                              ( grep { $ideal_vertices_B[$_] == $bridge[1] } 0..$#ideal_vertices_B ) );
     my $min_A = min @bridge_indices_A;
