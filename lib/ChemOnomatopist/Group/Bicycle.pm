@@ -327,18 +327,13 @@ sub suffix()
     }
 
     # TODO: Complete implementing BBv2 P-25.3.1.3 (fusion naming)
-    my $switched = $self->copy;
-    $switched->{cycles} = [ reverse $switched->cycles ];
-    $switched->_adjust_vertices_to_cycles;
-    $switched = $self;
-
-    my $graph = $switched->graph;
+    my $graph = $self->graph;
 
     # Collect implicit hydrogen atoms.
     # Currently only works with C atoms
     my @H;
-    for my $i (0..$switched->length-1) {
-        my $atom = $switched->{vertices}[$i];
+    for my $i (0..$self->length-1) {
+        my $atom = $self->{vertices}[$i];
         next unless $atom->{symbol} eq 'C';
         next unless $graph->degree( $atom ) == 2;
         next if any { is_double_bond( $graph, $atom, $_ ) }
@@ -348,8 +343,8 @@ sub suffix()
 
     # FIXME: The "ideal" numbering should be pushed to prefer the shortest initial distance from the primary atom to the bridge.
     # This is important for the ring number 0 as for ring number 1 it is enough just to reverse the suggested order.
-    my @cycles = $switched->cycles;
-    my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, reverse $_->vertices ) } @cycles;
+    my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, reverse $_->vertices ) }
+                    $self->cycles;
 
     # Locate the bridge vertices
     my @bridge = (set( $self->{cycles}[0]->vertices ) * set( $self->{cycles}[1]->vertices ))->members;
