@@ -965,7 +965,7 @@ sub filter_chains
                    # P-44.3.2: Maximum number of skeletal atoms
                    \&rule_longest_chains,
                    # P-44.3.3: Maximum number of the most senior skeletal heteroatom
-                   \&rule_most_senior_heteroatoms,
+                   \&rule_greatest_number_of_most_senior_heteroatoms,
 
                    # P-44.4.1.1: Maximum number of multiple bonds
                    \&rule_most_multiple_bonds,
@@ -1144,7 +1144,7 @@ sub rule_most_heteroatoms
     return grep { $_->number_of_heteroatoms == $max_value } @chains;
 }
 
-sub rule_most_senior_heteroatoms
+sub rule_greatest_number_of_most_senior_heteroatoms
 {
     my( @chains ) = @_;
 
