@@ -107,8 +107,9 @@ sub new
     # The ordering should not be done if one of the cycles is benzene
     if( $nbenzene == 0 ) {
         my @flipped = map { $_->flipped } @cycles;
-        my @candidates = ( @cycles, @flipped );
-        # FIXME: Plain detached monocycles should be given instead of fused ones
+        my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
+                        ( @cycles, @flipped );
+        my @candidates = @ideal;
         for my $rule ( # TODO: P-25.3.2.4 (a): Senior heteroatom
                        # TODO: P-25.3.2.4 (b): Concerns fusions of more than two rings
                        # P-25.3.2.4 (c): Second ring has to be larger
@@ -137,11 +138,11 @@ sub new
         }
         my $chain = shift @candidates;
 
-        if(      $chain == $cycles[1] ) {
+        if(      $chain == $ideal[1] ) {
             @cycles = reverse @cycles;
-        } elsif( $chain == $flipped[0] ) {
+        } elsif( $chain == $ideal[2] ) {
             @cycles = @flipped;
-        } elsif( $chain == $flipped[1] ) {
+        } elsif( $chain == $ideal[3] ) {
             @cycles = reverse @flipped;
         }
         $self->{cycles} = \@cycles;
