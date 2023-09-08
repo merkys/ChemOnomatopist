@@ -110,7 +110,7 @@ sub new
         my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
                         ( @cycles, @flipped );
         my @candidates = @ideal;
-        for my $rule ( # P-25.3.2.4 (a): Senior heteroatom
+        for my $rule ( # P-25.3.2.4 (a): Senior heteroatom according to specific seniority order
                        \&rule_most_senior_heteroatom,
                        # TODO: P-25.3.2.4 (b): Concerns fusions of more than two rings
                        # P-25.3.2.4 (c): Second ring has to be larger
@@ -399,7 +399,11 @@ sub rule_most_senior_heteroatom
 {
     my( @chains ) = @_;
 
-    my( $max_value ) = sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
+    my @element_order = qw( N F Cl Br I O S Se Te P As Sb Bi Si Ge Sn Pb B Al Ga In Tl );
+    my %element_order = map { $element_order[$_] => $_ } 0..$#element_order;
+
+    my( $max_value ) = sort { $element_order{$a} <=> $element_order{$b} }
+                       grep { exists $element_order{$_} }
                        map  { $_->heteroatoms } @chains;
     return @chains unless $max_value;
     return grep { any { $_ eq $max_value } $_->heteroatoms } @chains;
