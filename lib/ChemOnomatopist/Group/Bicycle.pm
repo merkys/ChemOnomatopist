@@ -399,6 +399,7 @@ sub rule_most_senior_heteroatom
 {
     my( @chains ) = @_;
 
+    # This order is taken from BBv2 P-25.3.2.4 (a) and is different from order in %elements
     my @element_order = qw( N F Cl Br I O S Se Te P As Sb Bi Si Ge Sn Pb B Al Ga In Tl );
     my %element_order = map { $element_order[$_] => $_ } 0..$#element_order;
 
