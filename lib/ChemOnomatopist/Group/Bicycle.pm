@@ -108,7 +108,8 @@ sub new
     # The ordering should not be done if one of the cycles is benzene
     if( $nbenzene == 0 ) {
         # The following code is supposed to order the rings _and_ establish the traversal order
-        # TODO: Maybe all traversals of both cycles should be generated here?
+        # TODO: Maybe all traversals of both rings should be generated here?
+        # FIXME: There seem to be two orders for rings: one for numbering, other for fusion naming...
         my @candidates = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
                              ( @cycles, map { $_->flipped } @cycles );
         for my $rule ( # P-25.3.2.4 (a): Senior heteroatom according to specific seniority order
