@@ -30,6 +30,8 @@ my @cases = (
     { smiles => 'S1COC=2NC=CC21', iupac => '2H,4H-[1,3]oxathiolo[5,4-b]pyrrole', AUTHOR => 1 },
     { smiles => 'O1C2=C(C=C1)C=CS2', iupac => 'thieno[2,3-b]furan' },
     { smiles => 'N1C=NC2=C1C=CS2', iupac => '1H-thieno[2,3-d]imidazole', AUTHOR => 1 },
+    { smiles => 'N=1N2C(N=CC1)=NC=C2', iupac => 'imidazo[1,2-b][1,2,4]triazine', AUTHOR => 1 },
+    { smiles => 'O1COC2=C1N=CN2', iupac => '2H,4H-[1,3]dioxolo[4,5-d]imidazole', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
