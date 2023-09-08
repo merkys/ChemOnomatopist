@@ -456,6 +456,13 @@ sub suffix()
     return ChemOnomatopist::unbranched_chain_name( $self );
 }
 
+sub vertex_ids
+{
+    my $self = shift;
+    my %ids = map { $self->{vertices}[$_] => $_ } 0..$self->length-1;
+    return map { exists $ids{$_} ? $ids{$_} : undef } @_;
+}
+
 sub _disconnected_chain_graph()
 {
     my( $self ) = @_;

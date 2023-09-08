@@ -8,19 +8,19 @@ use Test::More;
 
 my @cases = (
     # From BBv2 P-25.3.1.3
-    { smiles => '[Se]1C=CC2=C1[Se]C=C2', iupac => 'selenopheno[2,3-b]selenophene', AUTHOR => 1 },
+    { smiles => '[Se]1C=CC2=C1[Se]C=C2', iupac => 'selenopheno[2,3-b]selenophene' },
     { smiles => '[Se]1C=2C(C=C1)=C[Se]C2', iupac => 'selenopheno[3,4-b]selenophene', AUTHOR => 1 },
-    { smiles => '[Se]1C2=C(C=C1)[Se]C=C2', iupac => 'selenopheno[3,2-b]selenophene', AUTHOR => 1 }, # FIXME: flaky
+    { smiles => '[Se]1C2=C(C=C1)[Se]C=C2', iupac => 'selenopheno[3,2-b]selenophene' },
 
     # From BBv2 P-25.3.2.4
     { smiles => 'S1CC=CSC=2C1=COC2', iupac => '2H-[1,4]dithiepino[2,3-c]furan', AUTHOR => 1 },
     { smiles => 'O1CC=C2OC=CC=C21', iupac => '2H-furo[3,2-b]pyran', AUTHOR => 1 },
     { smiles => 'N1=CC=CC2=C1C=NOC2', iupac => '5H-pyrido[2,3-d][1,2]oxazine', AUTHOR => 1 },
     { smiles => 'O1COC2=C1C=CO2', iupac => '2H-furo[2,3-d][1,3]dioxole', AUTHOR => 1 },
-    { smiles => 'O1P=CC2=C1OCO2', iupac => '5H-[1,3]dioxolo[4,5-d][1,2]oxaphosphole', AUTHOR => 1 },
+    { smiles => 'O1P=CC2=C1OCO2', iupac => '5H-[1,3]dioxolo[4,5-d][1,2]oxaphosphole' },
     { smiles => 'S1C=NC2=C1N=C[Se]2', iupac => '[1,3]selenazolo[5,4-d][1,3]thiazole' },
-    { smiles => 'O1C2=C(SC=C1)[Se]C=CO2', iupac => '[1,4]oxaselenino[2,3-b][1,4]oxathiine', AUTHOR => 1 },
-    { smiles => 'N1=CC=NC=2C1=CN=NC2', iupac => 'pyrazino[2,3-d]pyridazine', AUTHOR => 1 },
+    { smiles => 'O1C2=C(SC=C1)[Se]C=CO2', iupac => '[1,4]oxaselenino[2,3-b][1,4]oxathiine' },
+    { smiles => 'N1=CC=NC=2C1=CN=NC2', iupac => 'pyrazino[2,3-d]pyridazine' },
     { smiles => 'O1SNC2=C1ONS2', iupac => '3H,5H-[1,3,2]oxathiazolo[4,5-d][1,2,3]oxathiazole', AUTHOR => 1 },
 );
 

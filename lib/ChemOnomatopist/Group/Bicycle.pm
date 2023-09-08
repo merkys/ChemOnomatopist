@@ -349,28 +349,26 @@ sub suffix()
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
                     $self->cycles;
 
-    my @ideal_vertices_AA = ChemOnomatopist::Group::Monocycle->new( $self->{cycles}[0]->graph,
-                                                                    $self->{cycles}[0]->vertices )->vertices;
-    my @ideal_vertices_AB = ChemOnomatopist::Group::Monocycle->new( $self->{cycles}[0]->graph,
-                                                            reverse $self->{cycles}[0]->vertices )->vertices;
-    my @ideal_vertices_BA = ChemOnomatopist::Group::Monocycle->new( $self->{cycles}[1]->graph,
-                                                                    $self->{cycles}[1]->vertices )->vertices;
-    my @ideal_vertices_BB = ChemOnomatopist::Group::Monocycle->new( $self->{cycles}[1]->graph,
-                                                            reverse $self->{cycles}[1]->vertices )->vertices;
+    my @equiv_A = $self->{cycles}[0]->autosymmetric_equivalents;
+    my @equiv_B = $self->{cycles}[1]->autosymmetric_equivalents;
 
-    my @bridge_indices_AA = ( ( grep { $ideal_vertices_AA[$_] == $bridge[0] } 0..$#ideal_vertices_AA ),
-                              ( grep { $ideal_vertices_AA[$_] == $bridge[1] } 0..$#ideal_vertices_AA ) );
-    my @bridge_indices_AB = ( ( grep { $ideal_vertices_AB[$_] == $bridge[1] } 0..$#ideal_vertices_AB ),
-                              ( grep { $ideal_vertices_AB[$_] == $bridge[1] } 0..$#ideal_vertices_AB ) );
-    my @bridge_indices_BA = ( ( grep { $ideal_vertices_BA[$_] == $bridge[0] } 0..$#ideal_vertices_BA ),
-                              ( grep { $ideal_vertices_BA[$_] == $bridge[1] } 0..$#ideal_vertices_BA ) );
-    my @bridge_indices_BB = ( ( grep { $ideal_vertices_BA[$_] == $bridge[0] } 0..$#ideal_vertices_BA ),
-                              ( grep { $ideal_vertices_BA[$_] == $bridge[1] } 0..$#ideal_vertices_BA ) );
-    my $fusion = '-' . chr( 97 + min @bridge_indices_AA, @bridge_indices_AB ) . ']';
-    if( (min( @bridge_indices_AA ) <= min( @bridge_indices_AB )) == (min( @bridge_indices_BA ) <= min( @bridge_indices_BB )) ) {
-        $fusion = '[' . (min( @bridge_indices_BA, @bridge_indices_BB )+2) . ',' . (min( @bridge_indices_BA, @bridge_indices_BB )+1) . $fusion;
+    my $min_A = min map {  $_->vertex_ids( @bridge ) } @equiv_A;
+    @equiv_A = grep { min( $_->vertex_ids( @bridge ) ) == $min_A } @equiv_A;
+
+    my $min_B = min map {  $_->vertex_ids( @bridge ) } @equiv_B;
+    @equiv_B = grep { min( $_->vertex_ids( @bridge ) ) == $min_B } @equiv_B;
+
+    my $fusion = '-' . chr( 97 + $min_A ) . ']';
+    if( @equiv_A > 1 || @equiv_B > 1 ) {
+        $fusion = '[' . ($min_B+1) . ',' . ($min_B+2) . $fusion;
     } else {
-        $fusion = '[' . (min( @bridge_indices_BA, @bridge_indices_BB )+1) . ',' . (min( @bridge_indices_BA, @bridge_indices_BB )+2) . $fusion;
+        my @order_A = $equiv_A[0]->vertex_ids( @bridge );
+        my @order_B = $equiv_B[0]->vertex_ids( @bridge );
+        if( ($order_A[0] <=> $order_A[1]) == ($order_B[0] <=> $order_B[1]) ) {
+            $fusion = '[' . ($min_B+1) . ',' . ($min_B+2) . $fusion;
+        } else {
+            $fusion = '[' . ($min_B+2) . ',' . ($min_B+1) . $fusion;
+        }
     }
 
     my $name = ChemOnomatopist::Name->new;
