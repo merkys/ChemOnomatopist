@@ -373,9 +373,7 @@ sub suffix()
                     $graph->neighbours( $atom );
         push @H, $i;
     }
-    if( @H ) {
-        $name->append_locants( map { $_ . 'H' } $self->locants( @H ) );
-    }
+    $name->append_locants( map { $_ . 'H' } $self->locants( @H ) ) if @H;
 
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
                     $self->cycles;
