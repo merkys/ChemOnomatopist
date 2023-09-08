@@ -21,7 +21,7 @@ my @cases = (
     { smiles => 'S1C=NC2=C1N=C[Se]2', iupac => '[1,3]selenazolo[5,4-d][1,3]thiazole' },
     { smiles => 'O1C2=C(SC=C1)[Se]C=CO2', iupac => '[1,4]oxaselenino[2,3-b][1,4]oxathiine' },
     { smiles => 'N1=CC=NC=2C1=CN=NC2', iupac => 'pyrazino[2,3-d]pyridazine' },
-    { smiles => 'O1SNC2=C1ONS2', iupac => '3H,5H-[1,3,2]oxathiazolo[4,5-d][1,2,3]oxathiazole', AUTHOR => 1 },
+    { smiles => 'O1SNC2=C1ONS2', iupac => '3H,5H-[1,3,2]oxathiazolo[4,5-d][1,2,3]oxathiazole' },
 
     { smiles => 'S1C=2N(C=C1)C=CN2', iupac => 'imidazo[2,1-b][1,3]thiazole' }, # From BBv2 P-25.3.2.5.1
 

@@ -17,6 +17,7 @@ use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_double_bond );
 use Graph::Traversal::DFS;
 use List::Util qw( all any min uniq );
+use Set::Object qw( set );
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
@@ -107,7 +108,8 @@ sub new
     # The ordering should not be done if one of the cycles is benzene
     if( $nbenzene == 0 ) {
         my @flipped = map { $_->flipped } @cycles;
-        # FIXME: Something is not right here: cycle idealisation breaks numbering?
+        # The following code is supposed to order the rings _and_ establish the traversal order
+        # TODO: Maybe all traversals of both cycles should be generated here?
         my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
                         ( @cycles, @flipped );
         my @candidates = @ideal;
@@ -139,15 +141,20 @@ sub new
                 last;
             }
         }
+        # Here the "winning" ring is selected
         my $chain = shift @candidates;
 
-        if(      $chain == $ideal[1] ) {
+        # Making the "winning" ring the first
+        if( set( $chain->vertices ) == set( $cycles[1]->vertices ) ) {
             @cycles = reverse @cycles;
-        } elsif( $chain == $ideal[2] ) {
-            @cycles = @flipped;
-        } elsif( $chain == $ideal[3] ) {
-            @cycles = reverse @flipped;
         }
+
+        # Now we have to match the direction, I guess
+        my  @bridge_in_chain = grep { set( @bridge )->has( $_ ) } $chain->vertices;
+        if( $bridge_in_chain[-1] != $cycles[0]->{vertices}[-1] ) {
+            @cycles = map { $_->flipped } @cycles;
+        }
+
         $self->{cycles} = \@cycles;
         $self->_adjust_vertices_to_cycles;
 
