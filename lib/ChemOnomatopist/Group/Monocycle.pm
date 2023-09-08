@@ -32,7 +32,7 @@ our %names = (
     'C=CC=CO' => 'furan',
     'C=COc:c' => 'furan', # For fused rings
 
-    'C=CC=NC'  => '1H-imidazole', # FIXME: Adjust for isomerism
+    'C=CN=CN'  => '1H-imidazole', # FIXME: Adjust for isomerism
     'C=CN=CO'  => '1,3-oxazole',
     'C=CC=NO'  => '1,2-oxazole',
     'C=CC=NN'  => '1H-pyrazole', # FIXME: Adjust for isomerism

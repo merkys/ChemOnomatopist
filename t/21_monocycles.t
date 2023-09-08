@@ -27,6 +27,8 @@ my @cases = (
     { smiles => 'N(=O)C1=CC=CC=C1',  iupac => 'nitrosobenzene' },  # From BBv2 P-59.1.9
     { smiles => 'Br(=O)C1=CC=CC=C1', iupac => 'bromosylbenzene' }, # From BBv2 P-67.1.4.5
 
+    { smiles => 'N1C=NC=C1', iupac => '1H-imidazole' }, # From BBv2 P-22.2.1
+
     # From BBv2 P-61.5.1
     { smiles => 'CC1=C(C=C(C=C1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-]', iupac => '2-methyl-1,3,5-trinitrobenzene' },
 
