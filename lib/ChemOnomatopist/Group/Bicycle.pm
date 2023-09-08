@@ -377,8 +377,15 @@ sub suffix()
 
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
                     $self->cycles;
-    $name .= $ideal[1]->name;
-    # TODO: Preserve retained prefixes from BBv2 P-25.3.2.2.3
+    my $name_A = $ideal[1]->name;
+    # TODO: Complete retained prefixes from BBv2 P-25.3.2.2.3
+    $name_A = 'fur'     if $name_A eq 'furan';
+    $name_A = 'imidaz'  if $name_A eq 'imidazole';
+    $name_A = 'pyrid'   if $name_A eq 'pyridine';
+    $name_A = 'pyrimid' if $name_A eq 'pyrimidine';
+    $name_A = 'thien'   if $name_A eq 'thiophene';
+
+    $name .= $name_A;
     unless( $name->[-1] =~ s/e$/o/ ) { # BBv2 P-25.3.2.2.2
         $name->[-1] .= 'o';
     }
