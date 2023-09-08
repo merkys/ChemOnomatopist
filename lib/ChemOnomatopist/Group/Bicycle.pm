@@ -363,11 +363,11 @@ sub suffix()
     my $graph = $self->graph;
 
     # Collect implicit hydrogen atoms.
-    # Currently only works for C atoms.
+    # Currently only works for C and N atoms.
     my @H;
     for my $i (0..$self->length-1) {
         my $atom = $self->{vertices}[$i];
-        next unless $atom->{symbol} eq 'C';
+        next unless $atom->{symbol} =~ /^[CN]$/;
         next unless $graph->degree( $atom ) == 2;
         next if any { is_double_bond( $graph, $atom, $_ ) }
                     $graph->neighbours( $atom );
