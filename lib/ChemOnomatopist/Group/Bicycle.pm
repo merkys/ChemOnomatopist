@@ -344,11 +344,7 @@ sub suffix()
     my @bridge = $self->{cycles}[0]->vertices;
     @bridge = @bridge[-2..-1];
 
-    # FIXME: The "ideal" numbering should be pushed to prefer the shortest initial distance from the primary atom to the bridge.
-    # This is important for the ring number 0 as for ring number 1 it is enough just to reverse the suggested order.
-    my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
-                    $self->cycles;
-
+    # Find autosymmetric equivalents having the least locants for the bridge
     my @equiv_A = $self->{cycles}[0]->autosymmetric_equivalents;
     my @equiv_B = $self->{cycles}[1]->autosymmetric_equivalents;
 
@@ -360,13 +356,17 @@ sub suffix()
 
     my $fusion = '-' . chr( 97 + $min_A ) . ']';
     if( @equiv_A > 1 || @equiv_B > 1 ) {
+        # At least one of the rings has mirror symmetry ("flip-symmetric"), thus numeric order is ascending
         $fusion = '[' . ($min_B+1) . ',' . ($min_B+2) . $fusion;
     } else {
+        # Rings are rigid, thus numeric order has to be derived
         my @order_A = $equiv_A[0]->vertex_ids( @bridge );
         my @order_B = $equiv_B[0]->vertex_ids( @bridge );
         if( ($order_A[0] <=> $order_A[1]) == ($order_B[0] <=> $order_B[1]) ) {
+            # Ring atoms are encountered in the same order in both of the rings
             $fusion = '[' . ($min_B+1) . ',' . ($min_B+2) . $fusion;
         } else {
+            # Ring atom orders differ
             $fusion = '[' . ($min_B+2) . ',' . ($min_B+1) . $fusion;
         }
     }
@@ -375,6 +375,9 @@ sub suffix()
     if( @H ) {
         $name->append_locants( map { $_ . 'H' } $self->locants( @H ) );
     }
+
+    my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
+                    $self->cycles;
     $name .= $ideal[1]->name;
     # TODO: Preserve retained prefixes from BBv2 P-25.3.2.2.3
     unless( $name->[-1] =~ s/e$/o/ ) { # BBv2 P-25.3.2.2.2
