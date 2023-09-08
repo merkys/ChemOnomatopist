@@ -107,6 +107,7 @@ sub new
     # The ordering should not be done if one of the cycles is benzene
     if( $nbenzene == 0 ) {
         my @flipped = map { $_->flipped } @cycles;
+        # FIXME: Something is not right here: cycle idealisation breaks numbering?
         my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
                         ( @cycles, @flipped );
         my @candidates = @ideal;
