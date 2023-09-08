@@ -107,12 +107,10 @@ sub new
 
     # The ordering should not be done if one of the cycles is benzene
     if( $nbenzene == 0 ) {
-        my @flipped = map { $_->flipped } @cycles;
         # The following code is supposed to order the rings _and_ establish the traversal order
         # TODO: Maybe all traversals of both cycles should be generated here?
-        my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
-                        ( @cycles, @flipped );
-        my @candidates = @ideal;
+        my @candidates = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
+                             ( @cycles, map { $_->flipped } @cycles );
         for my $rule ( # P-25.3.2.4 (a): Senior heteroatom according to specific seniority order
                        \&rule_most_senior_heteroatom,
                        # TODO: P-25.3.2.4 (b): Concerns fusions of more than two rings
