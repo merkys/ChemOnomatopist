@@ -23,14 +23,14 @@ my @cases = (
     { smiles => 'N1=CC=NC=2C1=CN=NC2', iupac => 'pyrazino[2,3-d]pyridazine' },
     { smiles => 'O1SNC2=C1ONS2', iupac => '3H,5H-[1,3,2]oxathiazolo[4,5-d][1,2,3]oxathiazole', AUTHOR => 1 },
 
-    { smiles => 'S1C=2N(C=C1)C=CN2', iupac => 'imidazo[2,1-b][1,3]thiazole', AUTHOR => 1 }, # From BBv2 P-25.3.2.5.1
+    { smiles => 'S1C=2N(C=C1)C=CN2', iupac => 'imidazo[2,1-b][1,3]thiazole' }, # From BBv2 P-25.3.2.5.1
 
     # From BBv2 P-25.3.3.1.2
     { smiles => 'O1C=2C(=CC=C1)C=CC2', iupac => 'cyclopenta[b]pyran', AUTHOR => 1 },
     { smiles => 'S1COC=2NC=CC21', iupac => '2H,4H-[1,3]oxathiolo[5,4-b]pyrrole', AUTHOR => 1 },
     { smiles => 'O1C2=C(C=C1)C=CS2', iupac => 'thieno[2,3-b]furan' },
     { smiles => 'N1C=NC2=C1C=CS2', iupac => '1H-thieno[2,3-d]imidazole', AUTHOR => 1 },
-    { smiles => 'N=1N2C(N=CC1)=NC=C2', iupac => 'imidazo[1,2-b][1,2,4]triazine', AUTHOR => 1 },
+    { smiles => 'N=1N2C(N=CC1)=NC=C2', iupac => 'imidazo[1,2-b][1,2,4]triazine' },
     { smiles => 'O1COC2=C1N=CN2', iupac => '2H,4H-[1,3]dioxolo[4,5-d]imidazole', AUTHOR => 1 },
 );
 
