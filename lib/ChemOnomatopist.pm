@@ -1067,7 +1067,8 @@ sub graph_replace_all
         if( $vertex->isa( ChemOnomatopist::Group::Bicycle:: ) ||
             $vertex->isa( ChemOnomatopist::Group::Guanidine:: ) ||
             $vertex->isa( ChemOnomatopist::Group::Monocycle:: ) ||
-            $vertex->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
+            $vertex->isa( ChemOnomatopist::Group::Monospiro:: ) ||
+            $vertex->isa( ChemOnomatopist::Group::Xanthene:: ) ) {
             graph_replace( $vertex->graph, $new, @old );
         }
     }
