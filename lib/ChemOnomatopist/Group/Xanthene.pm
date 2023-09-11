@@ -43,13 +43,21 @@ sub candidates()
     my @vertices = $self->vertices;
 
     push @candidates,
-         bless { graph => $self->graph, vertices => [ reverse @vertices[11..13], @vertices[0..10] ] };
-    $candidates[-1]->{candidate_for} = $self;
+         bless { graph => $self->graph,
+                 vertices => [ reverse @vertices[11..13], @vertices[0..10] ],
+                 candidate_for => $self };
 
     if( $self->number_of_heteroatoms == 2 ) { # TODO: Add two more candidates
     }
 
     return @candidates;
+}
+
+sub locants(@)
+{
+    my $self = shift;
+    my @locant_map = ( 1..4, '4a', 10, '10a', 5..8, '8a', 9, '9a' );
+    return map { $locant_map[$_] } @_;
 }
 
 sub needs_heteroatom_locants() { return '' }
