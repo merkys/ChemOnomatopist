@@ -17,6 +17,11 @@ my @cases = (
     { smiles => 'FC=1C(=C(C(=C(C1)F)F)F)F', iupac => 'pentafluorobenzene' },
     { smiles => 'FC1=C(C(=C(C(=C1F)F)F)F)F', iupac => 'hexafluorobenzene' },
 
+    { smiles => 'C1(C=CCCC1)O', iupac => 'cyclohex-2-en-1-ol', AUTHOR => 1 }, # From BBv2 P-14.3.2
+    { smiles => 'N1=C(C=NC=C1)C(=O)O', iupac => 'pyrazinecarboxylic acid', AUTHOR => 1 }, # From BBv2 P-14.3.4.3
+    { smiles => 'C1(C=CCCC1)N', iupac => 'cyclohex-2-en-1-amine', AUTHOR => 1 }, # From BBv2 P-14.4
+    { smiles => 'C1(CCCC1)=CC(=O)O', iupac => 'cyclopentylideneacetic acid', AUTHOR => 1 }, # From BBv2 P-15.6.2
+
     # From BBv2 P-22.1.3
     { smiles => 'CC1=CC=CC=C1', iupac => 'toluene' },
     { smiles => 'C=1(C(=CC=CC1)C)C', iupac => '1,2-xylene' },
