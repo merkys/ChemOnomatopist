@@ -50,6 +50,7 @@ use ChemOnomatopist::Util::Graph qw(
     graph_longest_paths_from_vertex
     graph_path_between_vertices
     graph_replace
+    subgraph
     tree_branch_positions
     tree_number_of_branches
 );
@@ -59,6 +60,7 @@ use Chemistry::OpenSMILES qw(
     is_single_bond
     is_triple_bond
 );
+use Graph::SSSR;
 use Graph::Traversal::DFS;
 use Graph::Undirected;
 use List::Util qw( all any max min sum0 uniq );
@@ -643,6 +645,21 @@ sub find_groups
             # Ortho-fused as defined in BBv2 P-25.3.1.1.1
             # Edge connected means that it has no bridges
             $compound = ChemOnomatopist::Group::Bicycle->new( copy $graph, $core->vertices );
+        } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,3' ) {
+            # Graph::SSSR v0.1.0 does not know how to return unique rings
+            my %uniq = map { join( '', sort @$_ ) => $_ } Graph::SSSR::get_SSSR( $core, 8 );
+            my @cycles = map { ChemOnomatopist::Group::Monocycle->new( copy $graph, Graph::Traversal::DFS->new( $_ )->dfs ) }
+                         map { subgraph( $core, @$_ ) }
+                             values %uniq;
+            if( (grep {  $_->is_benzene } @cycles) == 2 &&
+                (grep { !$_->is_benzene } @cycles) == 1 &&
+                (all  { $_->length == 6 } @cycles) &&
+                all   { $_->backbone_SMILES =~ /^(Se|Te|[OS])c:c\1cc$/ }
+                grep  { !$_->is_benzene } @cycles ) {
+                die "cannot handle heteranthrenes for now\n";
+            } else {
+                die "cannot handle cyclic compounds other than monocycles and monospiro\n";
+            }
         } else {
             die "cannot handle cyclic compounds other than monocycles and monospiro\n";
         }

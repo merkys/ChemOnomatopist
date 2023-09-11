@@ -27,6 +27,7 @@ our @EXPORT_OK = qw(
     graph_path_between_vertices
     graph_replace
     merge_graphs
+    subgraph
     tree_branch_positions
     tree_number_of_branches
 );
@@ -288,6 +289,15 @@ sub merge_graphs
     $merged->add_edge( $A_vertex, $B_vertex ) if $A_vertex && $B_vertex;
 
     return $merged;
+}
+
+sub subgraph
+{
+    my( $graph, @vertices ) = @_;
+    my $vertices = set( @vertices );
+    $graph = copy $graph;
+    $graph->delete_vertices( grep { !$vertices->has( $_ ) } $graph->vertices );
+    return $graph;
 }
 
 # Given a tree and a path, finds the number of branches branching off the given path.
