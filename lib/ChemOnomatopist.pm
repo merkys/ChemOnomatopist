@@ -503,8 +503,7 @@ sub find_groups
 
         # Sulfinyl group and its analogues
         if( @neighbours == 3 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
-            any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
-            # FIXME: Possibly cannot participate in rings
+            !is_ring_atom( $graph, $atom ) && any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
             my $sulfinyl = ChemOnomatopist::Group::Sulfinyl->new( $atom );
             graph_replace( $graph, $sulfinyl, $atom, @O );
         }
