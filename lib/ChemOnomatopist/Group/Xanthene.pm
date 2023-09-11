@@ -39,7 +39,7 @@ sub new
 sub needs_heteroatom_locants() { return '' }
 sub needs_heteroatom_names() { return '' }
 
-sub suffix()
+sub prefix()
 {
     my( $self ) = @_;
 
@@ -55,5 +55,7 @@ sub suffix()
         return $name . 'anthrene';
     }
 }
+
+sub suffix() { return $_[0]->prefix }
 
 1;

@@ -655,7 +655,8 @@ sub find_groups
             if( (grep {  $_->is_benzene } @cycles) == 2 &&
                 (grep { !$_->is_benzene } @cycles) == 1 &&
                 (all  { $_->length == 6 } @cycles) &&
-                all   { $_->backbone_SMILES =~ /^(\[[ST]e\]|[OS])c:c\1cc$/ }
+                all   { $_->backbone_SMILES =~ /^(\[[ST]e\]|[OS])c:c\1cc$/ ||
+                        $_->backbone_SMILES =~ /^Cc:c[O]cc$/ }
                 grep  { !$_->is_benzene } @cycles ) {
                 $compound = ChemOnomatopist::Group::Xanthene->new( copy $graph, @cycles );
             } else {
