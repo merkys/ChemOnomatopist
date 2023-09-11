@@ -36,6 +36,22 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
+sub candidates()
+{
+    my( $self ) = @_;
+    my @candidates = ( $self );
+    my @vertices = $self->vertices;
+
+    push @candidates,
+         bless { graph => $self->graph, vertices => [ reverse @vertices[11..13], @vertices[0..10] ] };
+    $candidates[-1]->{candidate_for} = $self;
+
+    if( $self->number_of_heteroatoms == 2 ) { # TODO: Add two more candidates
+    }
+
+    return @candidates;
+}
+
 sub needs_heteroatom_locants() { return '' }
 sub needs_heteroatom_names() { return '' }
 
