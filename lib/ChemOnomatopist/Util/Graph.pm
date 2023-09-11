@@ -9,7 +9,7 @@ use warnings;
 use ChemOnomatopist::Util qw( copy );
 use Exporter;
 use Graph::Traversal::BFS;
-use List::Util qw( sum0 );
+use List::Util qw( any sum0 );
 use Set::Object qw( set );
 
 use parent Exporter::;
@@ -20,6 +20,7 @@ our @EXPORT_OK = qw(
     cyclic_components
     graph_center
     graph_cycle_core
+    graph_cycles
     graph_has_cycle
     graph_longest_paths
     graph_longest_paths_from_vertex
@@ -119,6 +120,41 @@ sub graph_cycle_core
         $graph->delete_vertices( @leaves );
     }
     return $graph;
+}
+
+# Decomposes bridgeless graph into cycles
+# FIXME: Experimental
+sub graph_cycles
+{
+    my( $graph ) = @_;
+
+    $graph = copy $graph;
+
+    my @cycles;
+    while( $graph->vertices ) {
+        my $triple_connected = set( grep { $graph->degree( $_ ) == 3 } $graph->vertices );
+        if( !@$triple_connected ) {
+            push @cycles, $graph;
+            last;
+        }
+
+        my @chords = grep { $triple_connected->has( $_->[0] ) &&
+                            $triple_connected->has( $_->[1] ) } $graph->edges;
+        my $wo_chords = copy( $graph )->delete_vertices( @$triple_connected );
+        for my $component ($wo_chords->connected_components) {
+            next if @$component == 1;
+            my @ends = grep { $wo_chords->degree( $_ ) == 1 } @$component; # Should be two
+            my( $chord ) = grep { ($graph->has_edge( $_->[0], $ends[0] ) && $graph->has_edge( $_->[1], $ends[1] )) ||
+                                  ($graph->has_edge( $_->[0], $ends[1] ) && $graph->has_edge( $_->[1], $ends[0] )) } @chords;
+            next unless $chord;
+            # Found a chord which completes a cycle
+            my $vertices = set( @$component, @$chord );
+            my $cycle = copy( $graph )->delete_vertices( grep { !$vertices->has( $_ ) } $graph->vertices );
+            push @cycles, $cycle;
+            $graph->delete_vertices( @$component );
+        }
+    }
+    return @cycles;
 }
 
 sub graph_has_cycle

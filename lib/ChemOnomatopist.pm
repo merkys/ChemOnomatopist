@@ -45,6 +45,7 @@ use ChemOnomatopist::Util::Graph qw(
     cyclic_components
     graph_center
     graph_cycle_core
+    graph_cycles
     graph_has_cycle
     graph_longest_paths_from_vertex
     graph_path_between_vertices
