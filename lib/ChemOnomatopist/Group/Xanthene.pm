@@ -18,19 +18,19 @@ sub new
     my @benzenes = grep {  $_->is_benzene } @cycles;
     my( $other ) = grep { !$_->is_benzene } @cycles;
 
-    # Find the correct vertice order
+    # Find the correct vertex order
     my $subgraph = subgraph( $graph, map { $_->vertices } @cycles );
     my @bridges = grep { $subgraph->degree( $_->[0] ) == 3 &&
                          $subgraph->degree( $_->[1] ) == 3 }
                          $subgraph->edges;
-    $subgraph->delete_edges( @bridges );
+    $subgraph->delete_edges( map { @$_ } @bridges );
 
     my( $heteroatom ) = $other->heteroatom_positions;
     my @other_vertices = $other->vertices;
     $subgraph->delete_vertex( $other_vertices[($heteroatom + 2) % 6] );
     my( $start ) = grep { $subgraph->has_vertex( $_ ) && $subgraph->degree( $_ ) == 1 }
                    map  { $_->vertices } @benzenes;
-    my @vertices = ( Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs,
+    my @vertices = ( reverse( Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs ),
                      $other_vertices[($heteroatom + 2) % 6] );
 
     return bless { graph => $graph, vertices => \@vertices }, $class;
