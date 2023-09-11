@@ -35,6 +35,7 @@ use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Group::XO3;
+use ChemOnomatopist::Group::Xanthene;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Stem;
@@ -654,9 +655,9 @@ sub find_groups
             if( (grep {  $_->is_benzene } @cycles) == 2 &&
                 (grep { !$_->is_benzene } @cycles) == 1 &&
                 (all  { $_->length == 6 } @cycles) &&
-                all   { $_->backbone_SMILES =~ /^(Se|Te|[OS])c:c\1cc$/ }
+                all   { $_->backbone_SMILES =~ /^(\[[ST]e\]|[OS])c:c\1cc$/ }
                 grep  { !$_->is_benzene } @cycles ) {
-                die "cannot handle heteranthrenes for now\n";
+                $compound = ChemOnomatopist::Group::Xanthene->new( copy $graph, @cycles );
             } else {
                 die "cannot handle cyclic compounds other than monocycles and monospiro\n";
             }

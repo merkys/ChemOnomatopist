@@ -23,6 +23,7 @@ use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::SulfonicAcid;
+use ChemOnomatopist::Group::Xanthene;
 
 use List::Util qw( any );
 use Scalar::Util qw( blessed );
@@ -66,6 +67,7 @@ our @order = (
     # TODO: Classes denoted by the senior atom in heterane nomenclature should go here
 
     # FIXME: The following order is not written anywhere
+    ChemOnomatopist::Group::Xanthene::,
     ChemOnomatopist::Group::Bicycle::,
     ChemOnomatopist::Group::Monocycle::,
     ChemOnomatopist::Group::Monospiro::,
