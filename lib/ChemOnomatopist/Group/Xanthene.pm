@@ -56,7 +56,12 @@ sub candidates()
 sub locants(@)
 {
     my $self = shift;
-    my @locant_map = ( 1..4, '4a', 10, '10a', 5..8, '8a', 9, '9a' );
+    my @locant_map;
+    if( $self->number_of_heteroatoms == 1 ) {
+        @locant_map = ( 1..4, '4a', 10, '10a', 5..8, '8a',  9,  '9a' );
+    } else {
+        @locant_map = ( 1..4, '4a',  5,  '5a', 6..9, '9a', 10, '10a' );
+    }
     return map { $locant_map[$_] } @_;
 }
 
