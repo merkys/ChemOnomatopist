@@ -662,8 +662,8 @@ sub find_groups
             } elsif( @cycles >= 4 &&
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
                      are_isomorphic( graph_without_edge_attributes( $core ),
-                                     ChemOnomatopist::Group::Polyacene->ideal_graph( scalar $core->vertices ) ),
-                                     sub { return 'C' } ) {
+                                     ChemOnomatopist::Group::Polyacene->ideal_graph( scalar $core->vertices ),
+                                     sub { return 'C' } ) ) {
                 $compound = ChemOnomatopist::Group::Polyacene->new( copy $graph, @cycles );
             } else {
                 die "cannot handle cyclic compounds other than monocycles and monospiro\n";
