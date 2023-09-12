@@ -664,7 +664,7 @@ sub find_groups
                      are_isomorphic( graph_without_edge_attributes( $core ),
                                      ChemOnomatopist::Group::Polyacene->ideal_graph( scalar $core->vertices ) ),
                                      sub { return 'C' } ) {
-                die "cannot process polyacenes\n";
+                $compound = ChemOnomatopist::Group::Polyacene->new( copy $graph, @cycles );
             } else {
                 die "cannot handle cyclic compounds other than monocycles and monospiro\n";
             }

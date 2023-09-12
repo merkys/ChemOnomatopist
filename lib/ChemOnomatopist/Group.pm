@@ -21,6 +21,7 @@ use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
+use ChemOnomatopist::Group::Polyacene;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Group::Xanthene;
@@ -67,6 +68,7 @@ our @order = (
     # TODO: Classes denoted by the senior atom in heterane nomenclature should go here
 
     # FIXME: The following order is not written anywhere
+    ChemOnomatopist::Group::Polyacene::,
     ChemOnomatopist::Group::Xanthene::,
     ChemOnomatopist::Group::Bicycle::,
     ChemOnomatopist::Group::Monocycle::,

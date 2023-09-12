@@ -8,7 +8,36 @@ use warnings;
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
+use ChemOnomatopist::Util::Graph qw( subgraph );
 use Graph::Undirected;
+
+sub new
+{
+    my( $class, $graph, @cycles ) = @_;
+
+    my @vertices = map { $_->vertices } @cycles;
+    my $subgraph = subgraph( $graph, @vertices );
+    # Identify the chords
+    my @chords = grep { $subgraph->degree( $_->[0] ) == 3 &&
+                        $subgraph->degree( $_->[1] ) == 3 } $subgraph->edges;
+    # Delete the benzene ring
+    $subgraph->delete_vertices( map  { $_->vertices }
+                                grep { $_->is_benzene }
+                                     @cycles );
+    # Delete chords
+    $subgraph->delete_vertices( map { @$_ } @chords );
+
+    my( $start ) = grep { $subgraph->degree( $_ ) == 1 }
+                        $subgraph->vertices;
+    $subgraph = subgraph( $graph, @vertices ); # Restore the subgraph
+    # Delete the edge which closes the all-encompassing cycle
+    $subgraph->delete_edge( $start, grep { $subgraph->degree( $_ ) == 3 }
+                                         $subgraph->neighbours( $start ) );
+    $subgraph->delete_edges( map { @$_ } @chords );
+    @vertices = reverse( Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs );
+
+    return bless { graph => $graph, vertices => \@vertices }, $class;
+}
 
 sub ideal_graph($$)
 {
@@ -22,6 +51,12 @@ sub ideal_graph($$)
         $graph->add_edge( map { $vertices[$_] } ( 4 + 2*$_, $N - 1 - 2*$_ ) );
     }
     return $graph;
+}
+
+sub suffix
+{
+    my( $self ) = @_;
+    return ChemOnomatopist::IUPAC_numerical_multiplier( ($self->length - 2) / 4 ) . 'acene';
 }
 
 1;
