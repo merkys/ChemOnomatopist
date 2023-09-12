@@ -30,6 +30,7 @@ use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
+use ChemOnomatopist::Group::Polyacene;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::SulfonicAcid;
@@ -51,6 +52,7 @@ use ChemOnomatopist::Util::Graph qw(
     graph_longest_paths_from_vertex
     graph_path_between_vertices
     graph_replace
+    graph_without_edge_attributes
     subgraph
     tree_branch_positions
     tree_number_of_branches
@@ -61,6 +63,7 @@ use Chemistry::OpenSMILES qw(
     is_single_bond
     is_triple_bond
 );
+use Graph::Nauty qw( are_isomorphic );
 use Graph::SSSR;
 use Graph::Traversal::DFS;
 use Graph::Undirected;
@@ -656,6 +659,12 @@ sub find_groups
                 (all  {  $_->length == 6 } @cycles) &&
                 (any  { !$_->is_hydrocarbon } @cycles) ) {
                 $compound = ChemOnomatopist::Group::Xanthene->new( copy $graph, @cycles );
+            } elsif( @cycles >= 4 &&
+                     (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
+                     are_isomorphic( graph_without_edge_attributes( $core ),
+                                     ChemOnomatopist::Group::Polyacene->ideal_graph( scalar $core->vertices ) ),
+                                     sub { return 'C' } ) {
+                die "cannot process polyacenes\n";
             } else {
                 die "cannot handle cyclic compounds other than monocycles and monospiro\n";
             }

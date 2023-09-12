@@ -26,6 +26,7 @@ our @EXPORT_OK = qw(
     graph_longest_paths_from_vertex
     graph_path_between_vertices
     graph_replace
+    graph_without_edge_attributes
     merge_graphs
     subgraph
     tree_branch_positions
@@ -274,6 +275,11 @@ sub graph_replace
     $graph->delete_vertices( @old );
 
     return $graph;
+}
+
+sub graph_without_edge_attributes($)
+{
+    return $_[0]->copy; # Plain graph copy does not preserve attributes
 }
 
 sub merge_graphs
