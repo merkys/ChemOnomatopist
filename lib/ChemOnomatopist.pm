@@ -31,6 +31,7 @@ use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
 use ChemOnomatopist::Group::Polyacene;
+use ChemOnomatopist::Group::Polyaphene;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::SulfonicAcid;
@@ -665,6 +666,12 @@ sub find_groups
                                      ChemOnomatopist::Group::Polyacene->ideal_graph( scalar $core->vertices ),
                                      sub { return 'C' } ) ) {
                 $compound = ChemOnomatopist::Group::Polyacene->new( copy $graph, @cycles );
+            } elsif( @cycles >= 4 &&
+                     (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
+                     are_isomorphic( graph_without_edge_attributes( $core ),
+                                     ChemOnomatopist::Group::Polyaphene->ideal_graph( scalar $core->vertices ),
+                                     sub { return 'C' } ) ) {
+                die "polyaphenes are not supported yet\n";
             } else {
                 die "cannot handle cyclic compounds other than monocycles and monospiro\n";
             }
