@@ -39,6 +39,26 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
+sub candidates()
+{
+    my( $self ) = @_;
+    my @candidates = ( $self );
+
+    my $subgraph = subgraph( $self->graph, $self->vertices );
+    my @chords = grep { $subgraph->degree( $_->[0] ) == 3 &&
+                        $subgraph->degree( $_->[1] ) == 3 } $subgraph->edges;
+    $subgraph->delete_edges( $self->{vertices}[3],
+                             $self->{vertices}[4],
+                             map { @$_ } @chords );
+
+    push @candidates,
+         bless { graph => $self->graph,
+                 vertices => [ reverse Graph::Traversal::DFS->new( $subgraph, start => $self->{vertices}[3] )->dfs ],
+                 candidate_for => $self };
+
+    return @candidates;
+}
+
 sub ideal_graph($$)
 {
     my( $class, $N ) = @_;
