@@ -12,6 +12,8 @@ my @cases = (
 
     { smiles => 'C1=CC=CC=2OC3=CC=CC=C3C(C12)=O', iupac => '9H-xanthen-9-one' }, # From Wikipedia Xanthone
     { smiles => 'OC1=CC(=CC=2OC3=CC(=CC(=C3C(C12)=O)C)OC)OC', iupac => '1-hydroxy-3,6-dimethoxy-8-methyl-9H-xanthen-9-one' }, # From Wikipedia Lichexanthone
+    { smiles => 'C1=CC=CC=2SC3=CC=CC=C3C(C12)=O', iupac => '9H-thioxanthen-9-one' }, # From Wikipedia Thioxanthone
+    { smiles => 'CC(C)C1=CC=CC=2C(C3=CC=CC=C3SC12)=O', iupac => '4-(propan-2-yl)-9H-thioxanthen-9-one' }, # From Wikipedia Isopropylthioxanthone
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
