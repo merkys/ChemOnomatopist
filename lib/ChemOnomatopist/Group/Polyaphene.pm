@@ -9,7 +9,11 @@ use warnings;
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist::Util::Graph qw( merge_graphs );
-use Graph::Undirected;
+
+sub new
+{
+    my( $class, $graph, @cycles ) = @_;
+}
 
 sub ideal_graph($$)
 {
@@ -44,6 +48,12 @@ sub ideal_graph($$)
                       $termini[1]->[1] );
 
     return $graph;
+}
+
+sub suffix()
+{
+    my( $self ) = @_;
+    return ChemOnomatopist::IUPAC_numerical_multiplier( ($self->length - 2) / 4 ) . 'aphene';
 }
 
 1;
