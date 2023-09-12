@@ -87,6 +87,11 @@ sub prefix()
         my $name = $elements{$heteroatoms[0]}->{prefix};
         $name =~ s/a$//;
         return $name . 'anthrene';
+    } elsif( @heteroatoms == 2 && $heteroatoms[1] eq 'N' ) {
+        # BBv2 P-25.2.2.3
+        my $name = ChemOnomatopist::Name::Part::Locants->new( '10H-' )->to_name;
+        $name->append_stem( 'pheno' . $elements{$heteroatoms[0]}->{prefix} . 'zine' );
+        return $name;
     } elsif( @heteroatoms == 2 && $heteroatoms[0] eq 'O' ) {
         # BBv2 P-25.2.2.3
         return 'phenoxathiine' if $heteroatoms[1] eq 'S';
