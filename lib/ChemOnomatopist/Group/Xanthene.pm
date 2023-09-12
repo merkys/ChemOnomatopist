@@ -69,10 +69,14 @@ sub prefix()
 
     my( $heteroatom ) = $self->heteroatoms;
     if( $self->number_of_heteroatoms == 1 ) {
-        return 'xanthene' if $heteroatom eq 'O';
-        my $name = $elements{$heteroatom}->{prefix};
-        $name =~ s/a$/o/;
-        return $name . 'xanthene';
+        my $name = ChemOnomatopist::Name::Part::Locants->new( '9H-' )->to_name;
+        my $stem = '';
+        if( $heteroatom ne 'O' ) {
+            $stem .= $elements{$heteroatom}->{prefix};
+            $stem =~ s/a$/o/;
+        }
+        $stem .= 'xanthene';
+        return $name->append_stem( $stem );
     } else {
         my $name = $elements{$heteroatom}->{prefix};
         $name =~ s/a$//;
