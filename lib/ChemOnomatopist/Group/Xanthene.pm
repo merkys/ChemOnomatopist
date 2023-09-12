@@ -10,6 +10,7 @@ use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Util::Graph qw( subgraph );
+use List::Util qw( any );
 
 sub new
 {
@@ -72,20 +73,35 @@ sub prefix()
 {
     my( $self ) = @_;
 
-    my( $heteroatom ) = $self->heteroatoms;
-    if( $self->number_of_heteroatoms == 1 ) {
+    my  @heteroatoms = $self->heteroatoms;
+    if( @heteroatoms == 1 ) {
         my $name = ChemOnomatopist::Name::Part::Locants->new( '9H-' )->to_name;
         my $stem = '';
-        if( $heteroatom ne 'O' ) {
-            $stem .= $elements{$heteroatom}->{prefix};
+        if( $heteroatoms[0] ne 'O' ) {
+            $stem .= $elements{$heteroatoms[0]}->{prefix};
             $stem =~ s/a$/o/;
         }
         $stem .= 'xanthene';
         return $name->append_stem( $stem );
-    } else {
-        my $name = $elements{$heteroatom}->{prefix};
+    } elsif( @heteroatoms == 2 && $heteroatoms[0] eq $heteroatoms[1] ) {
+        my $name = $elements{$heteroatoms[0]}->{prefix};
         $name =~ s/a$//;
         return $name . 'anthrene';
+    } elsif( @heteroatoms == 2 && $heteroatoms[0] eq 'O' ) {
+        # BBv2 P-25.2.2.3
+        return 'phenoxathiine' if $heteroatoms[1] eq 'S';
+        if(      any { $heteroatoms[1] eq $_ } qw( Se Te ) ) {
+            my $stem = 'phenoxa' . $elements{$heteroatoms[1]}->{prefix};
+            $stem =~ s/a$/ine/;
+            return $stem;
+        } elsif( any { $heteroatoms[1] eq $_ } qw( P As Sb ) ) {
+            my $stem = 'phenoxa' . $elements{$heteroatoms[1]}->{prefix};
+            $stem =~ s/a$/inine/;
+            return $stem;
+        }
+    } elsif( @heteroatoms == 2 && $heteroatoms[0] eq 'S' && $heteroatoms[1] eq 'As' ) {
+        # BBv2 P-25.2.2.3
+        return 'phenothiarsinine';
     }
 }
 
