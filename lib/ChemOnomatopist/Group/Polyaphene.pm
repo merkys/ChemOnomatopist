@@ -8,11 +8,33 @@ use warnings;
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
-use ChemOnomatopist::Util::Graph qw( merge_graphs );
+use ChemOnomatopist::Util::Graph qw(
+    merge_graphs
+    subgraph
+);
 
 sub new
 {
     my( $class, $graph, @cycles ) = @_;
+
+    my $subgraph = subgraph( $graph, map { $_->vertices } @cycles );
+    my $common_ring; # Common ring has 3 edges with degree 3 at their ends
+    # Terminal rings have 4 vertices of degree 2
+    my @termini;
+    for my $cycle (@cycles) {
+        my $nchords = scalar grep { $subgraph->degree( $_->[0] ) == 3 &&
+                                    $subgraph->degree( $_->[1] ) == 3 }
+                                  subgraph( $subgraph, $cycle->vertices )->edges;
+        $common_ring = $cycle if $nchords == 3;
+
+        if( scalar( grep { $subgraph->degree( $_ ) == 2 } $cycle->vertices ) == 4 ) {
+            push @termini, $cycle;
+        }
+    }
+
+    # Finding out the smaller of the branches
+    $subgraph->delete_vertices( $common_ring->vertices );
+    my( $smaller ) = sort { @$a <=> @$b } $subgraph->connected_components;
 }
 
 sub ideal_graph($$)
