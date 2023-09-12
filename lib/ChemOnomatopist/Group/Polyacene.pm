@@ -59,6 +59,17 @@ sub candidates()
     return @candidates;
 }
 
+sub locants(@)
+{
+    my $self = shift;
+    my $N = $self->length;
+    my @locant_map = ( 1..3,
+                       (map { 4 + $_, (4 + $_) . 'a' } 0..($N-6) / 4 - 1),
+                       ($N / 2)..($N / 2 + 2),
+                       (map { $N / 2 + 3 + $_, ($N / 2 + 3 + $_) . 'a' } 0..($N-6) / 4 - 1) );
+    return map { $locant_map[$_] } @_;
+}
+
 sub ideal_graph($$)
 {
     my( $class, $N ) = @_;
