@@ -651,12 +651,10 @@ sub find_groups
             my @cycles = map { ChemOnomatopist::Group::Monocycle->new( copy $graph, Graph::Traversal::DFS->new( $_ )->dfs ) }
                          map { subgraph( $core, @$_ ) }
                              values %uniq;
-            if( (grep {  $_->is_benzene } @cycles) == 2 &&
-                (grep { !$_->is_benzene } @cycles) == 1 &&
-                (all  { $_->length == 6 } @cycles) &&
-                all   { $_->backbone_SMILES =~ /^(\[[ST]e\]|[OS])c:c\1cc$/ ||
-                        $_->backbone_SMILES =~ /^Cc:c(\[[ST]e\]|[OS])cc$/ }
-                grep  { !$_->is_benzene } @cycles ) {
+            if( (grep {  $_->is_benzene }  @cycles) == 2 &&
+                (grep { !$_->is_benzene }  @cycles) == 1 &&
+                (all  {  $_->length == 6 } @cycles) &&
+                (any  { !$_->is_hydrocarbon } @cycles) ) {
                 $compound = ChemOnomatopist::Group::Xanthene->new( copy $graph, @cycles );
             } else {
                 die "cannot handle cyclic compounds other than monocycles and monospiro\n";
