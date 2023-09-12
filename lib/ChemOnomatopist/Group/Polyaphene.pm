@@ -18,7 +18,7 @@ sub new
     my( $class, $graph, @cycles ) = @_;
 
     my $subgraph = subgraph( $graph, map { $_->vertices } @cycles );
-    my $common_ring; # Common ring has 3 edges with degree 3 at their ends
+    my $common_ring; # The common ring has 3 edges with degree 3 at their ends
     # Terminal rings have 4 vertices of degree 2
     my @termini;
     for my $cycle (@cycles) {
@@ -33,8 +33,21 @@ sub new
     }
 
     # Finding out the smaller of the branches
-    $subgraph->delete_vertices( $common_ring->vertices );
+    $subgraph->delete_cycle( $common_ring->vertices );
     my( $smaller ) = sort { @$a <=> @$b } $subgraph->connected_components;
+
+    $subgraph = subgraph( $graph, map { $_->vertices } @cycles ); # Restore
+    $subgraph->delete_vertices( @$smaller );
+    # Junction atom is the one from the common ring which has the shortest distance to the atom number 1.
+    my( $junction ) = map  { $subgraph->degree( $_->[0] ) == 1 ? $_->[0] : $_->[1] }
+                      grep { ($subgraph->degree( $_->[0] ) == 1 &&
+                              $subgraph->degree( $_->[1] ) == 3) ||
+                             ($subgraph->degree( $_->[0] ) == 3 &&
+                              $subgraph->degree( $_->[1] ) == 1) }
+                           $subgraph->edges;
+
+    $subgraph = subgraph( $graph, map { $_->vertices } @smaller );
+    my @distances = map { scalar $subgraph->SP_Dijkstra( $junction, $_ ) }
 }
 
 sub ideal_graph($$)
