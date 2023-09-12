@@ -277,6 +277,7 @@ sub prefix()
     if( $self->parent ) { # FIXME: Not stable for naphthalene
         my @vertices = $self->vertices;
         my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
+        die "unknown locant in multicyclic compound\n" unless defined $position;
         $name->append_substituent_locant( $self->locants( $position ) );
     }
     $name .= 'yl';
