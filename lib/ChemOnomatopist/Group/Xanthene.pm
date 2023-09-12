@@ -10,7 +10,7 @@ use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Util::Graph qw( subgraph );
-use List::Util qw( any );
+use List::Util qw( any uniq );
 
 sub new
 {
@@ -26,13 +26,21 @@ sub new
                          $subgraph->edges;
     $subgraph->delete_edges( map { @$_ } @bridges );
 
-    my( $heteroatom ) = $other->heteroatom_positions;
+    my @heteroatom_positions = $other->heteroatom_positions;
+    my @heteroatoms = $other->heteroatoms;
+
+    if( uniq( @heteroatoms ) == 2 ) {
+        @heteroatom_positions = reverse @heteroatom_positions if $heteroatoms[0] eq 'N';
+        @heteroatom_positions = reverse @heteroatom_positions if $heteroatoms[1] eq 'O';
+        @heteroatom_positions = reverse @heteroatom_positions if join( ',', @heteroatoms ) eq 'As,S';
+    }
+
     my @other_vertices = $other->vertices;
-    $subgraph->delete_vertex( $other_vertices[($heteroatom + 2) % 6] );
+    $subgraph->delete_vertex( $other_vertices[($heteroatom_positions[0] + 2) % 6] );
     my( $start ) = grep { $subgraph->has_vertex( $_ ) && $subgraph->degree( $_ ) == 1 }
                    map  { $_->vertices } @benzenes;
     my @vertices = ( reverse( Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs ),
-                     $other_vertices[($heteroatom + 2) % 6] );
+                     $other_vertices[($heteroatom_positions[0] + 2) % 6] );
 
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
