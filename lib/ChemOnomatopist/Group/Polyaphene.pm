@@ -93,6 +93,12 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
+sub candidates()
+{
+    my( $self ) = @_;
+    return ( $self ); # FIXME: For now
+}
+
 sub ideal_graph($$)
 {
     my( $class, $N ) = @_;
