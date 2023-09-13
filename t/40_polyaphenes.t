@@ -7,7 +7,7 @@ use ChemOnomatopist;
 use Test::More;
 
 my @cases = (
-    { smiles => 'OC1=C2C(C=3C=CC=CC3C(C2=C2C(C3=CC=CC=C3C(C2=C1O)=O)=O)=O)=O', iupac => '6,7-dihydroxypentaphene-5,8,13,14-tetrone', AUTHOR => 1 }, # PubChem 5379520
+    { smiles => 'OC1=C2C(C=3C=CC=CC3C(C2=C2C(C3=CC=CC=C3C(C2=C1O)=O)=O)=O)=O', iupac => '6,7-dihydroxypentaphene-5,8,13,14-tetrone', AUTHOR => 1 }, # PubChem 5379520 - flaky
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};

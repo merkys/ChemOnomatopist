@@ -104,14 +104,24 @@ sub locants(@) # FIXME: Complete
     my $self = shift;
     my $N = ($self->length - 6) / 4;
     my @rings = $N % 2 ? ( ($N-1)/2, ($N-1)/2+1 ) : ( $N/2, $N/2 );
-    my @locants = ( 1..3,
-                    (map { 3 + $_, (3 + $_) . 'a' } 1..$rings[0]),
-                    4+$rings[0],
-                    (map { 3+$rings[0]+1 + $_, (3+$rings[0]+1 + $_) . 'a' } 1..$rings[1]),
-                    (4 + $rings[0] + $rings[1]) . 'b',
-                    (map { 4 + $rings[0] + $rings[1] + $_, 4 + $rings[0] + $rings[1] + $_ . 'a' } 1..$rings[0]) );
-    # print join ',', @locants;
-    return @_;
+    my @locant_map = ( # First ring
+                       1..3,
+                       # Strand from first ring to common ring
+                       (map { 3 + $_, (3 + $_) . 'a' } 1..$rings[0]),
+                       # Common ring
+                       4+$rings[0],
+                       # Strand from common ring to terminal ring
+                       (map { 3+$rings[0]+1 + $_, (3+$rings[0]+1 + $_) . 'a' } 1..$rings[1]),
+                       # Terminal ring
+                       5+$rings[0]+$rings[1]..5+$rings[0]+$rings[1]+2,
+                       # Strand from terminal ring to common ring
+                       (map { 5+$rings[0]+$rings[1]+2 + $_, 5+$rings[0]+$rings[1]+2 + $_ . 'a' } 1..$rings[1]),
+                       # Common ring
+                       7+$rings[0]+$rings[1]+$rings[1] . 'b',
+                       # Strand from common ring back to the first ring
+                       (map { 7+$rings[0]+$rings[1]+$rings[1] + $_, 7+$rings[0]+$rings[1]+$rings[1] + $_ . 'a' } 1..$rings[0]-1),
+                     );
+    return map { $locant_map[$_] } @_;
 }
 
 sub ideal_graph($$)
