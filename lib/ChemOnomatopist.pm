@@ -671,6 +671,7 @@ sub find_groups
                      are_isomorphic( graph_without_edge_attributes( $core ),
                                      ChemOnomatopist::Group::Polyaphene->ideal_graph( scalar $core->vertices ),
                                      sub { return 'C' } ) ) {
+                $compound = ChemOnomatopist::Group::Polyaphene->new( copy $graph, @cycles );
                 die "polyaphenes are not supported yet\n";
             } else {
                 die "cannot handle cyclic compounds other than monocycles and monospiro\n";
