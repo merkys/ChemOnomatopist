@@ -12,6 +12,7 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monocycle::Fused;
 use ChemOnomatopist::Name;
+use ChemOnomatopist::Name::Part::Fusion;
 use ChemOnomatopist::Name::Part::Stem;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_double_bond );
@@ -399,7 +400,7 @@ sub suffix()
     unless( $name->[-1] =~ s/e$/o/ ) { # BBv2 P-25.3.2.2.2
         $name->[-1] .= 'o';
     }
-    $name .= $fusion;
+    $name .= ChemOnomatopist::Name::Part::Fusion->new( $fusion );
 
     my $name_B = $ideal[0]->name;
     $name_B->[0] =~ s/\d+H-//;
