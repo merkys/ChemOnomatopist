@@ -14,10 +14,12 @@ use overload '@{}' => sub { return $_[0]->{name} };
 
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Element;
+use ChemOnomatopist::Name::Part::Fusion;
 use ChemOnomatopist::Name::Part::Locants;
 use ChemOnomatopist::Name::Part::Locants::Substituent;
 use ChemOnomatopist::Name::Part::Multiplier;
 use ChemOnomatopist::Name::Part::Stem;
+use Clone qw( clone );
 use List::Util qw( any );
 use Scalar::Util qw( blessed );
 
@@ -116,13 +118,19 @@ sub bracket()
 {
     my( $self ) = @_;
 
-    if( $self =~ /\{/ ) {
+    my $name_wo_fusion = clone $self;
+    # BBv2 P-16.5.4.1.2: fusion indicators are ignored
+    @$name_wo_fusion =
+        grep { !blessed $_ || !$_->isa( ChemOnomatopist::Name::Part::Fusion:: ) }
+             @$name_wo_fusion;
+
+    if( $name_wo_fusion =~ /\{/ ) {
         unshift @$self, '(';
         push    @$self, ')';
-    } elsif( $self =~ /\[/ ) {
+    } elsif( $name_wo_fusion =~ /\[/ ) {
         unshift @$self, '{';
         push    @$self, '}';
-    } elsif( $self =~ /\(/ ) {
+    } elsif( $name_wo_fusion =~ /\(/ ) {
         unshift @$self, '[';
         push    @$self, ']';
     } else {
