@@ -28,11 +28,12 @@ sub new
         $connectivity_graph->add_edge( grep { set( $_->vertices )->has( $vertex ) } @cycles );
     }
 
-    # Detecting the common ring
+    # Detecting the common ring which has three edges having degree 3 at their ends
     my $common_ring;
     for my $cycle (@cycles) {
-        next unless scalar( grep { $subgraph->degree( $_ ) == 3 }
-                                 $cycle->vertices ) == 4;
+        next unless scalar( grep { $subgraph->degree( $_->[0] ) == 3 &&
+                                   $subgraph->degree( $_->[1] ) == 3 }
+                                 subgraph( $graph, $cycle->vertices )->edges ) == 3;
         $common_ring = $cycle;
     }
 
@@ -64,6 +65,7 @@ sub new
 
     # Finding the first and the last atom in the enumeration order
     $subgraph = subgraph( $graph, map { $_->vertices } @cycles );
+
     my( $first ) = sort { scalar( $subgraph->SP_Dijkstra( $junction, $_ ) ) }
                         @candidates;
     my( $last ) = grep { $subgraph->degree( $_ ) == 3 }
