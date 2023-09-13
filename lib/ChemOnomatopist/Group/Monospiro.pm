@@ -83,17 +83,26 @@ sub components()
     return @{$self->{components}};
 }
 
-sub prefix()
+sub prefix($@)
 {
-    my( $self ) = @_;
+    my( $self, $parent ) = @_;
     my $name = ChemOnomatopist::Name->new( 'spiro' );
     $name .= ChemOnomatopist::Name::Part::Fusion->new( '[' . join( '.', map { scalar @$_ } $self->components ) . ']' );
-    $name .= ChemOnomatopist::alkane_chain_name( $self->length ) . 'ane';
+    $name .= ChemOnomatopist::alkane_chain_name( $self->length ) . 'an';
+
+    if( $parent ) {
+        my @vertices = $self->vertices;
+        my( $position ) = grep { $self->graph->has_edge( $parent, $vertices[$_] ) } 0..$#vertices;
+        die "unknown locant in multicyclic compound\n" unless defined $position;
+        $name->append_substituent_locant( $self->locants( $position ) );
+    }
+
+    $name .= 'yl';
     return $name;
 }
 
 # FIXME: This is a bit strange: class and object method with the same name
-sub suffix()
+sub suffix(@)
 {
     my( $self ) = @_;
     return '' unless ref $self;

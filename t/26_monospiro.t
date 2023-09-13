@@ -21,6 +21,7 @@ my @cases = (
     { smiles => 'CCCN1C(=O)C(NC(=O)C12CCNCC2)CC(C)C', iupac => '3-(2-methylpropyl)-1-propyl-1,4,9-triazaspiro[5.5]undecane-2,5-dione' }, # PubChem 9856956
     { smiles => 'C1CCOC2(C1)CC(=O)CCO2', iupac => '1,7-dioxaspiro[5.5]undecan-4-one' }, # PubChem 11217490
     { smiles => 'C1CCC2(C1)CCOC(=O)C2', iupac => '8-oxaspiro[4.5]decan-9-one', AUTHOR => 1 }, # PubChem 12733330
+    { smiles => 'O1CCOC12CCC(CC2)C(C(C)C)=O', iupac => '1-(1,4-dioxaspiro[4.5]decan-8-yl)-2-methylpropan-1-one' }, # PubChem 13353114
 
     # This might not be a real compound, nevertheless, locants should probably not be added to it
     { smiles => 'FC1(C(C(C(C(C12C(C(C(C2(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)F', iupac => 'octadecafluorospiro[4.5]decane', AUTHOR => 1 },
