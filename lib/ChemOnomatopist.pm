@@ -672,10 +672,10 @@ sub find_groups
                                      sub { return 'C' } ) ) {
                 $compound = ChemOnomatopist::Group::Polyaphene->new( copy $graph, @cycles );
             } else {
-                die "cannot handle cyclic compounds other than monocycles and monospiro\n";
+                die "cannot handle complicated cyclic compounds\n";
             }
         } else {
-            die "cannot handle cyclic compounds other than monocycles and monospiro\n";
+            die "cannot handle complicated cyclic compounds\n";
         }
         graph_replace_all( $graph, $compound, $compound->vertices );
     }
