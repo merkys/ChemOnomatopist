@@ -386,9 +386,11 @@ sub suffix()
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
                     $self->cycles;
     my $name_A = $ideal[1]->name;
+    $name_A =~ s/^\d+H-//;
+
     # TODO: Complete retained prefixes from BBv2 P-25.3.2.2.3
     $name_A = 'fur'     if $name_A eq 'furan';
-    $name_A = 'imidaz'  if $name_A eq 'imidazole' || $name_A eq '1H-imidazole';
+    $name_A = 'imidaz'  if $name_A eq 'imidazole';
     $name_A = 'pyrid'   if $name_A eq 'pyridine';
     $name_A = 'pyrimid' if $name_A eq 'pyrimidine';
     $name_A = 'thien'   if $name_A eq 'thiophene';
@@ -398,7 +400,10 @@ sub suffix()
         $name->[-1] .= 'o';
     }
     $name .= $fusion;
-    $name .= $ideal[0]->name;
+
+    my $name_B = $ideal[0]->name;
+    $name_B->[0] =~ s/\d+H-//;
+    $name .= $name_B;
     $name->bracket_numeric_locants;
     return $name;
 }

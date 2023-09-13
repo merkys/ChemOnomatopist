@@ -36,7 +36,10 @@ our %names = (
     'C=CN=CO'  => '1,3-oxazole',
     'C=CC=NO'  => '1,2-oxazole',
     'C=CC=NN'  => '1H-pyrazole', # FIXME: Adjust for isomerism
+
     'C=CC=CN'  => '1H-pyrrole', # FIXME: Adjust for isomerism
+    'C=CNc:c'  => '1H-pyrrole', # For fused rings
+
     'C=CC=C[Se]' => 'selenophene',
     'C=CC=C[Te]' => 'tellurophene',
     'C=CC=CS' => 'thiophene',
