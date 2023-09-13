@@ -514,8 +514,7 @@ sub find_groups
 
         # Sulfonyl group and its analogues
         if( @neighbours == 4 && @O == 2 && (all { is_double_bond( $graph, $atom, $_ ) } @O) &&
-            any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
-            # FIXME: Possibly cannot participate in rings
+            !is_ring_atom( $graph, $atom ) && any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
             my $sulfonyl = ChemOnomatopist::Group::Sulfonyl->new( $atom );
             graph_replace( $graph, $sulfonyl, $atom, @O );
         }
