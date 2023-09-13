@@ -69,7 +69,7 @@ while (<>) {
             print $id, "\t", 'FAIL', "\t", $given_name, "\t", $derived_name;
             $counts{FAIL}++;
         } else {
-            print $id, "\t", 'OK';
+            print $id, "\t", 'OK', "\t", $derived_name;
             $counts{OK}++;
         }
     } else {
