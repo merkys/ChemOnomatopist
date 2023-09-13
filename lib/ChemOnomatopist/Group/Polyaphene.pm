@@ -99,6 +99,21 @@ sub candidates()
     return ( $self ); # FIXME: For now
 }
 
+sub locants(@) # FIXME: Complete
+{
+    my $self = shift;
+    my $N = ($self->length - 6) / 4;
+    my @rings = $N % 2 ? ( ($N-1)/2, ($N-1)/2+1 ) : ( $N/2, $N/2 );
+    my @locants = ( 1..3,
+                    (map { 3 + $_, (3 + $_) . 'a' } 1..$rings[0]),
+                    4+$rings[0],
+                    (map { 3+$rings[0]+1 + $_, (3+$rings[0]+1 + $_) . 'a' } 1..$rings[1]),
+                    (4 + $rings[0] + $rings[1]) . 'b',
+                    (map { 4 + $rings[0] + $rings[1] + $_, 4 + $rings[0] + $rings[1] + $_ . 'a' } 1..$rings[0]) );
+    # print join ',', @locants;
+    return @_;
+}
+
 sub ideal_graph($$)
 {
     my( $class, $N ) = @_;
