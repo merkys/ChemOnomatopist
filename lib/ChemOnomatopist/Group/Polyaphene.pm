@@ -85,7 +85,8 @@ sub new
                        $subgraph->neighbours( $first );
 
     # Deleting chords and connection between first and last atoms
-    $subgraph->delete_edges( map { (set( $cycles_in_order[$_] ) * set( $cycles_in_order[$_+1] ))->members }
+    $subgraph->delete_edges( map { (set( $cycles_in_order[$_  ]->vertices ) *
+                                    set( $cycles_in_order[$_+1]->vertices ))->members }
                                  0..$#cycles-1 );
     $subgraph->delete_edge( $first, $last );
 
