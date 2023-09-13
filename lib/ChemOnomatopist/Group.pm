@@ -22,6 +22,7 @@ use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Group::Monospiro;
 use ChemOnomatopist::Group::Polyacene;
+use ChemOnomatopist::Group::Polyaphene;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Group::Xanthene;
@@ -69,6 +70,7 @@ our @order = (
 
     # FIXME: The following order is not written anywhere
     ChemOnomatopist::Group::Polyacene::,
+    ChemOnomatopist::Group::Polyaphene::,
     ChemOnomatopist::Group::Xanthene::,
     ChemOnomatopist::Group::Bicycle::,
     ChemOnomatopist::Group::Monocycle::,

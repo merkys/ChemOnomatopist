@@ -65,9 +65,22 @@ sub new
 
     # Finding the first and the last atom in the enumeration order
     $subgraph = subgraph( $graph, map { $_->vertices } @cycles );
+    my $shortest_paths = $subgraph->single_source_shortest_paths( $junction );
+    my $min_length;
+    my $first;
+    for my $vertex (@candidates) {
+        my $length = 0;
+        my $v = $vertex;
+        while(   $shortest_paths->has_vertex_attribute( $v, 'p' ) ) {
+            $v = $shortest_paths->get_vertex_attribute( $v, 'p' );
+            $length++;
+        }
+        if( !defined $min_length || $min_length > $length ) {
+            $min_length = $length;
+            $first = $vertex;
+        }
+    }
 
-    my( $first ) = sort { scalar( $subgraph->SP_Dijkstra( $junction, $_ ) ) }
-                        @candidates;
     my( $last ) = grep { $subgraph->degree( $_ ) == 3 }
                        $subgraph->neighbours( $first );
 
