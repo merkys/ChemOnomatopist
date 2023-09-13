@@ -64,7 +64,11 @@ sub new
 
     my( $chain ) = ChemOnomatopist::filter_chains( @chains );
 
-    return bless { graph => $graph, vertices => [ $chain->vertices ], spiro_atom => $spiro_atom, components => \@components }, $class;
+    return bless { graph => $graph,
+                   vertices => [ $chain->vertices ],
+                   spiro_atom => $spiro_atom,
+                   components => \@components },
+                 $class;
 }
 
 sub candidates()
