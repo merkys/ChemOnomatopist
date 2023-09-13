@@ -69,6 +69,7 @@ our @order = (
     # TODO: Classes denoted by the senior atom in heterane nomenclature should go here
 
     # FIXME: The following order is not written anywhere
+    # TODO: Should be implemented as per BBv2 P-25.8.1
     ChemOnomatopist::Group::Polyacene::,
     ChemOnomatopist::Group::Polyaphene::,
     ChemOnomatopist::Group::Xanthene::,
