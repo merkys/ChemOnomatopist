@@ -82,8 +82,10 @@ sub components()
 sub prefix()
 {
     my( $self ) = @_;
-    return 'spiro[' . join( '.', map { scalar @$_ } $self->components ) . ']' .
-           ChemOnomatopist::alkane_chain_name( $self->length ) . 'ane';
+    my $name = ChemOnomatopist::Name->new( 'spiro' );
+    $name .= ChemOnomatopist::Name::Part::Fusion->new( '[' . join( '.', map { scalar @$_ } $self->components ) . ']' );
+    $name .= ChemOnomatopist::alkane_chain_name( $self->length ) . 'ane';
+    return $name;
 }
 
 # FIXME: This is a bit strange: class and object method with the same name
@@ -91,8 +93,10 @@ sub suffix()
 {
     my( $self ) = @_;
     return '' unless ref $self;
-    return 'spiro[' . join( '.', map { scalar @$_ } $self->components ) . ']' .
-           ChemOnomatopist::unbranched_chain_name( $self );
+    my $name = ChemOnomatopist::Name->new( 'spiro' );
+    $name .= ChemOnomatopist::Name::Part::Fusion->new( '[' . join( '.', map { scalar @$_ } $self->components ) . ']' );
+    $name .= ChemOnomatopist::unbranched_chain_name( $self );
+    return $name;
 }
 
 1;
