@@ -99,7 +99,7 @@ sub candidates()
     return ( $self ); # FIXME: For now
 }
 
-sub locants(@) # FIXME: Complete
+sub locants(@)
 {
     my $self = shift;
     my $N = ($self->length - 6) / 4;
