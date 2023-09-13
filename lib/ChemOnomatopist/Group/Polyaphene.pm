@@ -128,10 +128,12 @@ sub ideal_graph($$)
     return $graph;
 }
 
-sub suffix()
+sub prefix()
 {
     my( $self ) = @_;
     return ChemOnomatopist::IUPAC_numerical_multiplier( ($self->length - 2) / 4 ) . 'aphene';
 }
+
+sub suffix() { return $_[0]->prefix }
 
 1;
