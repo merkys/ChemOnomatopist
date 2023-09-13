@@ -96,7 +96,21 @@ sub new
 sub candidates()
 {
     my( $self ) = @_;
-    return ( $self ); # FIXME: For now
+    my @candidates = ( $self );
+
+    if( (($self->length - 6) / 4) % 2 == 0 ) {
+        my @vertices = reverse $self->vertices;
+        my $N = ($self->length - 6) / 4 / 2; # Number of rings in one "line"
+        for (1..($N-1)*4+2) {
+            push @vertices, shift @vertices;
+        }
+        push @candidates,
+             bless { graph => $self->graph,
+                     vertices => \@vertices,
+                     candidate_for => $self };
+    }
+
+    return @candidates;
 }
 
 sub locants(@)
