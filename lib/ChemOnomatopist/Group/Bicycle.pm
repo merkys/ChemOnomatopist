@@ -273,7 +273,8 @@ sub prefix()
 {
     my( $self ) = @_;
 
-    my $name = ChemOnomatopist::Name->new( $self->suffix );
+    my $name = $self->suffix;
+    $name = ChemOnomatopist::Name->new( $name ) unless blessed $name;
     $name->{name}[-1] =~ s/e$//;
     if( $self->parent ) { # FIXME: Not stable for naphthalene
         my @vertices = $self->vertices;
