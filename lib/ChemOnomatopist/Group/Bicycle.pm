@@ -18,6 +18,7 @@ use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_double_bond );
 use Graph::Traversal::DFS;
 use List::Util qw( all any min uniq );
+use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
