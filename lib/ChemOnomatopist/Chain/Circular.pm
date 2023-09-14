@@ -13,6 +13,7 @@ use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use List::Util qw( all any uniq );
+use Scalar::Util qw( blessed );
 
 use parent ChemOnomatopist::Chain::;
 
@@ -68,6 +69,10 @@ sub is_heterocycle()
 sub is_homogeneous()
 {
     my( $self ) = @_;
+
+    if( any { blessed $_ } $self->vertices ) {
+        die "cannot process cycles with groups as their members\n";
+    }
 
     my @elements = map { $_->{symbol} } $self->vertices;
     my @bonds = $self->bonds;
