@@ -463,6 +463,14 @@ sub vertex_ids
     return map { exists $ids{$_} ? $ids{$_} : undef } @_;
 }
 
+sub _cmp_instances
+{
+    my( $A, $B ) = @_;
+    # For now, just compare the sizes of cycles.
+    # TODO: Proper ordering should be implemented as per BBv2 P-25.8.1
+    return $B->length <=> $A->length;
+}
+
 sub _disconnected_chain_graph()
 {
     my( $self ) = @_;
