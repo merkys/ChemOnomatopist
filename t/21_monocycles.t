@@ -45,7 +45,7 @@ my @cases = (
     { smiles => 'O1CCC1',     iupac => 'oxetane' },
     { smiles => 'N1CCC1',     iupac => 'azetidine' },
 
-    { smiles => 'N1NNC1', iupac => 'triazetidine' }, # Not checked
+    { smiles => 'C1NNN1', iupac => 'triazetidine' }, # PubChem 23033474
 
     # From BBv2 P-22.2.2.1.2
     { smiles => 'N1=CC=CN=CC=C1', iupac => '1,5-diazocine' },
