@@ -59,6 +59,12 @@ sub is_benzene()
     return $self->is_aromatic && $self->is_homogeneous && $self->length == 6;
 }
 
+sub is_heterocycle()
+{
+    my( $self ) = @_;
+    return $self->number_of_heteroatoms > 0;
+}
+
 sub is_homogeneous()
 {
     my( $self ) = @_;
@@ -246,6 +252,27 @@ sub _aromatise()
     delete $self->{bonds}; # Need to invalidate cache
 
     return 1;
+}
+
+sub _cmp_instances
+{
+    my( $A, $B ) = @_;
+
+    # BBv2 P-44.2.1 (a)
+    if( $A->is_heterocycle <=> $b->is_heterocycle ) {
+        return $B->is_heterocycle <=> $A->is_heterocycle;
+    }
+
+    # BBv2 P-44.2.1 (b)
+    if( set( $A->heteroatoms )->has( 'N' ) <=> set( $B->heteroatoms )->has( 'N' ) ) {
+        return set( $B->heteroatoms )->has( 'N' ) <=> set( $A->heteroatoms )->has( 'N' );
+    }
+
+    # BBv2 P-44.2.1 (e)
+    return $B->length <=> $A->length if $A->length <=> $B->length;
+
+    # BBv2 P-44.2.1 (f)
+    return scalar( $B->heteroatoms ) <=> scalar( $A->heteroatoms );
 }
 
 sub _disconnected_chain_graph()

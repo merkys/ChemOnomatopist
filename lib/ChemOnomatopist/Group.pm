@@ -41,7 +41,7 @@ our @order = (
     # Anions
     # Zwitterions
     # Cations
-    # Acids
+    # Acids (BBv2 P-42)
     ChemOnomatopist::Group::Carboxyl::,
     ChemOnomatopist::Group::SulfonicAcid::,
     ChemOnomatopist::Group::SulfinicAcid::,
