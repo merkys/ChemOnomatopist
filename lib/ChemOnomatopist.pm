@@ -74,6 +74,8 @@ use Set::Object qw( set );
 
 no warnings 'recursion';
 
+our $CAUTIOUS = '';
+
 sub get_name
 {
     my( $what ) = @_;
@@ -633,8 +635,9 @@ sub find_groups
     # This is a cautious check for bonded separate ring systems, as currently they are handled incorrectly
     my $atoms_in_cycles = set();
     for my $core (@ring_systems) {
-        if( ($atoms_in_cycles * set( map { $graph->neighbours( $_ ) } $core->vertices ))->members ) {
-            # die "cannot handle bonded separate ring systems\n";
+        if( $CAUTIOUS &&
+            ($atoms_in_cycles * set( map { $graph->neighbours( $_ ) } $core->vertices ))->members ) {
+            die "cannot handle bonded separate ring systems\n";
         }
         $atoms_in_cycles->insert( $core->vertices );
     }

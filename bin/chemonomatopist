@@ -34,6 +34,7 @@ DESCRIPTION
 
 END
     [ 'check', 'treat the input as list of SMILES and IUPAC names and check whether given and generated names match' ],
+    [ 'cautious', 'avoid experimental features, refuse processing only partially supported compounds' ],
     [],
     [ 'help', 'print usage message and exit', { shortcircuit => 1 } ],
 );
@@ -42,6 +43,8 @@ if( $opt->help ) {
     print $usage->text;
     exit;
 }
+
+$ChemOnomatopist::CAUTIOUS = 1 if $opt->cautious;
 
 my %counts = ( OK => 0, FAIL => 0, ERROR => 0 );
 
