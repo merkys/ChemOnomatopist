@@ -30,6 +30,8 @@ my @cases = (
 
     { smiles => 'C[SiH2]C[SiH2]C[SiH2]C[SiH2]C=C', iupac => '2,4,6,8-tetrasiladec-9-ene' }, # BBv2 P-15.4.3.2.4
 
+    { smiles => 'BrC(CCCC(CCl)CBr)Cl', iupac => '1-bromo-5-(bromomethyl)-1,6-dichlorohexane', AUTHOR => 1 }, # BBv2 P-45.2.3
+
     # From BBv2 P-61.5.2
     { smiles => 'ON(O)OC(C)(C)C(C(O)=O)NC(C)(C)C', iupac => '2-(tert-butylimino)-3-methyl-3-(nitrooxy)butanoic acid', AUTHOR => 1 },
 
