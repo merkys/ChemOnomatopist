@@ -180,7 +180,15 @@ sub is_enclosed()
 sub is_simple()
 {
     my( $self ) = @_;
-    return (grep { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Stem:: ) } @$self) <= 1;
+
+    my $nelements = scalar grep { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Element:: ) }
+                                @$self;
+    my $nstems    = scalar grep { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Stem:: ) }
+                                @$self;
+
+    return '' if $nstems >= 2;
+    return '' if $nstems && $nelements;
+    return  1;
 }
 
 # FIXME: Incomplete, untested and unused
