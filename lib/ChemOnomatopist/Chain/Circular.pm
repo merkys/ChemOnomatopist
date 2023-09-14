@@ -102,9 +102,10 @@ sub name()
     # Check for annulenes
     if( $self->is_hydrocarbon && $self->is_aromatic &&
         $self->length =~ /^(4|6|8|10|12|14|16)$/ ) {
-        return 'cyclo' .
-               ChemOnomatopist::IUPAC_numerical_multiplier( $self->length, 1 ) .
-               ChemOnomatopist::IUPAC_numerical_multiplier( $self->length / 2, 1 ) . 'ene';
+        return ChemOnomatopist::Name->new(
+                    'cyclo' .
+                    ChemOnomatopist::IUPAC_numerical_multiplier( $self->length, 1 ) .
+                    ChemOnomatopist::IUPAC_numerical_multiplier( $self->length / 2, 1 ) . 'ene' );
     }
 
     # Check for cycloalkanes
