@@ -628,7 +628,18 @@ sub find_groups
 
     # Detecting cyclic compounds
     # FIXME: Maybe aromatise bonds in cycles in order to simplify their handling further on?
-    for my $core (cyclic_components( $graph )) {
+    my @ring_systems = cyclic_components( $graph );
+
+    # This is a cautious check for bonded separate ring systems, as currently they are handled incorrectly
+    my $atoms_in_cycles = set();
+    for my $core (@ring_systems) {
+        if( ($atoms_in_cycles * set( map { $graph->neighbours( $_ ) } $core->vertices ))->members ) {
+            # die "cannot handle bonded separate ring systems\n";
+        }
+        $atoms_in_cycles->insert( $core->vertices );
+    }
+
+    for my $core (@ring_systems) {
         my %vertices_by_degree;
         for my $vertex ($core->vertices) {
             my $degree = $core->degree( $vertex );
