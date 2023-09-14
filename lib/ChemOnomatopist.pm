@@ -189,7 +189,7 @@ sub get_sidechain_name
         } else {
             if( $chain->needs_substituent_locants &&
                 !$attachment->is_enclosed &&
-                ($attachment->has_locant || !$attachment->is_simple) ) {
+                !$attachment->is_simple ) {
                 $attachment->bracket;
             }
         }
