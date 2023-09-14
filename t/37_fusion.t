@@ -33,6 +33,7 @@ my @cases = (
     { smiles => 'N=1N2C(N=CC1)=NC=C2', iupac => 'imidazo[1,2-b][1,2,4]triazine' },
     { smiles => 'O1COC2=C1N=CN2', iupac => '2H,4H-[1,3]dioxolo[4,5-d]imidazole', AUTHOR => 1 },
 
+    { smiles => 'CN(C=1C2=C(N=CN1)NC=C2)C', iupac => 'N,N-dimethyl-7H-pyrrolo[2,3-d]pyrimidin-4-amine', AUTHOR => 1 }, # PubChem 1861
     { smiles => 'C1(=CC=CC=C1)C1=CC2=C(N=CN=C2N)N1C1=CC=CC=C1', iupac => '6,7-diphenylpyrrolo[2,3-d]pyrimidin-4-amine', AUTHOR => 1 }, # PubChem 49845043
 );
 
