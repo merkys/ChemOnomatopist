@@ -253,6 +253,8 @@ sub get_sidechain_name
         $name .= 'idyne' if $parent_bond && $parent_bond eq '#';
     }
 
+    $name = ChemOnomatopist::Name->new( 'benzyl' ) if $name eq 'phenylmethyl';
+
     return $name;
 }
 
