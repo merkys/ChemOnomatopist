@@ -58,6 +58,7 @@ use ChemOnomatopist::Util::Graph qw(
     tree_branch_positions
     tree_number_of_branches
 );
+use ChemOnomatopist::Util::SMILES qw( cycle_SMILES_explicit );
 use Chemistry::OpenSMILES qw(
     is_double_bond
     is_ring_atom
@@ -634,14 +635,36 @@ sub find_groups
     # FIXME: Maybe aromatise bonds in cycles in order to simplify their handling further on?
     my @ring_systems = cyclic_components( $graph );
 
-    # This is a cautious check for bonded separate ring systems, as currently they are handled incorrectly
     my $atoms_in_cycles = set();
     for my $core (@ring_systems) {
+        # This is a cautious check for bonded separate ring systems, as currently they are handled incorrectly
         if( $CAUTIOUS &&
             ($atoms_in_cycles * set( map { $graph->neighbours( $_ ) } $core->vertices ))->members ) {
             die "cannot handle bonded separate ring systems\n";
         }
         $atoms_in_cycles->insert( $core->vertices );
+
+        # Aromatising mancudes - experimental
+        my %uniq = map { join( '', sort @$_ ) => $_ } Graph::SSSR::get_SSSR( $core, 8 );
+        my @aromatic;
+        for my $cycle (values %uniq) {
+            my @vertices = Graph::Traversal::DFS->new( subgraph( $core, @$cycle ) )->dfs;
+            my $SMILES = cycle_SMILES_explicit( $graph, @vertices );
+            $SMILES =~ s/[^\-:=#\$]//g;
+            push @aromatic, \@vertices if $SMILES =~ /^((-=)+|(=-)+)$/ || $SMILES =~ /^(=-)*-(=-)*$/ || $SMILES =~ /^-(-=)+$/ || $SMILES =~ /^(-=)*-(-=)*$/;
+        }
+        for my $cycle (@aromatic) {
+            my @vertices = @$cycle;
+            for (0..$#vertices) {
+                $graph->set_edge_attribute( $vertices[$_],
+                                            $vertices[($_ + 1) % @vertices],
+                                            'bond',
+                                            ':' );
+                if( $vertices[$_]->{symbol} =~ /^(Se|As|[BCNOPS])$/ ) {
+                    $vertices[$_]->{symbol} = lcfirst $vertices[$_]->{symbol};
+                }
+            }
+        }
     }
 
     for my $core (@ring_systems) {

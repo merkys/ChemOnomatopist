@@ -10,10 +10,19 @@ use parent Exporter::;
 
 our @EXPORT_OK = qw(
     cycle_SMILES
+    cycle_SMILES_explicit
     path_SMILES
 );
 
 sub cycle_SMILES
+{
+    my( $graph, @cycle ) = @_;
+    my $SMILES = cycle_SMILES_explicit( $graph, @cycle );
+    $SMILES =~ s/-//g;
+    return $SMILES;
+}
+
+sub cycle_SMILES_explicit
 {
     my( $graph, @cycle ) = @_;
 
@@ -22,8 +31,11 @@ sub cycle_SMILES
         my $symbol = $cycle[$i]->{symbol};
         $symbol = "[$symbol]" unless $symbol =~ /^[bcnosp]$/i || $symbol =~ /^(F|Cl|Br|I|\*)$/;
         $SMILES .= $symbol;
-        next unless $graph->has_edge_attribute( $cycle[$i], $cycle[($i+1) % scalar @cycle], 'bond' );
-        $SMILES .=  $graph->get_edge_attribute( $cycle[$i], $cycle[($i+1) % scalar @cycle], 'bond' );
+        if(            $graph->has_edge_attribute( $cycle[$i], $cycle[($i+1) % scalar @cycle], 'bond' ) ) {
+            $SMILES .= $graph->get_edge_attribute( $cycle[$i], $cycle[($i+1) % scalar @cycle], 'bond' );
+        } else {
+            $SMILES .= '-';
+        }
     }
     return $SMILES;
 }
