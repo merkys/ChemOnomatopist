@@ -247,6 +247,9 @@ sub indicated_hydrogens()
     my @vertices = $self->vertices;
     my $graph = $self->graph;
     for my $i (0..$#vertices) {
+        # Rough interpretation of BBv2 P-22.2.2.1.4
+        next unless $vertices[$i]->{symbol} =~ /^[CN]$/;
+        next unless $graph->degree( $vertices[$i] ) == 2;
         next unless all { is_single_bond( $graph, $vertices[$i], $_ ) } @vertices;
         push @positions, $i;
     }

@@ -71,6 +71,8 @@ sub append_element($)
 sub append_locants
 {
     my( $self, @locants ) = @_;
+    return $self unless @locants;
+
     if( @$self ) {
         $self->append( ChemOnomatopist::Name::Part::Locants->new( '-' . join( ',', @locants ) . '-' ) );
     } else {

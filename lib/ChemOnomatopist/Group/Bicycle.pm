@@ -373,18 +373,7 @@ sub suffix()
     my $name = ChemOnomatopist::Name->new;
     my $graph = $self->graph;
 
-    # Collect implicit hydrogen atoms.
-    # Currently only works for C and N atoms.
-    my @H;
-    for my $i (0..$self->length-1) {
-        my $atom = $self->{vertices}[$i];
-        next unless $atom->{symbol} =~ /^[CN]$/;
-        next unless $graph->degree( $atom ) == 2;
-        next if any { is_double_bond( $graph, $atom, $_ ) }
-                    $graph->neighbours( $atom );
-        push @H, $i;
-    }
-    $name->append_locants( map { $_ . 'H' } $self->locants( @H ) ) if @H;
+    $name->append_locants( map { $_ . 'H' } $self->locants( $self->indicated_hydrogens ) );
 
     my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
                     $self->cycles;
