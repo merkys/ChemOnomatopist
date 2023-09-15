@@ -12,6 +12,7 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Monocycle;
 use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
+use Chemistry::OpenSMILES qw( is_single_bond );
 use List::Util qw( all any uniq );
 use Scalar::Util qw( blessed );
 
@@ -236,6 +237,21 @@ sub bonds()
         push @bonds, '-';
     }
     return @bonds;
+}
+
+sub indicated_hydrogens()
+{
+    my( $self ) = @_;
+
+    my @positions;
+    my @vertices = $self->vertices;
+    my $graph = $self->graph;
+    for my $i (0..$#vertices) {
+        next unless all { is_single_bond( $graph, $vertices[$i], $_ ) } @vertices;
+        push @positions, $i;
+    }
+
+    return @positions;
 }
 
 sub _aromatise()
