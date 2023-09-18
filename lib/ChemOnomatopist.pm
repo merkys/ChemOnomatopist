@@ -281,8 +281,8 @@ sub get_mainchain_name
         my $atom = $chain[$i];
         next if blessed $atom;
         next if is_element( $atom, 'C' );
-        next unless exists $atom->{symbol} && exists $elements{$atom->{symbol}};
-        push @{$heteroatoms{$atom->{symbol}}}, $i;
+        next unless defined element( $atom ) && exists $elements{element( $atom )};
+        push @{$heteroatoms{element( $atom )}}, $i;
     }
 
     # Collect the substituents
@@ -742,7 +742,7 @@ sub find_groups
 
 # Derive the chemical element of atom or group representation
 # TODO: Replace object methods is_...
-sub element($)
+sub element
 {
     my( $atom_or_group ) = @_;
     return undef unless ref $atom_or_group;
