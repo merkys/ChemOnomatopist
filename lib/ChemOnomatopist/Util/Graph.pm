@@ -77,7 +77,7 @@ sub cyclic_components
 
     return () unless $graph->vertices; # No vertices = no cycles
 
-    return map { $graph->subgraph( $_ ) } $graph->connected_components;
+    return map { subgraph( $graph, @$_ ) } $graph->connected_components;
 }
 
 # Find how many side attachments are at every position of the given path.
