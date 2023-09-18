@@ -60,6 +60,7 @@ use ChemOnomatopist::Util::Graph qw(
 );
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES_explicit );
 use Chemistry::OpenSMILES qw(
+    %bond_symbol_to_order
     is_double_bond
     is_ring_atom
     is_single_bond
@@ -645,13 +646,26 @@ sub find_groups
         $atoms_in_cycles->insert( $core->vertices );
 
         # Aromatising mancudes - experimental
+        my %valences;
+        for my $edge ($core->edges) {
+            my $order = 1;
+            if( $core->has_edge_attribute( @$edge, 'bond' ) ) {
+                $order = $bond_symbol_to_order{$core->get_edge_attribute( @$edge, 'bond' )};
+            }
+            $valences{$edge->[0]} += $order;
+            $valences{$edge->[1]} += $order;
+        }
+
         my %uniq = map { join( '', sort @$_ ) => $_ } Graph::SSSR::get_SSSR( $core, 8 );
         my @aromatic;
         for my $cycle (values %uniq) {
-            my @vertices = Graph::Traversal::DFS->new( subgraph( $core, @$cycle ) )->dfs;
-            my $SMILES = cycle_SMILES_explicit( $graph, @vertices );
-            $SMILES =~ s/[^\-:=#\$]//g;
-            push @aromatic, \@vertices if $SMILES =~ /^((-=)+|(=-)+)$/ || $SMILES =~ /^(=-)*-(=-)*$/ || $SMILES =~ /^-(-=)+$/ || $SMILES =~ /^(-=)*-(-=)*$/;
+            next if any { $core->degree( $_ ) > 3 } @$cycle;
+
+            my @v2 = grep { $core->degree( $_ ) == 2 } @$cycle;
+            my @v3 = grep { $core->degree( $_ ) == 3 } @$cycle;
+
+            next if any { $valences{$_} < 3 } @v2;
+            push @aromatic, [ Graph::Traversal::DFS->new( subgraph( $core, @$cycle ) )->dfs ];
         }
         for my $cycle (@aromatic) {
             my @vertices = @$cycle;
