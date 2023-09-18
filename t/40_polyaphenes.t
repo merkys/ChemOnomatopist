@@ -18,7 +18,7 @@ plan tests => scalar @cases;
 
 for my $case (@cases) {
     my $ok;
-    eval { $ok = is ChemOnomatopist::get_name( $case->{smiles} ), $case->{iupac} };
+    eval { $ok = is ChemOnomatopist::get_name( $case->{smiles} ), $case->{iupac}, $case->{smiles} };
     $@ =~ s/\n$// if $@;
     fail $case->{smiles} . ": $@" if $@;
     diag 'test supposed to fail with AUTHOR_TESTING' if $case->{AUTHOR} && $ok;
