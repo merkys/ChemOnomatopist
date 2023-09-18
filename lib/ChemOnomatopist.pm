@@ -659,10 +659,8 @@ sub find_groups
         } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,4' && @{$vertices_by_degree{4}} == 1 ) {
             # BBv2 P-24.2.1 Monospiro alicyclic ring systems
             $compound = ChemOnomatopist::Group::Monospiro->new( copy $graph, $core->vertices );
-        } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,3' && @{$vertices_by_degree{3}} == 2 &&
-                 $core->has_edge( @{$vertices_by_degree{3}} ) && $core->is_edge_connected ) {
+        } elsif( ChemOnomatopist::Group::Bicycle->has_form( $core ) ) {
             # Ortho-fused as defined in BBv2 P-25.3.1.1.1
-            # Edge connected means that it has no bridges
             $compound = ChemOnomatopist::Group::Bicycle->new( copy $graph, $core->vertices );
         } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,3' ) {
             # Graph::SSSR v0.1.0 does not know how to return unique rings
