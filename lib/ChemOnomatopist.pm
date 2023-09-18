@@ -668,7 +668,7 @@ sub find_groups
             my @nonaromatic_atoms = grep { $valences{$_} < 3 } @v2;
             if( @nonaromatic_atoms ) {
                 next if @nonaromatic_atoms > 1;
-                next unless element( $nonaromatic_atoms[0] ) =~ /^[NP]$/;
+                next unless element( $nonaromatic_atoms[0] ) =~ /^[NOP]$/;
             }
 
             push @aromatic, [ Graph::Traversal::DFS->new( subgraph( $core, @$cycle ) )->dfs ];
