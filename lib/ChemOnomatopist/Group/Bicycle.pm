@@ -41,8 +41,7 @@ our @names = (
 
     [ 'CC=CCNC',  'C=CC=CCN',  'quinolizine' ],
 
-    [ 'c:n:c:n:c:c:', 'N=CNc:c', 'purine' ], # Special rules apply
-    [ 'c:n:c:n:c:c:', 'NC=Nc:c', 'purine' ], # Special rules apply
+    [ 'n:c:n:c:c:c:', 'n:c:n:c:c:', 'purine' ], # Special rules apply
 
     [ 'NN=Cc:c', 'c:c:c:c:c:c:', '1H-indazole' ],
     [ 'n:c:c:c:c:', 'c:c:c:c:c:c:', '1H-indole' ],
@@ -61,8 +60,8 @@ for my $name (qw( 1H-indole indolizine isoindole isoquinoline quinoline quinoliz
         push @names, \@As_parts;
 
         my @P_parts = @$_;
-        $P_parts[0] =~ s/N/P/g;
-        $P_parts[1] =~ s/N/P/g;
+        $P_parts[0] =~ s/n/p/g;
+        $P_parts[1] =~ s/n/p/g;
         $P_parts[2] =~ s/^1H-//;
         $P_parts[2] = 'phosph' . $P_parts[2] unless $P_parts[2] =~ s/^iso/isophosph/;
         push @names, \@P_parts;
