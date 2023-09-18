@@ -75,6 +75,7 @@ use Set::Object qw( set );
 no warnings 'recursion';
 
 our $CAUTIOUS = '';
+our $DEBUG = '';
 
 sub get_name
 {
@@ -1053,7 +1054,7 @@ sub filter_chains
                    \&pick_chain_with_lowest_attachments_alphabetically ) {
         my @chains_now = $rule->( @chains );
 
-        if( 0 ) {
+        if( $DEBUG ) {
             require Sub::Identify;
             print STDERR '>>> ', Sub::Identify::sub_name( $rule ), "\n";
         }
