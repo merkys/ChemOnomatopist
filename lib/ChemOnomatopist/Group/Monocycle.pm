@@ -60,7 +60,6 @@ sub new
 {
     my( $class, $graph, @vertices ) = @_;
     my $self = bless { graph => $graph, vertices => \@vertices }, $class;
-    $self->_aromatise;
     return $self if $self->is_homogeneous;
 
     ( $self ) = $self->autosymmetric_equivalents;

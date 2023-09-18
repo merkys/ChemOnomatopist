@@ -104,8 +104,6 @@ sub new
                      @components;
     $self->{cycles} = \@cycles;
 
-    $self->_aromatise;
-
     my $nbenzene = scalar grep { $_->is_benzene } @cycles;
 
     # The ordering should not be done if one of the cycles is benzene
@@ -454,29 +452,6 @@ sub _adjust_vertices_to_cycles()
     pop  @{$self->{vertices}};
 
     return $self;
-}
-
-sub _aromatise()
-{
-    my( $self ) = @_;
-
-    my @delocalised_cycles = grep { join( '', $_->bonds ) =~ /^((-=)+|(=-)+)$/ }
-                                  ( $self, $self->cycles );
-    return '' unless @delocalised_cycles;
-
-    my $subgraph = $self->graph->subgraph( [ map { $_->vertices } @delocalised_cycles ] );
-    for ($subgraph->vertices) {
-        next unless $_->{symbol} =~ /^(Se|As|[BCNOPS])$/;
-        $_->{symbol} = lcfirst $_->{symbol};
-    }
-    for ($subgraph->edges) {
-        $self->graph->set_edge_attribute( @$_, 'bond', ':' );
-    }
-    for ($self, $self->cycles) { # Need to invalidate bond cache
-        delete $_->{bonds};
-    }
-
-    return 1;
 }
 
 1;

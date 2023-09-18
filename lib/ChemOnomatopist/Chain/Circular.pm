@@ -21,9 +21,7 @@ use parent ChemOnomatopist::Chain::;
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
-    my $self = bless { graph => $graph, vertices => \@vertices }, $class;
-    $self->_aromatise;
-    return $self;
+    return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
 # Selecting the candidate with the lowest alphabetical order
@@ -255,27 +253,6 @@ sub indicated_hydrogens()
     }
 
     return @positions;
-}
-
-sub _aromatise()
-{
-    my( $self ) = @_;
-    return '' if $self->length % 2;
-    return '' unless join( '', $self->bonds ) =~ /^((-=)+|(=-)+)$/;
-
-    my @vertices = $self->vertices;
-    for (0..$#vertices) {
-        $self->graph->set_edge_attribute( $vertices[$_],
-                                          $vertices[($_ + 1) % $self->length],
-                                          'bond',
-                                          ':' );
-        if( $vertices[$_]->{symbol} =~ /^(Se|As|[BCNOPS])$/ ) {
-            $vertices[$_]->{symbol} = lcfirst $vertices[$_]->{symbol};
-        }
-    }
-    delete $self->{bonds}; # Need to invalidate cache
-
-    return 1;
 }
 
 sub _cmp_instances
