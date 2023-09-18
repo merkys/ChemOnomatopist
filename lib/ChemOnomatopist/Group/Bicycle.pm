@@ -320,6 +320,7 @@ sub suffix()
     }
 
     my @SMILES = map { $_->backbone_SMILES } $self->cycles;
+    print STDERR "bicycle SMILES: @SMILES\n" if $ChemOnomatopist::DEBUG;
     my( $retained ) = grep { ($_->[0] eq $SMILES[0] && $_->[1] eq $SMILES[1]) ||
                              ($_->[0] eq $SMILES[1] && $_->[1] eq $SMILES[0]) } @names;
     return ChemOnomatopist::Name::Part::Stem->new( $retained->[2] )->to_name if $retained;
