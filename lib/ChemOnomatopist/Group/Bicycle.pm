@@ -223,6 +223,21 @@ sub cycles()
     return @{$self->{cycles}};
 }
 
+sub has_form($$)
+{
+    my( $class, $graph ) = @_;
+    my %degrees = map { $graph->degree( $_ ) => 1 } $graph->vertices;
+    return '' unless join( ',', sort keys %degrees ) eq '2,3';
+
+    my @d3 = grep { $graph->degree( $_ ) == 3 } $graph->vertices;
+    return '' unless @d3 == 2;
+    return '' unless $graph->has_edge( @d3 );
+
+    $graph = $graph->copy->delete_vertices( @d3 );
+    return '' unless scalar( $graph->connected_components ) == 2;
+    return 1;
+}
+
 # Tells whether the outer bonds of the bicycle qualify as aromatic
 sub is_aromatic()
 {

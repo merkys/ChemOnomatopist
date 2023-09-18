@@ -83,6 +83,17 @@ sub components()
     return @{$self->{components}};
 }
 
+sub has_form($$)
+{
+    my( $class, $graph ) = @_;
+    my %degrees = map { $graph->degree( $_ ) => 1 } $graph->vertices;
+    return '' unless join( ',', sort keys %degrees ) eq '2,4';
+
+    my @d4 = grep { $graph->degree( $_ ) == 4 } $graph->vertices;
+    return '' unless @d4 == 1;
+    return 1;
+}
+
 sub prefix($@)
 {
     my( $self, $parent ) = @_;
