@@ -656,7 +656,7 @@ sub find_groups
         my $compound;
         if(      join( ',', sort keys %vertices_by_degree ) eq '2' ) {
             $compound = ChemOnomatopist::Group::Monocycle->new( copy $graph, Graph::Traversal::DFS->new( $core )->dfs );
-        } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,4' && @{$vertices_by_degree{4}} == 1 ) {
+        } elsif( ChemOnomatopist::Group::Monospiro->has_form( $core ) ) {
             # BBv2 P-24.2.1 Monospiro alicyclic ring systems
             $compound = ChemOnomatopist::Group::Monospiro->new( copy $graph, $core->vertices );
         } elsif( ChemOnomatopist::Group::Bicycle->has_form( $core ) ) {
