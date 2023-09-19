@@ -168,7 +168,7 @@ sub get_sidechain_name
         for my $neighbour ($graph->neighbours( $atom )) {
             next if any { $neighbour == $_ } @chain; # Skip atoms from this chain
             next if $parent && $neighbour == $parent;
-            my $attachment_name = get_sidechain_name( copy $graph, $atom, $neighbour );
+            my $attachment_name = get_sidechain_name( $graph, $atom, $neighbour );
             push @{$attachments{$attachment_name}}, $i;
             $attachment_objects{$attachment_name} = $attachment_name;
         }
