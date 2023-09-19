@@ -475,7 +475,7 @@ sub _disconnected_chain_graph()
 {
     my( $self ) = @_;
 
-    my $graph = $self->graph->copy; # FIXME: Call our copy() to preserve bonds
+    my $graph = $self->graph->copy;
     $graph->delete_path( $self->vertices );
 
     return $graph;
