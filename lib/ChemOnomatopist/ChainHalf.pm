@@ -47,6 +47,8 @@ sub _disconnected_chain_graph()
     }
     $graph->delete_path( @vertices );
 
+    $graph->delete_vertex( $self->parent ) if $self->parent;
+
     $self->{_disconnected_chain_graph} = $graph;
     return $graph;
 }
