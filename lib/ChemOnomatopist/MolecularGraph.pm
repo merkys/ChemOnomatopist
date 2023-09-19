@@ -30,10 +30,13 @@ sub copy()
     my( $self ) = @_;
 
     my $copy = $self->SUPER::copy;
+
     for my $edge ($self->edges) {
         next unless $self->has_edge_attributes( @$edge );
         $copy->set_edge_attributes( @$edge, $self->get_edge_attributes( @$edge ) );
     }
+    $copy->set_graph_attributes( $self->get_graph_attributes );
+
     return bless $copy;
 }
 
