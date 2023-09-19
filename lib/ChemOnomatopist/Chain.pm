@@ -477,6 +477,7 @@ sub _disconnected_chain_graph()
 
     my $graph = $self->graph->copy;
     $graph->delete_path( $self->vertices );
+    $graph->delete_vertex( $self->parent ) if $self->parent;
 
     return $graph;
 }
