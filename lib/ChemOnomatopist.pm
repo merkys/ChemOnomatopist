@@ -483,8 +483,7 @@ sub find_groups
         if( @neighbours == 1 && @C == 1 && is_double_bond( $graph, $atom, @C ) &&
             any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
             my $ketone = ChemOnomatopist::Group::Ketone->new( @C, $atom );
-            $graph->add_edge( @C, $ketone );
-            $graph->delete_vertices( $atom );
+            graph_replace_all( $graph, $ketone, $atom );
         }
 
         # Nitroso and its analogues
