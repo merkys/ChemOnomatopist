@@ -961,11 +961,6 @@ sub select_sidechain
         }
     }
 
-    if( $parent ) { # FIXME: Why do we need this?
-        $graph = copy $graph;
-        $graph->delete_edge( $start, $parent );
-    }
-
     my @chains;
     if(      $C_graph->degree( $start ) > 1 ) {
         # FIXME: Deduplicate: copied from select_mainchain()
@@ -978,6 +973,10 @@ sub select_sidechain
             }
         }
     } elsif( $C_graph->degree( $start ) == 1 ) {
+        if( $parent ) { # FIXME: Why do we need this? Without it the code does not fail, but runs very slow
+            $graph = copy $graph;
+            $graph->delete_edge( $start, $parent );
+        }
         @chains = map { ChemOnomatopist::Chain->new( $graph, $parent, $_->vertices ) } @path_parts;
     } else {
         return ChemOnomatopist::Chain->new( $graph, $parent, $start );
