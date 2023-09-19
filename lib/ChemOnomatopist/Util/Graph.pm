@@ -279,7 +279,12 @@ sub graph_replace
 
 sub graph_without_edge_attributes($)
 {
-    return $_[0]->copy; # Plain graph copy does not preserve attributes
+    my( $graph ) = @_;
+    $graph = $graph->copy;
+    for ($graph->edges) {
+        $graph->delete_edge_attributes( @$_ );
+    }
+    return $graph;
 }
 
 sub merge_graphs
