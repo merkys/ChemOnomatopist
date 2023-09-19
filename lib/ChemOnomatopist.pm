@@ -427,7 +427,6 @@ sub find_groups
             !is_ring_atom( $graph, $atom, -1 ) ) {
             # Detecting guanidine
             my $guanidine = ChemOnomatopist::Group::Guanidine->new( copy $graph, $atom );
-            $graph->delete_vertex( $atom );
             graph_replace_all( $graph, $guanidine, $atom, @N );
         }
 
@@ -452,36 +451,32 @@ sub find_groups
         if( is_element( $atom, 'N' ) && @neighbours == 3 && @C == 1 && @H == 2 ) {
             # Detecting amines
             my $amine = ChemOnomatopist::Group::Amine->new( @C );
-            $graph->add_edge( @C, $amine );
-            $graph->delete_vertices( $atom, @H );
+            graph_replace_all( $graph, $amine, $atom, @H );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C == 1 && @H == 1 &&
                  is_double_bond( $graph, $atom, @C ) ) {
             # Detecting imino
             my $imino = ChemOnomatopist::Group::Imino->new( @C );
-            $graph->add_edge( @C, $imino );
-            $graph->delete_vertices( $atom, @H );
+            graph_replace_all( $graph, $imino, $atom, @H );
         } elsif( is_element( $atom, 'N' ) && @C == 1 && @O == 2 && $atom->{charge} && $atom->{charge} == 1 &&
                  (any {  is_double_bond( $graph, $atom, $_ ) } @O) &&
                  (any { !is_double_bond( $graph, $atom, $_ ) && $_->{charge} && $_->{charge} == -1 } @O) ) {
             # Detecting nitro
             my $nitro = ChemOnomatopist::Group::Nitro->new( @C );
-            $graph->add_edge( @C, $nitro );
-            $graph->delete_vertices( $atom, @O );
+            graph_replace_all( $graph, $nitro, $atom, @O );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 1 && @C == 1 &&
                  $graph->degree( @C ) >= 2 &&
                  is_triple_bond( $graph, $atom, @C ) ) {
             # Detecting cyanide
             my( $C ) = grep { $_ != $atom } $graph->neighbours( @C );
             my $cyanide = ChemOnomatopist::Group::Cyanide->new( $C );
-            $graph->add_edge( $C, $cyanide );
-            $graph->delete_vertices( $atom, @C );
+            graph_replace_all( $graph, $cyanide, $atom, @C );
         }
 
         # Hydroxy groups and their chalcogen analogues
         if( @neighbours == 2 && ( @C || @N || @O || @S || @Se || @Te ) && @H == 1 &&
             any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
             my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C, @N, @O, @S, @Se, @Te, $atom );
-            graph_replace( $graph, $hydroxy, $atom, @H );
+            graph_replace_all( $graph, $hydroxy, $atom, @H );
         }
 
         # Ketones and their chalcogen analogues
@@ -511,21 +506,21 @@ sub find_groups
         # Secondary and tertiary amines
         if( $graph->has_vertex( $atom ) && is_element( $atom, 'N' ) && @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
             my $amine = ChemOnomatopist::Group::Amine::SecondaryTertiary->new( $graph );
-            graph_replace( $graph, $amine, $atom );
+            graph_replace_all( $graph, $amine, $atom );
         }
 
         # Sulfinyl group and its analogues
         if( @neighbours == 3 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
             !is_ring_atom( $graph, $atom ) && any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
             my $sulfinyl = ChemOnomatopist::Group::Sulfinyl->new( $atom );
-            graph_replace( $graph, $sulfinyl, $atom, @O );
+            graph_replace_all( $graph, $sulfinyl, $atom, @O );
         }
 
         # Sulfonyl group and its analogues
         if( @neighbours == 4 && @O == 2 && (all { is_double_bond( $graph, $atom, $_ ) } @O) &&
             !is_ring_atom( $graph, $atom ) && any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
             my $sulfonyl = ChemOnomatopist::Group::Sulfonyl->new( $atom );
-            graph_replace( $graph, $sulfonyl, $atom, @O );
+            graph_replace_all( $graph, $sulfonyl, $atom, @O );
         }
     }
 
