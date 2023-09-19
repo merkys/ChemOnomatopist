@@ -135,16 +135,17 @@ sub get_sidechain_name
         $chain = $start;
         $chain->parent( $parent ) if $parent;
     } else {
+        my $local_graph = $graph;
         if( $parent ) {
-            $graph = copy $graph;
-            $graph->delete_edge( $parent, $start );
+            $local_graph = copy $graph;
+            $local_graph->delete_edge( $parent, $start );
         }
-        $chain = select_sidechain( $graph, $parent, $start );
+        $chain = select_sidechain( $local_graph, $parent, $start );
     }
     my @chain = $chain->vertices;
 
     # Handle non-carbon substituents
-    if( @chain == 1 && !$graph->degree( @chain ) && !blessed $chain[0] &&
+    if( @chain == 1 && $graph->degree( @chain ) == 0 + defined $parent && !blessed $chain[0] &&
         !is_element( $chain[0], 'C' ) && exists $elements{$chain[0]->{symbol}} ) {
         my $element = $elements{$chain[0]->{symbol}}->{prefix};
         $element =~ s/a$/o/; # TODO: Is this a general rule? BBv2 seems silent.
