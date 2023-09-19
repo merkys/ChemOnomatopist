@@ -135,12 +135,7 @@ sub get_sidechain_name
         $chain = $start;
         $chain->parent( $parent ) if $parent;
     } else {
-        my $local_graph = $graph;
-        if( $parent ) {
-            $local_graph = copy $graph;
-            $local_graph->delete_edge( $parent, $start );
-        }
-        $chain = select_sidechain( $local_graph, $parent, $start );
+        $chain = select_sidechain( $graph, $parent, $start );
     }
     my @chain = $chain->vertices;
 
@@ -939,13 +934,18 @@ sub select_sidechain
     my( $graph, $parent, $start ) = @_;
 
     # Do this for non-carbons for now in order to represent attachments
-    if( !is_element( $start, 'C' ) && $graph->degree( $start ) == 0 ) {
+    if( !is_element( $start, 'C' ) && $graph->degree( $start ) == 0 + defined $parent ) {
         return ChemOnomatopist::Chain->new( $graph, $parent, $start );
     }
 
     # Chalcogen analogues of ethers
-    if( $graph->degree( $start ) == 1 && grep { element( $start ) && element( $start ) eq $_ } qw( S Se Te ) ) {
+    if( $graph->degree( $start ) == 1 + defined $parent && grep { element( $start ) && element( $start ) eq $_ } qw( S Se Te ) ) {
         return ChemOnomatopist::Chain->new( $graph, $parent, $start );
+    }
+
+    if( $parent ) { # FIXME: Why do we need this?
+        $graph = copy $graph;
+        $graph->delete_edge( $start, $parent );
     }
 
     my $C_graph = copy $graph;
