@@ -16,7 +16,7 @@ sub new
     my $class = shift;
 
     if( ref $class ) {
-        return bless $class->SUPER::new;
+        return bless $class->SUPER::new( refvertexed => 1 );
     } elsif( @_ == 1 && $_[0]->isa( Graph::Undirected:: ) ) {
         return bless $_[0], $class;
     } else {
