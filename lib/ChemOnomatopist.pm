@@ -146,8 +146,7 @@ sub get_sidechain_name
         return ChemOnomatopist::Name::Part::Element->new( $element )->to_name;
     }
 
-    $graph = copy $graph;
-    $graph->delete_path( @chain );
+    $graph = copy $graph; # TODO: It should be OK to pass the original graph
 
     # Examine the attachments to the main chain: delete the edges
     # connecting them to the main chain, at the same time giving them
@@ -164,6 +163,7 @@ sub get_sidechain_name
         }
 
         for my $neighbour ($graph->neighbours( $atom )) {
+            next if any { $_ == $neighbour } @chain; # Skip atoms from this chain
             my $attachment_name = get_sidechain_name( $graph, $atom, $neighbour );
             push @{$attachments{$attachment_name}}, $i;
             $attachment_objects{$attachment_name} = $attachment_name;
