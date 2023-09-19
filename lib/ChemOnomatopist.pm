@@ -943,12 +943,8 @@ sub select_sidechain
         return ChemOnomatopist::Chain->new( $graph, $parent, $start );
     }
 
-    if( $parent ) { # FIXME: Why do we need this?
-        $graph = copy $graph;
-        $graph->delete_edge( $start, $parent );
-    }
-
     my $C_graph = copy $graph;
+    $C_graph->delete_edge( $start, $parent ) if $parent;
     # Delete formed chains and non-carbon leaves
     # FIXME: Some other chains should as well be excluded
     $C_graph->delete_vertices( grep { $_ != $start && !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 } $C_graph->vertices );
@@ -963,6 +959,11 @@ sub select_sidechain
             push @path_parts,
                  ChemOnomatopist::ChainHalf->new( $graph, undef, $start, @$path );
         }
+    }
+
+    if( $parent ) { # FIXME: Why do we need this?
+        $graph = copy $graph;
+        $graph->delete_edge( $start, $parent );
     }
 
     my @chains;
