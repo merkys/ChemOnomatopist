@@ -38,6 +38,7 @@ use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Group::XO3;
 use ChemOnomatopist::Group::Xanthene;
+use ChemOnomatopist::MolecularGraph;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Stem;
@@ -86,14 +87,15 @@ sub get_name
     # Detect the type of the input data
     my( $graph );
     if( blessed $what && $what->isa( Graph::Undirected:: ) ) {
-        $graph = $what;
+        $graph = ChemOnomatopist::MolecularGraph->new( $what );
     } else {
         # Assume SMILES string
         die "cannot handle stereochemistry now\n" if $what =~ /[\\\/@]/;
 
         require Chemistry::OpenSMILES::Parser;
         my $parser = Chemistry::OpenSMILES::Parser->new;
-        my @graphs = $parser->parse( $what );
+        my @graphs = map { ChemOnomatopist::MolecularGraph->new( $_ ) }
+                         $parser->parse( $what );
         die "separate molecular entities are not handled yet\n" if @graphs > 1;
         $graph = shift @graphs;
     }
@@ -273,7 +275,7 @@ sub get_mainchain_name
     # Disconnect the main chain: this way every main chain atom remains
     # connected only to the side chains.
     $graph = copy $chain->graph;
-    $graph->delete_edges( map { @$_ } $graph->subgraph( \@chain )->edges );
+    $graph->delete_edges( map { @$_ } subgraph( $graph, @chain )->edges );
 
     # Collect the heteroatoms in the chain
     my %heteroatoms;
