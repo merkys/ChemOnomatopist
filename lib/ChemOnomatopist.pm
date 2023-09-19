@@ -728,6 +728,7 @@ sub find_groups
             die "cannot handle complicated cyclic compounds\n";
         }
         graph_replace_all( $graph, $compound, $compound->vertices );
+        $graph->add_group( $compound );
     }
 
     return;

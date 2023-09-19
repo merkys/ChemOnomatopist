@@ -14,7 +14,6 @@ use List::Util qw( all );
 sub new
 {
     my $class = shift;
-    # use Carp; confess "object method new() for ChemOnomatopist::MolecularGraph is not implemented yet\n" if ref $class;
 
     if( ref $class ) {
         return bless $class->SUPER::new;
@@ -46,6 +45,21 @@ sub subgraph()
     } else {
         return ChemOnomatopist::Util::Graph::subgraph( $self, @vertices );
     }
+}
+
+sub add_group($)
+{
+    my( $self, $group ) = @_;
+    $self->set_graph_attribute( 'groups', [] ) unless $self->has_graph_attribute( 'groups' );
+
+    push @{$self->get_graph_attribute( 'groups' )}, $group;
+}
+
+sub groups()
+{
+    my( $self ) = @_;
+    return () unless $self->has_graph_attribute( 'groups' );
+    return @{$self->get_graph_attribute( 'groups' )};
 }
 
 1;
