@@ -272,11 +272,6 @@ sub get_mainchain_name
     my @groups = most_senior_groups( $graph );
     my $most_senior_group = blessed $groups[0] if @groups;
 
-    # Disconnect the main chain: this way every main chain atom remains
-    # connected only to the side chains.
-    $graph = copy $chain->graph;
-    $graph->delete_edges( map { @$_ } subgraph( $graph, @chain )->edges );
-
     # Collect the heteroatoms in the chain
     my %heteroatoms;
     for my $i (0..$#chain) {
@@ -287,6 +282,8 @@ sub get_mainchain_name
         push @{$heteroatoms{element( $atom )}}, $i;
     }
 
+    $graph = copy $chain->graph;
+
     # Collect the substituents
     my %attachments;
     my %attachment_objects;
@@ -294,6 +291,7 @@ sub get_mainchain_name
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
+            next if any { $_ == $neighbour } @chain; # Skip atoms from this chain
             if( grep { $_ == $neighbour } @groups ) {
                 push @senior_group_attachments, $i;
             } else {
