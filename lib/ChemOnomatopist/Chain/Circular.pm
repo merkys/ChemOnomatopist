@@ -10,7 +10,6 @@ use ChemOnomatopist;
 use ChemOnomatopist::Chain; # FIXME: Not sure why it is needed
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Monocycle;
-use ChemOnomatopist::Util qw( copy );
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_single_bond );
 use List::Util qw( all any uniq );
@@ -280,8 +279,9 @@ sub _disconnected_chain_graph()
 {
     my( $self ) = @_;
 
-    my $graph = copy $self->graph;
+    my $graph = $self->graph->copy;
     $graph->delete_cycle( $self->vertices );
+    $graph->delete_vertex( $self->parent ) if $self->parent;
 
     return $graph;
 }
