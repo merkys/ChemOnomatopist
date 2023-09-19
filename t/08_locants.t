@@ -6,7 +6,7 @@ use warnings;
 use ChemOnomatopist;
 use ChemOnomatopist::Chain::FromHalves;
 use ChemOnomatopist::ChainHalf;
-use Graph::Undirected;
+use ChemOnomatopist::MolecularGraph;
 use Test::More;
 
 sub chains($@)
@@ -32,7 +32,7 @@ my @paths;
 
 my @atoms = map { { symbol => 'C', number => $_ } } 0..38;
 
-$graph = Graph::Undirected->new( refvertexed => 1 );
+$graph = ChemOnomatopist::MolecularGraph->new;
 $graph->add_path( map { $atoms[$_] } ( 1, 0, 11..17 ) );
 $graph->add_path( map { $atoms[$_] } ( 1, 22..27 ) );
 $graph->add_path( map { $atoms[$_] } ( 1, 32..37 ) );

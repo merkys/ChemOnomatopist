@@ -269,7 +269,7 @@ sub get_mainchain_name
 
     my @vertices = $graph->vertices;
     my @chain = $chain->vertices;
-    my @groups = most_senior_groups( $graph->vertices );
+    my @groups = most_senior_groups( $graph );
     my $most_senior_group = blessed $groups[0] if @groups;
 
     # Disconnect the main chain: this way every main chain atom remains
@@ -777,7 +777,7 @@ sub select_mainchain
     my( $graph ) = @_;
 
     # Find the most senior group, undefined if alkane
-    my @groups = most_senior_groups( $graph->vertices );
+    my @groups = most_senior_groups( $graph );
     my $most_senior_group = blessed $groups[0] if @groups;
 
     my @chains;
@@ -1295,12 +1295,15 @@ sub most_senior_groups
 {
     my( @vertices ) = @_;
 
+    my @groups;
     if( @vertices == 1 && blessed $vertices[0] && $vertices[0]->isa( Graph::Undirected:: ) ) {
         # Graph given instead of an array of vertices
+        @groups = $vertices[0]->groups if $vertices[0]->isa( ChemOnomatopist::MolecularGraph:: );
         @vertices = $vertices[0]->vertices;
     }
 
-    my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) && !$_->is_prefix_only } @vertices;
+    push @groups,
+         grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) && !$_->is_prefix_only } @vertices;
     return unless @groups;
 
     my( $most_senior_group ) = sort { ChemOnomatopist::Group::cmp( $a, $b ) } @groups;
