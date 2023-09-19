@@ -123,11 +123,13 @@ sub get_sidechain_name
     if(                $graph->has_edge_attribute( $parent, $start, 'bond' ) ) {
         $parent_bond = $graph->get_edge_attribute( $parent, $start, 'bond' );
     }
-    $graph->delete_edge( $parent, $start ) if $parent;
 
     # Groups that cannot be included in the chain do not matter
     my $branches_at_start = grep { !blessed $_ || $_->is_carbon }
+                            grep { !$parent || $_ != $parent }
                                  $graph->neighbours( $start );
+
+    $graph->delete_edge( $parent, $start ) if $parent;
 
     my $chain;
     if( blessed $start && $start->isa( ChemOnomatopist::Chain:: ) ) {
