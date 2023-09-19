@@ -129,13 +129,16 @@ sub get_sidechain_name
                             grep { !$parent || $_ != $parent }
                                  $graph->neighbours( $start );
 
-    $graph->delete_edge( $parent, $start ) if $parent;
 
     my $chain;
     if( blessed $start && $start->isa( ChemOnomatopist::Chain:: ) ) {
         $chain = $start;
         $chain->parent( $parent ) if $parent;
     } else {
+        if( $parent ) {
+            $graph = copy $graph;
+            $graph->delete_edge( $parent, $start );
+        }
         $chain = select_sidechain( $graph, $parent, $start );
     }
     my @chain = $chain->vertices;
@@ -163,7 +166,8 @@ sub get_sidechain_name
         }
 
         for my $neighbour ($graph->neighbours( $atom )) {
-            next if any { $_ == $neighbour } @chain; # Skip atoms from this chain
+            next if any { $neighbour == $_ } @chain; # Skip atoms from this chain
+            next if $parent && $neighbour == $parent;
             my $attachment_name = get_sidechain_name( copy $graph, $atom, $neighbour );
             push @{$attachments{$attachment_name}}, $i;
             $attachment_objects{$attachment_name} = $attachment_name;
