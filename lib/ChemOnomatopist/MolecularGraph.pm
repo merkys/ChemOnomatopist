@@ -10,6 +10,7 @@ use parent Graph::Undirected::;
 
 use ChemOnomatopist::Util::Graph;
 use List::Util qw( all );
+use Set::Object qw( set );
 
 sub new
 {
@@ -58,11 +59,18 @@ sub add_group($)
     push @{$self->get_graph_attribute( 'groups' )}, $group;
 }
 
-sub groups()
+sub groups(@)
 {
-    my( $self ) = @_;
+    my( $self, @vertices ) = @_;
     return () unless $self->has_graph_attribute( 'groups' );
-    return @{$self->get_graph_attribute( 'groups' )};
+
+    if( @vertices ) {
+        my $vertices = set( @vertices );
+        return grep { $vertices <= set( $_->vertices ) }
+                    @{$self->get_graph_attribute( 'groups' )};
+    } else {
+        return @{$self->get_graph_attribute( 'groups' )};
+    }
 }
 
 1;

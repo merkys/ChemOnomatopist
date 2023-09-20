@@ -129,7 +129,6 @@ sub get_sidechain_name
                             grep { !$parent || $_ != $parent }
                                  $graph->neighbours( $start );
 
-
     my $chain;
     if( blessed $start && $start->isa( ChemOnomatopist::Chain:: ) ) {
         $chain = $start;
@@ -292,10 +291,11 @@ sub get_mainchain_name
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
             next if any { $_ == $neighbour } @chain; # Skip atoms from this chain
+            my( $group ) = $graph->groups( $neighbour );
             if( grep { $_ == $neighbour } @groups ) {
                 push @senior_group_attachments, $i;
             } else {
-                my $attachment_name = get_sidechain_name( $graph, $atom, $neighbour );
+                my $attachment_name = get_sidechain_name( $graph, $atom, $group ? $group : $neighbour );
                 push @{$attachments{$attachment_name}}, $i;
                 $attachment_objects{$attachment_name} = $attachment_name;
             }
@@ -725,7 +725,7 @@ sub find_groups
         } else {
             die "cannot handle complicated cyclic compounds\n";
         }
-        graph_replace_all( $graph, $compound, $compound->vertices );
+        # graph_replace_all( $graph, $compound, $compound->vertices );
         $graph->add_group( $compound );
     }
 
@@ -948,7 +948,10 @@ sub select_sidechain
     # Delete formed chains and non-carbon leaves
     # FIXME: Some other chains should as well be excluded
     $C_graph->delete_vertices( grep { $_ != $start && !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 } $C_graph->vertices );
-    $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && $_->isa( ChemOnomatopist::Group::Monocycle:: ) } $C_graph->vertices );
+    $C_graph->delete_vertices( grep { $_ != $start }
+                               map  { $_->vertices }
+                               grep { $_->isa( ChemOnomatopist::Group::Monocycle:: ) }
+                                    $C_graph->groups );
     $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } $C_graph->vertices );
 
     my @path_parts;
