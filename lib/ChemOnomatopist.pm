@@ -787,8 +787,8 @@ sub select_mainchain
         # Prefer circular structures
         if( @parents > 1 && (grep { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents) == 1 ) {
             @parents =       grep { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents;
-        } elsif( @parents == 1 && $graph->groups( @parents ) == 1 ) {
-            @parents = $graph->groups( @parents );
+        } elsif( @parents && uniq( map { $graph->groups( $_ ) } @parents ) == 1 ) {
+            @parents = $graph->groups( $parents[0] );
         }
 
         if( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
@@ -805,8 +805,8 @@ sub select_mainchain
                               ChemOnomatopist::Chain->new( $graph, undef, reverse @vertices );
             }
         } elsif( @parents ) {
-            my $copy = $graph->copy; print scalar $copy->vertices;
-            $copy->delete_vertices( map { $_->vertices } $copy->groups ); print scalar $copy->vertices;
+            my $copy = $graph->copy;
+            $copy->delete_vertices( map { $_->vertices } $copy->groups );
             my @paths;
             my $max_value;
             for my $i (0..$#parents) {
