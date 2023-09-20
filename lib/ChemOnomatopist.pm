@@ -787,6 +787,8 @@ sub select_mainchain
         # Prefer circular structures
         if( @parents > 1 && (grep { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents) == 1 ) {
             @parents =       grep { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents;
+        } elsif( @parents == 1 && $graph->groups( @parents ) == 1 ) {
+            @parents = $graph->groups( @parents );
         }
 
         if( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
