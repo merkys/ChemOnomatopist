@@ -162,7 +162,7 @@ sub graph_cycles
 sub graph_has_cycle
 {
     my( $graph ) = @_;
-    return $graph->edges != $graph->vertices - 1;
+    return $graph->edges >= $graph->vertices - 1;
 }
 
 # Finds longest paths in a tree graph.
@@ -341,6 +341,9 @@ sub graph_path_between_vertices
     while( my @leaves = grep { $graph->degree( $_ ) == 1 && $_ != $A && $_ != $B } $graph->vertices ) {
         $graph->delete_vertices( @leaves );
     }
+
+    # No edges means that path does not exist between these two vertices
+    return () unless $graph->edges;
 
     my @path;
     my $vertex = $A;

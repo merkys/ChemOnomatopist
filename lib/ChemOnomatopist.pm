@@ -805,11 +805,14 @@ sub select_mainchain
                               ChemOnomatopist::Chain->new( $graph, undef, reverse @vertices );
             }
         } elsif( @parents ) {
+            my $copy = $graph->copy; print scalar $copy->vertices;
+            $copy->delete_vertices( map { $_->vertices } $copy->groups ); print scalar $copy->vertices;
             my @paths;
             my $max_value;
             for my $i (0..$#parents) {
                 for my $j (($i+1)..$#parents) {
-                    my @path = graph_path_between_vertices( $graph, $parents[$i], $parents[$j] );
+                    my @path = graph_path_between_vertices( $copy, $parents[$i], $parents[$j] );
+                    next unless @path;
                     my $value = (set( @parents ) * set( @path ))->size;
                     if(      !defined $max_value || $max_value < $value ) {
                         @paths = ( \@path );
