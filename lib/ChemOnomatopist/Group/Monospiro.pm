@@ -29,50 +29,47 @@ sub new
              [ Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs ];
     }
 
-    # "Numbering starts in the smaller ring, if one is smaller, at a ring atom next to the spiro atom and proceeds first around that ring, then through the spiro atom and around the second ring."
-    my( $A, $B ) = @components;
-    my @chains;
-    push @chains,
-         ChemOnomatopist::Chain::Circular->new( $graph,
-                                                @$A, $spiro_atom, @$B ),
-         ChemOnomatopist::Chain::Circular->new( $graph,
-                                                @$A, $spiro_atom, reverse(@$B) ),
-         ChemOnomatopist::Chain::Circular->new( $graph,
-                                                reverse(@$A), $spiro_atom, @$B ),
-         ChemOnomatopist::Chain::Circular->new( $graph,
-                                                reverse(@$A), $spiro_atom, reverse(@$B) );
-
-    if( @$A == @$B ) {
-        push @chains,
-             ChemOnomatopist::Chain::Circular->new( $graph,
-                                                    @$B, $spiro_atom, @$A ),
-             ChemOnomatopist::Chain::Circular->new( $graph,
-                                                    @$B, $spiro_atom, reverse(@$A) ),
-             ChemOnomatopist::Chain::Circular->new( $graph,
-                                                    reverse(@$B), $spiro_atom, @$A ),
-             ChemOnomatopist::Chain::Circular->new( $graph,
-                                                    reverse(@$B), $spiro_atom, reverse(@$A) );
-    }
-
-    my( $chain ) = ChemOnomatopist::filter_chains( @chains );
-
-    return bless { graph => $graph,
-                   vertices => [ $chain->vertices ],
-                   spiro_atom => $spiro_atom,
-                   components => \@components },
-                 $class;
+    return bless { graph => $graph, spiro_atom => $spiro_atom, components => \@components }, $class;
 }
 
 sub candidates()
 {
     my( $self ) = @_;
-    return ( $self );
+
+    # "Numbering starts in the smaller ring, if one is smaller, at a ring atom next to the spiro atom and proceeds first around that ring, then through the spiro atom and around the second ring."
+    my $graph = $self->graph;
+    my $spiro_atom = $self->{spiro_atom};
+    my( $A, $B ) = $self->components;
+    my @candidates;
+    push @candidates,
+         $self,
+         bless( { graph => $graph, spiro_atom => $spiro_atom, components => [ $A, [ reverse(@$B) ] ], candidate_for => $self } ),
+         bless( { graph => $graph, spiro_atom => $spiro_atom, components => [ [ reverse(@$A) ], $B ], candidate_for => $self } ),
+         bless( { graph => $graph, spiro_atom => $spiro_atom, components => [ [ reverse(@$A) ], [ reverse(@$B) ] ], candidate_for => $self } );
+
+    if( @$A == @$B ) {
+        push @candidates,
+             bless( { graph => $graph, spiro_atom => $spiro_atom, components => [ $B, $A ], candidate_for => $self } ),
+             bless( { graph => $graph, spiro_atom => $spiro_atom, components => [ $B, [ reverse @$A ] ], candidate_for => $self } ),
+             bless( { graph => $graph, spiro_atom => $spiro_atom, components => [ [ reverse @$B ], $A ], candidate_for => $self } ),
+             bless( { graph => $graph, spiro_atom => $spiro_atom, components => [ [ reverse @$B ], [ reverse @$A ] ], candidate_for => $self } );
+    }
+
+    return @candidates;
 }
 
 sub components()
 {
     my( $self ) = @_;
     return @{$self->{components}};
+}
+
+sub vertices()
+{
+    my( $self ) = @_;
+    my( $A, $B ) = $self->components;
+    my @vertices = ( @$A, $self->{spiro_atom}, @$B );
+    return @vertices;
 }
 
 sub has_form($$)
