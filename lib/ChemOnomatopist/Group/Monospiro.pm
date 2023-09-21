@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Chain::Circular;
 use Graph::Traversal::DFS;
 
 sub new
@@ -33,33 +34,25 @@ sub new
     my( $A, $B ) = @components;
     my @chains;
     push @chains,
-         ChemOnomatopist::Chain->new( $graph,
-                                      undef,
-                                      @$A, $spiro_atom, @$B ),
-         ChemOnomatopist::Chain->new( $graph,
-                                      undef,
-                                      @$A, $spiro_atom, reverse(@$B) ),
-         ChemOnomatopist::Chain->new( $graph,
-                                      undef,
-                                      reverse(@$A), $spiro_atom, @$B ),
-         ChemOnomatopist::Chain->new( $graph,
-                                      undef,
-                                      reverse(@$A), $spiro_atom, reverse(@$B) );
+         ChemOnomatopist::Chain::Circular->new( $graph,
+                                                @$A, $spiro_atom, @$B ),
+         ChemOnomatopist::Chain::Circular->new( $graph,
+                                                @$A, $spiro_atom, reverse(@$B) ),
+         ChemOnomatopist::Chain::Circular->new( $graph,
+                                                reverse(@$A), $spiro_atom, @$B ),
+         ChemOnomatopist::Chain::Circular->new( $graph,
+                                                reverse(@$A), $spiro_atom, reverse(@$B) );
 
     if( @$A == @$B ) {
         push @chains,
-             ChemOnomatopist::Chain->new( $graph,
-                                          undef,
-                                          @$B, $spiro_atom, @$A ),
-             ChemOnomatopist::Chain->new( $graph,
-                                          undef,
-                                          @$B, $spiro_atom, reverse(@$A) ),
-             ChemOnomatopist::Chain->new( $graph,
-                                          undef,
-                                          reverse(@$B), $spiro_atom, @$A ),
-             ChemOnomatopist::Chain->new( $graph,
-                                          undef,
-                                          reverse(@$B), $spiro_atom, reverse(@$A) );
+             ChemOnomatopist::Chain::Circular->new( $graph,
+                                                    @$B, $spiro_atom, @$A ),
+             ChemOnomatopist::Chain::Circular->new( $graph,
+                                                    @$B, $spiro_atom, reverse(@$A) ),
+             ChemOnomatopist::Chain::Circular->new( $graph,
+                                                    reverse(@$B), $spiro_atom, @$A ),
+             ChemOnomatopist::Chain::Circular->new( $graph,
+                                                    reverse(@$B), $spiro_atom, reverse(@$A) );
     }
 
     my( $chain ) = ChemOnomatopist::filter_chains( @chains );
