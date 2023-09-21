@@ -958,7 +958,8 @@ sub select_sidechain
     $C_graph->delete_vertices( grep { $_ != $start && !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 } $C_graph->vertices );
     $C_graph->delete_vertices( grep { $_ != $start }
                                map  { $_->vertices }
-                               grep { $_->isa( ChemOnomatopist::Group::Monocycle:: ) }
+                               grep { $_->isa( ChemOnomatopist::Group::Monocycle:: ) ||
+                                      $_->isa( ChemOnomatopist::Group::Monospiro:: ) }
                                     $C_graph->groups );
     $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } $C_graph->vertices );
 
