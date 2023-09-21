@@ -162,7 +162,7 @@ sub graph_cycles
 sub graph_has_cycle
 {
     my( $graph ) = @_;
-    return $graph->edges >= $graph->vertices - 1;
+    return $graph->edges > $graph->vertices - 1;
 }
 
 # Finds longest paths in a tree graph.
