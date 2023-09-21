@@ -433,12 +433,14 @@ sub find_groups
 
         if( is_element( $atom, 'N' ) && @neighbours == 3 && @N == 1 && @H == 2 ) {
             # Detecting hydrazine
-            my $hydrazine = ChemOnomatopist::Group::Hydrazine->new( copy $graph, $atom, @N );
-            graph_replace_all( $graph, $hydrazine, $atom, @N );
+            my $hydrazine = ChemOnomatopist::Group::Hydrazine->new( $graph, $atom, @N );
+            $graph->add_group( $hydrazine );
         }
     }
 
     for my $atom ($graph->vertices) {
+        next if $graph->groups( $atom );
+
         my @neighbours = $graph->neighbours( $atom );
         my @C  = grep { is_element( $_, 'C' ) } @neighbours;
         my @H  = grep { is_element( $_, 'H' ) } @neighbours;
@@ -591,7 +593,8 @@ sub find_groups
         }
 
         if( !blessed $atom && is_element( $atom, 'N' ) &&
-            @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
+            @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) &&
+            !$graph->groups( $atom ) ) {
             die "cannot process secondary and tertiary amines yet\n";
         }
 
