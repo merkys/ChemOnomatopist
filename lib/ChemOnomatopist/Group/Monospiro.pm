@@ -43,9 +43,9 @@ sub candidates()
     my @candidates;
     push @candidates,
          $self,
-         bless( { graph => $graph, spiro_atom => $spiro_atom, components => [ $A, [ reverse(@$B) ] ], candidate_for => $self } ),
-         bless( { graph => $graph, spiro_atom => $spiro_atom, components => [ [ reverse(@$A) ], $B ], candidate_for => $self } ),
-         bless( { graph => $graph, spiro_atom => $spiro_atom, components => [ [ reverse(@$A) ], [ reverse(@$B) ] ], candidate_for => $self } );
+         bless( { graph => $graph, spiro_atom => $spiro_atom, components => [ $A, [ reverse @$B ] ], candidate_for => $self } ),
+         bless( { graph => $graph, spiro_atom => $spiro_atom, components => [ [ reverse @$A ], $B ], candidate_for => $self } ),
+         bless( { graph => $graph, spiro_atom => $spiro_atom, components => [ [ reverse @$A ], [ reverse @$B ] ], candidate_for => $self } );
 
     if( @$A == @$B ) {
         push @candidates,
