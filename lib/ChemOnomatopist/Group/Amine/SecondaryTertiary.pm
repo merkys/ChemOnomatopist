@@ -12,24 +12,8 @@ use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 sub new
 {
-    my( $class, $graph, @vertices ) = @_;
-    return bless { graph => $graph, vertices => \@vertices }, $class;
-}
-
-sub candidates()
-{
-    my( $self ) = @_;
-
-    my @chains;
-    for ($self->graph->neighbours( $self )) {
-        my $chain = ChemOnomatopist::select_sidechain( $self->graph, $self, $_ );
-        $chain->{candidate_for} = $self;
-        push @chains, ChemOnomatopist::Group::Amine::SecondaryTertiary->new( $self->graph,
-                                                                             $self,
-                                                                             $chain->vertices );
-    }
-
-    return @chains;
+    my( $class, $graph, $atom ) = @_;
+    return bless { graph => $graph, vertices => [ $atom ] }, $class;
 }
 
 sub element() { return 'N' }

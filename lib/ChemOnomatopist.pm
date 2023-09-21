@@ -505,8 +505,8 @@ sub find_groups
 
         # Secondary and tertiary amines
         if( $graph->has_vertex( $atom ) && is_element( $atom, 'N' ) && @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
-            my $amine = ChemOnomatopist::Group::Amine::SecondaryTertiary->new( $graph );
-            graph_replace_all( $graph, $amine, $atom );
+            my $amine = ChemOnomatopist::Group::Amine::SecondaryTertiary->new( $graph, $atom );
+            $graph->add_group( $amine );
         }
 
         # Sulfinyl group and its analogues
