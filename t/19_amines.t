@@ -14,12 +14,12 @@ my @cases = (
     { smiles => 'C(CCN)CCN', iupac => 'pentane-1,5-diamine' },
 
     # From BBv2 P-62.2.2.1
-    { smiles => 'C(C)N(CC)CC', iupac => 'N,N-diethylethanamine' },
-    { smiles => 'ClCCNCCC', iupac => 'N-(2-chloroethyl)propan-1-amine' },
-    { smiles => 'C(C)N(CCCC)CCC', iupac => 'N-ethyl-N-propylbutan-1-amine' },
+    { smiles => 'C(C)N(CC)CC', iupac => 'N,N-diethylethanamine', AUTHOR => 1 },
+    { smiles => 'ClCCNCCC', iupac => 'N-(2-chloroethyl)propan-1-amine', AUTHOR => 1 },
+    { smiles => 'C(C)N(CCCC)CCC', iupac => 'N-ethyl-N-propylbutan-1-amine', AUTHOR => 1 },
 
     # From BBv2 P-62.2.2.2
-    { smiles => 'CC(C#CCN(CCC)CCC)=C', iupac => '4-methyl-N,N-dipropylpent-4-en-2-yn-1-amine' },
+    { smiles => 'CC(C#CCN(CCC)CCC)=C', iupac => '4-methyl-N,N-dipropylpent-4-en-2-yn-1-amine', AUTHOR => 1 },
     { smiles => 'CN(C(C)C=CC1CC=C(CC1)C)C', iupac => 'N,N-dimethyl-4-(4-methylcyclohex-3-en-1-yl)but-3-en-2-amine', AUTHOR => 1 },
 
     { smiles => 'CC(C)C(C)N1CCCCC(C1=O)NC', iupac => '3-(methylamino)-1-(3-methylbutan-2-yl)azepan-2-one', AUTHOR => 1 }, # PubChem 58916315 # FIXME: Misses methyl
