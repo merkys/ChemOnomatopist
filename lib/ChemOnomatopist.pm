@@ -118,9 +118,6 @@ sub get_sidechain_name
 {
     my( $graph, $parent, $start ) = @_;
 
-    # FIXME: Skip groups altogether for now as their processing gets caught in endless cycles
-    return ChemOnomatopist::Name->new( 'GROUP' ) if $graph->groups( $start ); # FIXME: For now
-
     # Record the type of parent bond
     my $parent_bond = '-' if $parent;
     if(                $graph->has_edge_attribute( $parent, $start, 'bond' ) ) {
@@ -135,6 +132,9 @@ sub get_sidechain_name
     my $chain;
     if( blessed $start && $start->isa( ChemOnomatopist::Chain:: ) ) {
         $chain = $start;
+        $chain->parent( $parent ) if $parent;
+    } elsif( $graph->groups( $start ) ) {
+        ( $chain ) = $graph->groups( $start );
         $chain->parent( $parent ) if $parent;
     } else {
         $chain = select_sidechain( $graph, $parent, $start );
