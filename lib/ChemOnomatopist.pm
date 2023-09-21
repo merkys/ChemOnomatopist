@@ -696,13 +696,13 @@ sub find_groups
         # The cycle object is given the original graph to retain the original atom-atom relations
         my $compound;
         if(      join( ',', sort keys %vertices_by_degree ) eq '2' ) {
-            $compound = ChemOnomatopist::Group::Monocycle->new( copy $graph, Graph::Traversal::DFS->new( $core )->dfs );
+            $compound = ChemOnomatopist::Group::Monocycle->new( $graph, Graph::Traversal::DFS->new( $core )->dfs );
         } elsif( ChemOnomatopist::Group::Monospiro->has_form( $core ) ) {
             # BBv2 P-24.2.1 Monospiro alicyclic ring systems
-            $compound = ChemOnomatopist::Group::Monospiro->new( copy $graph, $core->vertices );
+            $compound = ChemOnomatopist::Group::Monospiro->new( $graph, $core->vertices );
         } elsif( ChemOnomatopist::Group::Bicycle->has_form( $core ) ) {
             # Ortho-fused as defined in BBv2 P-25.3.1.1.1
-            $compound = ChemOnomatopist::Group::Bicycle->new( copy $graph, $core->vertices );
+            $compound = ChemOnomatopist::Group::Bicycle->new( $graph, $core->vertices );
         } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,3' ) {
             # Graph::SSSR v0.1.0 does not know how to return unique rings
             my %uniq = map { join( '', sort @$_ ) => $_ } Graph::SSSR::get_SSSR( $core, 8 );
