@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::;
 
 use ChemOnomatopist::Chain;
+use ChemOnomatopist::MolecularGraph;
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
@@ -42,7 +43,8 @@ sub get_name
         # Assume SMILES string
         require Chemistry::OpenSMILES::Parser;
         my $parser = Chemistry::OpenSMILES::Parser->new;
-        ( $graph ) = $parser->parse( $what ); # Taking only the first graph
+        ( $graph ) = map { ChemOnomatopist::MolecularGraph->new( $_ ) }
+                         $parser->parse( $what ); # Taking only the first graph
     }
     die "nothing supplied for get_name()\n" unless $graph;
 
