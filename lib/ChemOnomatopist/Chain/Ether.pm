@@ -3,15 +3,14 @@ package ChemOnomatopist::Chain::Ether;
 use strict;
 use warnings;
 
-# ABSTRACT: Chain of atoms
+# ABSTRACT: Ether chain
 # VERSION
 
+use parent ChemOnomatopist::Chain::;
+
 use ChemOnomatopist;
-use ChemOnomatopist::Chain;
 use ChemOnomatopist::Name;
 use Scalar::Util qw( blessed );
-
-use parent ChemOnomatopist::Chain::;
 
 sub new
 {
