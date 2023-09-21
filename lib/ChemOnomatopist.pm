@@ -431,7 +431,8 @@ sub find_groups
             graph_replace_all( $graph, $guanidine, $atom, @N );
         }
 
-        if( is_element( $atom, 'N' ) && @neighbours == 3 && @N == 1 && @H == 2 ) {
+        if( is_element( $atom, 'N' ) && @neighbours == 3 && @N == 1 && @H == 2 &&
+            all { !is_ring_atom( $graph, $_, -1 ) } ( $atom, @N ) ) {
             # Detecting hydrazine
             my $hydrazine = ChemOnomatopist::Group::Hydrazine->new( $graph, $atom, @N );
             $graph->add_group( $hydrazine );
