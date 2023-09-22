@@ -968,6 +968,8 @@ sub select_sidechain
                                     $C_graph->groups );
     $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } $C_graph->vertices );
 
+    return ChemOnomatopist::Chain->new( $graph, $parent, $start ) unless $C_graph->degree( $start );
+
     my @path_parts;
     for my $neighbour ($C_graph->neighbours( $start )) {
         my $graph_copy = copy $C_graph;
@@ -977,8 +979,6 @@ sub select_sidechain
                  ChemOnomatopist::ChainHalf->new( $graph, undef, $start, @$path );
         }
     }
-
-    return ChemOnomatopist::Chain->new( $graph, $parent, $start ) unless @path_parts;
 
     my @chains;
     if(      $C_graph->degree( $start ) > 1 && (!blessed $start || !$start->is_terminal) ) {
@@ -991,10 +991,9 @@ sub select_sidechain
                 push @chains, ChemOnomatopist::Chain::FromHalves->new( $part1, $part2 );
             }
         }
-    } elsif( $C_graph->degree( $start ) == 1 || (blessed $start && $start->is_terminal) ) {
-        @chains = map { ChemOnomatopist::Chain->new( $graph, $parent, $_->vertices ) } @path_parts;
     } else {
-        return ChemOnomatopist::Chain->new( $graph, $parent, $start );
+        @chains = map { ChemOnomatopist::Chain->new( $graph, $parent, $_->vertices ) }
+                      @path_parts;
     }
 
     die "cannot select a sidechain\n" unless @chains;
