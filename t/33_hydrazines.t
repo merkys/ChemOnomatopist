@@ -8,7 +8,7 @@ use Test::More;
 
 my @cases = (
     # From BBv2 P-68.3.1.2.1
-    { smiles => 'CN(N)C', iupac => '1,1-dimethylhydrazine', AUTHOR => 1 },
+    { smiles => 'CN(N)C', iupac => '1,1-dimethylhydrazine' },
     { smiles => 'C1(=CC=CC=C1)NN', iupac => 'phenylhydrazine', AUTHOR => 1 },
     { smiles => 'N(N)CN' => iupac => '1-hydrazinylmethanamine', AUTHOR => 1 },
     { smiles => 'N(N)C(=O)O', iupac => 'hydrazinecarboxylic acid', AUTHOR => 1 },
