@@ -584,6 +584,7 @@ sub find_groups
                  (any { $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } @groups) &&
                  (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
             # Detecting secondary and tertiary amides
+            # FIXME: This no longer works
             my $amide = ChemOnomatopist::Group::Amide::SecondaryTertiary->new( $graph );
             graph_replace_all( $graph, $amide, $atom, @groups );
         } elsif( is_element( $atom, 'C' ) && @neighbours == 3 && @C == 1 &&
@@ -966,7 +967,6 @@ sub select_sidechain
     $C_graph->delete_vertices( grep { $_ != $start }
                                map  { $_->vertices }
                                     $C_graph->groups );
-    $C_graph->delete_vertices( grep { $_ != $start && blessed $_ && $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } $C_graph->vertices );
 
     return ChemOnomatopist::Chain->new( $graph, $parent, $start ) unless $C_graph->degree( $start );
 
