@@ -506,8 +506,9 @@ sub find_groups
 
         # Secondary and tertiary amines
         if( $graph->has_vertex( $atom ) && is_element( $atom, 'N' ) && @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
-            my $amine = ChemOnomatopist::Group::Amine::SecondaryTertiary->new( $graph, $atom );
-            $graph->add_group( $amine );
+            my $amine = ChemOnomatopist::Group::Amine->new;
+            $amine->{graph} = $graph;
+            graph_replace_all( $graph, $amine, $atom, @H );
         }
 
         # Sulfinyl group and its analogues
@@ -976,7 +977,7 @@ sub select_sidechain
     }
 
     my @chains;
-    if(      $C_graph->degree( $start ) > 1 ) {
+    if(      $C_graph->degree( $start ) > 1 && (!blessed $start || !$start->is_terminal) ) {
         # FIXME: Deduplicate: copied from select_mainchain()
         # Generate all possible chains.
         # FIXME: This needs optimisation.
@@ -986,11 +987,13 @@ sub select_sidechain
                 push @chains, ChemOnomatopist::Chain::FromHalves->new( $part1, $part2 );
             }
         }
-    } elsif( $C_graph->degree( $start ) == 1 ) {
+    } elsif( $C_graph->degree( $start ) == 1 || (blessed $start && $start->is_terminal) ) {
         @chains = map { ChemOnomatopist::Chain->new( $graph, $parent, $_->vertices ) } @path_parts;
     } else {
         return ChemOnomatopist::Chain->new( $graph, $parent, $start );
     }
+
+    die "cannot select a sidechain\n" unless @chains;
 
     # From BBv2 P-29.2
     my $rule_lowest_free_valence = sub {
@@ -1513,7 +1516,9 @@ sub unbranched_chain_name($)
         return $name;
     }
 
-    if( (any { is_element( $_, 'C' ) } @chain) ||
+    if( $chain->isa( ChemOnomatopist::Chain::Amine:: ) ) {
+        $name->append_stem( alkane_chain_name $chain->length - 1 );
+    } elsif( (any { is_element( $_, 'C' ) } @chain) ||
         scalar( uniq map { element $_ } @chain ) > 1 ) {
         $name->append_stem( alkane_chain_name $chain->length );
     }

@@ -110,6 +110,9 @@ sub is_part_of_chain() { return '' }
 # Certain groups can only be expressed as prefixes
 sub is_prefix_only() { return '' }
 
+# Certain groups can only be terminal in chains
+sub is_terminal() { return '' }
+
 sub needs_heteroatom_locants { return 1 }
 sub needs_heteroatom_names { return 1 }
 

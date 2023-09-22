@@ -4,8 +4,10 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Group::Amine;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Graph::Traversal::DFS;
@@ -29,6 +31,8 @@ sub new
     if( (grep { !blessed $_ && !ChemOnomatopist::is_element( $_, 'C' ) } @vertices) == 1 &&
         (grep { !blessed $_ &&  ChemOnomatopist::is_element( $_, 'O' ) } @vertices) == 1 ) {
         $self = ChemOnomatopist::Chain::Ether->new( $graph, $parent, @vertices );
+    } elsif( blessed $vertices[0] && $vertices[0]->isa( ChemOnomatopist::Group::Amine:: ) ) {
+        $self = ChemOnomatopist::Chain::Amine->new( $graph, $parent, @vertices );
     } else {
         $self = { vertices => \@vertices, graph => $graph, cache => {} };
         $self->{parent} = $parent if $parent;
