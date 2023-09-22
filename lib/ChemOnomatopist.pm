@@ -14,7 +14,7 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
-use ChemOnomatopist::Group::Amide::SecondaryTertiary;
+use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine;
 use ChemOnomatopist::Group::Amine::SecondaryTertiary;
 use ChemOnomatopist::Group::Carboxyl;
@@ -578,15 +578,17 @@ sub find_groups
                  (any { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups) &&
                  (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
             # Detecting primary amides
-            my $amide = ChemOnomatopist::Group::Amide->new( $atom );
-            graph_replace_all( $graph, $amide, $atom, @groups );
+            my $amide = ChemOnomatopist::Group::Amide->new( $graph,
+                                                            $atom,
+                                                            (grep { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups) );
+            $graph->add_group( $amide );
         } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
                  (any { $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } @groups) &&
                  (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
             # Detecting secondary and tertiary amides
             # FIXME: This no longer works
-            my $amide = ChemOnomatopist::Group::Amide::SecondaryTertiary->new( $graph );
-            graph_replace_all( $graph, $amide, $atom, @groups );
+            # my $amide = ChemOnomatopist::Group::Amide::SecondaryTertiary->new( $graph );
+            # graph_replace_all( $graph, $amide, $atom, @groups );
         } elsif( is_element( $atom, 'C' ) && @neighbours == 3 && @C == 1 &&
                  @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) && is_element( @groups, 'O' ) &&
                  element(   grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours ) =~ /^(F|Cl|Br|I)$/ ) {
