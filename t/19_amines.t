@@ -13,14 +13,28 @@ my @cases = (
     { smiles => 'C(CN)C=O', iupac => '3-aminopropanal' },
     { smiles => 'C(CCN)CCN', iupac => 'pentane-1,5-diamine', AUTHOR => 1 },
 
+    { smiles => 'CNC', iupac => 'N-methylmethanamine' }, # BBv2 P-52.1.3
+
+    # From BBv2 P-62.2.1.2
+    { smiles => 'CN', iupac => 'methanamine' },
+    { smiles => 'CC(CN)C', iupac => '2-methylpropan-1-amine' },
+
     # From BBv2 P-62.2.2.1
     { smiles => 'C(C)N(CC)CC', iupac => 'N,N-diethylethanamine' },
-    { smiles => 'ClCCNCCC', iupac => 'N-(2-chloroethyl)propan-1-amine', AUTHOR => 1 },
-    { smiles => 'C(C)N(CCCC)CCC', iupac => 'N-ethyl-N-propylbutan-1-amine', AUTHOR => 1 },
+    { smiles => 'ClCCNCCC', iupac => 'N-(2-chloroethyl)propan-1-amine' },
+    { smiles => 'C(C)N(CCCC)CCC', iupac => 'N-ethyl-N-propylbutan-1-amine' },
+    { smiles => 'C1(=CC=CC=C1)NC=1C=NC=CC1', iupac => 'N-phenylpyridin-3-amine', AUTHOR => 1 },
 
     # From BBv2 P-62.2.2.2
     { smiles => 'CC(C#CCN(CCC)CCC)=C', iupac => '4-methyl-N,N-dipropylpent-4-en-2-yn-1-amine', AUTHOR => 1 },
     { smiles => 'CN(C(C)C=CC1CC=C(CC1)C)C', iupac => 'N,N-dimethyl-4-(4-methylcyclohex-3-en-1-yl)but-3-en-2-amine', AUTHOR => 1 },
+    { smiles => 'CN(C(C#C)CC)C', iupac => 'N,N-dimethylpent-1-yn-3-amine', AUTHOR => 1 },
+    { smiles => 'C(=C)NCCCC', iupac => 'N-ethenylbutan-1-amine' },
+    { smiles => 'CC(CN(CC(=C)C)CC(=C)C)(C)C', iupac => 'N-(2,2-dimethylpropyl)-2-methyl-N-(2-methylprop-2-en-1-yl)prop-2-en-1-amine', AUTHOR => 1 },
+    { smiles => 'C1(CCCCC1)NC1=CC=CC=C1', iupac => 'N-cyclohexylaniline', AUTHOR => 1 },
+    { smiles => 'O1C(=CC=C1)NC=1NC=CC1', iupac => 'N-(furan-2-yl)-1H-pyrrol-2-amine', AUTHOR => 1 },
+    { smiles => 'C(CCC)NC1CC1', iupac => 'N-butylcyclopropanamine', AUTHOR => 1 },
+    { smiles => 'C1=C(C=CC=2CCCCC12)NC1=CC2=CC=CC=C2C=C1', iupac => 'N-(5,6,7,8-tetrahydronaphthalen-2-yl)naphthalen-2-amine', AUTHOR => 1 },
 
     { smiles => 'CC(C)C(C)N1CCCCC(C1=O)NC', iupac => '3-(methylamino)-1-(3-methylbutan-2-yl)azepan-2-one', AUTHOR => 1 }, # PubChem 58916315 # FIXME: Misses methyl
     { smiles => 'C1CNCCC1CNCCO', iupac => '2-(piperidin-4-ylmethylamino)ethanol', AUTHOR => 1 }, # PubChem 14950460 # FIXME: Very close
