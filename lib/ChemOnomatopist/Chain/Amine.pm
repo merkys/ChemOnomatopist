@@ -30,7 +30,7 @@ sub suffix()
 {
     my( $self ) = @_;
     return '' if $self->length == 1;
-    return $self->SUPER::suffix;
+    return $self->SUPER::suffix->append_substituent_locant( 1 );
 }
 
 1;
