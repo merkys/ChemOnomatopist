@@ -36,6 +36,9 @@ my @cases = (
     { smiles => 'C(CCC)NC1CC1', iupac => 'N-butylcyclopropanamine', AUTHOR => 1 },
     { smiles => 'C1=C(C=CC=2CCCCC12)NC1=CC2=CC=CC=C2C=C1', iupac => 'N-(5,6,7,8-tetrahydronaphthalen-2-yl)naphthalen-2-amine', AUTHOR => 1 },
 
+    # From BBv2 P-62.2.3
+    { smiles => 'NCCC(=O)O', iupac => '3-aminopropanoic acid' },
+
     { smiles => 'CC(C)C(C)N1CCCCC(C1=O)NC', iupac => '3-(methylamino)-1-(3-methylbutan-2-yl)azepan-2-one', AUTHOR => 1 }, # PubChem 58916315 # FIXME: Misses methyl
     { smiles => 'C1CNCCC1CNCCO', iupac => '2-(piperidin-4-ylmethylamino)ethanol', AUTHOR => 1 }, # PubChem 14950460 # FIXME: Very close
 );
