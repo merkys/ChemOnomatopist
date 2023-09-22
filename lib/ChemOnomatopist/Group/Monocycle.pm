@@ -114,7 +114,8 @@ sub autosymmetric_equivalents()
     # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
     @chains = sort {  ChemOnomatopist::Group::Monocycle::_cmp( $a, $b ) } @chains;
     @chains = grep { !ChemOnomatopist::Group::Monocycle::_cmp( $_, $chains[0] ) } @chains;
-    return map { bless { graph => $self->graph, vertices => [ $_->vertices ] } }  @chains;
+    @chains = map  { bless { graph => $self->graph, vertices => [ $_->vertices ] } } @chains;
+    return ChemOnomatopist::rule_lowest_numbered_locants( @chains );
 }
 
 sub needs_heteroatom_locants()

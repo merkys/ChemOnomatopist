@@ -43,7 +43,7 @@ our @names = (
 
     [ 'CC=CCNC',  'C=CC=CCN',  'quinolizine' ],
 
-    [ 'n:c:n:c:c:c:', 'n:c:n:c:c:', 'purine' ], # Special rules apply
+    [ 'c:n:c:n:c:c:', 'n:c:n:c:c:', 'purine' ], # Special rules apply
 
     [ 'n:n:c:c:c:', 'c:c:c:c:c:c:', '1H-indazole' ],
     [ 'n:c:c:c:c:', 'c:c:c:c:c:c:', '1H-indole' ],
