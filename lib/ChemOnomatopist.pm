@@ -452,7 +452,7 @@ sub find_groups
         my @Te = grep { is_element( $_, 'Te' ) } @neighbours;
 
         # N-based groups
-        if( is_element( $atom, 'N' ) && @neighbours == 3 && @C == 1 && @H == 2 ) {
+        if( is_element( $atom, 'N' ) && !is_ring_atom( $graph, $atom, -1 ) ) {
             # Detecting amines
             my $amine = ChemOnomatopist::Group::Amine->new( @C );
             graph_replace_all( $graph, $amine, $atom, @H );
@@ -505,7 +505,7 @@ sub find_groups
         }
 
         # Secondary and tertiary amines
-        if( $graph->has_vertex( $atom ) && is_element( $atom, 'N' ) && @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
+        if( 0 && $graph->has_vertex( $atom ) && is_element( $atom, 'N' ) && @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
             my $amine = ChemOnomatopist::Group::Amine->new;
             $amine->{graph} = $graph;
             graph_replace_all( $graph, $amine, $atom, @H );
@@ -577,11 +577,9 @@ sub find_groups
         } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
                  (any { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups) &&
                  (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
-            # Detecting primary amides
-            my $amide = ChemOnomatopist::Group::Amide->new( $graph,
-                                                            $atom,
-                                                            (grep { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups) );
-            $graph->add_group( $amide );
+            # Detecting amides
+            my $amide = ChemOnomatopist::Group::Amide->new( $atom );
+            graph_replace_all( $graph, $amide, grep { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups );
         } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
                  (any { $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } @groups) &&
                  (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {

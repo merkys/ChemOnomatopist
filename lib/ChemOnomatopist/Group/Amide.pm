@@ -6,29 +6,14 @@ use warnings;
 # ABSTRACT: Amide group
 # VERSION
 
-use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
+use parent ChemOnomatopist::Group::;
 
-sub new
-{
-    my( $class, $graph, $C, $amine ) = @_;
-    return bless { graph => $graph, C => $C, amine => $amine }, $class;
-}
+sub element() { return 'N' }
 
-sub vertices
-{
-    my( $self ) = @_;
-    my @vertices = ( $self->{C}, $self->{amine} );
-    return @vertices;
-}
+sub is_part_of_chain() { return 1 }
+sub is_terminal() { return 1 }
 
-sub locants(@)
-{
-    my $self = shift;
-    return map { $_ ? $_ : 'N' } @_;
-}
-
-sub prefix { return 'amido' } # FIXME: Not sure if really
+sub prefix { return 'amido' }
 sub suffix { return 'amide' }
-sub multisuffix() { return 'carboxamide' }
 
 1;
