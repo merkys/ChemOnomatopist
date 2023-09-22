@@ -836,7 +836,9 @@ sub select_mainchain
             for my $path (@paths) {
                 my $copy = copy $graph;
                 $copy->delete_path( @$path );
-                $copy->delete_vertices( grep { blessed $_ && !is_element( $_, 'C' ) } $copy->vertices );
+                $copy->delete_vertices( grep { !is_element( $_, 'C' ) && !$_->is_part_of_chain }
+                                        grep { blessed $_ }
+                                             $copy->vertices );
 
                 my $A = shift @$path;
                 my $B = pop @$path;
