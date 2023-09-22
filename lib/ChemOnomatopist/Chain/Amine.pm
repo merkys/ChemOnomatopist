@@ -26,4 +26,11 @@ sub locants(@)
     return map { $_ ? $_ : 'N' } @_;
 }
 
+sub suffix()
+{
+    my( $self ) = @_;
+    return '' if $self->length == 1;
+    return $self->SUPER::suffix;
+}
+
 1;

@@ -978,6 +978,8 @@ sub select_sidechain
         }
     }
 
+    return ChemOnomatopist::Chain->new( $graph, $parent, $start ) unless @path_parts;
+
     my @chains;
     if(      $C_graph->degree( $start ) > 1 && (!blessed $start || !$start->is_terminal) ) {
         # FIXME: Deduplicate: copied from select_mainchain()
