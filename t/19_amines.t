@@ -11,7 +11,7 @@ my @cases = (
     { smiles => 'C(CC(=O)N)C(=O)C(=O)O', iupac => '5-amino-2,5-dioxopentanoic acid', AUTHOR => 1 }, # PubChem 48: seems a bit strange
     { smiles => 'CC(CC(C(=O)O)N)N', iupac => '2,4-diaminopentanoic acid' },
     { smiles => 'C(CN)C=O', iupac => '3-aminopropanal' },
-    { smiles => 'C(CCN)CCN', iupac => 'pentane-1,5-diamine' },
+    { smiles => 'C(CCN)CCN', iupac => 'pentane-1,5-diamine', AUTHOR => 1 },
 
     # From BBv2 P-62.2.2.1
     { smiles => 'C(C)N(CC)CC', iupac => 'N,N-diethylethanamine' },
