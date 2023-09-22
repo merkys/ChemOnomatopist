@@ -32,7 +32,7 @@ sub suffix()
     return '' if $self->length == 1;
 
     my $name = $self->SUPER::suffix;
-    if( $self->length != 3 ) {
+    if( $self->length > 3 ) {
         $name->append_substituent_locant( 1 );
     }
     return $name;
