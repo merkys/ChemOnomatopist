@@ -452,7 +452,13 @@ sub find_groups
         my @Te = grep { is_element( $_, 'Te' ) } @neighbours;
 
         # N-based groups
-        if( is_element( $atom, 'N' ) && @neighbours == 3 && !is_ring_atom( $graph, $atom, -1 ) ) {
+        if( is_element( $atom, 'N' ) && @C == 1 && @O == 2 && $atom->{charge} && $atom->{charge} == 1 &&
+                 (any {  is_double_bond( $graph, $atom, $_ ) } @O) &&
+                 (any { !is_double_bond( $graph, $atom, $_ ) && $_->{charge} && $_->{charge} == -1 } @O) ) {
+            # Detecting nitro
+            my $nitro = ChemOnomatopist::Group::Nitro->new( @C );
+            graph_replace_all( $graph, $nitro, $atom, @O );
+        } elsif( is_element( $atom, 'N' ) && @neighbours == 3 && !is_ring_atom( $graph, $atom, -1 ) ) {
             # Detecting amines
             my $amine = ChemOnomatopist::Group::Amine->new( @C );
             graph_replace_all( $graph, $amine, $atom, @H );
@@ -461,12 +467,6 @@ sub find_groups
             # Detecting imino
             my $imino = ChemOnomatopist::Group::Imino->new( @C );
             graph_replace_all( $graph, $imino, $atom, @H );
-        } elsif( is_element( $atom, 'N' ) && @C == 1 && @O == 2 && $atom->{charge} && $atom->{charge} == 1 &&
-                 (any {  is_double_bond( $graph, $atom, $_ ) } @O) &&
-                 (any { !is_double_bond( $graph, $atom, $_ ) && $_->{charge} && $_->{charge} == -1 } @O) ) {
-            # Detecting nitro
-            my $nitro = ChemOnomatopist::Group::Nitro->new( @C );
-            graph_replace_all( $graph, $nitro, $atom, @O );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 1 && @C == 1 &&
                  $graph->degree( @C ) >= 2 &&
                  is_triple_bond( $graph, $atom, @C ) ) {
