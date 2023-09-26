@@ -710,19 +710,19 @@ sub find_groups
                 (grep { !$_->is_benzene }  @cycles) == 1 &&
                 (all  {  $_->length == 6 } @cycles) &&
                 (any  { !$_->is_hydrocarbon } @cycles) ) {
-                $compound = ChemOnomatopist::Group::Xanthene->new( copy $graph, @cycles );
+                $compound = ChemOnomatopist::Group::Xanthene->new( $graph, @cycles );
             } elsif( @cycles >= 4 &&
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
                      are_isomorphic( graph_without_edge_attributes( $core ),
                                      ChemOnomatopist::Group::Polyacene->ideal_graph( scalar $core->vertices ),
                                      sub { return 'C' } ) ) {
-                $compound = ChemOnomatopist::Group::Polyacene->new( copy $graph, @cycles );
+                $compound = ChemOnomatopist::Group::Polyacene->new( $graph, @cycles );
             } elsif( @cycles >= 4 &&
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
                      are_isomorphic( graph_without_edge_attributes( $core ),
                                      ChemOnomatopist::Group::Polyaphene->ideal_graph( scalar $core->vertices ),
                                      sub { return 'C' } ) ) {
-                $compound = ChemOnomatopist::Group::Polyaphene->new( copy $graph, @cycles );
+                $compound = ChemOnomatopist::Group::Polyaphene->new( $graph, @cycles );
             } else {
                 die "cannot handle complicated cyclic compounds\n";
             }
