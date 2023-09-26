@@ -623,19 +623,10 @@ sub find_groups
     }
 
     # Detecting cyclic compounds
-    # FIXME: Maybe aromatise bonds in cycles in order to simplify their handling further on?
     my @ring_systems = cyclic_components( $graph );
 
-    my $atoms_in_cycles = set();
+    # Aromatising mancudes - experimental
     for my $core (@ring_systems) {
-        # This is a cautious check for bonded separate ring systems, as currently they are handled incorrectly
-        if( $CAUTIOUS &&
-            ($atoms_in_cycles * set( map { $graph->neighbours( $_ ) } $core->vertices ))->members ) {
-            die "cannot handle bonded separate ring systems\n";
-        }
-        $atoms_in_cycles->insert( $core->vertices );
-
-        # Aromatising mancudes - experimental
         my %valences;
         for my $edge ($core->edges) {
             my $order = 1;
