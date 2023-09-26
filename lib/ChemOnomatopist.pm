@@ -579,7 +579,10 @@ sub find_groups
                  (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
             # Detecting amides
             my $amide = ChemOnomatopist::Group::Amide->new( $atom );
-            graph_replace_all( $graph, $amide, @groups );
+            my( $amine ) = grep { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups;
+            my( $ketone ) = grep { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups;
+            $graph->delete_vertices( $ketone );
+            graph_replace_all( $graph, $amide, $amine );
         } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
                  (any { $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } @groups) &&
                  (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
