@@ -14,9 +14,8 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
-use ChemOnomatopist::Group::Amide::SecondaryTertiary;
+use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine;
-use ChemOnomatopist::Group::Amine::SecondaryTertiary;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
@@ -452,7 +451,13 @@ sub find_groups
         my @Te = grep { is_element( $_, 'Te' ) } @neighbours;
 
         # N-based groups
-        if( is_element( $atom, 'N' ) && @neighbours == 3 && @C == 1 && @H == 2 ) {
+        if( is_element( $atom, 'N' ) && @C == 1 && @O == 2 && $atom->{charge} && $atom->{charge} == 1 &&
+                 (any {  is_double_bond( $graph, $atom, $_ ) } @O) &&
+                 (any { !is_double_bond( $graph, $atom, $_ ) && $_->{charge} && $_->{charge} == -1 } @O) ) {
+            # Detecting nitro
+            my $nitro = ChemOnomatopist::Group::Nitro->new( @C );
+            graph_replace_all( $graph, $nitro, $atom, @O );
+        } elsif( is_element( $atom, 'N' ) && @neighbours == 3 && !is_ring_atom( $graph, $atom, -1 ) ) {
             # Detecting amines
             my $amine = ChemOnomatopist::Group::Amine->new( @C );
             graph_replace_all( $graph, $amine, $atom, @H );
@@ -461,12 +466,6 @@ sub find_groups
             # Detecting imino
             my $imino = ChemOnomatopist::Group::Imino->new( @C );
             graph_replace_all( $graph, $imino, $atom, @H );
-        } elsif( is_element( $atom, 'N' ) && @C == 1 && @O == 2 && $atom->{charge} && $atom->{charge} == 1 &&
-                 (any {  is_double_bond( $graph, $atom, $_ ) } @O) &&
-                 (any { !is_double_bond( $graph, $atom, $_ ) && $_->{charge} && $_->{charge} == -1 } @O) ) {
-            # Detecting nitro
-            my $nitro = ChemOnomatopist::Group::Nitro->new( @C );
-            graph_replace_all( $graph, $nitro, $atom, @O );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 1 && @C == 1 &&
                  $graph->degree( @C ) >= 2 &&
                  is_triple_bond( $graph, $atom, @C ) ) {
@@ -505,7 +504,7 @@ sub find_groups
         }
 
         # Secondary and tertiary amines
-        if( $graph->has_vertex( $atom ) && is_element( $atom, 'N' ) && @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
+        if( 0 && $graph->has_vertex( $atom ) && is_element( $atom, 'N' ) && @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
             my $amine = ChemOnomatopist::Group::Amine->new;
             $amine->{graph} = $graph;
             graph_replace_all( $graph, $amine, $atom, @H );
@@ -577,16 +576,12 @@ sub find_groups
         } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
                  (any { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups) &&
                  (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
-            # Detecting primary amides
+            # Detecting amides
             my $amide = ChemOnomatopist::Group::Amide->new( $atom );
-            graph_replace_all( $graph, $amide, $atom, @groups );
-        } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
-                 (any { $_->isa( ChemOnomatopist::Group::Amine::SecondaryTertiary:: ) } @groups) &&
-                 (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
-            # Detecting secondary and tertiary amides
-            # FIXME: This no longer works
-            my $amide = ChemOnomatopist::Group::Amide::SecondaryTertiary->new( $graph );
-            graph_replace_all( $graph, $amide, $atom, @groups );
+            my( $amine ) = grep { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups;
+            my( $ketone ) = grep { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups;
+            $graph->delete_vertices( $ketone );
+            graph_replace_all( $graph, $amide, $amine );
         } elsif( is_element( $atom, 'C' ) && @neighbours == 3 && @C == 1 &&
                  @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) && is_element( @groups, 'O' ) &&
                  element(   grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours ) =~ /^(F|Cl|Br|I)$/ ) {
@@ -1519,8 +1514,9 @@ sub unbranched_chain_name($)
         return $name;
     }
 
-    if( $chain->isa( ChemOnomatopist::Chain::Amine:: ) ) {
-        $name->append_stem( alkane_chain_name $chain->length - 1 );
+    if( $chain->isa( ChemOnomatopist::Chain::Amide:: ) ||
+        $chain->isa( ChemOnomatopist::Chain::Amine:: ) ) {
+        $name->append_stem( alkane_chain_name scalar grep { !blessed $_ } $chain->vertices );
     } elsif( (any { is_element( $_, 'C' ) } @chain) ||
         scalar( uniq map { element $_ } @chain ) > 1 ) {
         $name->append_stem( alkane_chain_name $chain->length );
@@ -1529,7 +1525,7 @@ sub unbranched_chain_name($)
     if( @double ) {
         $name .= 'a' if @double >= 2; # BBv2 P-16.8.2
         if( $chain->needs_multiple_bond_locants || @double > 1 || @triple ) {
-            $name->append_locants( map { $_ + 1 } @double );
+            $name->append_locants( $chain->bond_locants( @double ) );
         }
         if( @double > 1 ) {
             my $multiplier = IUPAC_numerical_multiplier scalar @double;
@@ -1541,7 +1537,7 @@ sub unbranched_chain_name($)
     if( @triple ) {
         $name .= 'a' if @triple >= 2 && !@double; # BBv2 P-16.8.2
         if( $chain->needs_multiple_bond_locants || @triple > 1 || @double ) {
-            $name->append_locants( map { $_ + 1 } @triple );
+            $name->append_locants( $chain->bond_locants( @triple ) );
         }
         if( @triple > 1 ) {
             my $multiplier = IUPAC_numerical_multiplier scalar @triple;

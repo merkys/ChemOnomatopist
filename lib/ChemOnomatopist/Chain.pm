@@ -4,10 +4,10 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Chain::Amide;
 use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Elements qw( %elements );
-use ChemOnomatopist::Group::Amine;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Graph::Traversal::DFS;
@@ -31,6 +31,8 @@ sub new
     if( (grep { !blessed $_ && !ChemOnomatopist::is_element( $_, 'C' ) } @vertices) == 1 &&
         (grep { !blessed $_ &&  ChemOnomatopist::is_element( $_, 'O' ) } @vertices) == 1 ) {
         $self = ChemOnomatopist::Chain::Ether->new( $graph, $parent, @vertices );
+    } elsif( blessed $vertices[0] && $vertices[0]->isa( ChemOnomatopist::Group::Amide:: ) ) {
+        $self = ChemOnomatopist::Chain::Amide->new( $graph, $parent, @vertices );
     } elsif( blessed $vertices[0] && $vertices[0]->isa( ChemOnomatopist::Group::Amine:: ) ) {
         $self = ChemOnomatopist::Chain::Amine->new( $graph, $parent, @vertices );
     } else {
@@ -365,6 +367,12 @@ sub locant_names()
 }
 
 sub locants(@)
+{
+    my $self = shift;
+    return map { $_ + 1 } @_;
+}
+
+sub bond_locants(@)
 {
     my $self = shift;
     return map { $_ + 1 } @_;

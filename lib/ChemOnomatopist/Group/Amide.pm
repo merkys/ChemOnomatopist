@@ -8,12 +8,12 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-sub element() { return 'C' }
+sub element() { return 'N' }
 
 sub is_part_of_chain() { return 1 }
+sub is_terminal() { return 1 }
 
-sub prefix { return 'amido' } # FIXME: Not sure if really
+sub prefix { return 'amido' }
 sub suffix { return 'amide' }
-sub multisuffix() { return 'carboxamide' }
 
 1;

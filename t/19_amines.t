@@ -26,7 +26,7 @@ my @cases = (
     { smiles => 'C1(=CC=CC=C1)NC=1C=NC=CC1', iupac => 'N-phenylpyridin-3-amine', AUTHOR => 1 },
 
     # From BBv2 P-62.2.2.2
-    { smiles => 'CC(C#CCN(CCC)CCC)=C', iupac => '4-methyl-N,N-dipropylpent-4-en-2-yn-1-amine', AUTHOR => 1 },
+    { smiles => 'CC(C#CCN(CCC)CCC)=C', iupac => '4-methyl-N,N-dipropylpent-4-en-2-yn-1-amine' },
     { smiles => 'CN(C(C)C=CC1CC=C(CC1)C)C', iupac => 'N,N-dimethyl-4-(4-methylcyclohex-3-en-1-yl)but-3-en-2-amine', AUTHOR => 1 },
     { smiles => 'CN(C(C#C)CC)C', iupac => 'N,N-dimethylpent-1-yn-3-amine', AUTHOR => 1 },
     { smiles => 'C(=C)NCCCC', iupac => 'N-ethenylbutan-1-amine' },

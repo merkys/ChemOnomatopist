@@ -1,15 +1,17 @@
-package ChemOnomatopist::Chain::Amine;
+package ChemOnomatopist::Chain::Amide;
 
 use strict;
 use warnings;
 
-# ABSTRACT: Amine chain
+# ABSTRACT: Amide chain
 # VERSION
 
 use parent ChemOnomatopist::Chain::;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Name;
+use List::Util qw( all );
 use Scalar::Util qw( blessed );
 
 sub new
@@ -38,8 +40,10 @@ sub suffix()
     return '' if $self->length == 1;
 
     my $name = $self->SUPER::suffix;
-    if( $self->length > 3 ) {
-        $name->append_substituent_locant( 1 );
+    my @vertices = $self->vertices;
+    if( all { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) }
+            ( $vertices[0], $vertices[-1] ) ) {
+        $name->append_multiplier( 'di' );
     }
     return $name;
 }
