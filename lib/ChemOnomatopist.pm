@@ -1522,7 +1522,8 @@ sub unbranched_chain_name($)
         return $name;
     }
 
-    if( $chain->isa( ChemOnomatopist::Chain::Amine:: ) ) {
+    if( $chain->isa( ChemOnomatopist::Chain::Amide:: ) ||
+        $chain->isa( ChemOnomatopist::Chain::Amine:: ) ) {
         $name->append_stem( alkane_chain_name $chain->length - 1 );
     } elsif( (any { is_element( $_, 'C' ) } @chain) ||
         scalar( uniq map { element $_ } @chain ) > 1 ) {
