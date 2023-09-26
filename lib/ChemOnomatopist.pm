@@ -452,7 +452,7 @@ sub find_groups
         my @Te = grep { is_element( $_, 'Te' ) } @neighbours;
 
         # N-based groups
-        if( is_element( $atom, 'N' ) && !is_ring_atom( $graph, $atom, -1 ) ) {
+        if( is_element( $atom, 'N' ) && @neighbours == 3 && !is_ring_atom( $graph, $atom, -1 ) ) {
             # Detecting amines
             my $amine = ChemOnomatopist::Group::Amine->new( @C );
             graph_replace_all( $graph, $amine, $atom, @H );
