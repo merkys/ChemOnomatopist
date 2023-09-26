@@ -504,13 +504,6 @@ sub find_groups
             graph_replace_all( $graph, $XO3, $atom, @O );
         }
 
-        # Secondary and tertiary amines
-        if( 0 && $graph->has_vertex( $atom ) && is_element( $atom, 'N' ) && @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) ) {
-            my $amine = ChemOnomatopist::Group::Amine->new;
-            $amine->{graph} = $graph;
-            graph_replace_all( $graph, $amine, $atom, @H );
-        }
-
         # Sulfinyl group and its analogues
         if( @neighbours == 3 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
             !is_ring_atom( $graph, $atom ) && any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
