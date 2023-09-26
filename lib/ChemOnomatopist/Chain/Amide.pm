@@ -26,6 +26,12 @@ sub locants(@)
     return map { $_ ? $_ : 'N' } @_;
 }
 
+sub bond_locants(@)
+{
+    my $self = shift;
+    return @_;
+}
+
 sub suffix()
 {
     my( $self ) = @_;

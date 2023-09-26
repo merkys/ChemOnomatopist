@@ -1533,7 +1533,7 @@ sub unbranched_chain_name($)
     if( @double ) {
         $name .= 'a' if @double >= 2; # BBv2 P-16.8.2
         if( $chain->needs_multiple_bond_locants || @double > 1 || @triple ) {
-            $name->append_locants( map { $_ + 1 } @double );
+            $name->append_locants( $chain->bond_locants( @double ) );
         }
         if( @double > 1 ) {
             my $multiplier = IUPAC_numerical_multiplier scalar @double;
@@ -1545,7 +1545,7 @@ sub unbranched_chain_name($)
     if( @triple ) {
         $name .= 'a' if @triple >= 2 && !@double; # BBv2 P-16.8.2
         if( $chain->needs_multiple_bond_locants || @triple > 1 || @double ) {
-            $name->append_locants( map { $_ + 1 } @triple );
+            $name->append_locants( $chain->bond_locants( @triple ) );
         }
         if( @triple > 1 ) {
             my $multiplier = IUPAC_numerical_multiplier scalar @triple;
