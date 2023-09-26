@@ -409,6 +409,7 @@ sub get_mainchain_name
     $name =~ s/^(\d,\d-)dimethylbenzene$/$1xylene/;
     $name = 'formic acid' if $name eq 'methanoic acid';
     $name =~ s/ethanoic acid$/acetic acid/; # BBv2 P-65.1.1.1
+    $name =~ s/phenylamine$/aniline/;
 
     return $name;
 }
