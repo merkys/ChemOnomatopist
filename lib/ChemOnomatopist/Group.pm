@@ -6,9 +6,7 @@ use warnings;
 use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
-use ChemOnomatopist::Group::Amide::SecondaryTertiary;
 use ChemOnomatopist::Group::Amine;
-use ChemOnomatopist::Group::Amine::SecondaryTertiary;
 use ChemOnomatopist::Group::Bicycle;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
@@ -51,7 +49,6 @@ our @order = (
     # Acid halides and pseudohalides
     # Amides
     ChemOnomatopist::Group::Amide::,
-    ChemOnomatopist::Group::Amide::SecondaryTertiary::, # FIXME: Is this correct?
     ChemOnomatopist::Group::Guanidine::,
     # Hydrazides
     ChemOnomatopist::Group::Hydrazine::,
@@ -63,7 +60,6 @@ our @order = (
     ChemOnomatopist::Group::Hydroxy::,
     ChemOnomatopist::Group::Hydroperoxide::,
     ChemOnomatopist::Group::Amine::,
-    ChemOnomatopist::Group::Amine::SecondaryTertiary::, # FIXME: Is this correct?
     ChemOnomatopist::Group::Imino::,
 
     # TODO: Classes denoted by the senior atom in heterane nomenclature should go here
