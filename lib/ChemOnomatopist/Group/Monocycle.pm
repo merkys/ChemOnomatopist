@@ -118,6 +118,39 @@ sub autosymmetric_equivalents()
     return ChemOnomatopist::rule_lowest_numbered_locants( @chains );
 }
 
+sub parent(;$)
+{
+    my( $self, $parent ) = @_;
+    my $old_parent = $self->SUPER::parent( $parent );
+
+    # Addition of parent to homogeneous cycles settles the otherwise ambiguous order
+    # TODO: Other autosymmetric monocycles can possibly as well be settled
+    if( $parent && $self->is_homogeneous ) {
+        my @vertices = $self->vertices;
+        my( $position ) = grep { $self->graph->has_edge( $vertices[$_], $parent ) } 0..$#vertices;
+        if( defined $position ) {
+            my @chains =
+                ( ChemOnomatopist::Chain::Circular->new( $self->graph,
+                                                         @vertices[$position..$#vertices],
+                                                         @vertices[0..$position-1] ) );
+            @vertices = reverse @vertices;
+            $position = $#vertices - $position;
+            push @chains,
+                 ChemOnomatopist::Chain::Circular->new( $self->graph,
+                                                        @vertices[$position..$#vertices],
+                                                        @vertices[0..$position-1] );
+            for (@chains) {
+                $_->{parent} = $parent;
+            }
+
+            my( $chain ) = ChemOnomatopist::filter_chains( @chains );
+            $self->{vertices} = [ $chain->vertices ];
+        }
+    }
+
+    return $old_parent;
+}
+
 sub needs_heteroatom_locants()
 {
     my( $self ) = @_;

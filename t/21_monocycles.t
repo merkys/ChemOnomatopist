@@ -105,12 +105,12 @@ my @cases = (
     { smiles => 'O=C1NC(=O)NC=C1C', iupac => '5-methylpyrimidine-2,4(1H,3H)-dione', AUTHOR => 1 }, # thymine
     { smiles => 'c1cc(oc1)C=O', iupac => 'furan-2-carbaldehyde', AUTHOR => 1 }, # furfural
 
-    { smiles => 'O(c1cc(cc(OC)c1OC)CCN)C', iupac => '2-(3,4,5-trimethoxyphenyl)ethanamine', AUTHOR => 1 }, # mescaline, SMILES from Wikipedia
-    { smiles => 'COC=1C=C(C=C(C1OC)OC)CCN', iupac => '2-(3,4,5-trimethoxyphenyl)ethanamine', AUTHOR => 1 }, # mescaline
+    { smiles => 'O(c1cc(cc(OC)c1OC)CCN)C', iupac => '2-(3,4,5-trimethoxyphenyl)ethanamine' }, # mescaline, SMILES from Wikipedia
+    { smiles => 'COC=1C=C(C=C(C1OC)OC)CCN', iupac => '2-(3,4,5-trimethoxyphenyl)ethanamine' }, # mescaline
 
     { smiles => 'C1CCCCC1C=O', iupac => 'cyclohexanecarbaldehyde', AUTHOR => 1 }, # From BBv2 P-66.6.1.1.3
 
-    { smiles => 'S=C(CC1CC(CCC1)CC(CC)=O)CC', iupac => '1-[3-(2-sulfanylidenebutyl)cyclohexyl]butan-2-one', AUTHOR => 1 }, # From BBv2 P-64.7.3
+    { smiles => 'S=C(CC1CC(CCC1)CC(CC)=O)CC', iupac => '1-[3-(2-sulfanylidenebutyl)cyclohexyl]butan-2-one' }, # From BBv2 P-64.7.3
 
     { smiles => 'C1=CC(=CC=C1F)Cl(=O)(=O)=O', iupac => '1-fluoro-4-perchlorylbenzene' }, # PubChem 24972904
     { smiles => 'CCC1CN1Cl(=O)(=O)=O', iupac => '2-ethyl-1-perchlorylaziridine', AUTHOR => 1 }, # PubChem 24973518
