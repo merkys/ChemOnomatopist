@@ -383,11 +383,12 @@ sub get_mainchain_name
 
     my $isotopes = '';
     for my $isotope (sort { cmp_isotopes( $a, $b ) } keys %isotopes) {
-        if( $chain->needs_heteroatom_locants ) { # FIXME: Is this right?
+        if( $chain->needs_substituent_locants ) { # FIXME: Is this right?
             $isotopes .= join( ',', $chain->locants( @{$isotopes{$isotope}} ) ) . '-';
         }
 
         $isotopes .= $isotope;
+        $isotopes .= scalar @{$isotopes{$isotope}} if @{$isotopes{$isotope}} > 1;
     }
     $name .= "($isotopes)" if $isotopes ne '';
 
