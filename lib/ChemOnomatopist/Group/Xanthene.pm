@@ -77,7 +77,23 @@ sub locants(@)
 sub needs_heteroatom_locants() { return '' }
 sub needs_heteroatom_names() { return '' }
 
-sub prefix() { return $_[0]->suffix }
+sub prefix()
+{
+    my( $self ) = @_;
+
+    my $name = $self->suffix;
+    $name->[-1]{value} =~ s/e$//;
+
+    if( $self->parent ) {
+        my @vertices = $self->vertices;
+        my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
+        die "unknown locant in multicyclic compound\n" unless defined $position;
+        $name->append_substituent_locant( $self->locants( $position ) );
+    }
+
+    $name .= 'yl';
+    return $name;
+}
 
 sub suffix()
 {
