@@ -382,7 +382,7 @@ sub get_mainchain_name
     }
 
     my $isotopes = '';
-    for my $isotope (sort { $a <=> $b } keys %isotopes) {
+    for my $isotope (sort { cmp_isotopes( $a, $b ) } keys %isotopes) {
         if( $chain->needs_heteroatom_locants ) { # FIXME: Is this right?
             $isotopes .= join( ',', $chain->locants( @{$isotopes{$isotope}} ) ) . '-';
         }
@@ -1361,6 +1361,20 @@ sub cmp_heteroatom_seniority
     }
 
     return 0;
+}
+
+# BBv2 P-82.2.1
+sub cmp_isotopes
+{
+    my @mass;
+    my @symbol;
+    for (@_) {
+        if( /^(\d+)(\D+)$/ ) {
+            push @mass, $1;
+            push @symbol, $2;
+        }
+    }
+    return $symbol[0] cmp $symbol[1] || $mass[0] cmp $mass[1];
 }
 
 # Sorts given names only based on alphabetical part of the name.
