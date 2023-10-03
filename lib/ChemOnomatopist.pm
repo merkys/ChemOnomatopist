@@ -152,14 +152,19 @@ sub get_sidechain_name
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_sidechain_name()
     my %attachments;
-    my %heteroatoms;
     my %attachment_objects;
+    my %heteroatoms;
+    my %isotopes;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
 
         if( !blessed $atom && !is_element( $atom, 'C' ) &&
             $atom->{symbol} && exists $elements{$atom->{symbol}} ) {
             push @{$heteroatoms{$atom->{symbol}}}, $i;
+        }
+
+        if( !blessed $atom && exists $atom->{isotope} ) {
+            push @{$isotopes{$atom->{isotope} . element( $atom )}}, $i;
         }
 
         for my $neighbour ($graph->neighbours( $atom )) {
@@ -221,6 +226,18 @@ sub get_sidechain_name
             $name->append_element( $elements{$element}->{prefix} );
         }
     }
+
+    # Attaching isotopes
+    my $isotopes = '';
+    for my $isotope (sort { cmp_isotopes( $a, $b ) } keys %isotopes) {
+        if( $chain->needs_substituent_locants ) { # FIXME: Is this right?
+            $isotopes .= join( ',', $chain->locants( @{$isotopes{$isotope}} ) ) . '-';
+        }
+
+        $isotopes .= $isotope;
+        $isotopes .= scalar @{$isotopes{$isotope}} if @{$isotopes{$isotope}} > 1;
+    }
+    $name .= "($isotopes)" if $isotopes ne '';
 
     if( $chain->isa( ChemOnomatopist::Group:: ) ) {
         my $prefix = $chain->prefix( $parent );
@@ -381,6 +398,7 @@ sub get_mainchain_name
         }
     }
 
+    # Attaching isotopes
     my $isotopes = '';
     for my $isotope (sort { cmp_isotopes( $a, $b ) } keys %isotopes) {
         if( $chain->needs_substituent_locants ) { # FIXME: Is this right?
