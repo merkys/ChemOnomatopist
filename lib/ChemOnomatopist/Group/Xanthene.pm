@@ -112,7 +112,7 @@ sub suffix()
     } elsif( @heteroatoms == 2 && $heteroatoms[0] eq $heteroatoms[1] ) {
         my $name = $elements{$heteroatoms[0]}->{prefix};
         $name =~ s/a$//;
-        return $name . 'anthrene';
+        return ChemOnomatopist::Name::Part::Stem->new( $name . 'anthrene' )->to_name;
     } elsif( @heteroatoms == 2 && $heteroatoms[1] eq 'N' ) {
         # BBv2 P-25.2.2.3
         my $name = ChemOnomatopist::Name::Part::Locants->new( '10H-' )->to_name;
@@ -126,15 +126,15 @@ sub suffix()
         if(      any { $heteroatoms[1] eq $_ } qw( Se Te ) ) {
             my $stem = 'phenoxa' . $elements{$heteroatoms[1]}->{prefix};
             $stem =~ s/a$/ine/;
-            return $stem;
+            return ChemOnomatopist::Name::Part::Stem->new( $stem )->to_name;
         } elsif( any { $heteroatoms[1] eq $_ } qw( P As Sb ) ) {
             my $stem = 'phenoxa' . $elements{$heteroatoms[1]}->{prefix};
             $stem =~ s/a$/inine/;
-            return $stem;
+            return ChemOnomatopist::Name::Part::Stem->new( $stem )->to_name;
         }
     } elsif( @heteroatoms == 2 && $heteroatoms[0] eq 'S' && $heteroatoms[1] eq 'As' ) {
         # BBv2 P-25.2.2.3
-        return 'phenothiarsinine';
+        return ChemOnomatopist::Name::Part::Stem->new( 'phenothiarsinine' )->to_name;
     }
 }
 
