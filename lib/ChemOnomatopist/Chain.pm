@@ -188,10 +188,11 @@ sub max_valence()
 
     my $max_valence = 0;
     for my $vertex ($self->vertices) {
-        next if blessed $vertex;
-        next if !exists $elements{ucfirst $vertex->{symbol}};
-        next if !exists $elements{ucfirst $vertex->{symbol}}->{standard_bonding_number};
-        $max_valence += $elements{ucfirst $vertex->{symbol}}->{standard_bonding_number};
+        my $element = ChemOnomatopist::element( $vertex );
+        next unless $element;
+        next if !exists $elements{$element};
+        next if !exists $elements{$element}->{standard_bonding_number};
+        $max_valence += $elements{$element}->{standard_bonding_number};
     }
 
     for my $bond ($self->bonds) {
