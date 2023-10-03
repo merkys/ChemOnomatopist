@@ -167,6 +167,12 @@ sub get_sidechain_name
             push @{$isotopes{$atom->{isotope} . element( $atom )}}, $i;
         }
 
+        if( exists $atom->{h_isotope} && grep { defined $_ } @{$atom->{h_isotope}} ) {
+            for (grep { defined $_ } @{$atom->{h_isotope}}) {
+                push @{$isotopes{$_ . 'H'}}, $i;
+            }
+        }
+
         for my $neighbour ($graph->neighbours( $atom )) {
             next if any { $neighbour == $_ } @chain; # Skip atoms from this chain
             next if $parent && $neighbour == $parent;
@@ -235,7 +241,7 @@ sub get_sidechain_name
         }
 
         $isotopes .= $isotope;
-        $isotopes .= scalar @{$isotopes{$isotope}} if @{$isotopes{$isotope}} > 1;
+        $isotopes .= scalar @{$isotopes{$isotope}} if @{$isotopes{$isotope}} > 1 || $isotope =~ /H$/;
     }
     $name .= "($isotopes)" if $isotopes ne '';
 
@@ -307,6 +313,12 @@ sub get_mainchain_name
 
         if( exists $atom->{isotope} ) {
             push @{$isotopes{$atom->{isotope} . element( $atom )}}, $i;
+        }
+
+        if( exists $atom->{h_isotope} && grep { defined $_ } @{$atom->{h_isotope}} ) {
+            for (grep { defined $_ } @{$atom->{h_isotope}}) {
+                push @{$isotopes{$_ . 'H'}}, $i;
+            }
         }
     }
 
@@ -406,7 +418,7 @@ sub get_mainchain_name
         }
 
         $isotopes .= $isotope;
-        $isotopes .= scalar @{$isotopes{$isotope}} if @{$isotopes{$isotope}} > 1;
+        $isotopes .= scalar @{$isotopes{$isotope}} if @{$isotopes{$isotope}} > 1 || $isotope =~ /H$/;
     }
     $name .= "($isotopes)" if $isotopes ne '';
 
@@ -658,6 +670,7 @@ sub find_groups
         my( $parent ) = $graph->neighbours( $H );
         $parent->{hcount} = 0 unless exists $parent->{hcount};
         $parent->{hcount}++;
+        push @{$parent->{h_isotope}}, $H->{isotope};
         $graph->delete_vertex( $H );
     }
 

@@ -9,7 +9,7 @@ use Test::More;
 my @cases = (
     # From BBv2 P-82.2.1
     { smiles => '[14CH4]', iupac => '(14C)methane' },
-    { smiles => 'C[2H]', iupac => '(2H1)methane', AUTHOR => 1 },
+    { smiles => 'C[2H]', iupac => '(2H1)methane' },
     { smiles => 'C1(=CC=CC=C1)[13C]([13CH3])=O', iupac => '1-phenyl(1,2-13C2)ethan-1-one' },
     { smiles => '[13CH3]C1=C(C=CC=C1)[13CH3]', iupac => '1,2-di[(13C)methyl]benzene', AUTHOR => 1 },
     { smiles => '[13CH3]C1=[13CH]C=CC=C1', iupac => '1-(13C)methyl(2-13C)benzene', AUTHOR => 1 },
