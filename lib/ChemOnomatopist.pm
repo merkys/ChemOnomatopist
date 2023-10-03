@@ -256,7 +256,7 @@ sub get_sidechain_name
         $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Dirty
     }
 
-    if( @chain > 1 || !blessed $chain[0] ) { # CHECKME: Should not this be more general?
+    if( @chain > 1 || !blessed $chain[0] ) { # Groups converted to chains can add suffixes themselves
         $name .= 'idene' if $parent_bond && $parent_bond eq '=';
         $name .= 'idyne' if $parent_bond && $parent_bond eq '#';
     }
