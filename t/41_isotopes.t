@@ -14,6 +14,7 @@ my @cases = (
     { smiles => '[13CH3]C1=C(C=CC=C1)[13CH3]', iupac => '1,2-di[(13C)methyl]benzene', AUTHOR => 1 },
     { smiles => '[13CH3]C1=[13CH]C=CC=C1', iupac => '1-(13C)methyl(2-13C)benzene', AUTHOR => 1 },
     { smiles => 'N[14CH2]C1(CCCC1)O', iupac => '1-[amino(14C)methyl]cyclopentan-1-ol' },
+    { smiles => 'S1C([14CH2]CC1)C1=CC=NC=C1', iupac => '4-[(3-14C)thiolan-2-yl]pyridine' },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
