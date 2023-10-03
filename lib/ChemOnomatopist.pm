@@ -275,14 +275,22 @@ sub get_mainchain_name
     my @groups = most_senior_groups( $graph );
     my $most_senior_group = blessed $groups[0] if @groups;
 
-    # Collect the heteroatoms in the chain
+    # Collect the heteroatoms and isotopes in the chain
     my %heteroatoms;
+    my %isotopes;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         next if blessed $atom;
-        next if is_element( $atom, 'C' );
-        next unless defined element( $atom ) && exists $elements{element( $atom )};
-        push @{$heteroatoms{element( $atom )}}, $i;
+
+        if( !is_element( $atom, 'C' ) &&
+            defined element( $atom ) &&
+            exists $elements{element( $atom )} ) {
+            push @{$heteroatoms{element( $atom )}}, $i;
+        }
+
+        if( exists $atom->{isotope} ) {
+            push @{$isotopes{$atom->{isotope} . element( $atom )}}, $i;
+        }
     }
 
     $graph = copy $chain->graph;
@@ -372,6 +380,16 @@ sub get_mainchain_name
             $name->append_element( $elements{$element}->{prefix} );
         }
     }
+
+    my $isotopes = '';
+    for my $isotope (sort { $a <=> $b } keys %isotopes) {
+        if( $chain->needs_heteroatom_locants ) { # FIXME: Is this right?
+            $isotopes .= join( ',', $chain->locants( @{$isotopes{$isotope}} ) ) . '-';
+        }
+
+        $isotopes .= $isotope;
+    }
+    $name .= "($isotopes)" if $isotopes ne '';
 
     $name .= $chain->suffix;
 
