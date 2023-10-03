@@ -66,6 +66,7 @@ our @order = (
 
     # FIXME: The following order is not written anywhere
     # TODO: Should be implemented as per BBv2 P-25.8.1
+    # Most likely these are incorrectly implemented as instances of ChemOnomatopist::Group.
     ChemOnomatopist::Group::Polyacene::,
     ChemOnomatopist::Group::Polyaphene::,
     ChemOnomatopist::Group::Xanthene::,
