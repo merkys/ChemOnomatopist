@@ -77,7 +77,9 @@ sub locants(@)
 sub needs_heteroatom_locants() { return '' }
 sub needs_heteroatom_names() { return '' }
 
-sub prefix()
+sub prefix() { return $_[0]->suffix }
+
+sub suffix()
 {
     my( $self ) = @_;
 
@@ -119,7 +121,5 @@ sub prefix()
         return 'phenothiarsinine';
     }
 }
-
-sub suffix() { return $_[0]->prefix }
 
 1;
