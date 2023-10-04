@@ -6,7 +6,7 @@ use warnings;
 # ABSTRACT: Polyacene
 # VERSION
 
-use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
+use parent ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist::Util::Graph qw( subgraph );
 use Graph::Undirected;

@@ -6,7 +6,7 @@ use warnings;
 # ABSTRACT: Polyaphene
 # VERSION
 
-use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
+use parent ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist::Util::Graph qw(
     merge_graphs

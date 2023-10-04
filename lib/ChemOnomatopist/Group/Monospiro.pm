@@ -6,7 +6,7 @@ use warnings;
 # ABSTRACT: Monospiro compound
 # VERSION
 
-use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
+use parent ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist;
 use Graph::Traversal::DFS;

@@ -21,7 +21,7 @@ use List::Util qw( all any min uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
-use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
+use parent ChemOnomatopist::Chain::Circular::;
 
 # From BBv2 P-25.2.1
 our @names = (

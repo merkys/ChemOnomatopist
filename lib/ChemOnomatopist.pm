@@ -842,7 +842,6 @@ sub select_mainchain
     # POIs are atoms connected to the most senior groups, if any
     my @groups = most_senior_groups( $graph );
     # FIXME: This is suboptimal as some actions are done twice - transition is underway
-    @groups = $graph->groups unless @groups;
     my( $most_senior_group ) = sort { ChemOnomatopist::Group::cmp( $a, $b ) } @groups;
     @groups = grep { !ChemOnomatopist::Group::cmp( $_, $most_senior_group ) } @groups;
     $most_senior_group = blessed $most_senior_group if $most_senior_group;
@@ -947,6 +946,8 @@ sub select_mainchain
         } else {
             die "cannot determine the parent structure\n";
         }
+    } elsif( $graph->groups ) {
+        @chains = map { $_->can( 'candidates' ) ? $_->candidates : $_ } $graph->groups; # FIXME: This is a hack
     } else {
         # Here the candidate halves for the longest (and "best") path are placed in @path_parts.
         # Each of candidate halves start with center atom.
@@ -1365,7 +1366,10 @@ sub most_senior_groups
                       @vertices;
 
     # Attach the supra-vertex groups if no "simple" groups are found
-    push @groups, $graph->groups if !@groups && $graph && $graph->isa( ChemOnomatopist::MolecularGraph:: );
+    # TODO: For now grep is used, in future it should not be used
+    if( !@groups && $graph && $graph->isa( ChemOnomatopist::MolecularGraph:: ) ) {
+        push @groups, grep { $_->isa( ChemOnomatopist::Group:: ) } $graph->groups;
+    }
 
     return unless @groups;
 

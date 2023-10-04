@@ -14,6 +14,7 @@ use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_single_bond );
 use List::Util qw( all any uniq );
 use Scalar::Util qw( blessed );
+use Set::Object qw( set );
 
 use parent ChemOnomatopist::Chain::;
 

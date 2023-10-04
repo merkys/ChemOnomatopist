@@ -6,7 +6,7 @@ use warnings;
 # ABSTRACT: Monocyclic group
 # VERSION
 
-use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
+use parent ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Elements qw( %elements );

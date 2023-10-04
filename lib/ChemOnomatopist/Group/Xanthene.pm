@@ -6,7 +6,7 @@ use warnings;
 # ABSTRACT: Xanthene or its close derivative
 # VERSION
 
-use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
+use parent ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Util::Graph qw( subgraph );
