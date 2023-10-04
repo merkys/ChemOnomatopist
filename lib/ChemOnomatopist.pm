@@ -838,8 +838,13 @@ sub select_mainchain
     my( $graph ) = @_;
 
     # Find the most senior group, undefined if alkane
+    # FIXME: This is suboptimal as some actions are done twice - transition is underway
     my @groups = most_senior_groups( $graph );
-    my $most_senior_group = blessed $groups[0] if @groups;
+    @groups = $graph->groups unless @groups;
+    my( $most_senior_group ) = sort { ChemOnomatopist::Group::cmp( $a, $b ) } @groups;
+    @groups = grep { !ChemOnomatopist::Group::cmp( $_, $most_senior_group ) } @groups;
+
+    $most_senior_group = blessed $most_senior_group if $most_senior_group;
 
     my @chains;
     if( @groups ) {
