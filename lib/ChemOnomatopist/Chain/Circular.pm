@@ -3,7 +3,7 @@ package ChemOnomatopist::Chain::Circular;
 use strict;
 use warnings;
 
-# ABSTRACT: Circular chain
+# ABSTRACT: Chain whose first and last members are connected
 # VERSION
 
 use ChemOnomatopist;
