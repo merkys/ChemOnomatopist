@@ -515,30 +515,30 @@ sub find_groups
                  (any {  is_double_bond( $graph, $atom, $_ ) } @O) &&
                  (any { !is_double_bond( $graph, $atom, $_ ) && $_->{charge} && $_->{charge} == -1 } @O) ) {
             # Detecting nitro
-            my $nitro = ChemOnomatopist::Group::Nitro->new( @C );
+            my $nitro = ChemOnomatopist::Group::Nitro->new;
             graph_replace( $graph, $nitro, $atom, @O );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 3 && !is_ring_atom( $graph, $atom, -1 ) ) {
             # Detecting amines
-            my $amine = ChemOnomatopist::Group::Amine->new( @C );
+            my $amine = ChemOnomatopist::Group::Amine->new;
             graph_replace( $graph, $amine, $atom, @H );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C == 1 && @H == 1 &&
                  is_double_bond( $graph, $atom, @C ) ) {
             # Detecting imino
-            my $imino = ChemOnomatopist::Group::Imino->new( @C );
+            my $imino = ChemOnomatopist::Group::Imino->new;
             graph_replace( $graph, $imino, $atom, @H );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 1 && @C == 1 &&
                  $graph->degree( @C ) >= 2 &&
                  is_triple_bond( $graph, $atom, @C ) ) {
             # Detecting cyanide
             my( $C ) = grep { $_ != $atom } $graph->neighbours( @C );
-            my $cyanide = ChemOnomatopist::Group::Cyanide->new( $C );
+            my $cyanide = ChemOnomatopist::Group::Cyanide->new;
             graph_replace( $graph, $cyanide, $atom, @C );
         }
 
         # Hydroxy groups and their chalcogen analogues
         if( @neighbours == 2 && ( @C || @N || @O || @S || @Se || @Te ) && @H == 1 &&
             any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
-            my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C, @N, @O, @S, @Se, @Te, $atom );
+            my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( element( $atom ) );
             graph_replace( $graph, $hydroxy, $atom, @H );
         }
 
@@ -552,7 +552,7 @@ sub find_groups
         # Nitroso and its analogues
         if( @neighbours == 2 && @C == 1 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
             any { is_element( $atom, $_ ) } qw( Br Cl F I N ) ) {
-            my $nitroso = ChemOnomatopist::Group::Nitroso->new( @C, $atom );
+            my $nitroso = ChemOnomatopist::Group::Nitroso->new( element( $atom ) );
             graph_replace( $graph, $nitroso, $atom, @O );
         }
 
