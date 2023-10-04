@@ -148,7 +148,7 @@ sub rule_greatest_number_of_most_senior_heteroatoms
 # Compare seniority of two objects
 sub cmp
 {
-    my( $A, $B ) = @_; # print "$A $B";
+    my( $A, $B ) = @_;
 
     my( $A_pos ) = grep { $A->isa( $order[$_] ) } 0..$#order;
     my( $B_pos ) = grep { $B->isa( $order[$_] ) } 0..$#order;
@@ -170,6 +170,7 @@ sub cmp
 
     # BBv2 P-41
     # First, the chain with the most senior atom wins
+    # FIXME: Select just by seniority, not by number
     my @chains = rule_greatest_number_of_most_senior_heteroatoms( $A, $B );
     return ($chains[0] == $B) * 2 - 1 if @chains;
 
@@ -180,7 +181,7 @@ sub cmp
                $A->isa( ChemOnomatopist::Chain::Circular:: );
     }
 
-    # TODO: ...
+    # TODO: The remaining rules from P-41
 
     die "cannot compare\n";
 }
