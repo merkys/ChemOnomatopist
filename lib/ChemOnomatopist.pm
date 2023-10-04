@@ -1335,15 +1335,19 @@ sub most_senior_groups
 {
     my( @vertices ) = @_;
 
-    my @groups;
+    my $graph;
     if( @vertices == 1 && blessed $vertices[0] && $vertices[0]->isa( Graph::Undirected:: ) ) {
         # Graph given instead of an array of vertices
-        @groups = $vertices[0]->groups if $vertices[0]->isa( ChemOnomatopist::MolecularGraph:: );
-        @vertices = $vertices[0]->vertices;
+        $graph = shift @vertices;
+        @vertices = $graph->vertices;
     }
 
-    push @groups,
-         grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) && !$_->is_prefix_only } @vertices;
+    my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) && !$_->is_prefix_only }
+                      @vertices;
+
+    # Attach the supra-vertex groups if no "simple" groups are found
+    push @groups, $graph->groups if !@groups && $graph && $graph->isa( ChemOnomatopist::MolecularGraph:: );
+
     return unless @groups;
 
     my( $most_senior_group ) = sort { ChemOnomatopist::Group::cmp( $a, $b ) } @groups;
