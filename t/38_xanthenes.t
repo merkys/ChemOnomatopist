@@ -18,6 +18,8 @@ my @cases = (
     { smiles => 'ClC1=CC=2OC3=CC(=C(C=C3OC2C=C1Cl)Cl)Cl', iupac => '2,3,7,8-tetrachlorooxanthrene', AUTHOR => 1 }, # From Wikipedia 2,3,7,8-Tetrachlorodibenzodioxin
     { smiles => 'ClC=1C(=C(C(=C2OC=3C(=C(C(=C(C3OC12)Cl)Cl)Cl)Cl)Cl)Cl)Cl', iupac => 'octachlorooxanthrene', AUTHOR => 1 }, # From Wikipedia Octachlorodibenzodioxin
     { smiles => 'ClC1=C(C(=C(C=2OC3=C(C(=C(C=C3OC12)Cl)Cl)Cl)Cl)Cl)Cl', iupac => '1,2,3,4,6,7,8-heptachlorooxanthrene', AUTHOR => 1 }, # From Wikipedia Heptachlorodibenzo-p-dioxin
+
+    { smiles => 'C1CCN(CC1)CCCC2C3=CC=CC=C3SC4=CC=CC=C24', iupac => '1-[3-(9H-thioxanthen-9-yl)propyl]piperidine' }, # PubChem 155569813
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};

@@ -126,7 +126,7 @@ sub C {
     return $self->is_part_of_chain ? $self : $self->{C};
 }
 
-sub rule_most_senior_heteroatom
+sub rule_greatest_number_of_most_senior_heteroatoms
 {
     my( @chains ) = @_;
 
@@ -134,11 +134,15 @@ sub rule_most_senior_heteroatom
     my @element_order = qw( N P As Sb Bi Si Ge Sn Pb B Al Ga In Tl O S Se Te );
     my %element_order = map { $element_order[$_] => $_ } 0..$#element_order;
 
-    my( $max_value ) = sort { $element_order{$a} <=> $element_order{$b} }
-                       grep { exists $element_order{$_} }
-                       map  { $_->heteroatoms } @chains;
-    return @chains unless $max_value;
-    return grep { any { $_ eq $max_value } $_->heteroatoms } @chains;
+    my( $most_senior ) = sort { $element_order{$a} <=> $element_order{$b} }
+                         grep { exists $element_order{$_} }
+                         map  { $_->heteroatoms } @chains;
+    return @chains unless $most_senior;
+
+    my( $max_value ) = reverse sort map { scalar( grep { $_ eq $most_senior } $_->heteroatoms ) }
+                                        @chains;
+    return grep { scalar( grep { $_ eq $most_senior } $_->heteroatoms ) == $max_value }
+                @chains;
 }
 
 # Compare seniority of two objects
@@ -165,9 +169,11 @@ sub cmp
     }
 
     # BBv2 P-41
-    # TODO: First, the chain with the most senior atom wins
+    # First, the chain with the most senior atom wins
+    my @chains = rule_greatest_number_of_most_senior_heteroatoms( $A, $B );
+    return ($chains[0] == $B) * 2 - 1 if @chains;
 
-    # Then order is heterocycles, polyheteroatom, heteroatom
+    # Second, the order is heterocycles, polyheteroatom, heteroatom
     if( $A->isa( ChemOnomatopist::Chain::Circular:: ) + 0 ^
         $B->isa( ChemOnomatopist::Chain::Circular:: ) + 0 ) {
         return $B->isa( ChemOnomatopist::Chain::Circular:: ) <=>
