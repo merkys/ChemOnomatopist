@@ -837,20 +837,34 @@ sub select_mainchain
 {
     my( $graph ) = @_;
 
-    # Find the most senior group, undefined if alkane
-    # FIXME: This is suboptimal as some actions are done twice - transition is underway
+    my @POI; # Points of interest
+
+    # POIs are atoms connected to the most senior groups, if any
     my @groups = most_senior_groups( $graph );
+    # FIXME: This is suboptimal as some actions are done twice - transition is underway
     @groups = $graph->groups unless @groups;
     my( $most_senior_group ) = sort { ChemOnomatopist::Group::cmp( $a, $b ) } @groups;
     @groups = grep { !ChemOnomatopist::Group::cmp( $_, $most_senior_group ) } @groups;
-
     $most_senior_group = blessed $most_senior_group if $most_senior_group;
+
+    # FIXME: Actually, more than one group can be attached to the same vertex
+    @POI = uniq map { $_->is_part_of_chain ? $_ : $graph->neighbours( $_ ) } @groups;
+
+    # If no senior groups are found, POIs now are senior atoms
+    if( !@POI ) {
+        my $elements = set( map { element( $_ ) } $graph->vertices );
+        my( $most_senior_element ) = grep { $elements->has( $_ ) }
+                                          qw( N P As Sb Bi Si Ge Sn Pb B Al Ga In Tl O S Se Te C );
+        if( $most_senior_element ) {
+            @POI = grep { defined element( $_ ) && element( $_ ) eq $most_senior_element }
+                        $graph->vertices;
+        }
+    }
+    my @parents = @POI;
 
     my @chains;
     if( @groups ) {
-        # Select a chain containing most of the senior groups
-        # FIXME: Parents with the most attachments should be preferred
-        my @parents = uniq map { $_->is_part_of_chain ? $_ : $graph->neighbours( $_ ) } @groups;
+        # Select a chain containing most POIs
 
         # Prefer circular structures
         if( @parents && uniq( map { $graph->groups( $_ ) } @parents ) == 1 ) {
