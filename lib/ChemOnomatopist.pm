@@ -488,8 +488,9 @@ sub find_groups
             }
         }
 
-        if( is_element( $atom, 'N' ) && @neighbours == 3 && @N == 1 && @H == 2 &&
-            all { !is_ring_atom( $graph, $_, -1 ) } ( $atom, @N ) ) {
+        if( is_element( $atom, 'N' ) && @N == 1 &&
+            (all { !is_ring_atom( $graph, $_, -1 ) } ( $atom, @N ) ) &&
+            is_single_bond( $graph, $atom, @N ) ) {
             # Detecting hydrazine
             my $hydrazine = ChemOnomatopist::Group::Hydrazine->new( $graph, $atom, @N );
             $graph->add_group( $hydrazine );
