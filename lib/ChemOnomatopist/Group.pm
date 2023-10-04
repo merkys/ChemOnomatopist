@@ -68,16 +68,6 @@ our @order = (
     # TODO: Classes denoted by the senior atom in heterane nomenclature should go here
     # 21. Nitrogen compounds
     ChemOnomatopist::Group::Hydrazine::,
-
-    # FIXME: The following order is not written anywhere
-    # TODO: Should be implemented as per BBv2 P-25.8.1
-    # Most likely these are incorrectly implemented as instances of ChemOnomatopist::Group.
-    ChemOnomatopist::Group::Polyacene::,
-    ChemOnomatopist::Group::Polyaphene::,
-    ChemOnomatopist::Group::Xanthene::,
-    ChemOnomatopist::Group::Bicycle::,
-    ChemOnomatopist::Group::Monocycle::,
-    ChemOnomatopist::Group::Monospiro::,
 );
 
 sub new
@@ -139,15 +129,39 @@ sub C {
 # Compare seniority of two objects
 sub cmp
 {
-    my( $A, $B ) = @_;
+    my( $A, $B ) = @_; # print "$A $B";
 
     my( $A_pos ) = grep { $A->isa( $order[$_] ) } 0..$#order;
     my( $B_pos ) = grep { $B->isa( $order[$_] ) } 0..$#order;
 
-    die "cannot compare\n" if !defined $A_pos || !defined $B_pos;
+    # Clear distinction exists
+    if( defined $A_pos && defined $B_pos && $A_pos <=> $B_pos ) {
+        return $A_pos <=> $B_pos;
+    }
 
-    return $A_pos <=> $B_pos if $A_pos <=> $B_pos;
-    return $A->_cmp_instances( $B );
+    # Any of the objects is in the priority list
+    if( defined $A_pos ^ defined $B_pos ) {
+        return defined $B_pos <=> defined $A_pos;
+    }
+
+    # Same class; class should know how to compare
+    if( blessed $A eq blessed $B ) {
+        return $A->_cmp_instances( $B );
+    }
+
+    # BBv2 P-41
+    # TODO: First, the chain with the most senior atom wins
+
+    # Then order is heterocycles, polyheteroatom, heteroatom
+    if( $A->isa( ChemOnomatopist::Chain::Circular:: ) + 0 ^
+        $B->isa( ChemOnomatopist::Chain::Circular:: ) + 0 ) {
+        return $B->isa( ChemOnomatopist::Chain::Circular:: ) <=>
+               $A->isa( ChemOnomatopist::Chain::Circular:: );
+    }
+
+    # TODO: ...
+
+    die "cannot compare\n" if !defined $A_pos || !defined $B_pos;
 }
 
 # Two instances of the same group are thought to be of the same seniority
