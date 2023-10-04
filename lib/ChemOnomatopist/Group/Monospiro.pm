@@ -83,16 +83,16 @@ sub has_form($$)
     return 1;
 }
 
-sub prefix($@)
+sub prefix()
 {
-    my( $self, $parent ) = @_;
+    my( $self ) = @_;
     my $name = ChemOnomatopist::Name->new( 'spiro' );
     $name .= ChemOnomatopist::Name::Part::Fusion->new( '[' . join( '.', map { scalar @$_ } $self->components ) . ']' );
     $name .= ChemOnomatopist::alkane_chain_name( $self->length ) . 'an';
 
-    if( $parent ) {
+    if( $self->parent ) {
         my @vertices = $self->vertices;
-        my( $position ) = grep { $self->graph->has_edge( $parent, $vertices[$_] ) } 0..$#vertices;
+        my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
         die "unknown locant in multicyclic compound\n" unless defined $position;
         $name->append_substituent_locant( $self->locants( $position ) );
     }

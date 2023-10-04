@@ -163,10 +163,11 @@ sub needs_heteroatom_names()
     return $self->needs_heteroatom_locants;
 }
 
-sub prefix(;$)
+sub prefix()
 {
-    my( $self, $parent ) = @_;
+    my( $self ) = @_;
 
+    my $parent = $self->parent;
     my $name = $self->suffix;
     if( $name eq 'benzene' ) {
         if( $parent && blessed $parent &&

@@ -246,11 +246,13 @@ sub get_sidechain_name
     $name .= "($isotopes)" if $isotopes ne '';
 
     if( $chain->isa( ChemOnomatopist::Group:: ) ) {
+        $chain->parent( $parent ) if $chain->can( 'parent' );
         my $prefix = $chain->prefix( $parent );
         # All groups are most likely stems
         $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
         $name .= $prefix;
     } elsif( @chain == 1 && blessed $chain[0] ) {
+        $chain[0]->parent( $parent ) if $chain[0]->can( 'parent' );
         my $prefix = $chain[0]->prefix( $parent );
         # All group-containing chains are most likely stems
         $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
@@ -262,6 +264,7 @@ sub get_sidechain_name
         if( $chain->isa( ChemOnomatopist::Chain::Ether:: ) && $name->has_locant ) {
             $name->bracket;
         }
+        $chain->parent( $parent ) if $chain->can( 'parent' );
         $name .= $chain->prefix( $parent );
         pop @$name if $name->[-1] eq 'e'; # FIXME: Dirty
         pop @$name if $name->[-1] eq 'an';

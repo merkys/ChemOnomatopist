@@ -449,7 +449,7 @@ sub number_of_multiple_bonds()
     return scalar grep { $_ =~ /^[=#\$]$/ } $self->bonds;
 }
 
-sub prefix(;$)
+sub prefix()
 {
     my( $self ) = @_;
 
