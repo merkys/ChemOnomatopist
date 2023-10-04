@@ -72,12 +72,11 @@ our @order = (
 
 sub new
 {
-    my( $class, $carbon ) = @_;
-    return bless { C => $carbon }, $class;
+    my( $class, $element ) = @_;
+    return bless { element => $element }, $class;
 }
 
-# Neither of these by default
-sub element() { return undef }
+sub element() { return $_[0]->{element} }
 
 sub is_carbon()
 {
