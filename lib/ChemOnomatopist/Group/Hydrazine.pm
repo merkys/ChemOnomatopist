@@ -6,7 +6,7 @@ use warnings;
 # ABSTRACT: Hydrazine group
 # VERSION
 
-use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
+use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 sub new
 {
