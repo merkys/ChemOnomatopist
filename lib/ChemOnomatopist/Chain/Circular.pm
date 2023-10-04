@@ -259,7 +259,7 @@ sub _cmp_instances
     my( $A, $B ) = @_;
 
     # BBv2 P-44.2.1 (a)
-    if( $A->is_heterocycle <=> $b->is_heterocycle ) {
+    if( $A->is_heterocycle <=> $B->is_heterocycle ) {
         return $B->is_heterocycle <=> $A->is_heterocycle;
     }
 
