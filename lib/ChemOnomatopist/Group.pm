@@ -120,12 +120,6 @@ sub candidate_for()
     return $self->{candidate_for};
 }
 
-# Return the attached carbon
-sub C {
-    my( $self ) = @_;
-    return $self->is_part_of_chain ? $self : $self->{C};
-}
-
 sub rule_greatest_number_of_most_senior_heteroatoms
 {
     my( @chains ) = @_;
