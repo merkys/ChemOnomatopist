@@ -10,8 +10,8 @@ use parent ChemOnomatopist::Group::;
 
 sub new
 {
-    my( $class, $carbon, $ketone ) = @_;
-    return bless { C => $carbon, ketone => $ketone }, $class;
+    my( $class, $ketone ) = @_;
+    return bless { ketone => $ketone }, $class;
 }
 
 sub element { return 'C' }

@@ -601,7 +601,7 @@ sub find_groups
             $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) &&
             all { $graph->degree( $_ ) == 1 } @H ) {
             # Detecting aldehyde
-            my $aldehyde = ChemOnomatopist::Group::Aldehyde->new( $atom, @groups );
+            my $aldehyde = ChemOnomatopist::Group::Aldehyde->new( @groups );
             $graph->delete_vertices( @groups, @H );
             $graph->add_edges( map { $aldehyde, $_ } $graph->neighbours( $atom ) );
             $graph->delete_vertex( $atom );
@@ -640,7 +640,7 @@ sub find_groups
                  @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) && is_element( @groups, 'O' ) &&
                  element(   grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours ) =~ /^(F|Cl|Br|I)$/ ) {
             my( $halide ) = grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours;
-            my $acyl_halide = ChemOnomatopist::Group::AcylHalide->new( @C, $halide );
+            my $acyl_halide = ChemOnomatopist::Group::AcylHalide->new( $halide );
             graph_replace( $graph, $acyl_halide, $atom, grep { blessed $_ || !is_element( $_, 'C' ) } @neighbours );
         } elsif( is_element( $atom, 'C' ) && @N == 1 && @O == 1 &&
                  $graph->groups( @N ) &&
@@ -681,7 +681,7 @@ sub find_groups
         if( !blessed $atom && @C == 1 && @groups == 1 &&
             ( is_element( $atom, 'O' ) || is_element( $atom, 'S' ) || is_element( $atom, 'Se' ) || is_element( $atom, 'Te' ) ) && 
             $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) ) {
-            my $hydroperoxide = ChemOnomatopist::Group::Hydroperoxide->new( @C, $atom, @groups );
+            my $hydroperoxide = ChemOnomatopist::Group::Hydroperoxide->new( $atom, @groups );
             graph_replace( $graph, $hydroperoxide, $atom, @groups );
         }
     }
