@@ -8,7 +8,13 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-sub element() { return $_[0]->C->{symbol} }
+sub new
+{
+    my( $class, $element ) = @_;
+    return bless { element => $element }, $class;
+}
+
+sub element() { return $_[0]->{element} }
 
 my %prefixes = (
     S  => 'sulfinyl',

@@ -566,14 +566,14 @@ sub find_groups
         # Sulfinyl group and its analogues
         if( @neighbours == 3 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
             !is_ring_atom( $graph, $atom ) && any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
-            my $sulfinyl = ChemOnomatopist::Group::Sulfinyl->new( $atom );
+            my $sulfinyl = ChemOnomatopist::Group::Sulfinyl->new( element( $atom ) );
             graph_replace( $graph, $sulfinyl, $atom, @O );
         }
 
         # Sulfonyl group and its analogues
         if( @neighbours == 4 && @O == 2 && (all { is_double_bond( $graph, $atom, $_ ) } @O) &&
             !is_ring_atom( $graph, $atom ) && any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
-            my $sulfonyl = ChemOnomatopist::Group::Sulfonyl->new( $atom );
+            my $sulfonyl = ChemOnomatopist::Group::Sulfonyl->new( element( $atom ) );
             graph_replace( $graph, $sulfonyl, $atom, @O );
         }
     }
