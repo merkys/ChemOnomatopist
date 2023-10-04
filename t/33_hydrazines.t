@@ -10,7 +10,7 @@ my @cases = (
     # From BBv2 P-68.3.1.2.1
     { smiles => 'CN(N)C', iupac => '1,1-dimethylhydrazine' },
     { smiles => 'C1(=CC=CC=C1)NN', iupac => 'phenylhydrazine' },
-    { smiles => 'N(N)CN' => iupac => '1-hydrazinylmethanamine', AUTHOR => 1 },
+    { smiles => 'N(N)CN' => iupac => '1-hydrazinylmethanamine' },
     { smiles => 'N(N)C(=O)O', iupac => 'hydrazinecarboxylic acid', AUTHOR => 1 },
     { smiles => 'FN(N(F)F)F', iupac => 'tetrafluorohydrazine' },
     { smiles => 'N(N)CC#N', iupac => 'hydrazinylacetonitrile', AUTHOR => 1 },

@@ -35,7 +35,7 @@ sub needs_substituent_locants()
 sub prefix()
 {
     my( $self ) = @_;
-    return 'hydrazine';
+    return 'hydrazinyl';
 }
 
 sub suffix()
