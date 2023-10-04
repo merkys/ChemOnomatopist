@@ -26,7 +26,11 @@ sub candidates()
 
 sub needs_heteroatom_locants() { return '' }
 sub needs_heteroatom_names() { return '' }
-sub needs_substituent_locants() { return 1 } # FIXME: Unless there is only one
+sub needs_substituent_locants()
+{
+    my( $self ) = @_;
+    return $self->number_of_branches > 1;
+}
 
 sub prefix()
 {
