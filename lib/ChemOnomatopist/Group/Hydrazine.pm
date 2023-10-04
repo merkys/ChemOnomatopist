@@ -29,7 +29,7 @@ sub needs_heteroatom_names() { return '' }
 sub needs_substituent_locants()
 {
     my( $self ) = @_;
-    return $self->number_of_branches > 1;
+    return $self->number_of_branches > 1 && $self->number_of_branches < $self->max_valence;
 }
 
 sub prefix()
