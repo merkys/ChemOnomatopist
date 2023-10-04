@@ -848,9 +848,7 @@ sub select_mainchain
         my @parents = uniq map { $_->is_part_of_chain ? $_ : $graph->neighbours( $_ ) } @groups;
 
         # Prefer circular structures
-        if( @parents > 1 && (grep { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents) == 1 ) {
-            @parents =       grep { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents;
-        } elsif( @parents && uniq( map { $graph->groups( $_ ) } @parents ) == 1 ) {
+        if( @parents && uniq( map { $graph->groups( $_ ) } @parents ) == 1 ) {
             @parents = $graph->groups( $parents[0] );
         }
 
