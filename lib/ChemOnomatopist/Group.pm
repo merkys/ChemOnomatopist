@@ -51,9 +51,8 @@ our @order = (
     ChemOnomatopist::Group::Amide::,
     ChemOnomatopist::Group::Guanidine::,
     # Hydrazides
-    ChemOnomatopist::Group::Hydrazine::,
     # Imides
-    # Nitriles
+    # 14. Nitriles
     ChemOnomatopist::Group::Cyanide::,
     ChemOnomatopist::Group::Aldehyde::,
     ChemOnomatopist::Group::Ketone::,
@@ -62,7 +61,11 @@ our @order = (
     ChemOnomatopist::Group::Amine::,
     ChemOnomatopist::Group::Imino::,
 
+    # TODO: Some are omitted
+
     # TODO: Classes denoted by the senior atom in heterane nomenclature should go here
+    # 21. Nitrogen compounds
+    ChemOnomatopist::Group::Hydrazine::,
 
     # FIXME: The following order is not written anywhere
     # TODO: Should be implemented as per BBv2 P-25.8.1
