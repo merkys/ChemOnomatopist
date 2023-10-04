@@ -21,6 +21,7 @@ use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Guanidine;
+use ChemOnomatopist::Group::Hydrazide;
 use ChemOnomatopist::Group::Hydrazine;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
@@ -593,6 +594,7 @@ sub find_groups
                           @neighbours;
         my @C = grep { is_element( $_, 'C' ) } @neighbours;
         my @H = grep { is_element( $_, 'H' ) } @neighbours;
+        my @N = grep { is_element( $_, 'N' ) } @neighbours;
         my @O = grep { is_element( $_, 'O' ) } @neighbours;
 
         if( is_element( $atom, 'C' ) && @groups == 1 && @H == 1 &&
@@ -640,6 +642,19 @@ sub find_groups
             my( $halide ) = grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours;
             my $acyl_halide = ChemOnomatopist::Group::AcylHalide->new( @C, $halide );
             graph_replace_all( $graph, $acyl_halide, $atom, grep { blessed $_ || !is_element( $_, 'C' ) } @neighbours );
+        } elsif( is_element( $atom, 'C' ) && @N == 1 && @O == 1 &&
+                 $graph->groups( @N ) &&
+                 (any { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) } $graph->groups( @N )) &&
+                 $O[0]->isa( ChemOnomatopist::Group::Ketone:: ) ) {
+            # Detect hydrazide
+            my( $hydrazine ) = grep { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) }
+                                    $graph->groups( @N );
+            my @vertices = $hydrazine->vertices;
+            @vertices = reverse @vertices if $vertices[0] != $N[0];
+            my $hydrazide = ChemOnomatopist::Group::Hydrazide->new( $graph, $hydrazine->vertices );
+            $graph->delete_vertices( @O );
+            $graph->add_group( $hydrazide );
+            $graph->delete_group( $hydrazine );
         }
 
         if( !blessed $atom && is_element( $atom, 'N' ) &&

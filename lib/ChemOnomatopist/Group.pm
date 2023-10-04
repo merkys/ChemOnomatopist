@@ -12,6 +12,7 @@ use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Guanidine;
+use ChemOnomatopist::Group::Hydrazide;
 use ChemOnomatopist::Group::Hydrazine;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
@@ -51,6 +52,7 @@ our @order = (
     ChemOnomatopist::Group::Amide::,
     ChemOnomatopist::Group::Guanidine::,
     # Hydrazides
+    ChemOnomatopist::Group::Hydrazide::,
     # Imides
     # 14. Nitriles
     ChemOnomatopist::Group::Cyanide::,

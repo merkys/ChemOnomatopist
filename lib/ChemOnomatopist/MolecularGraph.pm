@@ -59,6 +59,15 @@ sub add_group($)
     push @{$self->get_graph_attribute( 'groups' )}, $group;
 }
 
+sub delete_group($)
+{
+    my( $self, $group ) = @_;
+    return unless $self->has_graph_attribute( 'groups' );
+
+    @{$self->get_graph_attribute( 'groups' )} =
+        grep { $_ != $group } @{$self->get_graph_attribute( 'groups' )};
+}
+
 sub groups(@)
 {
     my( $self, @vertices ) = @_;
