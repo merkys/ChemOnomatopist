@@ -182,7 +182,7 @@ sub cmp
 
     # TODO: ...
 
-    die "cannot compare\n" if !defined $A_pos || !defined $B_pos;
+    die "cannot compare\n";
 }
 
 # Two instances of the same group are thought to be of the same seniority
