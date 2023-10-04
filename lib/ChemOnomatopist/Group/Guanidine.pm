@@ -6,7 +6,7 @@ use warnings;
 # ABSTRACT: Guanidine group
 # VERSION
 
-use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::Circular::;
+use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 use Algorithm::Combinatorics qw( permutations );
 use Chemistry::OpenSMILES qw( is_double_bond );
