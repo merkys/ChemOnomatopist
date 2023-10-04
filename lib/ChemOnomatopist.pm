@@ -516,65 +516,65 @@ sub find_groups
                  (any { !is_double_bond( $graph, $atom, $_ ) && $_->{charge} && $_->{charge} == -1 } @O) ) {
             # Detecting nitro
             my $nitro = ChemOnomatopist::Group::Nitro->new( @C );
-            graph_replace_all( $graph, $nitro, $atom, @O );
+            graph_replace( $graph, $nitro, $atom, @O );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 3 && !is_ring_atom( $graph, $atom, -1 ) ) {
             # Detecting amines
             my $amine = ChemOnomatopist::Group::Amine->new( @C );
-            graph_replace_all( $graph, $amine, $atom, @H );
+            graph_replace( $graph, $amine, $atom, @H );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C == 1 && @H == 1 &&
                  is_double_bond( $graph, $atom, @C ) ) {
             # Detecting imino
             my $imino = ChemOnomatopist::Group::Imino->new( @C );
-            graph_replace_all( $graph, $imino, $atom, @H );
+            graph_replace( $graph, $imino, $atom, @H );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 1 && @C == 1 &&
                  $graph->degree( @C ) >= 2 &&
                  is_triple_bond( $graph, $atom, @C ) ) {
             # Detecting cyanide
             my( $C ) = grep { $_ != $atom } $graph->neighbours( @C );
             my $cyanide = ChemOnomatopist::Group::Cyanide->new( $C );
-            graph_replace_all( $graph, $cyanide, $atom, @C );
+            graph_replace( $graph, $cyanide, $atom, @C );
         }
 
         # Hydroxy groups and their chalcogen analogues
         if( @neighbours == 2 && ( @C || @N || @O || @S || @Se || @Te ) && @H == 1 &&
             any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
             my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( @C, @N, @O, @S, @Se, @Te, $atom );
-            graph_replace_all( $graph, $hydroxy, $atom, @H );
+            graph_replace( $graph, $hydroxy, $atom, @H );
         }
 
         # Ketones and their chalcogen analogues
         if( @neighbours == 1 && @C == 1 && is_double_bond( $graph, $atom, @C ) &&
             any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
             my $ketone = ChemOnomatopist::Group::Ketone->new( @C, $atom );
-            graph_replace_all( $graph, $ketone, $atom );
+            graph_replace( $graph, $ketone, $atom );
         }
 
         # Nitroso and its analogues
         if( @neighbours == 2 && @C == 1 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
             any { is_element( $atom, $_ ) } qw( Br Cl F I N ) ) {
             my $nitroso = ChemOnomatopist::Group::Nitroso->new( @C, $atom );
-            graph_replace_all( $graph, $nitroso, $atom, @O );
+            graph_replace( $graph, $nitroso, $atom, @O );
         }
 
         # XO3
         if( @neighbours == 4 && @C == 1 && @O == 3 && (all { is_double_bond( $graph, $atom, $_ ) } @O) &&
             any { is_element( $atom, $_ ) } qw( Br Cl F I ) ) {
             my $XO3 = ChemOnomatopist::Group::XO3->new( @C, $atom );
-            graph_replace_all( $graph, $XO3, $atom, @O );
+            graph_replace( $graph, $XO3, $atom, @O );
         }
 
         # Sulfinyl group and its analogues
         if( @neighbours == 3 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
             !is_ring_atom( $graph, $atom ) && any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
             my $sulfinyl = ChemOnomatopist::Group::Sulfinyl->new( $atom );
-            graph_replace_all( $graph, $sulfinyl, $atom, @O );
+            graph_replace( $graph, $sulfinyl, $atom, @O );
         }
 
         # Sulfonyl group and its analogues
         if( @neighbours == 4 && @O == 2 && (all { is_double_bond( $graph, $atom, $_ ) } @O) &&
             !is_ring_atom( $graph, $atom ) && any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
             my $sulfonyl = ChemOnomatopist::Group::Sulfonyl->new( $atom );
-            graph_replace_all( $graph, $sulfonyl, $atom, @O );
+            graph_replace( $graph, $sulfonyl, $atom, @O );
         }
     }
 
@@ -635,13 +635,13 @@ sub find_groups
             my( $amine ) = grep { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups;
             my( $ketone ) = grep { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups;
             $graph->delete_vertices( $ketone );
-            graph_replace_all( $graph, $amide, $amine );
+            graph_replace( $graph, $amide, $amine );
         } elsif( is_element( $atom, 'C' ) && @neighbours == 3 && @C == 1 &&
                  @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) && is_element( @groups, 'O' ) &&
                  element(   grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours ) =~ /^(F|Cl|Br|I)$/ ) {
             my( $halide ) = grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours;
             my $acyl_halide = ChemOnomatopist::Group::AcylHalide->new( @C, $halide );
-            graph_replace_all( $graph, $acyl_halide, $atom, grep { blessed $_ || !is_element( $_, 'C' ) } @neighbours );
+            graph_replace( $graph, $acyl_halide, $atom, grep { blessed $_ || !is_element( $_, 'C' ) } @neighbours );
         } elsif( is_element( $atom, 'C' ) && @N == 1 && @O == 1 &&
                  $graph->groups( @N ) &&
                  (any { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) } $graph->groups( @N )) &&
@@ -668,21 +668,21 @@ sub find_groups
             @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
             is_double_bond( $graph, $atom, grep { !blessed $_ } @O ) ) {
             my $acid = ChemOnomatopist::Group::SulfinicAcid->new( @C );
-            graph_replace_all( $graph, $acid, $atom, @O );
+            graph_replace( $graph, $acid, $atom, @O );
         }
         # Detecting sulfonic acids
         if( !blessed $atom && is_element( $atom, 'S' ) && @neighbours == 4 && @C == 1 && @O == 3 &&
             @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
             all { is_double_bond( $graph, $atom, $_ ) } grep { !blessed $_ } @O ) {
             my $acid = ChemOnomatopist::Group::SulfonicAcid->new( @C );
-            graph_replace_all( $graph, $acid, $atom, @O );
+            graph_replace( $graph, $acid, $atom, @O );
         }
 
         if( !blessed $atom && @C == 1 && @groups == 1 &&
             ( is_element( $atom, 'O' ) || is_element( $atom, 'S' ) || is_element( $atom, 'Se' ) || is_element( $atom, 'Te' ) ) && 
             $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) ) {
             my $hydroperoxide = ChemOnomatopist::Group::Hydroperoxide->new( @C, $atom, @groups );
-            graph_replace_all( $graph, $hydroperoxide, $atom, @groups );
+            graph_replace( $graph, $hydroperoxide, $atom, @groups );
         }
     }
 
@@ -980,7 +980,7 @@ sub select_mainchain
 
     # Replace the original chain with the selected candidate
     if( $chain->isa( ChemOnomatopist::Group:: ) && $chain->candidate_for ) {
-        graph_replace_all( $graph, $chain, $chain->candidate_for );
+        graph_replace( $graph, $chain, $chain->candidate_for );
     }
 
     # If there is at least one of carbon-based senior group attachment,
@@ -1179,37 +1179,6 @@ sub filter_chains
 
     # TODO: Handle the case when none of the rules select proper chains
     return ();
-}
-
-sub graph_replace_all
-{
-    my( $graph, $new, @old ) = @_;
-
-    # Replace in the main graph
-    graph_replace( $graph, $new, @old );
-
-    my $old = set( @old );
-    for my $vertex ($graph->vertices) {
-        next if $vertex == $new;
-        next if $old->has( $vertex );
-        next unless blessed $vertex;
-
-        # Update parents
-        if( $vertex->isa( ChemOnomatopist::Group:: ) && $vertex->C && $old->has( $vertex->C ) ) {
-            $vertex->{C} = $new;
-        }
-
-        # Update internal graphs
-        if( $vertex->isa( ChemOnomatopist::Group::Bicycle:: ) ||
-            $vertex->isa( ChemOnomatopist::Group::Guanidine:: ) ||
-            $vertex->isa( ChemOnomatopist::Group::Monocycle:: ) ||
-            $vertex->isa( ChemOnomatopist::Group::Monospiro:: ) ||
-            $vertex->isa( ChemOnomatopist::Group::Xanthene:: ) ) {
-            graph_replace( $vertex->graph, $new, @old );
-        }
-    }
-
-    return $graph;
 }
 
 sub rule_most_groups
