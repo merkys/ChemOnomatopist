@@ -845,15 +845,7 @@ sub select_mainchain
     if( @groups ) {
         # Select a chain containing most of the senior groups
         # FIXME: Parents with the most attachments should be preferred
-        my @parents;
-        for (@groups) {
-            if( $_->is_part_of_chain ) {
-                push @parents, $_;
-            } else {
-                push @parents, $graph->neighbours( $_ );
-            }
-        }
-        @parents = uniq grep { defined $_ } @parents;
+        my @parents = uniq map { $_->is_part_of_chain ? $_ : $graph->neighbours( $_ ) } @groups;
 
         # Prefer circular structures
         if( @parents > 1 && (grep { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents) == 1 ) {
