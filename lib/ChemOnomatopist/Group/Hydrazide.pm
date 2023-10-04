@@ -22,6 +22,12 @@ sub needs_substituent_locants()
     return $self->number_of_branches > 1 && $self->number_of_branches < $self->max_valence;
 }
 
+sub locants(@)
+{
+    my $self = shift;
+    return map { $_ == 0 ? "N'" : $_ == 1 ? 'N' : $_ - 1 } @_;
+}
+
 sub prefix()
 {
     my( $self ) = @_;

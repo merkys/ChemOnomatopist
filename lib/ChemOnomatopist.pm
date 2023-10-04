@@ -650,8 +650,8 @@ sub find_groups
             my( $hydrazine ) = grep { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) }
                                     $graph->groups( @N );
             my @vertices = $hydrazine->vertices;
-            @vertices = reverse @vertices if $vertices[0] != $N[0];
-            my $hydrazide = ChemOnomatopist::Group::Hydrazide->new( $graph, $hydrazine->vertices );
+            @vertices = reverse @vertices if $vertices[0] == $N[0];
+            my $hydrazide = ChemOnomatopist::Group::Hydrazide->new( $graph, @vertices );
             $graph->delete_vertices( @O );
             $graph->add_group( $hydrazide );
             $graph->delete_group( $hydrazine );
