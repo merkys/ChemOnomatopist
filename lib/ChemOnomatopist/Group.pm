@@ -113,7 +113,7 @@ sub is_terminal() { return '' }
 sub needs_heteroatom_locants { return 1 }
 sub needs_heteroatom_names { return 1 }
 
-sub prefix(;$) { return '' }
+sub prefix() { return '' }
 sub suffix() { return $_[0]->is_prefix_only ? undef : '' }
 sub multisuffix() { return $_[0]->suffix }
 sub suffix_if_cycle_substituent() { return $_[0]->suffix }

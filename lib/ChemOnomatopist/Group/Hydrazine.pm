@@ -28,9 +28,9 @@ sub needs_heteroatom_locants() { return '' }
 sub needs_heteroatom_names() { return '' }
 sub needs_substituent_locants() { return 1 } # FIXME: Unless there is only one
 
-sub prefix(;$)
+sub prefix()
 {
-    my( $self, $parent ) = @_;
+    my( $self ) = @_;
     return 'hydrazine';
 }
 
