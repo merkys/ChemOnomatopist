@@ -126,6 +126,21 @@ sub C {
     return $self->is_part_of_chain ? $self : $self->{C};
 }
 
+sub rule_most_senior_heteroatom
+{
+    my( @chains ) = @_;
+
+    # This order is taken from BBv2 P-41 and is different from order in %elements
+    my @element_order = qw( N P As Sb Bi Si Ge Sn Pb B Al Ga In Tl O S Se Te );
+    my %element_order = map { $element_order[$_] => $_ } 0..$#element_order;
+
+    my( $max_value ) = sort { $element_order{$a} <=> $element_order{$b} }
+                       grep { exists $element_order{$_} }
+                       map  { $_->heteroatoms } @chains;
+    return @chains unless $max_value;
+    return grep { any { $_ eq $max_value } $_->heteroatoms } @chains;
+}
+
 # Compare seniority of two objects
 sub cmp
 {
