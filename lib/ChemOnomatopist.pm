@@ -6,6 +6,7 @@ use warnings;
 # ABSTRACT: Give molecule a name
 # VERSION
 
+use Algorithm::Combinatorics qw( combinations );
 use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::FromHalves;
@@ -325,8 +326,6 @@ sub get_mainchain_name
         }
     }
 
-    $graph = copy $chain->graph;
-
     # Collect the substituents
     my %attachments;
     my %attachment_objects;
@@ -481,8 +480,12 @@ sub find_groups
         if( is_element( $atom, 'C' ) && @neighbours == 3 && @N == 3 &&
             !is_ring_atom( $graph, $atom, -1 ) ) {
             # Detecting guanidine
-            my $guanidine = ChemOnomatopist::Group::Guanidine->new( copy $graph, $atom );
-            graph_replace_all( $graph, $guanidine, $atom, @N );
+            my $guanidine = ChemOnomatopist::Group::Guanidine->new( $graph, $atom );
+            $graph->add_group( $guanidine );
+            $graph->delete_vertex( $atom );
+            for (combinations( \@N, 2 )) {
+                $graph->add_edge( @$_ );
+            }
         }
 
         if( is_element( $atom, 'N' ) && @neighbours == 3 && @N == 1 && @H == 2 &&

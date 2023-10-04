@@ -19,9 +19,7 @@ sub new
                           !!is_double_bond( $graph, $atom, $b ) }
                         $graph->neighbours( $atom );
     my @orders = map { !!is_double_bond( $graph, $atom, $_ ) } @vertices;
-    my $self = bless { graph => $graph, vertices => \@vertices, is_double_bond => \@orders }, $class;
-    $graph->delete_vertices( $atom, grep { ChemOnomatopist::is_element( $_, 'H' ) } $graph->vertices );
-    return $self;
+    return bless { graph => $graph, vertices => \@vertices, is_double_bond => \@orders }, $class;
 }
 
 sub candidates()
@@ -60,7 +58,7 @@ sub locants(@) {
 # Two kinds exist per BBv2 P-66.4.1.2.1.3
 sub prefix {
     my( $self ) = @_;
-    if( $self->{is_double_bond}[2] && $self->graph->degree( $self->{vertices}[2] ) ) {
+    if( $self->{is_double_bond}[2] && $self->graph->degree( $self->{vertices}[2] ) > 2 ) {
         return '[(diaminomethylidene)amino]';
     } else {
         return '(carbamimidoylamino)';
