@@ -545,7 +545,7 @@ sub find_groups
         # Ketones and their chalcogen analogues
         if( @neighbours == 1 && @C == 1 && is_double_bond( $graph, $atom, @C ) &&
             any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
-            my $ketone = ChemOnomatopist::Group::Ketone->new( @C, $atom );
+            my $ketone = ChemOnomatopist::Group::Ketone->new( element( $atom ) );
             graph_replace( $graph, $ketone, $atom );
         }
 
@@ -559,7 +559,7 @@ sub find_groups
         # XO3
         if( @neighbours == 4 && @C == 1 && @O == 3 && (all { is_double_bond( $graph, $atom, $_ ) } @O) &&
             any { is_element( $atom, $_ ) } qw( Br Cl F I ) ) {
-            my $XO3 = ChemOnomatopist::Group::XO3->new( @C, $atom );
+            my $XO3 = ChemOnomatopist::Group::XO3->new( element( $atom ) );
             graph_replace( $graph, $XO3, $atom, @O );
         }
 

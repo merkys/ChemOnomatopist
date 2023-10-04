@@ -8,14 +8,6 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-sub new
-{
-    my( $class, $carbon, $atom ) = @_;
-    return bless { C => $carbon, atom => $atom }, $class;
-}
-
-sub element() { return ucfirst $_[0]->{atom}{symbol} }
-
 # From BBv2 P-64.6.1
 my %prefixes = ( O => 'oxo', S => 'sulfanylidene', Se => 'selanylidene', Te => 'tellanylidene' );
 my %suffixes = ( O => 'one', S => 'thione', Se => 'selone', Te => 'tellone' );
