@@ -256,26 +256,6 @@ sub is_hydrocarbon()
     return all { $_->is_hydrocarbon } $self->cycles;
 }
 
-# Implemented according to BBv2 P-25.3.3
-sub locants(@)
-{
-    my $self = shift;
-    my @vertices = $self->vertices;
-    my @cycles = $self->cycles;
-    my @locant_map = map { $_ + 1 } 0..$self->length - 1;
-
-    if( ChemOnomatopist::is_element( $cycles[0]->{vertices}[-2], 'C' ) ) {
-        splice @locant_map, $cycles[0]->length-2, 0, ($cycles[0]->length - 2) . 'a';
-        pop @locant_map;
-    }
-
-    if( ChemOnomatopist::is_element( $cycles[1]->{vertices}[-2], 'C' ) ) {
-        $locant_map[-1] = $locant_map[-2] . 'a';
-    }
-
-    return map { $locant_map[$_] } @_;
-}
-
 sub needs_heteroatom_locants()
 {
     my( $self ) = @_;

@@ -255,6 +255,33 @@ sub indicated_hydrogens()
     return @positions;
 }
 
+# Implemented according to BBv2 P-25.3.3.1.1
+sub locants(@)
+{
+    my $self = shift;
+    my @vertices = $self->vertices;
+    my $graph = $self->graph->subgraph( @vertices );
+
+    return map { $_ + 1 } @_ if $graph->vertices == $graph->edges;
+
+    my %locant_map;
+    my $pos = 1;
+    my $letter = 'a';
+    for my $i (0..$#vertices) {
+        if( $graph->degree( $vertices[$i] ) == 2 ||
+            !ChemOnomatopist::is_element( $vertices[$i], 'C' ) ) {
+            $locant_map{$i} = $pos;
+            $pos++;
+            $letter = 'a';
+        } else {
+            $locant_map{$i} = $pos . $letter;
+            $letter++;
+        }
+    }
+
+    return map { $locant_map{$_} } @_;
+}
+
 sub _cmp_instances
 {
     my( $A, $B ) = @_;
