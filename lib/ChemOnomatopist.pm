@@ -859,6 +859,7 @@ sub select_mainchain
                         $graph->vertices;
         }
     }
+
     my @parents = @POI;
 
     my @chains;
@@ -870,7 +871,9 @@ sub select_mainchain
             @parents = $graph->groups( $parents[0] );
         }
 
-        if( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
+        if( all { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents ) {
+            @chains = map { $_->can( 'candidates' ) ? $_->candidates : $_ } @parents;
+        } elsif( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
             @chains = map { $_->can( 'candidates' ) ? $_->candidates : $_ } @groups;
         } elsif( @parents == 1 ) {
             if( blessed $parents[0] && $parents[0]->can( 'candidates' ) ) {
@@ -1005,7 +1008,7 @@ sub select_mainchain
     # it means both ends are already senior, prompting to follow the
     # exception of three or more carbon-based groups.
     if( $most_senior_group && $groups[0]->is_carbon &&
-        !$chain->isa( ChemOnomatopist::Group:: ) &&
+        !$chain->isa( ChemOnomatopist::Chain::Circular:: ) &&
          $chain->number_of_groups( $most_senior_group ) ) {
 
         shift @vertices;
