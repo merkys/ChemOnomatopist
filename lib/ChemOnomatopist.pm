@@ -20,6 +20,7 @@ use ChemOnomatopist::Group::Amine;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
+use ChemOnomatopist::Group::Ether;
 use ChemOnomatopist::Group::Guanidine;
 use ChemOnomatopist::Group::Hydrazide;
 use ChemOnomatopist::Group::Hydrazine;
@@ -547,6 +548,13 @@ sub find_groups
             any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
             my $ketone = ChemOnomatopist::Group::Ketone->new( element( $atom ) );
             graph_replace( $graph, $ketone, $atom );
+        }
+
+        # Ether
+        # TODO: Enable
+        if( 0 && is_element( $atom, 'O' ) && @neighbours == 2 && @C == 2 ) {
+            my $ether = ChemOnomatopist::Group::Ether->new;
+            graph_replace( $graph, $ether, $atom );
         }
 
         # Nitroso and its analogues
