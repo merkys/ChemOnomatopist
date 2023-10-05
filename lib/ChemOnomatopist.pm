@@ -855,15 +855,20 @@ sub select_mainchain
     @POI = uniq map { $_->is_part_of_chain ? $_ : $graph->neighbours( $_ ) } @groups;
 
     # If no senior groups are found, POIs now are senior atoms
-    # TODO: Disabled for now
-    if( 0 && !@POI ) {
+    if( !@POI ) {
         my $elements = set( map { element( $_ ) } $graph->vertices );
         my( $most_senior_element ) = grep { $elements->has( $_ ) }
-                                          qw( N P As Sb Bi Si Ge Sn Pb B Al Ga In Tl O S Se Te C );
+                                          qw( N P As Sb Bi Si Ge Sn Pb B Al Ga In Tl O S Se Te ); # C removed intentionally
         if( $most_senior_element ) {
             @POI = grep { defined element( $_ ) && element( $_ ) eq $most_senior_element }
                         $graph->vertices;
         }
+    }
+
+    # "40. Carbon compounds: rings, chains"
+    # The remaining cycles will be homocycles
+    if( !@POI ) {
+        @POI = grep { $_->isa( ChemOnomatopist::Chain::Circular:: ) } $graph->groups;
     }
 
     my @parents = @POI;
