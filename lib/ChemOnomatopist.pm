@@ -850,7 +850,8 @@ sub select_mainchain
     @POI = uniq map { $_->is_part_of_chain ? $_ : $graph->neighbours( $_ ) } @groups;
 
     # If no senior groups are found, POIs now are senior atoms
-    if( !@POI ) {
+    # TODO: Disabled for now
+    if( 0 && !@POI ) {
         my $elements = set( map { element( $_ ) } $graph->vertices );
         my( $most_senior_element ) = grep { $elements->has( $_ ) }
                                           qw( N P As Sb Bi Si Ge Sn Pb B Al Ga In Tl O S Se Te C );
@@ -863,7 +864,7 @@ sub select_mainchain
     my @parents = @POI;
 
     my @chains;
-    if( @groups ) {
+    if( @parents ) {
         # Select a chain containing most POIs
 
         # Prefer circular structures
@@ -873,7 +874,7 @@ sub select_mainchain
 
         if( all { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents ) {
             @chains = map { $_->can( 'candidates' ) ? $_->candidates : $_ } @parents;
-        } elsif( $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
+        } elsif( $most_senior_group && $most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
             @chains = map { $_->can( 'candidates' ) ? $_->candidates : $_ } @groups;
         } elsif( @parents == 1 ) {
             if( blessed $parents[0] && $parents[0]->can( 'candidates' ) ) {
@@ -989,6 +990,8 @@ sub select_mainchain
             }
         }
     }
+
+    die "cannot determine the parent structure\n" unless @chains;
 
     my $chain = filter_chains( @chains );
     my @vertices = $chain->vertices;
