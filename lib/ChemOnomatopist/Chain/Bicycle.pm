@@ -1,4 +1,4 @@
-package ChemOnomatopist::Group::Bicycle;
+package ChemOnomatopist::Chain::Bicycle;
 
 use strict;
 use warnings;
@@ -9,8 +9,8 @@ use warnings;
 use ChemOnomatopist;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Elements qw( %elements );
-use ChemOnomatopist::Group::Monocycle;
-use ChemOnomatopist::Group::Monocycle::Fused;
+use ChemOnomatopist::Chain::Monocycle;
+use ChemOnomatopist::Chain::Monocycle::Fused;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::Fusion;
 use ChemOnomatopist::Name::Part::Stem;
@@ -100,7 +100,7 @@ sub new
         push @path, shift @path;
         $components[$_] = \@path;
     }
-    my @cycles = map { ChemOnomatopist::Group::Monocycle::Fused->new( $graph, $self, @$_ ) }
+    my @cycles = map { ChemOnomatopist::Chain::Monocycle::Fused->new( $graph, $self, @$_ ) }
                      @components;
     $self->{cycles} = \@cycles;
 
@@ -111,7 +111,7 @@ sub new
         # The following code is supposed to order the rings _and_ establish the traversal order
         # TODO: Maybe all traversals of both rings should be generated here?
         # FIXME: There seem to be two orders for rings: one for numbering, other for fusion naming...
-        my @candidates = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
+        my @candidates = map { ChemOnomatopist::Chain::Monocycle->new( $_->graph, $_->vertices ) }
                              ( @cycles, map { $_->flipped } @cycles );
         for my $rule ( # P-25.3.2.4 (a): Senior heteroatom according to specific seniority order
                        \&rule_most_senior_heteroatom,
@@ -169,7 +169,7 @@ sub new
             $self->{cycles} = \@cycles;
         }
 
-        my( $chain ) = sort { ChemOnomatopist::Group::Monocycle::_cmp( $a, $b ) }
+        my( $chain ) = sort { ChemOnomatopist::Chain::Monocycle::_cmp( $a, $b ) }
                             ( $cycles[0], $cycles[0]->flipped );
 
         if( $chain != $cycles[0] ) {
@@ -213,7 +213,7 @@ sub copy()
     return bless { graph    => $self->graph,
                    cycles   => [ $self->cycles ],
                    vertices => [ $self->vertices ] },
-                 ChemOnomatopist::Group::Bicycle::;
+                 ChemOnomatopist::Chain::Bicycle::;
 }
 
 sub cycles()
@@ -327,7 +327,7 @@ sub suffix()
 
     if( any { $_->is_benzene } $self->cycles ) {
         my( $other ) = grep { !$_->is_benzene } $self->cycles;
-        $other = ChemOnomatopist::Group::Monocycle->new( $other->graph, $other->vertices );
+        $other = ChemOnomatopist::Chain::Monocycle->new( $other->graph, $other->vertices );
 
         my $SMILES = $other->backbone_SMILES;
         if( $SMILES =~ /^C=C((?<el>O|S|\[Se\]|\[Te\])C|C(?<el>O|S|\[Se\]|\[Te\]))c:c$/ ) {
@@ -390,7 +390,7 @@ sub suffix()
 
     $name->append_locants( map { $_ . 'H' } $self->locants( $self->indicated_hydrogens ) );
 
-    my @ideal = map { ChemOnomatopist::Group::Monocycle->new( $_->graph, $_->vertices ) }
+    my @ideal = map { ChemOnomatopist::Chain::Monocycle->new( $_->graph, $_->vertices ) }
                     $self->cycles;
     my $name_A = $ideal[1]->name;
     $name_A =~ s/^\d+H-//;

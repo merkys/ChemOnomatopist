@@ -1,4 +1,4 @@
-package ChemOnomatopist::Group::Monocycle::Fused;
+package ChemOnomatopist::Chain::Monocycle::Fused;
 
 use strict;
 use warnings;
@@ -6,7 +6,7 @@ use warnings;
 # ABSTRACT: Monocyclic group which is fused to some other cycle
 # VERSION
 
-use parent ChemOnomatopist::Group::Monocycle::;
+use parent ChemOnomatopist::Chain::Monocycle::;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
@@ -37,7 +37,7 @@ sub flipped()
     my @vertices = $self->vertices;
     my @bridge = splice @vertices, -2;
     my @flipped = ( reverse( @vertices ), reverse( @bridge ) );
-    return ChemOnomatopist::Group::Monocycle::Fused->new( $self->graph,
+    return ChemOnomatopist::Chain::Monocycle::Fused->new( $self->graph,
                                                           $self->system,
                                                           @flipped );
 }

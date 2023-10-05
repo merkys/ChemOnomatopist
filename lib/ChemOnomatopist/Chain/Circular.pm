@@ -9,7 +9,7 @@ use warnings;
 use ChemOnomatopist;
 use ChemOnomatopist::Chain; # FIXME: Not sure why it is needed
 use ChemOnomatopist::Elements qw( %elements );
-use ChemOnomatopist::Group::Monocycle;
+use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_single_bond );
 use List::Util qw( all any uniq );
@@ -92,7 +92,7 @@ sub name()
 
     my $graph = $self->graph;
     my $SMILES = $self->backbone_SMILES;
-    my %names = %ChemOnomatopist::Group::Monocycle::names;
+    my %names = %ChemOnomatopist::Chain::Monocycle::names;
 
     # Check the preserved names
     return ChemOnomatopist::Name->new( $names{$SMILES} ) if exists $names{$SMILES};

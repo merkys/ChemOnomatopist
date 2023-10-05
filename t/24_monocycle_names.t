@@ -5,11 +5,11 @@ use warnings;
 
 use Chemistry::OpenSMILES::Parser;
 use ChemOnomatopist;
-use ChemOnomatopist::Group::Monocycle;
+use ChemOnomatopist::Chain::Monocycle;
 use Graph::Traversal::DFS;
 use Test::More;
 
-my @cases = sort keys %ChemOnomatopist::Group::Monocycle::names;
+my @cases = sort keys %ChemOnomatopist::Chain::Monocycle::names;
 
 plan tests => scalar @cases;
 

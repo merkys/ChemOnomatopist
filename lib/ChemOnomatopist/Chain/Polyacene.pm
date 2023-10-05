@@ -1,4 +1,4 @@
-package ChemOnomatopist::Group::Polyacene;
+package ChemOnomatopist::Chain::Polyacene;
 
 use strict;
 use warnings;

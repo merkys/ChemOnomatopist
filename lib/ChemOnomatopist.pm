@@ -17,7 +17,7 @@ use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine;
-use ChemOnomatopist::Group::Bicycle;
+use ChemOnomatopist::Chain::Bicycle;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
@@ -29,18 +29,18 @@ use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Ketone;
-use ChemOnomatopist::Group::Monocycle;
+use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Chain::Monospiro;
 use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
-use ChemOnomatopist::Group::Polyacene;
-use ChemOnomatopist::Group::Polyaphene;
+use ChemOnomatopist::Chain::Polyacene;
+use ChemOnomatopist::Chain::Polyaphene;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Group::XO3;
-use ChemOnomatopist::Group::Xanthene;
+use ChemOnomatopist::Chain::Xanthene;
 use ChemOnomatopist::MolecularGraph;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
@@ -456,7 +456,7 @@ sub get_mainchain_name
             $name->append_locants( $chain->locants( @senior_group_attachments ) );
         }
         $name->append_multiplier( $number );
-        if( $chain->isa( ChemOnomatopist::Group::Monocycle:: ) ||
+        if( $chain->isa( ChemOnomatopist::Chain::Monocycle:: ) ||
             $chain->isa( ChemOnomatopist::Chain::Monospiro:: ) ) {
             $name->append_suffix( $groups[0]->suffix_if_cycle_substituent );
         } elsif( @senior_group_attachments > 2 ) {
@@ -769,37 +769,37 @@ sub find_groups
         my $compound;
         if(      join( ',', sort keys %vertices_by_degree ) eq '2' ) {
             # Monocycles
-            $compound = ChemOnomatopist::Group::Monocycle->new( $graph, Graph::Traversal::DFS->new( $core )->dfs );
+            $compound = ChemOnomatopist::Chain::Monocycle->new( $graph, Graph::Traversal::DFS->new( $core )->dfs );
         } elsif( ChemOnomatopist::Chain::Monospiro->has_form( $core ) ) {
             # BBv2 P-24.2.1 Monospiro alicyclic ring systems
             $compound = ChemOnomatopist::Chain::Monospiro->new( $graph, $core->vertices );
-        } elsif( ChemOnomatopist::Group::Bicycle->has_form( $core ) ) {
+        } elsif( ChemOnomatopist::Chain::Bicycle->has_form( $core ) ) {
             # Ortho-fused as defined in BBv2 P-25.3.1.1.1
-            $compound = ChemOnomatopist::Group::Bicycle->new( $graph, $core->vertices );
+            $compound = ChemOnomatopist::Chain::Bicycle->new( $graph, $core->vertices );
         } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,3' ) {
             # Fused ring systems of three or more rings
             # Graph::SSSR v0.1.0 does not know how to return unique rings
             my %uniq = map { join( '', sort @$_ ) => $_ } Graph::SSSR::get_SSSR( $core, 8 );
-            my @cycles = map { ChemOnomatopist::Group::Monocycle->new( copy $graph, Graph::Traversal::DFS->new( $_ )->dfs ) }
+            my @cycles = map { ChemOnomatopist::Chain::Monocycle->new( copy $graph, Graph::Traversal::DFS->new( $_ )->dfs ) }
                          map { subgraph( $core, @$_ ) }
                              values %uniq;
             if( (grep {  $_->is_benzene }  @cycles) == 2 &&
                 (grep { !$_->is_benzene }  @cycles) == 1 &&
                 (all  {  $_->length == 6 } @cycles) &&
                 (any  { !$_->is_hydrocarbon } @cycles) ) {
-                $compound = ChemOnomatopist::Group::Xanthene->new( $graph, @cycles );
+                $compound = ChemOnomatopist::Chain::Xanthene->new( $graph, @cycles );
             } elsif( @cycles >= 3 &&
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
                      are_isomorphic( graph_without_edge_attributes( $core ),
-                                     ChemOnomatopist::Group::Polyacene->ideal_graph( scalar $core->vertices ),
+                                     ChemOnomatopist::Chain::Polyacene->ideal_graph( scalar $core->vertices ),
                                      sub { return 'C' } ) ) {
-                $compound = ChemOnomatopist::Group::Polyacene->new( $graph, @cycles );
+                $compound = ChemOnomatopist::Chain::Polyacene->new( $graph, @cycles );
             } elsif( @cycles >= 3 &&
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
                      are_isomorphic( graph_without_edge_attributes( $core ),
-                                     ChemOnomatopist::Group::Polyaphene->ideal_graph( scalar $core->vertices ),
+                                     ChemOnomatopist::Chain::Polyaphene->ideal_graph( scalar $core->vertices ),
                                      sub { return 'C' } ) ) {
-                $compound = ChemOnomatopist::Group::Polyaphene->new( $graph, @cycles );
+                $compound = ChemOnomatopist::Chain::Polyaphene->new( $graph, @cycles );
             } else {
                 die "cannot handle complicated cyclic compounds\n";
             }

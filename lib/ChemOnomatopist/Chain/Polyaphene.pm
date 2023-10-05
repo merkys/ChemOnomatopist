@@ -1,4 +1,4 @@
-package ChemOnomatopist::Group::Polyaphene;
+package ChemOnomatopist::Chain::Polyaphene;
 
 use strict;
 use warnings;
@@ -159,7 +159,7 @@ sub ideal_graph($$)
             push @graphs, $graph;
         }
     } else {
-        @graphs = map { ChemOnomatopist::Group::Polyacene->ideal_graph( $_ ) } @sizes;
+        @graphs = map { ChemOnomatopist::Chain::Polyacene->ideal_graph( $_ ) } @sizes;
     }
     my $graph = merge_graphs( @graphs );
 

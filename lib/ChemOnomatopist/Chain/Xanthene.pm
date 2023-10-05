@@ -1,4 +1,4 @@
-package ChemOnomatopist::Group::Xanthene;
+package ChemOnomatopist::Chain::Xanthene;
 
 use strict;
 use warnings;

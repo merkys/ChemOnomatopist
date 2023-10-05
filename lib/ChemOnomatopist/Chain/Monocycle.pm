@@ -1,4 +1,4 @@
-package ChemOnomatopist::Group::Monocycle;
+package ChemOnomatopist::Chain::Monocycle;
 
 use strict;
 use warnings;
@@ -77,12 +77,12 @@ sub candidates()
 
     my @chains;
     for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Group::Monocycle->new( $graph, @vertices );
+        push @chains, ChemOnomatopist::Chain::Monocycle->new( $graph, @vertices );
         push @vertices, shift @vertices;
     }
     @vertices = reverse @vertices;
     for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Group::Monocycle->new( $graph, @vertices );
+        push @chains, ChemOnomatopist::Chain::Monocycle->new( $graph, @vertices );
         push @vertices, shift @vertices;
     }
 
@@ -112,8 +112,8 @@ sub autosymmetric_equivalents()
         push @vertices, shift @vertices;
     }
     # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
-    @chains = sort {  ChemOnomatopist::Group::Monocycle::_cmp( $a, $b ) } @chains;
-    @chains = grep { !ChemOnomatopist::Group::Monocycle::_cmp( $_, $chains[0] ) } @chains;
+    @chains = sort {  ChemOnomatopist::Chain::Monocycle::_cmp( $a, $b ) } @chains;
+    @chains = grep { !ChemOnomatopist::Chain::Monocycle::_cmp( $_, $chains[0] ) } @chains;
     @chains = map  { bless { graph => $self->graph, vertices => [ $_->vertices ] } } @chains;
     return ChemOnomatopist::rule_lowest_numbered_locants( @chains );
 }
