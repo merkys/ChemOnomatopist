@@ -894,8 +894,8 @@ sub select_mainchain
         # Select a chain containing most POIs
 
         # Prefer circular structures
-        if( @parents && uniq( map { $graph->groups( $_ ) } @parents ) == 1 ) {
-            @parents = $graph->groups( $parents[0] );
+        if( map { $graph->groups( $_ ) } @parents ) {
+            @parents = uniq map { $graph->groups( $_ ) } @parents;
         }
 
         if( all { blessed $_ && $_->isa( ChemOnomatopist::Chain:: ) } @parents ) {
