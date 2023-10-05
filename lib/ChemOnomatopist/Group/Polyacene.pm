@@ -3,7 +3,7 @@ package ChemOnomatopist::Group::Polyacene;
 use strict;
 use warnings;
 
-# ABSTRACT: Polyacene
+# ABSTRACT: Polyacenes, including anthracene
 # VERSION
 
 use parent ChemOnomatopist::Chain::Circular::;
@@ -94,6 +94,7 @@ sub ideal_graph($$)
 sub suffix
 {
     my( $self ) = @_;
+    return 'anthracene' if $self->length == 14;
     return ChemOnomatopist::IUPAC_numerical_multiplier( ($self->length - 2) / 4 ) . 'acene';
 }
 

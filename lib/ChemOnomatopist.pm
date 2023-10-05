@@ -787,7 +787,7 @@ sub find_groups
                 (all  {  $_->length == 6 } @cycles) &&
                 (any  { !$_->is_hydrocarbon } @cycles) ) {
                 $compound = ChemOnomatopist::Group::Xanthene->new( $graph, @cycles );
-            } elsif( @cycles >= 4 &&
+            } elsif( @cycles >= 3 &&
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
                      are_isomorphic( graph_without_edge_attributes( $core ),
                                      ChemOnomatopist::Group::Polyacene->ideal_graph( scalar $core->vertices ),
