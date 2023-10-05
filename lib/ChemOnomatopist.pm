@@ -44,7 +44,7 @@ use ChemOnomatopist::MolecularGraph;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Stem;
-use ChemOnomatopist::Util qw( copy );
+use ChemOnomatopist::Util qw( copy zip );
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
@@ -73,7 +73,7 @@ use Graph::Nauty qw( are_isomorphic );
 use Graph::SSSR;
 use Graph::Traversal::DFS;
 use Graph::Undirected;
-use List::Util qw( all any max min sum0 uniq );
+use List::Util qw( all any max min pairs sum0 uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
@@ -306,16 +306,15 @@ sub get_mainchain_name
 
     # Collect the heteroatoms and isotopes in the chain
     my %heteroatoms;
+    for (pairs zip $chain->heteroatoms, $chain->heteroatom_positions) {
+        my( $element, $i ) = @$_;
+        push @{$heteroatoms{$element}}, $i;
+    }
+
     my %isotopes;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         next if blessed $atom;
-
-        if( !is_element( $atom, 'C' ) &&
-            defined element( $atom ) &&
-            exists $elements{element( $atom )} ) {
-            push @{$heteroatoms{element( $atom )}}, $i;
-        }
 
         if( exists $atom->{isotope} ) {
             push @{$isotopes{$atom->{isotope} . element( $atom )}}, $i;

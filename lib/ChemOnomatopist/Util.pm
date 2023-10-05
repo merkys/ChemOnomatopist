@@ -14,6 +14,7 @@ use parent Exporter::;
 
 our @EXPORT_OK = qw(
     copy
+    zip
 );
 
 sub copy($)
@@ -29,6 +30,13 @@ sub copy($)
         $copy->set_edge_attributes( @$edge, $graph->get_edge_attributes( @$edge ) );
     }
     return $copy;
+}
+
+sub zip(@)
+{
+    die "odd input to zip\n" if @_ % 2;
+    my $N = @_ / 2;
+    return map { $_[$_], $_[$_ + $N] } 0..$N-1;
 }
 
 1;
