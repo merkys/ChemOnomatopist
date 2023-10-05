@@ -877,6 +877,14 @@ sub select_mainchain
         @POI = grep { $_->isa( ChemOnomatopist::Chain::Circular:: ) } $graph->groups;
     }
 
+    # "41. Ethers, then sulfides, sulfoxides, sulfones; then selenides, selenoxides, etc."
+    if( !@POI ) {
+        @groups = most_senior_groups( grep { $_->isa( ChemOnomatopist::Group::Ether:: ) }
+                                      grep { blessed $_ } $graph->vertices );
+        @POI = @groups;
+        $most_senior_group = blessed $groups[0] if @groups;
+    }
+
     my @parents = @POI;
 
     my @chains;
