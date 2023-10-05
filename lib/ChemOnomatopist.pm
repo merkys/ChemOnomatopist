@@ -1364,10 +1364,8 @@ sub most_senior_groups
 
     my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) && !$_->is_prefix_only }
                       @vertices;
-
-    # Attach the supra-vertex groups if no "simple" groups are found
-    # TODO: For now grep is used, in future it should not be used
-    if( !@groups && $graph && $graph->isa( ChemOnomatopist::MolecularGraph:: ) ) {
+    # TODO: For now grep is used, in future only ChemOnomatopist::Group subclasses should remain
+    if( $graph && $graph->isa( ChemOnomatopist::MolecularGraph:: ) ) {
         push @groups, grep { $_->isa( ChemOnomatopist::Group:: ) } $graph->groups;
     }
 
