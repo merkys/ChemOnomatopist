@@ -160,7 +160,7 @@ sub heteroatom_positions()
     my @vertices = $self->vertices;
     my @heteroatom_positions;
     for (0..$#vertices) {
-        next if blessed $vertices[$_];
+        next if blessed $vertices[$_] && !$vertices[$_]->isa( ChemOnomatopist::Group::Ether:: );
         next if ChemOnomatopist::is_element( $vertices[$_], 'C' );
         push @heteroatom_positions, $_;
     }
@@ -331,7 +331,8 @@ sub heteroatoms()
 {
     my( $self ) = @_;
     my @vertices = $self->vertices;
-    return map { ucfirst $vertices[$_]->{symbol} } $self->heteroatom_positions;
+    return map { ChemOnomatopist::element( $vertices[$_] ) }
+               $self->heteroatom_positions;
 }
 
 sub length()
