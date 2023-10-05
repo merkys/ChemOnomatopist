@@ -247,7 +247,7 @@ sub get_sidechain_name
     }
     $name .= "($isotopes)" if $isotopes ne '';
 
-    if( $chain->isa( ChemOnomatopist::Group:: ) ) {
+    if( $chain->isa( ChemOnomatopist::Chain::Circular:: ) || $chain->isa( ChemOnomatopist::Group:: ) ) {
         $chain->parent( $parent ) if $chain->can( 'parent' );
         my $prefix = $chain->prefix;
         # All groups are most likely stems
