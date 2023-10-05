@@ -12,6 +12,8 @@ my @cases = (
     # From BBv2 P-25.2.1
     { smiles => 'N1=CC=CC2=CC=C3N=CC=CC3=C12', iupac => '1,7-phenanthroline', AUTHOR => 1 },
     { smiles => 'C1=CC=CC2=NC=C3C=CC=CC3=C12', iupac => 'phenanthridine', AUTHOR => 1 },
+
+    { smiles => 'COC=1C(=CC=2C=C(C3=CC(=CC=C3C2C1OC)O)OC)O', iupac => '3,4,9-trimethoxyphenanthrene-2,7-diol', AUTHOR => 1 }, # From Wikipedia Gymnopusin
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
