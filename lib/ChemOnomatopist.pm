@@ -841,10 +841,7 @@ sub select_mainchain
 
     # POIs are atoms connected to the most senior groups, if any
     my @groups = most_senior_groups( $graph );
-    # FIXME: This is suboptimal as some actions are done twice - transition is underway
-    my( $most_senior_group ) = sort { ChemOnomatopist::Group::cmp( $a, $b ) } @groups;
-    @groups = grep { !ChemOnomatopist::Group::cmp( $_, $most_senior_group ) } @groups;
-    $most_senior_group = blessed $most_senior_group if $most_senior_group;
+    my $most_senior_group = blessed $groups[0] if @groups;
 
     # FIXME: Actually, more than one group can be attached to the same vertex
     @POI = uniq map { $_->is_part_of_chain ? $_ : $graph->neighbours( $_ ) } @groups;
