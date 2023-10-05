@@ -793,7 +793,7 @@ sub find_groups
                                      ChemOnomatopist::Group::Polyacene->ideal_graph( scalar $core->vertices ),
                                      sub { return 'C' } ) ) {
                 $compound = ChemOnomatopist::Group::Polyacene->new( $graph, @cycles );
-            } elsif( @cycles >= 4 &&
+            } elsif( @cycles >= 3 &&
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
                      are_isomorphic( graph_without_edge_attributes( $core ),
                                      ChemOnomatopist::Group::Polyaphene->ideal_graph( scalar $core->vertices ),
