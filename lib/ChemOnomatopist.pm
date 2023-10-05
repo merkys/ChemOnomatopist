@@ -841,6 +841,7 @@ sub is_element
 
 # Given a graph, selects the main chain.
 # The returned chain is an object of ChemOnomatopist::Chain or its subclasses.
+# The selection is implemented according to P-41
 sub select_mainchain
 {
     my( $graph ) = @_;
@@ -858,10 +859,11 @@ sub select_mainchain
     # FIXME: Actually, more than one group can be attached to the same vertex
     @POI = uniq map { $_->is_part_of_chain ? $_ : $graph->neighbours( $_ ) } @groups;
 
-    # If no senior groups are found, POIs now are senior atoms
+    # "Classes denoted by the senior atom in heterane nomenclature"
     if( !@POI ) {
         my $elements = set( map  { element( $_ ) }
                             grep { !blessed $_ || !$_->isa( ChemOnomatopist::Group::Ether:: ) } # Ethers are less senior
+                            grep { !blessed $_ || !$_->is_prefix_only } # Prefix-only groups cannot act as main chains
                                  $graph->vertices );
         my( $most_senior_element ) = grep { $elements->has( $_ ) }
                                           qw( N P As Sb Bi Si Ge Sn Pb B Al Ga In Tl O S Se Te ); # C removed intentionally
