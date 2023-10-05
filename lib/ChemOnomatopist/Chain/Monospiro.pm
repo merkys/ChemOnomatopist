@@ -1,4 +1,4 @@
-package ChemOnomatopist::Group::Monospiro;
+package ChemOnomatopist::Chain::Monospiro;
 
 use strict;
 use warnings;

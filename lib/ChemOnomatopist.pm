@@ -17,6 +17,7 @@ use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine;
+use ChemOnomatopist::Group::Bicycle;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
@@ -29,7 +30,7 @@ use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Monocycle;
-use ChemOnomatopist::Group::Monospiro;
+use ChemOnomatopist::Chain::Monospiro;
 use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
 use ChemOnomatopist::Group::Polyacene;
@@ -456,7 +457,7 @@ sub get_mainchain_name
         }
         $name->append_multiplier( $number );
         if( $chain->isa( ChemOnomatopist::Group::Monocycle:: ) ||
-            $chain->isa( ChemOnomatopist::Group::Monospiro:: ) ) {
+            $chain->isa( ChemOnomatopist::Chain::Monospiro:: ) ) {
             $name->append_suffix( $groups[0]->suffix_if_cycle_substituent );
         } elsif( @senior_group_attachments > 2 ) {
             $name->append_suffix( $groups[0]->multisuffix );
@@ -769,9 +770,9 @@ sub find_groups
         if(      join( ',', sort keys %vertices_by_degree ) eq '2' ) {
             # Monocycles
             $compound = ChemOnomatopist::Group::Monocycle->new( $graph, Graph::Traversal::DFS->new( $core )->dfs );
-        } elsif( ChemOnomatopist::Group::Monospiro->has_form( $core ) ) {
+        } elsif( ChemOnomatopist::Chain::Monospiro->has_form( $core ) ) {
             # BBv2 P-24.2.1 Monospiro alicyclic ring systems
-            $compound = ChemOnomatopist::Group::Monospiro->new( $graph, $core->vertices );
+            $compound = ChemOnomatopist::Chain::Monospiro->new( $graph, $core->vertices );
         } elsif( ChemOnomatopist::Group::Bicycle->has_form( $core ) ) {
             # Ortho-fused as defined in BBv2 P-25.3.1.1.1
             $compound = ChemOnomatopist::Group::Bicycle->new( $graph, $core->vertices );

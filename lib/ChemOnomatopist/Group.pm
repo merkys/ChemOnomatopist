@@ -3,11 +3,11 @@ package ChemOnomatopist::Group;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine;
-use ChemOnomatopist::Group::Bicycle;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
@@ -19,13 +19,8 @@ use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Ketone;
-use ChemOnomatopist::Group::Monocycle;
-use ChemOnomatopist::Group::Monospiro;
-use ChemOnomatopist::Group::Polyacene;
-use ChemOnomatopist::Group::Polyaphene;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::SulfonicAcid;
-use ChemOnomatopist::Group::Xanthene;
 
 use List::Util qw( any );
 use Scalar::Util qw( blessed );
