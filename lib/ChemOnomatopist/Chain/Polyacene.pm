@@ -60,23 +60,6 @@ sub candidates()
     return @candidates;
 }
 
-sub locants(@)
-{
-    my $self = shift;
-    my %locant_map;
-    my $pos = 1;
-    my $subgraph = subgraph( $self->graph, $self->vertices );
-    for my $i (0..$self->length-1) {
-        if( $subgraph->degree( $self->{vertices}[$i] ) == 2 ) {
-            $locant_map{$i} = $pos;
-            $pos++;
-        } else {
-            $locant_map{$i} = $pos . 'a';
-        }
-    }
-    return map { $locant_map{$_} } @_;
-}
-
 sub ideal_graph($$)
 {
     my( $class, $N ) = @_;
