@@ -151,20 +151,21 @@ sub get_sidechain_name
         return ChemOnomatopist::Name::Part::Element->new( $element )->to_name;
     }
 
+    # Collect heteroatoms
+    my %heteroatoms;
+    for (pairs zip $chain->heteroatoms, $chain->heteroatom_positions) {
+        my( $element, $i ) = @$_;
+        push @{$heteroatoms{$element}}, $i;
+    }
+
     # Examine the attachments to the main chain: delete the edges
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_sidechain_name()
     my %attachments;
     my %attachment_objects;
-    my %heteroatoms;
     my %isotopes;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
-
-        if( !blessed $atom && !is_element( $atom, 'C' ) &&
-            $atom->{symbol} && exists $elements{$atom->{symbol}} ) {
-            push @{$heteroatoms{$atom->{symbol}}}, $i;
-        }
 
         if( !blessed $atom && exists $atom->{isotope} ) {
             push @{$isotopes{$atom->{isotope} . element( $atom )}}, $i;
