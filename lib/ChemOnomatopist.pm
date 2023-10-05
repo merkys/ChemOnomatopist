@@ -940,7 +940,8 @@ sub select_mainchain
             }
             die "cannot determine the parent structure\n" unless @chains;
 
-            @chains = rule_most_groups( $most_senior_group, @chains );
+            # FIXME: This should probably be replaced by "most POIs"
+            @chains = rule_most_groups( $most_senior_group, @chains ) if $most_senior_group;
         } elsif( @groups ) {
             # Attempt to build chains from functional groups
             @chains = map { ChemOnomatopist::Chain->new( $graph, undef, $_ ) } @groups;
