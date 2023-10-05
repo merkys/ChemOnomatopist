@@ -850,13 +850,19 @@ sub select_mainchain
     # POIs are atoms connected to the most senior groups, if any
     my @groups = most_senior_groups( $graph );
     my $most_senior_group = blessed $groups[0] if @groups;
+    if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Ether:: ) {
+        $most_senior_group = undef;
+        @groups = ();
+    }
 
     # FIXME: Actually, more than one group can be attached to the same vertex
     @POI = uniq map { $_->is_part_of_chain ? $_ : $graph->neighbours( $_ ) } @groups;
 
     # If no senior groups are found, POIs now are senior atoms
     if( !@POI ) {
-        my $elements = set( map { element( $_ ) } $graph->vertices );
+        my $elements = set( map  { element( $_ ) }
+                            grep { !blessed $_ || !$_->isa( ChemOnomatopist::Group::Ether:: ) } # Ethers are less senior
+                                 $graph->vertices );
         my( $most_senior_element ) = grep { $elements->has( $_ ) }
                                           qw( N P As Sb Bi Si Ge Sn Pb B Al Ga In Tl O S Se Te ); # C removed intentionally
         if( $most_senior_element ) {
