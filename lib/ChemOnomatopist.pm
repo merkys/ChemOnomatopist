@@ -305,6 +305,14 @@ sub get_mainchain_name
     my @groups = most_senior_groups( $graph );
     my $most_senior_group = blessed $groups[0] if @groups;
 
+    # The following condition adjusts the seniority order by moving ethers below cycles
+    if( $most_senior_group &&
+        $most_senior_group eq ChemOnomatopist::Group::Ether:: &&
+        $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
+        @groups = ( $chain );
+        $most_senior_group = blessed $chain;
+    }
+
     # Collect the heteroatoms and isotopes in the chain
     my %heteroatoms;
     for (pairs zip $chain->heteroatoms, $chain->heteroatom_positions) {
