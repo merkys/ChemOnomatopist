@@ -26,6 +26,9 @@ Currently *ChemOnomatopist* supports:
 * Monocycles
 * Monospiro compounds
 * Bicyclic compounds
+* Polyacenes
+* Polyaphenes
+* Xanthenes and similar compounds
 
 Issues known to produce names deviating from IUPAC guidelines:
 
