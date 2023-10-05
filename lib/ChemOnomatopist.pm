@@ -551,8 +551,8 @@ sub find_groups
         }
 
         # Ether
-        # TODO: Enable
-        if( 0 && is_element( $atom, 'O' ) && @neighbours == 2 && @C == 2 ) {
+        if( is_element( $atom, 'O' ) && @neighbours == 2 && @C == 2 &&
+            !is_ring_atom( $graph, $atom, -1 ) ) {
             my $ether = ChemOnomatopist::Group::Ether->new;
             graph_replace( $graph, $ether, $atom );
         }

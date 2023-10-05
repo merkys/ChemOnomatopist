@@ -9,6 +9,7 @@ use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Carboxyl;
+use ChemOnomatopist::Group::Ether;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Graph::Traversal::DFS;
 use List::Util qw( all any sum0 uniq );
@@ -28,8 +29,7 @@ sub new
     # First of all, ChemOnomatopist::Chain::Ether is not very clever.
     # Second, BBv2 P-63.2.4.1 does not draw a clear line between ether naming and skeletal replacement nomenclature.
     my $self;
-    if( (grep { !blessed $_ && !ChemOnomatopist::is_element( $_, 'C' ) } @vertices) == 1 &&
-        (grep { !blessed $_ &&  ChemOnomatopist::is_element( $_, 'O' ) } @vertices) == 1 ) {
+    if( (grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Ether:: ) } @vertices) == 1 ) {
         $self = ChemOnomatopist::Chain::Ether->new( $graph, $parent, @vertices );
     } elsif( blessed $vertices[0] && $vertices[0]->isa( ChemOnomatopist::Group::Amide:: ) ) {
         $self = ChemOnomatopist::Chain::Amide->new( $graph, $parent, @vertices );

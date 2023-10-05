@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Chain::;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Group::Ether;
 use ChemOnomatopist::Name;
 use Scalar::Util qw( blessed );
 
@@ -30,8 +31,9 @@ sub prefix()
     my @vertices = $self->vertices;
     return 'oxy' if @vertices == 1;
 
-    my( $cut_position ) = grep { !blessed $vertices[$_] &&
-                                 ChemOnomatopist::is_element( $vertices[$_], 'O' ) } 0..$#vertices;
+    my( $cut_position ) = grep { blessed $vertices[$_] &&
+                                 $vertices[$_]->isa( ChemOnomatopist::Group::Ether:: ) }
+                               0..$#vertices;
     if( $cut_position ) {
         my @chains = ( ChemOnomatopist::Chain->new( $self->graph,
                                                     $self->parent,
@@ -63,8 +65,9 @@ sub suffix()
     my( $self ) = @_;
 
     my @vertices = $self->vertices;
-    my( $cut_position ) = grep { !blessed $vertices[$_] &&
-                                 ChemOnomatopist::is_element( $vertices[$_], 'O' ) } 0..$#vertices;
+    my( $cut_position ) = grep { blessed $vertices[$_] &&
+                                 $vertices[$_]->isa( ChemOnomatopist::Group::Ether:: ) }
+                               0..$#vertices;
 
     my @chains = ( ChemOnomatopist::Chain->new( $self->graph,
                                                 $self->parent,
