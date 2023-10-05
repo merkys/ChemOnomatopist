@@ -12,7 +12,7 @@ sub element() { return 'O' }
 
 sub is_part_of_chain() { return 1 }
 
-sub prefix() { return '' }
+sub prefix() { return 'oxy' }
 sub suffix() { return '' }
 
 1;
