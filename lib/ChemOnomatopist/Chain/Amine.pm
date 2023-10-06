@@ -8,6 +8,7 @@ use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Name;
+use List::Util qw( first );
 use Scalar::Util qw( blessed );
 
 sub AUTOLOAD {
@@ -46,9 +47,12 @@ sub suffix()
     my $suffix = $self->{chain}->suffix;
     return $suffix if $self->{chain}->isa( ChemOnomatopist::Chain::Circular:: ) &&
                       $self->{chain}->is_homogeneous;
+    return $suffix if $self->{chain}->length <= 2;
 
-    $suffix->append_locants( 1 ) if $self->{chain}->length > 2;
-    return $suffix;
+    my $neighbour = first { $self->graph->has_edge( $self->{amine}, $_ ) }
+                          $self->{chain}->vertices;
+
+    return $suffix->append_locants( $self->{chain}->locants( $self->vertex_ids( $neighbour ) ) );
 }
 
 1;
