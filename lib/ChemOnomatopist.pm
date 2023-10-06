@@ -1049,6 +1049,7 @@ sub select_mainchain
     }
 
     # Replace the original chain with the selected candidate
+    # TODO: This code is either dead or unused, remove
     if( $chain->isa( ChemOnomatopist::Group:: ) && $chain->candidate_for ) {
         graph_replace( $graph, $chain, $chain->candidate_for );
     }
