@@ -935,6 +935,7 @@ sub select_mainchain
         } elsif( @parents ) {
             my $copy = $graph->copy;
             $copy->delete_vertices( map { $_->vertices } $copy->groups );
+            $copy->delete_vertices( grep { blessed $_ && !$_->is_part_of_chain } $copy->vertices );
             my @paths;
             my $max_value;
             for my $i (0..$#parents) {
@@ -950,6 +951,10 @@ sub select_mainchain
                     }
                 }
             }
+
+            # Maybe there is no path between any given pair of POIs.
+            # If so, single-POI paths can be made.
+            @paths = map { [ $_, $_ ] } @parents unless @paths;
 
             # Construct all chains having all possible extensions to both sides of the selected path
             my %longest_paths;
@@ -972,6 +977,13 @@ sub select_mainchain
 
                 for my $i (0..$#{$longest_paths{$A}}) {
                     for my $j (0..$#{$longest_paths{$B}}) {
+                        if( $A == $B && $i == $j ) { # CHECKME: Maybe we are getting too many combinations?
+                            if( @{$longest_paths{$A}} == 1 ) {
+                                push @chains, ChemOnomatopist::Chain->new( $graph, undef, @{$longest_paths{$A}->[$i]} );
+                            }
+                            next;
+                        }
+
                         push @chains,
                              ChemOnomatopist::Chain->new( $graph,
                                                           undef,
@@ -986,6 +998,7 @@ sub select_mainchain
                     }
                 }
             }
+
             die "cannot determine the parent structure\n" unless @chains;
 
             # FIXME: This should probably be replaced by "most POIs"
