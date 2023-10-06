@@ -53,6 +53,15 @@ sub candidates()
 {
     my( $self ) = @_;
     my @candidates = ( $self );
+
+    if( $self->is_hydrocarbon ) {
+        my @vertices = $self->vertices;
+        push @candidates,
+             bless { graph => $self->graph,
+                     vertices => [ reverse map { $vertices[$_] } ( 10..13, 0..9 ) ],
+                     candidate_for => $self };
+    }
+
     return @candidates;
 }
 
