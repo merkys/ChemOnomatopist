@@ -169,6 +169,9 @@ sub heteroatom_positions()
     return @heteroatom_positions;
 }
 
+# CHECKME: Can chains have indicated hydrogens?
+sub indicated_hydrogens() { my @hydrogen_positions; return @hydrogen_positions }
+
 sub is_hydrocarbon()
 {
     my( $self ) = @_;
@@ -442,6 +445,12 @@ sub number_of_heteroatoms()
 {
     my( $self ) = @_;
     return scalar $self->heteroatom_positions;
+}
+
+sub number_of_indicated_hydrogens()
+{
+    my( $self ) = @_;
+    return scalar $self->indicated_hydrogens;
 }
 
 sub number_of_multiple_bonds()
