@@ -33,7 +33,7 @@ my @cases = (
     { smiles => 'CC(CN(CC(=C)C)CC(=C)C)(C)C', iupac => 'N-(2,2-dimethylpropyl)-2-methyl-N-(2-methylprop-2-en-1-yl)prop-2-en-1-amine', AUTHOR => 1 },
     { smiles => 'C1(CCCCC1)NC1=CC=CC=C1', iupac => 'N-cyclohexylaniline', AUTHOR => 1 },
     { smiles => 'O1C(=CC=C1)NC=1NC=CC1', iupac => 'N-(furan-2-yl)-1H-pyrrol-2-amine', AUTHOR => 1 },
-    { smiles => 'C(CCC)NC1CC1', iupac => 'N-butylcyclopropanamine', AUTHOR => 1 },
+    { smiles => 'C(CCC)NC1CC1', iupac => 'N-butylcyclopropanamine' },
     { smiles => 'C1=C(C=CC=2CCCCC12)NC1=CC2=CC=CC=C2C=C1', iupac => 'N-(5,6,7,8-tetrahydronaphthalen-2-yl)naphthalen-2-amine', AUTHOR => 1 },
 
     # From BBv2 P-62.2.3
