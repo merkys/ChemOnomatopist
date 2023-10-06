@@ -13,6 +13,7 @@ use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::FromHalves;
 use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Chain::Monospiro;
+use ChemOnomatopist::Chain::Phenanthrene;
 use ChemOnomatopist::Chain::Polyacene;
 use ChemOnomatopist::Chain::Polyaphene;
 use ChemOnomatopist::Chain::Xanthene;
@@ -794,7 +795,13 @@ sub find_groups
                                      ChemOnomatopist::Chain::Polyacene->ideal_graph( scalar $core->vertices ),
                                      sub { return 'C' } ) ) {
                 $compound = ChemOnomatopist::Chain::Polyacene->new( $graph, @cycles );
-            } elsif( @cycles >= 3 &&
+            } elsif( @cycles == 3 &&
+                     (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
+                     are_isomorphic( graph_without_edge_attributes( $core ),
+                                     ChemOnomatopist::Chain::Phenanthrene->ideal_graph,
+                                     sub { return 'C' } ) ) {
+                $compound = ChemOnomatopist::Chain::Phenanthrene->new( $graph, @cycles );
+            } elsif( @cycles >= 4 &&
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
                      are_isomorphic( graph_without_edge_attributes( $core ),
                                      ChemOnomatopist::Chain::Polyaphene->ideal_graph( scalar $core->vertices ),

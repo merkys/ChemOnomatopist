@@ -6,91 +6,46 @@ use warnings;
 # ABSTRACT: Phenanthrene or its derivative
 # VERSION
 
-use parent ChemOnomatopist::Chain::Polyaphene::;
-
-use ChemOnomatopist::Util::Graph qw(
-    merge_graphs
-    subgraph
-);
+use ChemOnomatopist::Chain::Polyaphene;
+use ChemOnomatopist::Util::Graph qw( merge_graphs );
 use Graph::Undirected;
-use Set::Object qw( set );
+use List::Util qw( first any );
+
+use parent ChemOnomatopist::Chain::Polyaphene::;
 
 sub new
 {
     my( $class, $graph, @cycles ) = @_;
 
-    my $subgraph = subgraph( $graph, map { $_->vertices } @cycles );
+    my $subgraph = $graph->subgraph( map { $_->vertices } @cycles );
 
-    # Constructing the connectivity graph for cycles
-    my $connectivity_graph = Graph::Undirected->new( refvertexed => 1 );
-    for my $vertex ($subgraph->vertices) {
-        next unless $subgraph->degree( $vertex ) == 3;
-        $connectivity_graph->add_edge( grep { set( $_->vertices )->has( $vertex ) } @cycles );
-    }
+    # Deleting all edges having degree 3 vertices at both ends
+    $subgraph->delete_edges( map  { @$_ }
+                             grep { $subgraph->degree( $_->[0] ) == 3 &&
+                                    $subgraph->degree( $_->[1] ) == 3 }
+                                  $subgraph->edges );
 
-    # Detecting the common ring which has three edges having degree 3 at their ends
-    my $common_ring;
-    for my $cycle (@cycles) {
-        next unless scalar( grep { $subgraph->degree( $_->[0] ) == 3 &&
-                                   $subgraph->degree( $_->[1] ) == 3 }
-                                 subgraph( $graph, $cycle->vertices )->edges ) == 3;
-        $common_ring = $cycle;
-    }
+    # Find an order
+    my( $start ) = grep { $subgraph->degree( $_ ) == 1 } $subgraph->vertices;
+    my @vertices = Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs;
 
-    # Finding the correct order of cycles, flipping if needed
-    my $common_ring_pos = @cycles % 2 ? (@cycles - 1) / 2 : @cycles / 2 - 1;
-    my( $start ) = grep { $connectivity_graph->degree( $_ ) == 1 } @cycles;
-    my @cycles_in_order = Graph::Traversal::DFS->new( $connectivity_graph,
-                                                      start => $start )->dfs;
-    if( !@cycles % 2 && $cycles_in_order[$common_ring_pos] != $common_ring ) {
-        @cycles_in_order = reverse @cycles_in_order;
-    }
-
-    # Finding the atom in the common ring which will get the lowest number
-    $subgraph = subgraph( $graph, $common_ring->vertices );
-    $subgraph->delete_edges( map { @$_ }
-                             map { subgraph( $graph, $_->vertices )->edges }
-                                 ( $cycles_in_order[$common_ring_pos-1],
-                                   $cycles_in_order[$common_ring_pos+1] ) );
-    my( $short_edge ) = grep { $subgraph->degree( $_->[0] ) == 1 &&
-                               $subgraph->degree( $_->[1] ) == 1 }
-                               $subgraph->edges;
-    my( $junction ) = (set( $cycles_in_order[$common_ring_pos-1]->vertices ) *
-                       set( @$short_edge ))->members;
-
-    # Finding the candidates of the starting atom
-    $subgraph = subgraph( $graph, $cycles_in_order[0]->vertices );
-    $subgraph->delete_vertices(   $cycles_in_order[1]->vertices );
-    my @candidates = grep { $subgraph->degree( $_ ) == 1 } $subgraph->vertices;
-
-    # Finding the first and the last atom in the enumeration order
-    $subgraph = subgraph( $graph, map { $_->vertices } @cycles );
-    my $shortest_paths = $subgraph->single_source_shortest_paths( $junction );
-    my $min_length;
-    my $first;
-    for my $vertex (@candidates) {
-        my $length = 0;
-        my $v = $vertex;
-        while(   $shortest_paths->has_vertex_attribute( $v, 'p' ) ) {
-            $v = $shortest_paths->get_vertex_attribute( $v, 'p' );
-            $length++;
+    # Adjust the order
+    if( any { ChemOnomatopist::element( $_ ) eq 'N' } @vertices ) {
+        # Find the order so as N is closest to the begining of the chain
+        # CHECKME: This might not be correct due to offset
+        my $first = first { ChemOnomatopist::element( $vertices[$_] ) eq 'N' }
+                          0..$#vertices;
+        my $last  = first { ChemOnomatopist::element( $vertices[-1-$_] ) eq 'N' }
+                          0..$#vertices;
+        @vertices = reverse @vertices if $last < $first;
+        push @vertices, shift @vertices;
+    } else {
+        for (1..4) {
+            push @vertices, shift @vertices;
         }
-        if( !defined $min_length || $min_length > $length ) {
-            $min_length = $length;
-            $first = $vertex;
-        }
+        @vertices = reverse @vertices;
     }
 
-    my( $last ) = grep { $subgraph->degree( $_ ) == 3 }
-                       $subgraph->neighbours( $first );
-
-    # Deleting chords and connection between first and last atoms
-    $subgraph->delete_edges( map { (set( $cycles_in_order[$_  ]->vertices ) *
-                                    set( $cycles_in_order[$_+1]->vertices ))->members }
-                                 0..$#cycles-1 );
-    $subgraph->delete_edge( $first, $last );
-
-    my @vertices = Graph::Traversal::DFS->new( $subgraph, start => $last )->dfs;
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
