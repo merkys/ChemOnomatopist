@@ -21,6 +21,11 @@ my @cases = (
     { smiles => 'N=C1CCC(N1)=O', iupac => '5-iminopyrrolidin-2-one' },
     { smiles => 'N=C1C=CC(C=C1)=O', iupac => '4-iminocyclohexa-2,5-dien-1-one' },
 
+    # From BBv2 P-62.3.1.3
+    { smiles => 'CP=N', iupac => '1-methylphosphanimine', AUTHOR => 1 },
+    { smiles => 'C[Si](=NC1=CC=CC=C1)C', iupac => '1,1-dimethyl-N-phenylsilanimine', AUTHOR => 1 },
+    { smiles => 'CN=[SiH]CC(=O)OC', iupac => 'methyl [(methylimino)silyl]acetate', AUTHOR => 1 },
+
     { smiles => 'C(C(=N)C(=O)O)C(=O)O', iupac => '2-iminobutanedioic acid' },
     { smiles => 'CC(C)C=N', iupac => '2-methylpropan-1-imine' },
 );
