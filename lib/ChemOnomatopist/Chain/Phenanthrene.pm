@@ -39,6 +39,12 @@ sub new
                           0..$#vertices;
         @vertices = reverse @vertices if $last < $first;
         push @vertices, shift @vertices;
+
+        # Phenanthridine has a strict order
+        if( (grep { ChemOnomatopist::element( $_ ) eq 'N' } @vertices) == 1 &&
+            ChemOnomatopist::element( $vertices[5] ) ne 'N' ) {
+            die "cannot handle complicated cyclic compounds\n";
+        }
     } else {
         for (1..5) {
             push @vertices, shift @vertices;
