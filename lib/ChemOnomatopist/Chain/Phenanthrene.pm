@@ -49,6 +49,13 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
+sub candidates()
+{
+    my( $self ) = @_;
+    my @candidates = ( $self );
+    return @candidates;
+}
+
 sub ideal_graph($)
 {
     my( $class ) = @_;
