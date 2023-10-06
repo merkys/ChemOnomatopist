@@ -11,7 +11,6 @@ my %unsupported = (
     'C1=CC=C2C(=C1)C=CC3=C2N=CC=C3' => 'cannot handle complicated cyclic compounds', # PubChem 9191
     'C1=CC=CC=2C1=C1C=C3C=C4C=CC=CC4=CC3=CC1=CC2' => 'cannot handle complicated cyclic compounds', # PubChem 67470
     # 'CC1=C2C(=CC=C1)C(C(CCS2)C(=O)OC)O' => 'cannot determine the parent structure', # PubChem 54384155
-    # 'COC1=NN=C(C=C1C(=O)O)C2=CC=CC=N2' => 'unknown locant in multicyclic compound', # PubChem 117127049 # This works now, differs only in brackets and is flaky
 );
 
 plan tests => scalar keys %unsupported;
