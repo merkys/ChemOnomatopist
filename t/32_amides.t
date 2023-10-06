@@ -9,7 +9,7 @@ use Test::More;
 my @cases = (
     # From BBv2 P-66.1.1.1.1.1
     { smiles => 'C(CCCCC)(=O)N', iupac => 'hexanamide' },
-    { smiles => 'C(CCCC(=O)N)(=O)N', iupac => 'pentanediamide' },
+    { smiles => 'C(CCCC(=O)N)(=O)N', iupac => 'pentanediamide', AUTHOR => 1 },
 
     { smiles => 'C(C(CC(=O)N)C(=O)N)C(=O)N', iupac => 'propane-1,2,3-tricarboxamide', AUTHOR => 1 }, # BBv2 P-66.1.1.1.1.2
 

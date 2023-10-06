@@ -8,6 +8,7 @@ use warnings;
 
 use Algorithm::Combinatorics qw( combinations );
 use ChemOnomatopist::Chain;
+use ChemOnomatopist::Chain::Amide;
 use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Bicycle;
 use ChemOnomatopist::Chain::Circular;
@@ -1058,6 +1059,10 @@ sub select_mainchain
     my $chain = filter_chains( @chains );
     my @vertices = $chain->vertices;
 
+    # Recognising amide chains
+    if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Amide:: ) {
+        $chain = ChemOnomatopist::Chain::Amide->new( $graph, $chain, @groups );
+    }
     # Recognising amine chains
     if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Amine:: ) {
         $chain = ChemOnomatopist::Chain::Amine->new( $graph, $chain, @groups );

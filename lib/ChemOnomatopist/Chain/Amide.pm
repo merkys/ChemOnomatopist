@@ -6,20 +6,31 @@ use warnings;
 # ABSTRACT: Amide chain
 # VERSION
 
-use parent ChemOnomatopist::Chain::;
-
 use ChemOnomatopist;
-use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Name;
-use List::Util qw( all );
+use List::Util qw( first );
 use Scalar::Util qw( blessed );
+
+sub AUTOLOAD {
+    our $AUTOLOAD;
+    my $call = $AUTOLOAD;
+    $call =~ s/.*:://;
+    return if $call eq 'DESTROY';
+    my $self = shift;
+    return $self->{chain}->can( $call )->( $self->{chain}, @_ );
+}
 
 sub new
 {
-    my( $class, $graph, $parent, @vertices ) = @_;
-    my $self = { vertices => \@vertices, graph => $graph };
-    $self->{parent} = $parent if $parent;
-    return bless $self, $class;
+    my( $class, $graph, $chain, $amide ) = @_;
+    return bless { graph => $graph, chain => $chain, amide => $amide };
+}
+
+sub vertices()
+{
+    my $self = shift;
+    my @vertices = ( $self->{amide}, $self->{chain}->vertices );
+    return @vertices;
 }
 
 sub locants(@)
@@ -28,24 +39,12 @@ sub locants(@)
     return map { $_ ? $_ : 'N' } @_;
 }
 
-sub bond_locants(@)
-{
-    my $self = shift;
-    return @_;
-}
+sub needs_substituent_locants() { return 1 }
 
 sub suffix()
 {
     my( $self ) = @_;
-    return '' if $self->length == 1;
-
-    my $name = $self->SUPER::suffix;
-    my @vertices = $self->vertices;
-    if( all { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) }
-            ( $vertices[0], $vertices[-1] ) ) {
-        $name->append_multiplier( 'di' );
-    }
-    return $name;
+    return $self->{chain}->suffix;
 }
 
 1;
