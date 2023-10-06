@@ -290,6 +290,8 @@ sub number_of_double_bonds()
     return int( $self->length / 2 );
 }
 
+sub number_of_multiple_bonds() { return $_[0]->number_of_double_bonds }
+
 sub _cmp_instances
 {
     my( $A, $B ) = @_;
