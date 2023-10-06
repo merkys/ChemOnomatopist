@@ -45,9 +45,7 @@ sub suffix()
 {
     my( $self ) = @_;
     my $suffix = $self->{chain}->suffix;
-    return $suffix if $self->{chain}->isa( ChemOnomatopist::Chain::Circular:: ) &&
-                      $self->{chain}->is_homogeneous;
-    return $suffix if $self->{chain}->length <= 2;
+    return $suffix unless $self->{chain}->needs_suffix_locant;
 
     my $neighbour = first { $self->graph->has_edge( $self->{amine}, $_ ) }
                           $self->{chain}->vertices;
