@@ -534,11 +534,12 @@ sub find_groups
             # Detecting amines
             my $amine = ChemOnomatopist::Group::Amine->new;
             graph_replace( $graph, $amine, $atom, @H );
-        } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C == 1 && @H == 1 &&
-                 is_double_bond( $graph, $atom, @C ) ) {
+        } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C &&
+                 !is_ring_atom( $graph, $atom, -1 ) &&
+                 any { is_double_bond( $graph, $atom, $_ ) } @C ) {
             # Detecting imino
             my $imino = ChemOnomatopist::Group::Imino->new;
-            graph_replace( $graph, $imino, $atom, @H );
+            graph_replace( $graph, $imino, $atom );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 1 && @C == 1 &&
                  $graph->degree( @C ) >= 2 &&
                  is_triple_bond( $graph, $atom, @C ) ) {
