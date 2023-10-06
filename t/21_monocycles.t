@@ -118,7 +118,7 @@ my @cases = (
 
     # From BBv2 P-59.2.1.6
     { smiles => 'OC1CCC(CC1)C(CCCCCO)O', iupac => '1-(4-hydroxycyclohexyl)hexane-1,6-diol', AUTHOR => 1 },
-    { smiles => 'O=C(CC1CC(C(C1)=O)=O)CC', iupac => '4-(2-oxobutyl)cyclopentane-1,2-dione', AUTHOR => 1 },
+    { smiles => 'O=C(CC1CC(C(C1)=O)=O)CC', iupac => '4-(2-oxobutyl)cyclopentane-1,2-dione' },
 
     { smiles => 'O=CCCCCCCC1CC(CCC1)C=O', iupac => '3-(7-oxoheptyl)cyclohexane-1-carbaldehyde', AUTHOR => 1 }, # From BBv2 P-59.2.1.7
 
