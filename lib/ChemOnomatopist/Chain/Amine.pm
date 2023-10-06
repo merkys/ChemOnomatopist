@@ -46,6 +46,7 @@ sub suffix()
     my( $self ) = @_;
     my $suffix = $self->{chain}->suffix;
     return $suffix unless $self->{chain}->needs_suffix_locant;
+    return $suffix if $self->{chain}->length == 2; # Ad-hoc fix for ethanamines
 
     my $neighbour = first { $self->graph->has_edge( $self->{amine}, $_ ) }
                           $self->{chain}->vertices;
