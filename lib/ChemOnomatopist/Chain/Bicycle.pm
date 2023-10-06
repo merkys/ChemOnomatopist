@@ -291,7 +291,9 @@ sub suffix()
     if( $self->is_hydrocarbon ) {
         # FIXME: Check if aromatic, but with caution, as substitutions will break aromaticity
         my $cycle_sizes = join ',', map { $_->length } $self->cycles;
-        return $hydrocarbons_by_size{$cycle_sizes} if exists $hydrocarbons_by_size{$cycle_sizes};
+        if( exists $hydrocarbons_by_size{$cycle_sizes} ) {
+            return ChemOnomatopist::Name::Part::Stem->new( $hydrocarbons_by_size{$cycle_sizes} )->to_name;
+        }
 
         if( $cycle_sizes =~ /^(\d+),\1$/ ) {
             my $name = ChemOnomatopist::alkane_chain_name( $1 ) . 'alene';
