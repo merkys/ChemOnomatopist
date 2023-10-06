@@ -977,11 +977,13 @@ sub select_mainchain
 
                 for my $i (0..$#{$longest_paths{$A}}) {
                     for my $j (0..$#{$longest_paths{$B}}) {
-                        if( $A == $B && $i == $j ) { # CHECKME: Maybe we are getting too many combinations?
-                            if( @{$longest_paths{$A}} == 1 ) {
+                        if( $A == $B ) {
+                            if( $i == $j ) {
                                 push @chains, ChemOnomatopist::Chain->new( $graph, undef, @{$longest_paths{$A}->[$i]} );
-                            }
-                            next;
+                                next;
+                            } elsif( $longest_paths{$A}->[$i][1] == $longest_paths{$A}->[$j][1] ) {
+                                next;
+                            } # CHECKME: Maybe we are getting too many combinations?
                         }
 
                         push @chains,
