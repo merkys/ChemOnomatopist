@@ -290,7 +290,12 @@ sub number_of_double_bonds()
     return int( $self->length / 2 );
 }
 
-sub number_of_multiple_bonds() { return $_[0]->number_of_double_bonds }
+sub number_of_multiple_bonds()
+{
+    my( $self ) = @_;
+    return $self->SUPER::number_of_multiple_bonds unless $self->is_aromatic;
+    return $self->number_of_double_bonds;
+}
 
 sub _cmp_instances
 {
