@@ -1199,12 +1199,12 @@ sub filter_chains
                    # P-44.4.1.2: Maximum number of double bonds
                    \&rule_most_double_bonds,
                    # TODO: P-44.4.1.3: Nonstandard bonding numbers
-                   # TODO: P-44.4.1.4: Concerns rings
+                   # TODO: P-44.4.1.4: Concerns rings with indicated hydrogen
                    # P-44.4.1.5: Lowest locants for heteroatoms in skeletal chain
                    \&rule_lowest_numbered_heteroatoms,
                    # P-44.4.1.6: Lowest locants for heteroatoms in skeletal chain according to heteroatom seniority
                    \&rule_lowest_numbered_most_senior_heteroatoms,
-                   # TODO: P-44.4.1.7: Concerns rings
+                   # TODO: P-44.4.1.7: Concerns fused rings
                    # P-44.4.1.8: Lowest locants for suffix groups
                    \&rule_lowest_numbered_senior_groups,
                    # TODO: P-44.4.1.9: Concerns rings
