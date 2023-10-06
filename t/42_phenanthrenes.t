@@ -14,6 +14,7 @@ my @cases = (
     { smiles => 'C1=CC=CC2=NC=C3C=CC=CC3=C12', iupac => 'phenanthridine' },
 
     { smiles => 'COC=1C(=CC=2C=C(C3=CC(=CC=C3C2C1OC)O)OC)O', iupac => '3,4,9-trimethoxyphenanthrene-2,7-diol' }, # From Wikipedia Gymnopusin
+    { smiles => 'C1=CC=CC=2C3=CC=CC=C3C(C(C12)=O)=O', iupac => 'phenanthrene-9,10-dione' }, # From Wikipedia Phenanthrenequinone
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
