@@ -357,6 +357,19 @@ sub get_mainchain_name
         }
     }
 
+    # This piece of code is hackish - to be moved either to some class or incorporated here better
+    if( $most_senior_group &&
+        $most_senior_group eq ChemOnomatopist::Group::Amine:: &&
+        @groups == 1 && # TODO: What to do with more than one amine?
+        $graph->degree( @groups ) > 1 ) { # TODO: What do we do with more than one attachment?
+        for my $neighbour ( $graph->neighbours( @groups ) ) {
+            next if any { $_ == $neighbour } @chain; # Skip atoms from this chain
+            my $attachment_name = get_sidechain_name( $graph, @groups, $neighbour );
+            push @{$attachments{$attachment_name}}, -1;
+            $attachment_objects{$attachment_name} = $attachment_name;
+        }
+    }
+
     # Collecting names of all the attachments
     my @order = sort { cmp_only_aphabetical( $a, $b ) || $a cmp $b } keys %attachments;
     my $name = ChemOnomatopist::Name->new;
