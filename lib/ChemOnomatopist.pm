@@ -1066,6 +1066,8 @@ sub select_mainchain
         $chain = ChemOnomatopist::Chain->new( $graph, undef, @vertices );
     }
 
+    print STDERR ">>> mainchain $chain\n" if $DEBUG;
+
     return $chain;
 }
 
