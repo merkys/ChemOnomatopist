@@ -9,7 +9,7 @@ use warnings;
 use ChemOnomatopist::Chain::Polyaphene;
 use ChemOnomatopist::Util::Graph qw( merge_graphs );
 use Graph::Undirected;
-use List::Util qw( first any );
+use List::Util qw( first all any );
 
 use parent ChemOnomatopist::Chain::Polyaphene::;
 
@@ -90,9 +90,23 @@ sub ideal_graph($)
     return $graph;
 }
 
+sub needs_heteroatom_locants()
+{
+    my( $self ) = @_;
+    return $self->number_of_heteroatoms == 2;
+}
+
+sub needs_heteroatom_names() { return '' }
+
 sub prefix()
 {
     my( $self ) = @_;
+
+    if( all { $_ eq 'N' } $self->heteroatoms ) {
+        return 'phenanthridine' if $self->number_of_heteroatoms == 1;
+        return 'phenanthroline' if $self->number_of_heteroatoms == 2;
+    }
+
     return 'phenanthrene';
 }
 

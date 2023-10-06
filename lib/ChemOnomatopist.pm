@@ -799,7 +799,7 @@ sub find_groups
                                      sub { return 'C' } ) ) {
                 $compound = ChemOnomatopist::Chain::Polyacene->new( $graph, @cycles );
             } elsif( @cycles == 3 &&
-                     (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
+                     (all { $_->length == 6 } @cycles) &&
                      are_isomorphic( graph_without_edge_attributes( $core ),
                                      ChemOnomatopist::Chain::Phenanthrene->ideal_graph,
                                      sub { return 'C' } ) ) {
