@@ -40,7 +40,7 @@ sub new
         @vertices = reverse @vertices if $last < $first;
         push @vertices, shift @vertices;
     } else {
-        for (1..4) {
+        for (1..5) {
             push @vertices, shift @vertices;
         }
         @vertices = reverse @vertices;
