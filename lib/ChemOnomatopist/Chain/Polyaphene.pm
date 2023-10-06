@@ -126,16 +126,7 @@ sub ideal_graph($$)
         @sizes = ( ($N - 2)/2, ($N - 2)/2 );
     }
 
-    my @graphs;
-    if( $N == 14 ) { # Phenanthrene
-        for (0..1) {
-            my $graph = Graph::Undirected->new( refvertexed => 1 );
-            $graph->add_cycle( map { { symbol => 'C', number => $_-1 } } 1..6 );
-            push @graphs, $graph;
-        }
-    } else {
-        @graphs = map { ChemOnomatopist::Chain::Polyacene->ideal_graph( $_ ) } @sizes;
-    }
+    my @graphs = map { ChemOnomatopist::Chain::Polyacene->ideal_graph( $_ ) } @sizes;
     my $graph = merge_graphs( @graphs );
 
     # Locate the terminal edges
@@ -161,7 +152,6 @@ sub ideal_graph($$)
 sub prefix()
 {
     my( $self ) = @_;
-    return 'phenanthrene' if $self->length == 14;
     return ChemOnomatopist::IUPAC_numerical_multiplier( ($self->length - 2) / 4 ) . 'aphene';
 }
 
