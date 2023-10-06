@@ -257,7 +257,7 @@ sub get_sidechain_name
         # All groups are most likely stems
         $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
         $name .= $prefix;
-    } elsif( @chain == 1 && blessed $chain[0] ) {
+    } elsif( @chain == 1 && blessed $chain[0] && !$chain->isa( ChemOnomatopist::Chain::Ether:: ) ) {
         $chain[0]->parent( $parent ) if $chain[0]->can( 'parent' );
         my $prefix = $chain[0]->prefix;
         # All group-containing chains are most likely stems
