@@ -8,6 +8,7 @@ use warnings;
 
 use Algorithm::Combinatorics qw( combinations );
 use ChemOnomatopist::Chain;
+use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Bicycle;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::FromHalves;

@@ -5,7 +5,6 @@ use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Chain::Amide;
-use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Carboxyl;
@@ -33,8 +32,6 @@ sub new
         $self = ChemOnomatopist::Chain::Ether->new( $graph, $parent, @vertices );
     } elsif( blessed $vertices[0] && $vertices[0]->isa( ChemOnomatopist::Group::Amide:: ) ) {
         $self = ChemOnomatopist::Chain::Amide->new( $graph, $parent, @vertices );
-    } elsif( 0 && blessed $vertices[0] && $vertices[0]->isa( ChemOnomatopist::Group::Amine:: ) ) {
-        $self = ChemOnomatopist::Chain::Amine->new( $graph, $parent, @vertices );
     } else {
         $self = { vertices => \@vertices, graph => $graph, cache => {} };
         $self->{parent} = $parent if $parent;
