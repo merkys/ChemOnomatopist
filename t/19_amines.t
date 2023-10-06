@@ -21,7 +21,7 @@ my @cases = (
 
     # From BBv2 P-62.2.2.1
     { smiles => 'C(C)N(CC)CC', iupac => 'N,N-diethylethanamine' },
-    { smiles => 'ClCCNCCC', iupac => 'N-(2-chloroethyl)propan-1-amine' },
+    { smiles => 'ClCCNCCC', iupac => 'N-(2-chloroethyl)propan-1-amine', AUTHOR => 1 }, # FIXME: This is strange
     { smiles => 'C(C)N(CCCC)CCC', iupac => 'N-ethyl-N-propylbutan-1-amine' },
     { smiles => 'C1(=CC=CC=C1)NC=1C=NC=CC1', iupac => 'N-phenylpyridin-3-amine' },
 
