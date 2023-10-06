@@ -787,7 +787,10 @@ sub find_groups
             if( (grep {  $_->is_benzene }  @cycles) == 2 &&
                 (grep { !$_->is_benzene }  @cycles) == 1 &&
                 (all  {  $_->length == 6 } @cycles) &&
-                (any  { !$_->is_hydrocarbon } @cycles) ) {
+                (any  { !$_->is_hydrocarbon } @cycles) &&
+                are_isomorphic( graph_without_edge_attributes( $core ),
+                                ChemOnomatopist::Chain::Xanthene->ideal_graph,
+                                sub { return 'C' } ) ) {
                 $compound = ChemOnomatopist::Chain::Xanthene->new( $graph, @cycles );
             } elsif( @cycles >= 3 &&
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
