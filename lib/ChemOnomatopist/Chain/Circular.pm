@@ -282,6 +282,14 @@ sub locants(@)
     return map { $locant_map{$_} } @_;
 }
 
+# In aromatic systems Kekule bonds have to be calculated, otherwise seniority rules may fail.
+sub number_of_double_bonds()
+{
+    my( $self ) = @_;
+    return $self->SUPER::number_of_double_bonds unless $self->is_aromatic;
+    return int( $self->length / 2 );
+}
+
 sub _cmp_instances
 {
     my( $A, $B ) = @_;
