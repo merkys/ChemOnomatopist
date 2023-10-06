@@ -40,4 +40,15 @@ sub locants(@)
 
 sub needs_substituent_locants() { return 1 }
 
+sub suffix()
+{
+    my( $self ) = @_;
+    my $suffix = $self->{chain}->suffix;
+    return $suffix if $self->{chain}->isa( ChemOnomatopist::Chain::Circular:: ) &&
+                      $self->{chain}->is_homogeneous;
+
+    $suffix->append_locants( 1 ) if $self->{chain}->length > 2;
+    return $suffix;
+}
+
 1;
