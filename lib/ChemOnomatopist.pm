@@ -13,6 +13,7 @@ use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Bicycle;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::FromHalves;
+use ChemOnomatopist::Chain::Imino;
 use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Chain::Monospiro;
 use ChemOnomatopist::Chain::Phenanthrene;
@@ -1069,6 +1070,10 @@ sub select_mainchain
     # Recognising amine chains
     if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Amine:: ) {
         $chain = ChemOnomatopist::Chain::Amine->new( $graph, $chain, @groups );
+    }
+    # Recognising imino chains
+    if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Imino:: ) {
+        $chain = ChemOnomatopist::Chain::Imino->new( $graph, $chain, @groups );
     }
 
     # This is needed to detect ethers.
