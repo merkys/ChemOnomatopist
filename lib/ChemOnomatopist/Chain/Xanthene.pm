@@ -56,7 +56,8 @@ sub candidates()
                  vertices => [ reverse @vertices[11..13], @vertices[0..10] ],
                  candidate_for => $self };
 
-    if( $self->number_of_heteroatoms == 2 ) { # TODO: Add two more candidates
+    if( $self->number_of_heteroatoms == 2 &&
+        uniq( $self->heteroatoms ) == 1 ) { # TODO: Add two more candidates
     }
 
     return @candidates;
