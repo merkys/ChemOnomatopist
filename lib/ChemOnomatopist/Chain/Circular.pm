@@ -202,6 +202,7 @@ sub needs_multiple_bond_locants()
 {
     my( $self ) = @_;
     return 1 if $self->number_of_multiple_bonds > 1;
+    return 1 if $self->number_of_branches || $self->parent;
     return scalar( uniq map { $_->{symbol} } $self->vertices ) > 1;
 }
 
