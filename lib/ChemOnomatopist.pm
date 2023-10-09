@@ -535,13 +535,13 @@ sub find_groups
             # BBv2 P-62.3 says "amines must have three single bonds linked to at least one carbon atom"
             my $amine = ChemOnomatopist::Group::Amine->new;
             graph_replace( $graph, $amine, $atom, @H );
-        } elsif( is_element( $atom, 'N' ) && @neighbours == 2 && @C &&
+        } elsif( is_element( $atom, 'N' ) && @neighbours == 2 &&
                  !is_ring_atom( $graph, $atom, -1 ) &&
-                 any { is_double_bond( $graph, $atom, $_ ) } @C ) {
+                 any { is_double_bond( $graph, $atom, $_ ) } @neighbours ) {
             # Detecting imines
             # BBv2 P-62.3 says "Imines must have a double bond between a carbon atom and the nitrogen."
-            my $imino = ChemOnomatopist::Group::Imino->new;
-            graph_replace( $graph, $imino, $atom );
+            my $imine = ChemOnomatopist::Group::Imino->new;
+            graph_replace( $graph, $imine, $atom );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 1 && @C == 1 &&
                  $graph->degree( @C ) >= 2 &&
                  is_triple_bond( $graph, $atom, @C ) ) {
