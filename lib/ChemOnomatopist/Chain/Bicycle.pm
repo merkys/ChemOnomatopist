@@ -158,7 +158,7 @@ sub new
         $self->{cycles} = \@cycles;
         $self->_adjust_vertices_to_cycles;
 
-        if( join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^n:c:n:c:c:c:,N(C=|=C)Nc:c$/ ) {
+        if( join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^n:c:n:c:c:c:,N(C=|=C)Nc:c$/ ) { # FIXME: This does not work
             @cycles = reverse map { $_->flipped } @cycles;
             $self->{cycles} = \@cycles;
         }
