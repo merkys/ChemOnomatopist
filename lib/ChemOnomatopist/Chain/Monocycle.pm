@@ -35,7 +35,7 @@ our %names = (
     'C=CN=CN'  => '1H-imidazole', # FIXME: Adjust for isomerism
     'C=CN=CO'  => '1,3-oxazole',
     'C=CC=NO'  => '1,2-oxazole',
-    'C=CC=NN'  => '1H-pyrazole', # FIXME: Adjust for isomerism
+    'C=CC=NN'  => 'pyrazole', # FIXME: Adjust for isomerism
 
     'C=CC=CN'  => '1H-pyrrole', # FIXME: Adjust for isomerism
     'C=CNc:c'  => '1H-pyrrole', # For fused rings
