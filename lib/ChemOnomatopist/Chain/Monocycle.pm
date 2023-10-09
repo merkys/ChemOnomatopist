@@ -122,10 +122,11 @@ sub parent(;$)
 {
     my( $self, $parent ) = @_;
     my $old_parent = $self->SUPER::parent( $parent );
+    return $old_parent unless $parent;
 
     # Addition of parent to homogeneous cycles settles the otherwise ambiguous order
     # TODO: Other autosymmetric monocycles can possibly as well be settled
-    if( $parent && $self->is_homogeneous ) {
+    if( $self->is_homogeneous ) {
         my @vertices = $self->vertices;
         my( $position ) = grep { $self->graph->has_edge( $vertices[$_], $parent ) } 0..$#vertices;
         if( defined $position ) {
