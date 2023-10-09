@@ -525,6 +525,14 @@ sub find_groups
         my @Se = grep { is_element( $_, 'Se' ) } @neighbours;
         my @Te = grep { is_element( $_, 'Te' ) } @neighbours;
 
+        # Nitroso and its analogues
+        if( @neighbours == 2 && @C == 1 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
+            any { is_element( $atom, $_ ) } qw( Br Cl F I N ) ) {
+            my $nitroso = ChemOnomatopist::Group::Nitroso->new( element( $atom ) );
+            graph_replace( $graph, $nitroso, $atom, @O );
+            next;
+        }
+
         # N-based groups
         if( is_element( $atom, 'N' ) && @C == 1 && @O == 2 && $atom->{charge} && $atom->{charge} == 1 &&
                  (any {  is_double_bond( $graph, $atom, $_ ) } @O) &&
@@ -572,13 +580,6 @@ sub find_groups
             !is_ring_atom( $graph, $atom, -1 ) ) {
             my $ether = ChemOnomatopist::Group::Ether->new;
             graph_replace( $graph, $ether, $atom );
-        }
-
-        # Nitroso and its analogues
-        if( @neighbours == 2 && @C == 1 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
-            any { is_element( $atom, $_ ) } qw( Br Cl F I N ) ) {
-            my $nitroso = ChemOnomatopist::Group::Nitroso->new( element( $atom ) );
-            graph_replace( $graph, $nitroso, $atom, @O );
         }
 
         # XO3
