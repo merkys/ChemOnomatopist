@@ -1540,6 +1540,10 @@ sub cmp_only_aphabetical
 {
     my( $a, $b ) = @_;
 
+    # Dropping hydrogen indicators
+    $a =~ s/^\d+H-//;
+    $b =~ s/^\d+H-//;
+
     $a =~ s/[^a-zA-Z]+//g;
     $b =~ s/[^a-zA-Z]+//g;
 
