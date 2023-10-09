@@ -881,8 +881,17 @@ sub select_mainchain
         @groups = ();
     }
 
-    # FIXME: Actually, more than one group can be attached to the same vertex
-    @POI = uniq map { $_->is_part_of_chain ? $_ : $graph->neighbours( $_ ) } @groups;
+    for my $group (@groups) {
+        if( $group->is_part_of_chain ) {
+            push @POI, $group;
+        } elsif( $group->isa( ChemOnomatopist::Group::Imino:: ) ) {
+            push @POI, grep { is_double_bond( $graph, $group, $_ ) }
+                            $graph->neighbours( $group );
+        } else {
+            push @POI, $graph->neighbours( $group );
+        }
+    }
+    @POI = uniq @POI; # FIXME: Actually, more than one group can be attached to the same vertex
 
     # "Classes denoted by the senior atom in heterane nomenclature"
     if( !@POI ) {
@@ -933,7 +942,7 @@ sub select_mainchain
             } else {
                 # As the starting position is known, it is enough to take the "sidechain"
                 # containing this particular parent:
-                my $chain = select_sidechain( $graph, undef, @parents );
+                my $chain = select_sidechain( $graph, ($groups[0]->is_terminal ? @groups : undef), @parents );
                 my @vertices = $chain->can( 'vertices' ) ? $chain->vertices : $chain;
                 push @chains, ChemOnomatopist::Chain->new( $graph, undef, @vertices ),
                               ChemOnomatopist::Chain->new( $graph, undef, reverse @vertices );

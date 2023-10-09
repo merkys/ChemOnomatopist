@@ -10,7 +10,7 @@ my @cases = (
     # From BBv2 P-62.3.1.1
     { smiles => 'C(CCCCC)=N', iupac => 'hexan-1-imine' },
     { smiles => 'CN=CC', iupac => 'N-methylethanimine' },
-    { smiles => 'ClC1=CC=C(C=C1)N=CC1=CC=C(C=C1)Cl', iupac => 'N,1-bis(4-chlorophenyl)methanimine', AUTHOR => 1 },
+    { smiles => 'ClC1=CC=C(C=C1)N=CC1=CC=C(C=C1)Cl', iupac => 'N,1-bis(4-chlorophenyl)methanimine' },
     { smiles => 'ClC1=CC=C(C=C1)C=NC1=CC=C(N)C=C1', iupac => '4-{[(4-chlorophenyl)methylidene]amino}aniline', AUTHOR => 1 },
     { smiles => 'S1C(CCC1)=N', iupac => 'thiolan-2-imine' },
     { smiles => 'C1C(C=CC2=CC=CC=C12)=N', iupac => 'naphthalen-2(1H)-imine', AUTHOR => 1 },
@@ -28,6 +28,7 @@ my @cases = (
 
     { smiles => 'C(C(=N)C(=O)O)C(=O)O', iupac => '2-iminobutanedioic acid' },
     { smiles => 'CC(C)C=N', iupac => '2-methylpropan-1-imine' },
+    { smiles => 'CCCN=CC', iupac => 'N-propylethanimine' },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
