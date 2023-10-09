@@ -77,7 +77,8 @@ sub suffix()
                                                 @vertices[$cut_position+1..$#vertices] ) );
     @chains = reverse @chains if $chains[0]->length > $chains[1]->length;
     my $name = $chains[0]->prefix;
-    $name =~ s/ane$//;
+    pop @$name; # Dropping 'ane', in a rather dirty way
+    pop @$name;
     $name .= 'oxy';
     $name .= $chains[1]->suffix;
     return $name;
