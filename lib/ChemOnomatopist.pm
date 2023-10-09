@@ -884,6 +884,8 @@ sub select_mainchain
     for my $group (@groups) {
         if( $group->is_part_of_chain ) {
             push @POI, $group;
+        } elsif( $group->isa( ChemOnomatopist::Group::Amide:: ) ) {
+            push @POI, $group->{parent};
         } elsif( $group->isa( ChemOnomatopist::Group::Imino:: ) ) {
             push @POI, grep { is_double_bond( $graph, $group, $_ ) }
                             $graph->neighbours( $group );

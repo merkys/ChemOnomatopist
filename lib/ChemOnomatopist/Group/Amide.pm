@@ -8,6 +8,12 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
+sub new
+{
+    my( $class, $parent ) = @_;
+    return bless { parent => $parent }, $class;
+}
+
 sub element() { return 'N' }
 
 sub is_terminal() { return 1 }
