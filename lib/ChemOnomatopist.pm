@@ -461,8 +461,7 @@ sub get_mainchain_name
             $name->append_locants( $chain->locants( @senior_group_attachments ) );
         }
         $name->append_multiplier( $number );
-        if( $chain->isa( ChemOnomatopist::Chain::Monocycle:: ) ||
-            $chain->isa( ChemOnomatopist::Chain::Monospiro:: ) ) {
+        if( $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
             $name->append_suffix( $groups[0]->suffix_if_cycle_substituent );
         } elsif( @senior_group_attachments > 2 ) {
             $name->append_suffix( $groups[0]->multisuffix );
