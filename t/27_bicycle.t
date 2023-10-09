@@ -44,7 +44,7 @@ my @cases = (
     { smiles => 'NC=1NC(C=2N=CNC2N1)=O', iupac => '2-amino-1,9-dihydro-6H-purin-6-one', AUTHOR => 1 },
     { smiles => 'N1C(N)=NC=2N=CNC2C1=O', iupac => '2-amino-1,9-dihydro-6H-purin-6-one', AUTHOR => 1 },
 
-    { smiles => 'CCN1C=NC2=C(N=CN=C21)N', iupac => '9-ethylpurin-6-amine', AUTHOR => 1 }, # PubChem 7
+    { smiles => 'CCN1C=NC2=C(N=CN=C21)N', iupac => '9-ethylpurin-6-amine' }, # PubChem 7
     { smiles => 'CCCCCNC1=C(C=NC2=CC=CC=C21)[N+](=O)[O-]', iupac => '3-nitro-N-pentylquinolin-4-amine' }, # PubChem 21355672
     { smiles => 'CC1=C(C2=C(C=C1)C=C(S2)O)CO', iupac => '7-(hydroxymethyl)-6-methyl-1-benzothiophen-2-ol' }, # PubChem 130803523
     { smiles => 'COC1=C(C2=C(C=C1)SC(=N2)N)Br', iupac => '4-bromo-5-methoxy-1,3-benzothiazol-2-amine', AUTHOR => 1 }, # PubChem 131985781

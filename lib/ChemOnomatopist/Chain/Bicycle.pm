@@ -3,12 +3,13 @@ package ChemOnomatopist::Chain::Bicycle;
 use strict;
 use warnings;
 
-# ABSTRACT: Fused bicyclic group
+# ABSTRACT: Fused bicyclic chain
 # VERSION
 
 use ChemOnomatopist;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Chain::Bicycle::Purine;
 use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Chain::Monocycle::Fused;
 use ChemOnomatopist::Name;
@@ -158,9 +159,15 @@ sub new
         $self->{cycles} = \@cycles;
         $self->_adjust_vertices_to_cycles;
 
-        if( join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^n:c:n:c:c:c:,N(C=|=C)Nc:c$/ ) { # FIXME: This does not work
-            @cycles = reverse map { $_->flipped } @cycles;
-            $self->{cycles} = \@cycles;
+        if( join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^c:n:c:n:c:c:,n:c:n:c:c:$/ ) {
+            $cycles[1] = $cycles[1]->flipped;
+            return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph,
+                                                                 $cycles[0],
+                                                                 $cycles[1]->flipped,
+                                                                 @{$self->{vertices}}[1..4],
+                                                                 $self->{vertices}[8],
+                                                                 $self->{vertices}[0],
+                                                                 reverse @{$self->{vertices}}[5..7] );
         }
     } elsif( $nbenzene == 1 ) {
         # Numbering has to start from cycle other than benzene
