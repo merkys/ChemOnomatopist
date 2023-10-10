@@ -213,7 +213,8 @@ sub copy()
     my( $self ) = @_;
     return bless { graph    => $self->graph,
                    cycles   => [ $self->cycles ],
-                   vertices => [ $self->vertices ] },
+                   vertices => [ $self->vertices ],
+                   parent   => $self->parent },
                  ChemOnomatopist::Chain::Bicycle::;
 }
 
@@ -227,8 +228,13 @@ sub parent(;$)
 {
     my( $self, $parent ) = @_;
     my $old_parent = $self->SUPER::parent( $parent );
-    return $old_parent unless $self->is_naphthalene;
-    return $old_parent; # TODO: Napthalenes have to reorient
+
+    if( $parent && $self->is_naphthalene ) {
+        my( $chain ) = ChemOnomatopist::filter_chains( $self->candidates );
+        $self->{vertices} = [ $chain->vertices ];
+    }
+
+    return $old_parent;
 }
 
 sub has_form($$)
