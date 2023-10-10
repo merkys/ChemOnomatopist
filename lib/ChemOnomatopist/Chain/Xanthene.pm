@@ -107,6 +107,7 @@ sub suffix()
 
     my  @heteroatoms = $self->heteroatoms;
     if( @heteroatoms == 1 ) {
+        return ChemOnomatopist::Name::Part::Stem->new( 'acridine' )->to_name if $heteroatoms[0] eq 'N';
         my $name = ChemOnomatopist::Name::Part::Locants->new( '9H-' )->to_name;
         my $stem = '';
         if( $heteroatoms[0] ne 'O' ) {
