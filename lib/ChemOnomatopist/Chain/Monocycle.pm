@@ -123,6 +123,7 @@ sub parent(;$)
     my( $self, $parent ) = @_;
     my $old_parent = $self->SUPER::parent( $parent );
     return $old_parent unless $parent;
+    return $old_parent if $old_parent && $parent == $old_parent;
 
     # Addition of parent to homogeneous cycles settles the otherwise ambiguous order
     # TODO: Other autosymmetric monocycles can possibly as well be settled

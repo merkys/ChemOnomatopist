@@ -228,6 +228,8 @@ sub parent(;$)
 {
     my( $self, $parent ) = @_;
     my $old_parent = $self->SUPER::parent( $parent );
+    return $old_parent unless $parent;
+    return $old_parent if $old_parent && $parent == $old_parent;
 
     if( $parent && $self->is_naphthalene ) {
         my( $chain ) = ChemOnomatopist::filter_chains( $self->candidates );
