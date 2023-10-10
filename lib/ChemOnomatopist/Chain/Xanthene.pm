@@ -115,6 +115,8 @@ sub suffix()
         }
         $stem .= 'xanthene';
         return $name->append_stem( $stem );
+    } elsif( @heteroatoms == 2 && $heteroatoms[0] eq $heteroatoms[1] &&  $heteroatoms[0] eq 'N' ) {
+        return ChemOnomatopist::Name::Part::Stem->new( 'phenazine' )->to_name;
     } elsif( @heteroatoms == 2 && $heteroatoms[0] eq $heteroatoms[1] ) {
         my $name = $elements{$heteroatoms[0]}->{prefix};
         $name =~ s/a$//;

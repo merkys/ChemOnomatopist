@@ -8,7 +8,10 @@ use Test::More;
 
 my @cases = (
     { smiles => 'C1=CC=CC=2OC3=CC=CC=C3CC12', iupac => '9H-xanthene' }, # From BBv2 P-25.2.1
-    { smiles => 'C1=CC=CC=2OC3=CC=CC=C3OC12', iupac => 'oxanthrene' }, # From BBv2 P-25.2.2.2
+
+    # From BBv2 P-25.2.2.2
+    { smiles => 'C1=CC=CC=2OC3=CC=CC=C3OC12', iupac => 'oxanthrene' },
+    { smiles => 'C1=CC=CC2=NC3=CC=CC=C3N=C12', iupac => 'phenazine' },
 
     { smiles => 'C1=CC=CC=2OC3=CC=CC=C3C(C12)=O', iupac => '9H-xanthen-9-one' }, # From Wikipedia Xanthone
     { smiles => 'OC1=CC(=CC=2OC3=CC(=CC(=C3C(C12)=O)C)OC)OC', iupac => '1-hydroxy-3,6-dimethoxy-8-methyl-9H-xanthen-9-one' }, # From Wikipedia Lichexanthone
