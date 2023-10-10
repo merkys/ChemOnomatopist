@@ -284,6 +284,7 @@ sub needs_heteroatom_locants()
 }
 
 sub needs_heteroatom_names() { return '' } # FIXME: This is not always correct
+sub needs_substituent_locants() { return 1 }
 
 sub prefix()
 {
