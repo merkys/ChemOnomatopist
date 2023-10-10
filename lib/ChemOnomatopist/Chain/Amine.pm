@@ -36,7 +36,7 @@ sub vertices()
 sub locants(@)
 {
     my $self = shift;
-    return map { $_ ? $_ : 'N' } @_;
+    return map { $_ ? $self->{chain}->locants( $_ - 1 ) : 'N' } @_;
 }
 
 sub needs_substituent_locants() { return 1 }
