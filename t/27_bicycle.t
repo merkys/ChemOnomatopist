@@ -35,7 +35,7 @@ my @cases = (
     { smiles => 'C=1OC=C2C1C=CC=C2', iupac => '2-benzofuran' },
     { smiles => 'C1=CC=COC=CC=CC=COC=CC=CC2=C1C=CC=C2', iupac => '5,12-benzodioxacyclooctadecine', AUTHOR => 1 },
 
-    { smiles => 'C1=C(C=CC2=CC=CC=C12)CCCO', iupac => '3-(naphthalen-2-yl)propan-1-ol', AUTHOR => 1 }, # From P-15.6.1.2
+    { smiles => 'C1=C(C=CC2=CC=CC=C12)CCCO', iupac => '3-(naphthalen-2-yl)propan-1-ol' }, # From P-15.6.1.2
 
     { smiles => 'C1=CC2=C(C=C1O)C(=CN2)CCN', iupac => '3-(2-aminoethyl)-1H-indol-5-ol' }, # serotonin
 
