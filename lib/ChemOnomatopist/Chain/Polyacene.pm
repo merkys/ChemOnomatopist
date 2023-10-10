@@ -60,6 +60,8 @@ sub candidates()
     return @candidates;
 }
 
+sub needs_substituent_locants() { return 1 }
+
 sub ideal_graph($$)
 {
     my( $class, $N ) = @_;
