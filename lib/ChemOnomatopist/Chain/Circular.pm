@@ -319,15 +319,4 @@ sub _cmp_instances
     return scalar( $B->heteroatoms ) <=> scalar( $A->heteroatoms );
 }
 
-sub _disconnected_chain_graph()
-{
-    my( $self ) = @_;
-
-    my $graph = $self->graph->copy;
-    $graph->delete_cycle( $self->vertices );
-    $graph->delete_vertex( $self->parent ) if $self->parent;
-
-    return $graph;
-}
-
 1;
