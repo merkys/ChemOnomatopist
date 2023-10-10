@@ -187,7 +187,7 @@ sub candidates()
 {
     my( $self ) = @_;
 
-    if( $self->suffix eq 'naphthalene' ) {
+    if( $self->is_naphthalene ) {
         # Generates all variants
         my @chains = ( $self, $self->copy, $self->copy, $self->copy );
 
@@ -255,6 +255,12 @@ sub is_hydrocarbon()
 {
     my( $self ) = @_;
     return all { $_->is_hydrocarbon } $self->cycles;
+}
+
+sub is_naphthalene()
+{
+    my( $self ) = @_;
+    return $self->is_hydrocarbon && all { $_->length == 6 } $self->cycles;
 }
 
 sub needs_heteroatom_locants()
