@@ -231,7 +231,7 @@ sub parent(;$)
     return $old_parent unless $parent;
     return $old_parent if $old_parent && $parent == $old_parent;
 
-    if( $parent && $self->is_naphthalene ) {
+    if( $self->is_naphthalene ) {
         my( $chain ) = ChemOnomatopist::filter_chains( $self->candidates );
         $self->{vertices} = [ $chain->vertices ];
     }
