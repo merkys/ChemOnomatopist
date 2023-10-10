@@ -223,6 +223,14 @@ sub cycles()
     return @{$self->{cycles}};
 }
 
+sub parent(;$)
+{
+    my( $self, $parent ) = @_;
+    my $old_parent = $self->SUPER::parent( $parent );
+    return $old_parent unless $self->is_naphthalene;
+    return $old_parent; # TODO: Napthalenes have to reorient
+}
+
 sub has_form($$)
 {
     my( $class, $graph ) = @_;
