@@ -200,8 +200,6 @@ sub max_valence()
         $max_valence -= 8 if $bond eq '$';
     }
 
-    $max_valence-- if $self->parent; # TODO: Account for other bond orders
-
     return $max_valence;
 }
 
@@ -495,7 +493,6 @@ sub _disconnected_chain_graph()
     my $graph = $self->graph->copy;
     my $vertices = set( $self->vertices );
     $graph->delete_edges( map { @$_ } grep { $vertices->has( @$_ ) } $graph->edges );
-    $graph->delete_vertex( $self->parent ) if $self->parent;
 
     return $graph;
 }
