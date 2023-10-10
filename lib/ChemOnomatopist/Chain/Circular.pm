@@ -266,13 +266,13 @@ sub locants(@)
     return map { $_ + 1 } @_ if $graph->vertices == $graph->edges;
 
     my %locant_map;
-    my $pos = 1;
+    my $pos = 0;
     my $letter = 'a';
     for my $i (0..$#vertices) {
         if( $graph->degree( $vertices[$i] ) == 2 ||
             !ChemOnomatopist::is_element( $vertices[$i], 'C' ) ) {
-            $locant_map{$i} = $pos;
             $pos++;
+            $locant_map{$i} = $pos;
             $letter = 'a';
         } else {
             $locant_map{$i} = $pos . $letter;
