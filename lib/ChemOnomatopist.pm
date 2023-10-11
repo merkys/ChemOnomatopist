@@ -78,7 +78,7 @@ use Graph::Nauty qw( are_isomorphic );
 use Graph::SSSR;
 use Graph::Traversal::DFS;
 use Graph::Undirected;
-use List::Util qw( all any max min pairs sum0 uniq );
+use List::Util qw( all any first max min pairs sum0 uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
@@ -127,8 +127,16 @@ sub get_sidechain_name
 
     # Record the type of parent bond
     my $parent_bond = '-' if $parent;
-    if(                $graph->has_edge_attribute( $parent, $start, 'bond' ) ) {
-        $parent_bond = $graph->get_edge_attribute( $parent, $start, 'bond' );
+    if( blessed $start && $start->isa( ChemOnomatopist::Chain:: ) ) {
+        my $attachment_point = first { $graph->has_edge( $parent, $_ ) }
+                                     $start->vertices;
+        if( $attachment_point && $graph->has_edge_attribute( $parent, $attachment_point, 'bond' ) ) {
+            $parent_bond = $graph->get_edge_attribute( $parent, $attachment_point, 'bond' );
+        }
+    } else {
+        if( $graph->has_edge_attribute( $parent, $start, 'bond' ) ) {
+            $parent_bond = $graph->get_edge_attribute( $parent, $start, 'bond' );
+        }
     }
 
     # Groups that cannot be included in the chain do not matter
@@ -291,7 +299,7 @@ sub get_sidechain_name
         $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Dirty
     }
 
-    if( @chain > 1 || !blessed $chain[0] ) { # Groups converted to chains can add suffixes themselves
+    if( $chain->needs_multiple_bond_suffix ) {
         $name .= 'idene' if $parent_bond && $parent_bond eq '=';
         $name .= 'idyne' if $parent_bond && $parent_bond eq '#';
     }

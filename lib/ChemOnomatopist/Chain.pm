@@ -249,6 +249,14 @@ sub needs_multiple_bond_locants()
     return $self->length > 2;
 }
 
+sub needs_multiple_bond_suffix()
+{
+    my( $self ) = @_;
+    my( $first ) = $self->vertices;
+    return 1 unless blessed $first;
+    return $first->needs_multiple_bond_suffix;
+}
+
 sub needs_heteroatom_locants()
 {
     my( $self ) = @_;

@@ -12,6 +12,8 @@ use parent ChemOnomatopist::Group::;
 my %prefixes = ( O => 'oxo', S => 'sulfanylidene', Se => 'selanylidene', Te => 'tellanylidene' );
 my %suffixes = ( O => 'one', S => 'thione', Se => 'selone', Te => 'tellone' );
 
+sub needs_multiple_bond_suffix { return '' }
+
 sub prefix
 {
     my( $self ) = @_;

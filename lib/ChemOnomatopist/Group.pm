@@ -104,6 +104,7 @@ sub is_terminal() { return '' }
 
 sub needs_heteroatom_locants { return 1 }
 sub needs_heteroatom_names { return 1 }
+sub needs_multiple_bond_suffix { return 1 }
 
 sub prefix() { return '' }
 sub suffix() { return $_[0]->is_prefix_only ? undef : '' }
