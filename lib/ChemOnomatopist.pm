@@ -951,8 +951,8 @@ sub select_mainchain
                 # containing this particular parent:
                 my $chain = select_sidechain( $graph, ($groups[0]->is_terminal ? @groups : undef), @parents );
                 my @vertices = $chain->vertices;
-                push @chains, ChemOnomatopist::Chain->new( $graph, undef, @vertices ),
-                              ChemOnomatopist::Chain->new( $graph, undef, reverse @vertices );
+                push @chains, ChemOnomatopist::Chain->new( $graph, undef, @vertices );
+                push @chains, ChemOnomatopist::Chain->new( $graph, undef, reverse @vertices ) if @vertices > 1;
             }
         } elsif( @parents ) {
             my $copy = $graph->copy;
