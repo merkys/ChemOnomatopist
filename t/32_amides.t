@@ -17,6 +17,8 @@ my @cases = (
     { smiles => 'C(C=C)(=O)N', iupac => 'prop-2-enamide' },
     { smiles => 'OC(C(=O)N)C', iupac => '2-hydroxypropanamide' },
 
+    { smiles => 'CNC(C1=CC=CC=C1)=O', iupac => 'N-methylbenzamide', AUTHOR => 1 }, # BBv2 P-66.1.1.3.1.1
+
     # From BBv2 P-66.1.3
     { smiles => 'N1(CCCCC1)C(C)=O', iupac => '1-(piperidin-1-yl)ethan-1-one' },
     { smiles => 'N1(CCCC2=CC=CC=C12)C(CC)=O', iupac => '1-(3,4-dihydroquinolin-1(2H)-yl)propan-1-one', AUTHOR => 1 },
