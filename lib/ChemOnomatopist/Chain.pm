@@ -357,6 +357,7 @@ sub locant_names()
         my @current_locants;
         for my $neighbour ($graph->neighbours( $vertex )) {
             $graph->delete_edge( $vertex, $neighbour );
+            next if $self->parent && $self->parent == $neighbour;
             if( blessed $neighbour ) {
                 push @current_locants, $neighbour->prefix;
             } else {
