@@ -819,9 +819,7 @@ sub find_groups
                 $compound = ChemOnomatopist::Chain::Phenanthrene->new( $graph, @cycles );
             } elsif( @cycles >= 4 &&
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
-                     are_isomorphic( graph_without_edge_attributes( $core ),
-                                     ChemOnomatopist::Chain::Polyaphene->ideal_graph( scalar $core->vertices ),
-                                     sub { return 'C' } ) ) {
+                     ChemOnomatopist::Chain::Polyaphene->has_form( $core ) ) {
                 $compound = ChemOnomatopist::Chain::Polyaphene->new( $graph, @cycles );
             } else {
                 die "cannot handle complicated cyclic compounds\n";
