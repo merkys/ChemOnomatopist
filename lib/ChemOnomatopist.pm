@@ -809,9 +809,7 @@ sub find_groups
                 $compound = ChemOnomatopist::Chain::Xanthene->new( $graph, @cycles );
             } elsif( @cycles >= 3 &&
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
-                     are_isomorphic( graph_without_edge_attributes( $core ),
-                                     ChemOnomatopist::Chain::Polyacene->ideal_graph( scalar $core->vertices ),
-                                     sub { return 'C' } ) ) {
+                     ChemOnomatopist::Chain::Polyacene->has_form( $core ) ) {
                 $compound = ChemOnomatopist::Chain::Polyacene->new( $graph, @cycles );
             } elsif( @cycles == 3 &&
                      (all { $_->length == 6 } @cycles) &&

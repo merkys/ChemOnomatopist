@@ -8,7 +8,11 @@ use warnings;
 
 use parent ChemOnomatopist::Chain::Circular::;
 
-use ChemOnomatopist::Util::Graph qw( subgraph );
+use ChemOnomatopist::Util::Graph qw(
+    graph_without_edge_attributes
+    subgraph
+);
+use Graph::Nauty qw( are_isomorphic );
 use Graph::Undirected;
 use Set::Object qw( set );
 
@@ -61,6 +65,21 @@ sub candidates()
 }
 
 sub needs_substituent_locants() { return 1 }
+
+sub has_form($$)
+{
+    my( $class, $graph ) = @_;
+    my %degrees = map { $graph->degree( $_ ) => 1 } $graph->vertices;
+    return '' unless join( ',', sort keys %degrees ) eq '2,3';
+
+    my $N = scalar $graph->vertices;
+    return '' if $N < 14;
+    return '' if ($N - 14) % 4;
+
+    return are_isomorphic( graph_without_edge_attributes( $graph ),
+                           $class->ideal_graph( $N ),
+                           sub { return 'C' } );
+}
 
 sub ideal_graph($$)
 {
