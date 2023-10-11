@@ -34,4 +34,10 @@ sub candidates
     return @candidates;
 }
 
+sub locants(@)
+{
+    my $self = shift;
+    return map { $_ > 1 ? $_ - 1 : $_ ? 'N' : '?' } @_;
+}
+
 1;
