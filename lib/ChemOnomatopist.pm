@@ -950,7 +950,7 @@ sub select_mainchain
                 # As the starting position is known, it is enough to take the "sidechain"
                 # containing this particular parent:
                 my $chain = select_sidechain( $graph, ($groups[0]->is_terminal ? @groups : undef), @parents );
-                my @vertices = $chain->can( 'vertices' ) ? $chain->vertices : $chain;
+                my @vertices = $chain->vertices;
                 push @chains, ChemOnomatopist::Chain->new( $graph, undef, @vertices ),
                               ChemOnomatopist::Chain->new( $graph, undef, reverse @vertices );
             }
