@@ -24,10 +24,10 @@ my @cases = (
 
     # From BBv2 P-66.1.1.3.4
     { smiles => 'CN(C(C1=CC=CC=C1)=O)C1=CC=CC=C1', iupac => 'N-methyl-N-phenylbenzamide' },
-    { smiles => 'CN(C(C1=CC=C(C=C1)C)=O)C1=CC(=CC=C1)C', iupac => 'N,4-dimethyl-N-(3-methylphenyl)benzamide', AUTHOR => 1 }, # flaky
+    { smiles => 'CN(C(C1=CC=C(C=C1)C)=O)C1=CC(=CC=C1)C', iupac => 'N,4-dimethyl-N-(3-methylphenyl)benzamide' },
 
     # From BBv2 P-66.1.1.3.5
-    { smiles => 'N1=CC=C(C=C1)C1=CC=C(C(=O)N)C=C1', iupac => '4-(pyridin-4-yl)benzamide', AUTHOR => 1 },
+    { smiles => 'N1=CC=C(C=C1)C1=CC=C(C(=O)N)C=C1', iupac => '4-(pyridin-4-yl)benzamide' },
     { smiles => 'OC1=C(C(=O)N)C=CC=C1', iupac => '2-hydroxybenzamide' },
 
     { smiles => 'C(C1=CC=CC=C1)(=O)NC1=CC=C(C=C1)S(=O)(=O)O', iupac => '4-benzamidobenzene-1-sulfonic acid', AUTHOR => 1 }, # BBv2 P-66.1.1.4.3
