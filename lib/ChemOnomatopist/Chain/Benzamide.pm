@@ -23,6 +23,7 @@ sub locants(@)
     return map { $_ > 1 ? $_ - 1 : $_ ? '?' : 'N' } @_;
 }
 
+sub prefix() { return 'benzamido' }
 sub suffix() { return 'benz' }
 
 1;
