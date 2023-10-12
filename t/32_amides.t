@@ -7,6 +7,9 @@ use ChemOnomatopist;
 use Test::More;
 
 my @cases = (
+    # From BBv2 P-16.5.1.2
+    { smiles => 'N1=CC=C(C=C1)C1=CC=C(C(=O)N)C=C1', iupac => '4-(pyridin-4-yl)benzamide', AUTHOR => 1 },
+
     # From BBv2 P-66.1.1.1.1.1
     { smiles => 'C(CCCCC)(=O)N', iupac => 'hexanamide' },
     { smiles => 'C(CCCC(=O)N)(=O)N', iupac => 'pentanediamide', AUTHOR => 1 },
@@ -17,7 +20,8 @@ my @cases = (
     { smiles => 'C(C=C)(=O)N', iupac => 'prop-2-enamide' },
     { smiles => 'OC(C(=O)N)C', iupac => '2-hydroxypropanamide' },
 
-    { smiles => 'CNC(C1=CC=CC=C1)=O', iupac => 'N-methylbenzamide', AUTHOR => 1 }, # BBv2 P-66.1.1.3.1.1
+    { smiles => 'CNC(C1=CC=CC=C1)=O', iupac => 'N-methylbenzamide' }, # BBv2 P-66.1.1.3.1.1
+    { smiles => 'C(C1=CC=CC=C1)(=O)NC1=CC=C(C=C1)S(=O)(=O)O', iupac => '4-benzamidobenzene-1-sulfonic acid', AUTHOR => 1 }, # BBv2 P-66.1.1.4.3
 
     # From BBv2 P-66.1.3
     { smiles => 'N1(CCCCC1)C(C)=O', iupac => '1-(piperidin-1-yl)ethan-1-one' },
