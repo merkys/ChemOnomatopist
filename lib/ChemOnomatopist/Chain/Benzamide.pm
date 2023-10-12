@@ -40,4 +40,6 @@ sub locants(@)
     return map { $_ > 1 ? $_ - 1 : $_ ? 'N' : '?' } @_;
 }
 
+sub suffix() { return 'benz' }
+
 1;

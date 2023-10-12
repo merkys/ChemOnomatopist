@@ -11,6 +11,7 @@ use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Amide;
 use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Bicycle;
+use ChemOnomatopist::Chain::Benzamide;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::FromHalves;
 use ChemOnomatopist::Chain::Imino;
@@ -830,6 +831,28 @@ sub find_groups
         $graph->add_group( $compound );
     }
 
+    # Detecting benzamides
+    for my $atom ($graph->vertices) {
+        next if blessed $atom;
+        next unless element( $atom ) eq 'C';
+        next unless $graph->degree( $atom ) == 2;
+        next if $graph->groups( $atom );
+
+        my @neighbours = $graph->neighbours( $atom );
+        my $amide = first { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) }
+                          @neighbours;
+        next unless $amide;
+
+        my $ring_atom = first { $_ != $amide } @neighbours;
+        my( $benzene ) = $graph->groups( $ring_atom );
+        next unless $benzene;
+        next unless $benzene->isa( ChemOnomatopist::Chain::Monocycle:: );
+        next unless $benzene->is_benzene;
+
+        $graph->delete_group( $benzene );
+        $graph->add_group( ChemOnomatopist::Chain::Benzamide->new( $graph, $amide, $atom, $benzene ) );
+    }
+
     return;
 }
 
@@ -1080,7 +1103,8 @@ sub select_mainchain
     my @vertices = $chain->vertices;
 
     # Recognising amide chains
-    if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Amide:: ) {
+    if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Amide:: &&
+        !$chain->isa( ChemOnomatopist::Chain::Benzamide:: ) ) {
         $chain = ChemOnomatopist::Chain::Amide->new( $graph, $chain, @groups );
     }
     # Recognising amine chains
