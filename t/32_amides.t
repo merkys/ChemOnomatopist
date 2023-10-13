@@ -7,13 +7,22 @@ use ChemOnomatopist;
 use Test::More;
 
 my @cases = (
+    { smiles => 'C(C)N(C(=O)C=1OC=CC1)CC', iupac => 'N,N-diethylfuran-2-carboxamide' }, # From BBv2 P-16.2.1
     { smiles => 'S(S)C=1C=C(C(=O)N)C=CC1SS', iupac => '3,4-bis(disulfanyl)benzamide', AUTHOR => 1 }, # From BBv2 P-63.4.2.2
+    { smiles => 'ONC(=O)C1CCCCC1', iupac => 'N-hydroxycyclohexanecarboxamide' }, # From BBv2 P-65.1.3.4
 
     # From BBv2 P-66.1.1.1.1.1
     { smiles => 'C(CCCCC)(=O)N', iupac => 'hexanamide' },
     { smiles => 'C(CCCC(=O)N)(=O)N', iupac => 'pentanediamide', AUTHOR => 1 },
 
     { smiles => 'C(C(CC(=O)N)C(=O)N)C(=O)N', iupac => 'propane-1,2,3-tricarboxamide', AUTHOR => 1 }, # BBv2 P-66.1.1.1.1.2
+
+    # From BBv2 P-66.1.1.1.1.3
+    { smiles => 'PC(=O)N', iupac => 'phosphanecarboxamide', AUTHOR => 1 },
+    { smiles => 'N(N)C(=O)N', iupac => 'hydrazinecarboxamide', AUTHOR => 1 },
+    { smiles => 'S1C(=CC=C1)C(=O)N', iupac => 'thiophene-2-carboxamide' },
+    { smiles => 'N1(CCCCC1)C(=O)N', iupac => 'piperidine-1-carboxamide' },
+
     { smiles => 'C(C1=CC=CC=C1)(=O)N', iupac => 'benzamide' }, # BBv2 P-66.1.1.1.2.1
 
     # From BBv2 P-66.1.1.1.2.4

@@ -36,10 +36,13 @@ sub suffix()
     return 'benz' if $self->{benzene}->is_benzene;
 
     my $suffix = $self->{benzene}->suffix;
-    my @vertices = $self->{benzene}->vertices;
-    my $locant = first { $self->graph->has_edge( $self->{vertices}[1], $vertices[$_] ) }
-                       0..$#vertices;
-    $suffix->append_locants( $locant + 1 );
+    if( !$self->{benzene}->isa( ChemOnomatopist::Chain::Monocycle:: ) ||
+        !$self->{benzene}->is_homogeneous ) {
+        my @vertices = $self->{benzene}->vertices;
+        my $locant = first { $self->graph->has_edge( $self->{vertices}[1], $vertices[$_] ) }
+                           0..$#vertices;
+        $suffix->append_locants( $locant + 1 );
+    }
     $suffix .= 'carbox';
     return $suffix;
 }
