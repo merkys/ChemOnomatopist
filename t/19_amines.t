@@ -13,6 +13,10 @@ my @cases = (
     { smiles => 'C(CN)C=O', iupac => '3-aminopropanal' },
     { smiles => 'C(CCN)CCN', iupac => 'pentane-1,5-diamine', AUTHOR => 1 },
 
+    { smiles => 'CC(CC1=CC=C(NCCC(C)C)C=C1)CC', iupac => '4-(2-methylbutyl)-N-(3-methylbutyl)aniline' }, # BBv2 P-14.5.4
+    { smiles => 'NC1=CC=CC=C1', iupac => 'aniline' }, # BBv2 P-34.1.1.5
+    { smiles => 'COC1=CC=C(NC2=CC=CC=C2)C=C1', iupac => '4-methoxy-N-phenylaniline' }, # BBv2 P-45.2.1
+    { smiles => 'NC1=C(OC2=C(NC)C=CC=C2)C=CC(=C1)C', iupac => '2-(2-amino-4-methylphenoxy)-N-methylaniline', AUTHOR => 1 }, # BBv2 P-45.2.2
     { smiles => 'CNC', iupac => 'N-methylmethanamine' }, # BBv2 P-52.1.3
 
     # From BBv2 P-62.2.1.2
