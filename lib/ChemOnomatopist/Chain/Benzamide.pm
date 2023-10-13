@@ -17,6 +17,9 @@ sub new
                    vertices => [ $amide, $C, $benzene->vertices ] }, $class;
 }
 
+sub needs_heteroatom_locants() { return '' }
+sub needs_heteroatom_names() { return '' }
+
 sub locants(@)
 {
     my $self = shift;
