@@ -9,8 +9,11 @@ use Test::More;
 my @cases = (
     { smiles => 'CCOO', iupac => 'ethaneperoxol' },
 
-    # From BBv2 P-63.4.2.1
+    # From BBv2 P-56.2
     { smiles => 'CSO', iupac => 'methane-SO-thioperoxol' },
+    { smiles => 'C1(=CC=CC=C1)[Se][SeH]', iupac => 'benzenediselenoperoxol' },
+
+    # From BBv2 P-63.4.2.1
     { smiles => 'CCCOS', iupac => 'propane-1-OS-thioperoxol' },
     { smiles => 'CCSS', iupac => 'ethanedithioperoxol' },
     { smiles => 'CS[Se][H]', iupac => 'methane-SSe-selenothioperoxol' },
