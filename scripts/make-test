@@ -3,14 +3,45 @@
 use strict;
 use warnings;
 
+use File::Basename qw( basename );
 use IPC::Run3;
+use Getopt::Long::Descriptive;
+
+my $basename = basename $0;
+my( $opt, $usage ) = describe_options( <<"END" . 'OPTIONS',
+USAGE
+    $basename [<args>] [<files>]
+
+DESCRIPTION
+    $basename prepares tests for ChemOnomatopist
+
+END
+    [ 'pubchem', 'treat the input as three-columned PubChem file' ],
+    [],
+    [ 'help', 'print usage message and exit', { shortcircuit => 1 } ],
+);
+
+if( $opt->help ) {
+    print $usage->text;
+    exit;
+}
 
 while( <> ) {
     s/^\s+//;
     s/\s+$//;
 
-    my( $stdout, $stderr );
-    run3 [ 'java', '-jar', '/usr/share/java/opsin.jar' ], \$_, \$stdout, \$stderr;
-    $stdout =~ s/\n$//;
-    print "{ smiles => '$stdout', iupac => '$_' },\n";
+    my( $smiles, $iupac, $source );
+    if( $opt->pubchem ) {
+        ( my $id, $iupac, $smiles ) = split /\t/, $_;
+        $source = "PubChem $id";
+    } else {
+        my( $stderr );
+        $iupac = $_;
+        run3 [ 'java', '-jar', '/usr/share/java/opsin.jar' ], \$iupac, \$smiles, \$stderr;
+        $smiles =~ s/\n$//;
+    }
+
+    print "{ smiles => '$smiles', iupac => '$iupac' },";
+    print " # $source" if $source;
+    print "\n";
 }
