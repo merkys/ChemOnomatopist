@@ -857,6 +857,15 @@ sub find_groups
         $graph->add_group( ChemOnomatopist::Chain::Benzamide->new( $graph, $amide, $atom, $benzene ) );
     }
 
+    # Safeguarding against multiple cycle amides sharing the same amido group.
+    # Otherwise this may lead to endless loops.
+    my @amides_in_benzamides = map  { $_->{amide} }
+                               grep { $_->isa( ChemOnomatopist::Chain::Benzamide:: ) }
+                                    $graph->groups;
+    if( @amides_in_benzamides > uniq @amides_in_benzamides ) {
+        die "cannot process multiple cycle amides sharing the same amide group\n";
+    }
+
     return;
 }
 
