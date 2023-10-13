@@ -36,6 +36,7 @@ Issues known to produce names deviating from IUPAC guidelines:
 * Incorrect addition/omission of unambiguous locants
 * Incorrect addition/omission of parentheses
 * Monocycles with multiple substituents are sometimes named incorrectly
+* Linear compounds with heteroatoms are usually named incorrectly
 
 ## Contributors
 
