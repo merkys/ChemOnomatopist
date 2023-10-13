@@ -247,7 +247,11 @@ sub get_sidechain_name
                 $name .= $number;
             }
 
-            $name->append_element( $elements{$element}->{prefix} );
+            if( $element eq 'S' ) {
+                $name->append_element( 'sulfan' );
+            } else {
+                $name->append_element( $elements{$element}->{prefix} );
+            }
         }
     }
 
@@ -1155,16 +1159,20 @@ sub select_sidechain
         return ChemOnomatopist::Chain->new( $graph, $parent, $start );
     }
 
-    # Chalcogen analogues of ethers
-    if( $graph->degree( $start ) == 1 + defined $parent && grep { element( $start ) && element( $start ) eq $_ } qw( S Se Te ) ) {
-        return ChemOnomatopist::Chain->new( $graph, $parent, $start );
-    }
-
     my $C_graph = copy $graph;
     $C_graph->delete_edge( $start, $parent ) if $parent;
-    # Delete formed chains and non-carbon leaves
-    # FIXME: Some other chains should as well be excluded
-    $C_graph->delete_vertices( grep { $_ != $start && !is_element( $_, 'C' ) && $C_graph->degree( $_ ) == 1 } $C_graph->vertices );
+    if( $graph->degree( $start ) == 1 + defined $parent &&
+        grep { element( $start ) && element( $start ) eq $_ } qw( S Se Te ) ) {
+        # Chalcogen analogues of ethers
+        $C_graph->delete_vertices( grep { !is_element( $_, element( $start ) ) }
+                                        $C_graph->vertices );
+    } else {
+        # Delete non-carbon leaves
+        $C_graph->delete_vertices( grep { $_ != $start && !is_element( $_, 'C' ) &&
+                                          $C_graph->degree( $_ ) == 1 }
+                                        $C_graph->vertices );
+    }
+    # Delete formed chains
     $C_graph->delete_vertices( grep { $_ != $start }
                                map  { $_->vertices }
                                     $C_graph->groups );
