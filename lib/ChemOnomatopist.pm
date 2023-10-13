@@ -296,7 +296,7 @@ sub get_sidechain_name
             }
         }
 
-        $name .= 'yl' unless $name =~ /y$/;
+        $name .= 'yl' unless $name =~ /[oy]$/;
         $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Dirty
     }
 
