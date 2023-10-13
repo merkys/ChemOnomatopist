@@ -8,6 +8,8 @@ use warnings;
 
 use parent ChemOnomatopist::Chain::;
 
+use List::Util qw( first );
+
 sub new
 {
     my( $class, $graph, $amide, $C, $benzene ) = @_;
@@ -34,7 +36,11 @@ sub suffix()
     return 'benz' if $self->{benzene}->is_benzene;
 
     my $suffix = $self->{benzene}->suffix;
-    $suffix .= '-1-carbox';
+    my @vertices = $self->{benzene}->vertices;
+    my $locant = first { $self->graph->has_edge( $self->{vertices}[1], $vertices[$_] ) }
+                       0..$#vertices;
+    $suffix->append_locants( $locant + 1 );
+    $suffix .= 'carbox';
     return $suffix;
 }
 
