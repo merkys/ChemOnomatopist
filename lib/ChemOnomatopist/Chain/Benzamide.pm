@@ -24,6 +24,15 @@ sub locants(@)
 }
 
 sub prefix() { return 'benzamido' }
-sub suffix() { return 'benz' }
+
+sub suffix()
+{
+    my( $self ) = @_;
+    return 'benz' if $self->{benzene}->is_benzene;
+
+    my $suffix = $self->{benzene}->suffix;
+    $suffix .= '-1-carbox';
+    return $suffix;
+}
 
 1;

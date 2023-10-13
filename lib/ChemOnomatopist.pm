@@ -836,6 +836,7 @@ sub find_groups
     }
 
     # Detecting benzamides
+    # TODO: This has been extended to handle all amides attached to cycles - need to rename
     for my $atom ($graph->vertices) {
         next if blessed $atom;
         next unless element( $atom ) eq 'C';
@@ -851,7 +852,6 @@ sub find_groups
         my( $benzene ) = $graph->groups( $ring_atom );
         next unless $benzene;
         next unless $benzene->isa( ChemOnomatopist::Chain::Monocycle:: );
-        next unless $benzene->is_benzene;
 
         $graph->delete_group( $benzene );
         $graph->add_group( ChemOnomatopist::Chain::Benzamide->new( $graph, $amide, $atom, $benzene ) );
