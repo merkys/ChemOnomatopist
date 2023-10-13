@@ -17,7 +17,15 @@ my @cases = (
     { smiles => 'NC1=CC=CC=C1', iupac => 'aniline' }, # BBv2 P-34.1.1.5
     { smiles => 'COC1=CC=C(NC2=CC=CC=C2)C=C1', iupac => '4-methoxy-N-phenylaniline' }, # BBv2 P-45.2.1
     { smiles => 'NC1=C(OC2=C(NC)C=CC=C2)C=CC(=C1)C', iupac => '2-(2-amino-4-methylphenoxy)-N-methylaniline', AUTHOR => 1 }, # BBv2 P-45.2.2
+    { smiles => 'BrC1=C(NC2=C(C=C(C=C2)Br)Cl)C=CC(=C1)Cl', iupac => '2-bromo-N-(4-bromo-2-chlorophenyl)-4-chloroaniline' }, # BBv2 P-45.2.3
+    { smiles => 'BrC1=C(NC2=C(C=C(C=C2)Br)Br)C=CC(=C1)Cl', iupac => '2-bromo-4-chloro-N-(2,4-dibromophenyl)aniline', AUTHOR => 1 }, # BBv2 P-45.5
     { smiles => 'CNC', iupac => 'N-methylmethanamine' }, # BBv2 P-52.1.3
+
+    # From BBv2 P-62.2.1.1.1
+    { smiles => 'CNC1=CC=CC=C1', iupac => 'N-methylaniline' },
+    { smiles => 'ClC1=CC=C(N)C=C1', iupac => '4-chloroaniline' },
+
+    { smiles => 'CC1=CC=C(N)C=C1', iupac => '4-methylaniline' }, # BBv2 P-62.2.1.1.2
 
     # From BBv2 P-62.2.1.2
     { smiles => 'CN', iupac => 'methanamine' },
@@ -28,6 +36,8 @@ my @cases = (
     { smiles => 'ClCCNCCC', iupac => 'N-(2-chloroethyl)propan-1-amine', AUTHOR => 1 }, # FIXME: This is strange
     { smiles => 'C(C)N(CCCC)CCC', iupac => 'N-ethyl-N-propylbutan-1-amine' },
     { smiles => 'C1(=CC=CC=C1)NC=1C=NC=CC1', iupac => 'N-phenylpyridin-3-amine' },
+    { smiles => 'C1(=CC=CC=C1)NC1=CC=CC=C1', iupac => 'N-phenylaniline' },
+    { smiles => 'C1(CCCCC1)NC1=CC=CC=C1', iupac => 'N-cyclohexylaniline' },
 
     # From BBv2 P-62.2.2.2
     { smiles => 'CC(C#CCN(CCC)CCC)=C', iupac => '4-methyl-N,N-dipropylpent-4-en-2-yn-1-amine' },
