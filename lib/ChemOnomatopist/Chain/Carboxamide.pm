@@ -25,7 +25,7 @@ sub needs_heteroatom_names() { return '' }
 sub locants(@)
 {
     my $self = shift;
-    return map { $_ > 1 ? $_ - 1 : $_ ? '?' : 'N' } @_;
+    return map { $_ > 2 ? $_ - 2 : $_ ? '?' : 'N' } @_;
 }
 
 # FIXME: This is a source of possible failures
