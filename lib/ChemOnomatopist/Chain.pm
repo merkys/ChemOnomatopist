@@ -29,6 +29,10 @@ sub new
     my $self;
     if( (grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Ether:: ) } @vertices) == 1 ) {
         $self = ChemOnomatopist::Chain::Ether->new( $graph, $parent, @vertices );
+    } elsif( blessed $vertices[0] && $vertices[0]->isa( ChemOnomatopist::Group::Amine:: ) ) {
+        my $amine = shift @vertices;
+        my $chain = bless { vertices => \@vertices, graph => $graph }, $class;
+        $self = ChemOnomatopist::Chain::Amine->new( $graph, $chain, $amine );
     } else {
         $self = { vertices => \@vertices, graph => $graph, cache => {} };
         $self->{parent} = $parent if $parent;

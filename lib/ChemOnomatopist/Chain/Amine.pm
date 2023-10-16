@@ -41,6 +41,14 @@ sub locants(@)
 
 sub needs_substituent_locants() { return 1 }
 
+sub prefix()
+{
+    my( $self ) = @_;
+    my $prefix = $self->{chain}->prefix;
+    $prefix .= 'amino';
+    return $prefix;
+}
+
 sub suffix()
 {
     my( $self ) = @_;
