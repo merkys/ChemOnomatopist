@@ -352,6 +352,7 @@ sub suffix()
             if( $other_name->starts_with_locant ) { # Locants are moved to front
                 unshift @$name, shift @$other_name;
             }
+            $name->[-1] =~ s/o$// if $other_name->[0] =~ /^a/;
             $name .= $other_name;
             return $name;
         }
