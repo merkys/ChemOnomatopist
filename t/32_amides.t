@@ -55,6 +55,7 @@ my @cases = (
     { smiles => 'CC(CCOC)NC(=O)CCCCCCN', iupac => '7-amino-N-(4-methoxybutan-2-yl)heptanamide', AUTHOR => 1 }, # PubChem 64604850
     { smiles => 'C1CCN(CC1)CCCCC(=O)N=C(CC(=N)C2=CC=NC=C2)N', iupac => 'N-(1-amino-3-imino-3-pyridin-4-ylpropylidene)-5-piperidin-1-ylpentanamide', AUTHOR => 1 }, # PubChem 90937303
     { smiles => 'C1CCC(CC1)N2C=C(C(=N2)C(=O)N)N', iupac => '4-amino-1-cyclohexylpyrazole-3-carboxamide' }, # PubChem 107345270
+    { smiles => 'C1CC1N(CC2=CN=CC=C2)C(=O)C3CSCN3', iupac => 'N-cyclopropyl-N-(pyridin-3-ylmethyl)-1,3-thiazolidine-4-carboxamide' }, # PubChem 54869854
 
     { smiles => 'C(C)(=O)N(C(C1=CC=CC=C1)=O)C(CCCl)=O', iupac => 'N-acetyl-N-(3-chloropropanoyl)benzamide', AUTHOR => 1 }, # BBv2 P-66.1.2.1
 );

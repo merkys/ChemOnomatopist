@@ -846,6 +846,7 @@ sub find_groups
         my $amide = first { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) }
                           @neighbours;
         next unless $amide;
+        next unless $amide->{parent} == $atom;
 
         my $ring_atom = first { $_ != $amide } @neighbours;
         my( $cycle ) = $graph->groups( $ring_atom );
