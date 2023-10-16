@@ -12,11 +12,11 @@ use List::Util qw( first );
 
 sub new
 {
-    my( $class, $graph, $amide, $C, $chain ) = @_;
-    $chain->parent( $C );
+    my( $class, $graph, $amide, $chain ) = @_;
+    $chain->parent( $amide->{vertices}[2] );
     return bless { graph => $graph,
                    chain => $chain,
-                   vertices => [ $amide, $C, $chain->vertices ] }, $class;
+                   vertices => [ $amide->vertices, $chain->vertices ] }, $class;
 }
 
 sub needs_heteroatom_locants() { return '' }

@@ -835,34 +835,28 @@ sub find_groups
     }
 
     # Detecting amides attached to chains
-    for my $atom ($graph->vertices) {
-        next if blessed $atom;
-        next unless element( $atom ) eq 'C';
-        next unless $graph->degree( $atom ) == 2;
-        next if $graph->groups( $atom );
+    for my $amide (grep { $_->isa( ChemOnomatopist::Group::Amide:: ) } $graph->groups) {
+        my $vertices = set( $amide->vertices );
+        my $ring_atom = first { !$vertices->has( $_ ) } $graph->neighbours( $amide->{C} );
+        next unless $ring_atom;
 
-        my @neighbours = $graph->neighbours( $atom );
-        my $amide = first { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) }
-                          @neighbours;
-        next unless $amide;
-
-        my $ring_atom = first { $_ != $amide } @neighbours;
         my( $cycle ) = $graph->groups( $ring_atom );
         next unless $cycle;
         next unless $cycle->isa( ChemOnomatopist::Chain::Monocycle:: );
 
+        $graph->delete_group( $amide );
         $graph->delete_group( $cycle );
-        $graph->add_group( ChemOnomatopist::Chain::Carboxamide->new( $graph, $amide, $atom, $cycle ) );
+        $graph->add_group( ChemOnomatopist::Chain::Carboxamide->new( $graph, $amide, $cycle ) );
     }
 
     # Safeguarding against multiple cycle amides sharing the same amido group.
     # Otherwise this may lead to endless loops.
-    my @amides_in_carboxamides = map  { $_->{amide} }
-                                 grep { $_->isa( ChemOnomatopist::Chain::Carboxamide:: ) }
-                                      $graph->groups;
-    if( @amides_in_carboxamides > uniq @amides_in_carboxamides ) {
-        die "cannot process multiple cycle amides sharing the same amide group\n";
-    }
+    #~ my @amides_in_carboxamides = map  { $_->{amide} }
+                                 #~ grep { $_->isa( ChemOnomatopist::Chain::Carboxamide:: ) }
+                                      #~ $graph->groups;
+    #~ if( @amides_in_carboxamides > uniq @amides_in_carboxamides ) {
+        #~ die "cannot process multiple cycle amides sharing the same amide group\n";
+    #~ }
 
     return;
 }
