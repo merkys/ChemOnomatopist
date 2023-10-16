@@ -312,6 +312,13 @@ sub get_sidechain_name
     $name = ChemOnomatopist::Name->new( 'acetyl' ) if $name eq '1-oxoethyl';
     $name = ChemOnomatopist::Name->new( 'benzyl' ) if $name eq 'phenylmethyl';
 
+    # Detecting anilino- group
+    if( @$name >= 2 && $name->[-2] eq 'phenyl' && $name->[-1] eq 'amino' ) {
+        pop @$name;
+        pop @$name;
+        $name .= 'anilino';
+    }
+
     return $name;
 }
 
