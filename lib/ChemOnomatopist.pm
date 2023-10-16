@@ -11,7 +11,7 @@ use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Amide;
 use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Bicycle;
-use ChemOnomatopist::Chain::Benzamide;
+use ChemOnomatopist::Chain::Carboxamide;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::FromHalves;
 use ChemOnomatopist::Chain::Imino;
@@ -835,8 +835,7 @@ sub find_groups
         $graph->add_group( $compound );
     }
 
-    # Detecting benzamides
-    # TODO: This has been extended to handle all amides attached to cycles - need to rename
+    # Detecting amides attached to chains
     for my $atom ($graph->vertices) {
         next if blessed $atom;
         next unless element( $atom ) eq 'C';
@@ -854,13 +853,13 @@ sub find_groups
         next unless $benzene->isa( ChemOnomatopist::Chain::Monocycle:: );
 
         $graph->delete_group( $benzene );
-        $graph->add_group( ChemOnomatopist::Chain::Benzamide->new( $graph, $amide, $atom, $benzene ) );
+        $graph->add_group( ChemOnomatopist::Chain::Carboxamide->new( $graph, $amide, $atom, $benzene ) );
     }
 
     # Safeguarding against multiple cycle amides sharing the same amido group.
     # Otherwise this may lead to endless loops.
     my @amides_in_benzamides = map  { $_->{amide} }
-                               grep { $_->isa( ChemOnomatopist::Chain::Benzamide:: ) }
+                               grep { $_->isa( ChemOnomatopist::Chain::Carboxamide:: ) }
                                     $graph->groups;
     if( @amides_in_benzamides > uniq @amides_in_benzamides ) {
         die "cannot process multiple cycle amides sharing the same amide group\n";
@@ -1117,7 +1116,7 @@ sub select_mainchain
 
     # Recognising amide chains
     if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Amide:: &&
-        !$chain->isa( ChemOnomatopist::Chain::Benzamide:: ) ) {
+        !$chain->isa( ChemOnomatopist::Chain::Carboxamide:: ) ) {
         $chain = ChemOnomatopist::Chain::Amide->new( $graph, $chain, @groups );
     }
     # Recognising amine chains

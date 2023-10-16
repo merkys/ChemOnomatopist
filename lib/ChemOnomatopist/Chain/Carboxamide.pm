@@ -1,9 +1,9 @@
-package ChemOnomatopist::Chain::Benzamide;
+package ChemOnomatopist::Chain::Carboxamide;
 
 use strict;
 use warnings;
 
-# ABSTRACT: Benzamide chain
+# ABSTRACT: Carboxamide chain
 # VERSION
 
 use parent ChemOnomatopist::Chain::;
@@ -28,6 +28,7 @@ sub locants(@)
     return map { $_ > 1 ? $_ - 1 : $_ ? '?' : 'N' } @_;
 }
 
+# FIXME: This is a source of possible failures
 sub prefix() { return 'benzamido' }
 
 sub suffix()
