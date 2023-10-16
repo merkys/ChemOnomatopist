@@ -971,6 +971,8 @@ sub select_mainchain
         $most_senior_group = blessed $groups[0] if @groups;
     }
 
+    print STDERR ">>> most senior functional group: $most_senior_group\n" if $DEBUG;
+
     my @parents = @POI;
 
     my @chains;
@@ -1160,7 +1162,7 @@ sub select_mainchain
         $chain = ChemOnomatopist::Chain->new( $graph, undef, @vertices );
     }
 
-    print STDERR ">>> mainchain $chain\n" if $DEBUG;
+    print STDERR ">>> mainchain: $chain (length = " . $chain->length . ")\n" if $DEBUG;
 
     return $chain;
 }
