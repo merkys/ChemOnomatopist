@@ -669,11 +669,10 @@ sub find_groups
                  (any { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups) &&
                  (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
             # Detecting amides
-            my $amide = ChemOnomatopist::Group::Amide->new( $atom );
             my( $amine ) = grep { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups;
             my( $ketone ) = grep { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups;
-            $graph->delete_vertices( $ketone );
-            graph_replace( $graph, $amide, $amine );
+            my $amide = ChemOnomatopist::Group::Amide->new( $graph, $amine, $ketone, $atom );
+            $graph->add_group( $amide );
         } elsif( is_element( $atom, 'C' ) && @neighbours == 3 && @C == 1 &&
                  @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) && is_element( @groups, 'O' ) &&
                  element(   grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours ) =~ /^(F|Cl|Br|I)$/ ) {
