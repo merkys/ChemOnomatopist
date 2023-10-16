@@ -12,11 +12,11 @@ use List::Util qw( first );
 
 sub new
 {
-    my( $class, $graph, $amide, $C, $benzene ) = @_;
-    $benzene->parent( $C );
+    my( $class, $graph, $amide, $C, $chain ) = @_;
+    $chain->parent( $C );
     return bless { graph => $graph,
-                   benzene => $benzene,
-                   vertices => [ $amide, $C, $benzene->vertices ] }, $class;
+                   chain => $chain,
+                   vertices => [ $amide, $C, $chain->vertices ] }, $class;
 }
 
 sub needs_heteroatom_locants() { return '' }
@@ -34,12 +34,12 @@ sub prefix() { return 'benzamido' }
 sub suffix()
 {
     my( $self ) = @_;
-    return 'benz' if $self->{benzene}->is_benzene;
+    return 'benz' if $self->{chain}->is_benzene;
 
-    my $suffix = $self->{benzene}->suffix;
-    if( !$self->{benzene}->isa( ChemOnomatopist::Chain::Monocycle:: ) ||
-        !$self->{benzene}->is_homogeneous ) {
-        my @vertices = $self->{benzene}->vertices;
+    my $suffix = $self->{chain}->suffix;
+    if( !$self->{chain}->isa( ChemOnomatopist::Chain::Monocycle:: ) ||
+        !$self->{chain}->is_homogeneous ) {
+        my @vertices = $self->{chain}->vertices;
         my $locant = first { $self->graph->has_edge( $self->{vertices}[1], $vertices[$_] ) }
                            0..$#vertices;
         $suffix->append_locants( $locant + 1 );

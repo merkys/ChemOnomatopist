@@ -848,20 +848,20 @@ sub find_groups
         next unless $amide;
 
         my $ring_atom = first { $_ != $amide } @neighbours;
-        my( $benzene ) = $graph->groups( $ring_atom );
-        next unless $benzene;
-        next unless $benzene->isa( ChemOnomatopist::Chain::Monocycle:: );
+        my( $cycle ) = $graph->groups( $ring_atom );
+        next unless $cycle;
+        next unless $cycle->isa( ChemOnomatopist::Chain::Monocycle:: );
 
-        $graph->delete_group( $benzene );
-        $graph->add_group( ChemOnomatopist::Chain::Carboxamide->new( $graph, $amide, $atom, $benzene ) );
+        $graph->delete_group( $cycle );
+        $graph->add_group( ChemOnomatopist::Chain::Carboxamide->new( $graph, $amide, $atom, $cycle ) );
     }
 
     # Safeguarding against multiple cycle amides sharing the same amido group.
     # Otherwise this may lead to endless loops.
-    my @amides_in_benzamides = map  { $_->{amide} }
-                               grep { $_->isa( ChemOnomatopist::Chain::Carboxamide:: ) }
-                                    $graph->groups;
-    if( @amides_in_benzamides > uniq @amides_in_benzamides ) {
+    my @amides_in_carboxamides = map  { $_->{amide} }
+                                 grep { $_->isa( ChemOnomatopist::Chain::Carboxamide:: ) }
+                                      $graph->groups;
+    if( @amides_in_carboxamides > uniq @amides_in_carboxamides ) {
         die "cannot process multiple cycle amides sharing the same amide group\n";
     }
 
