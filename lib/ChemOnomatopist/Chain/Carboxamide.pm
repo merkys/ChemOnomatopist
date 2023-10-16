@@ -38,7 +38,7 @@ sub suffix()
 
     my $suffix = $self->{chain}->suffix;
     if( !$self->{chain}->isa( ChemOnomatopist::Chain::Monocycle:: ) ||
-        !$self->{chain}->is_homogeneous ) {
+         $self->{chain}->needs_substituent_locants ) {
         my @vertices = $self->{chain}->vertices;
         my $locant = first { $self->graph->has_edge( $self->{vertices}[1], $vertices[$_] ) }
                            0..$#vertices;
