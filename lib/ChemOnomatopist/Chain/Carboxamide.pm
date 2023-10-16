@@ -40,7 +40,7 @@ sub suffix()
     if( !$self->{chain}->isa( ChemOnomatopist::Chain::Monocycle:: ) ||
         !$self->{chain}->is_homogeneous ) {
         my @vertices = $self->{chain}->vertices;
-        my $locant = first { $self->graph->has_edge( $self->{vertices}[1], $vertices[$_] ) }
+        my $locant = first { $self->graph->has_edge( $self->{vertices}[2], $vertices[$_] ) }
                            0..$#vertices;
         $suffix->append_locants( $locant + 1 );
     }
