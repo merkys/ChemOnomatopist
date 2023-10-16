@@ -842,7 +842,7 @@ sub find_groups
         $graph->add_group( $compound );
     }
 
-    # Detecting amides attached to chains
+    # Detecting amides attached to cyclic chains
     for my $atom ($graph->vertices) {
         next if blessed $atom;
         next unless element( $atom ) eq 'C';
