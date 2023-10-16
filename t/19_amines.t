@@ -53,7 +53,7 @@ my @cases = (
     # From BBv2 P-62.2.3
     { smiles => 'NCCC(=O)O', iupac => '3-aminopropanoic acid' },
 
-    { smiles => 'CC(C)C(C)N1CCCCC(C1=O)NC', iupac => '3-(methylamino)-1-(3-methylbutan-2-yl)azepan-2-one', AUTHOR => 1 }, # PubChem 58916315 # FIXME: Misses methylamino
+    { smiles => 'CC(C)C(C)N1CCCCC(C1=O)NC', iupac => '3-(methylamino)-1-(3-methylbutan-2-yl)azepan-2-one' }, # PubChem 58916315 # FIXME: Misses methylamino
     { smiles => 'C1CNCCC1CNCCO', iupac => '2-(piperidin-4-ylmethylamino)ethanol', AUTHOR => 1 }, # PubChem 14950460 # FIXME: Very close
 );
 

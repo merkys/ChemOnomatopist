@@ -1195,6 +1195,10 @@ sub select_sidechain
                                map  { $_->vertices }
                                     $C_graph->groups );
 
+    # FIXME: Ad-hoc, but works...
+    $C_graph->delete_vertices( grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amine:: ) }
+                                    $C_graph->vertices );
+
     return ChemOnomatopist::Chain->new( $graph, $parent, $start ) unless $C_graph->degree( $start );
 
     my @path_parts;
