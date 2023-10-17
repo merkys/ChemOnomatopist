@@ -75,8 +75,8 @@ use Chemistry::OpenSMILES qw(
     is_single_bond
     is_triple_bond
 );
+use Graph::MoreUtils qw( SSSR );
 use Graph::Nauty qw( are_isomorphic );
-use Graph::SSSR;
 use Graph::Traversal::DFS;
 use Graph::Undirected;
 use List::Util qw( all any first max min pairs sum0 uniq );
@@ -756,7 +756,7 @@ sub find_groups
             $valences{$edge->[1]} += $order;
         }
 
-        my %uniq = map { join( '', sort @$_ ) => $_ } Graph::SSSR::get_SSSR( $core, 8 );
+        my %uniq = map { join( '', sort @$_ ) => $_ } SSSR( $core, 8 );
         my @aromatic;
         for my $cycle (values %uniq) {
             next if any { $core->degree( $_ ) > 3 } @$cycle;
@@ -806,8 +806,8 @@ sub find_groups
             $compound = ChemOnomatopist::Chain::Bicycle->new( $graph, $core->vertices );
         } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,3' ) {
             # Fused ring systems of three or more rings
-            # Graph::SSSR v0.1.0 does not know how to return unique rings
-            my %uniq = map { join( '', sort @$_ ) => $_ } Graph::SSSR::get_SSSR( $core, 8 );
+            # Graph::MoreUtils::SSSR v0.1.0 does not know how to return unique rings
+            my %uniq = map { join( '', sort @$_ ) => $_ } SSSR( $core, 8 );
             my @cycles = map { ChemOnomatopist::Chain::Monocycle->new( copy $graph, Graph::Traversal::DFS->new( $_ )->dfs ) }
                          map { subgraph( $core, @$_ ) }
                              values %uniq;
