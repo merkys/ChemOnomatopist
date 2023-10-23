@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use ChemOnomatopist::Chain;
 use ChemOnomatopist::Util::Graph qw(
     cyclic_components
     graph_replace
@@ -41,12 +42,18 @@ my @rules = (
     [ \&is_O, \&is_C_chain, \&anything, NO_MORE_VERTICES, { type => 'oxyalkane' } ],
 
     # Rules to detect alkanes of any length
-    [ \&is_C, ( \&is_H ) x 3, \&anything, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'C_chain', length => 1 }, @_[1..4] ) } ],
-    [ \&is_C, ( \&is_H ) x 2, \&anything, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'C_chain', length => 1 }, @_[1..3] ) } ], # terminal alkene
-    [ \&is_C, \&is_C_chain, ( \&is_H ) x 2, sub { graph_replace( $_[0], { type => 'C_chain', length => $_[2]->{length} + 1 }, @_[1..4] ) } ],
-    [ \&is_C, ( \&is_C_chain ) x 2, ( \&is_H ) x 2, NO_MORE_VERTICES, sub { graph_replace( shift @_, { type => 'C_chain', length => $_[2]->{length} + $_[3]->{length} + 1 }, @_ ) } ],
-    [ \&is_C_chain, \&is_C_chain, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'C_chain', length => $_[1]->{length} + $_[2]->{length} }, @_[1..2] ) } ],
-    [ \&is_C_chain, \&is_headless_C_chain, sub { graph_replace( $_[0], { type => 'C_chain', length => $_[1]->{length} + $_[2]->{length} }, @_[1..2] ) } ],
+    [ \&is_C, ( \&is_H ) x 3, \&anything, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, $_[1] ), @_[1..4] ) } ],
+    [ \&is_C, ( \&is_H ) x 2, \&anything, NO_MORE_VERTICES, # Terminal alkene
+      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, $_[1] ), @_[1..3] ) } ],
+    [ \&is_C, \&is_C_chain, ( \&is_H ) x 2,
+      sub { graph_replace( $_[0], $_[2], @_[1..4] ); push @{$_[2]->{vertices}}, $_[1] ],
+    [ \&is_C, ( \&is_C_chain ) x 2, ( \&is_H ) x 2, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], { type => 'C_chain', length => $_[2]->{length} + $_[3]->{length} + 1 }, @_[1..5] ) } ],
+    [ \&is_C_chain, \&is_C_chain, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], { type => 'C_chain', length => $_[1]->{length} + $_[2]->{length} }, @_[1..2] ) } ],
+    [ \&is_C_chain, \&is_headless_C_chain,
+      sub { graph_replace( $_[0], { type => 'C_chain', length => $_[1]->{length} + $_[2]->{length} }, @_[1..2] ) } ],
 
     # Handling of headless chains
     [ \&is_C, ( \&is_H ) x 2, ( \&anything ) x 2, NO_MORE_VERTICES, # Start a headless C chain
