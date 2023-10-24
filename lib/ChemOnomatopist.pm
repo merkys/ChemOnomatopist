@@ -736,6 +736,8 @@ sub find_groups
 
     # Second pass is needed to build on top of these trivial groups
     for my $atom ($graph->vertices) {
+        next if $graph->groups( $atom );
+
         my @neighbours = $graph->neighbours( $atom );
         my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) }
                           @neighbours;
