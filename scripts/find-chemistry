@@ -20,7 +20,7 @@ sub is_N { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'N' }
 sub is_O { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'O' }
 sub is_S { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
-sub is_C_chain { return exists $_[1]->{type} && $_[1]->{type} eq 'C_chain' }
+sub is_C_chain { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
 sub is_C_chain_carboxyl { return exists $_[1]->{type} && $_[1]->{type} eq 'C_chain_carboxyl' }
 sub is_carboxyl { return exists $_[1]->{type} && $_[1]->{type} eq 'carboxyl' }
 sub is_headless_C_chain { return exists $_[1]->{type} && $_[1]->{type} eq 'headless_C_chain' }
@@ -47,7 +47,7 @@ my @rules = (
     [ \&is_C, ( \&is_H ) x 2, \&anything, NO_MORE_VERTICES, # Terminal alkene
       sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, $_[1] ), @_[1..3] ) } ],
     [ \&is_C, \&is_C_chain, ( \&is_H ) x 2,
-      sub { graph_replace( $_[0], $_[2], @_[1..4] ); push @{$_[2]->{vertices}}, $_[1] } ],
+      sub { graph_replace( $_[0], $_[2], $_[1], @_[3..4] ); push @{$_[2]->{vertices}}, $_[1] } ],
     [ \&is_C, ( \&is_C_chain ) x 2, ( \&is_H ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[2]->vertices ), $_[1], $_[3]->vertices ), @_[1..5] ) } ],
     [ \&is_C_chain, \&is_C_chain, NO_MORE_VERTICES,
@@ -95,6 +95,8 @@ my @rules = (
 
     [ \&is_C, \&is_cyano, \&is_cycle, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'carbonitrile' }, @_[1..2] ) } ],
 );
+
+$Graph::Grammar::DEBUG = 1;
 
 while( <> ) {
     chomp;
