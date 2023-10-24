@@ -806,9 +806,7 @@ sub find_groups
             $graph->delete_group( $hydrazine );
         }
 
-        if( !blessed $atom && is_element( $atom, 'N' ) &&
-            @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) &&
-            !$graph->groups( $atom ) ) {
+        if( !blessed $atom && is_element( $atom, 'N' ) && @neighbours - @H >= 2 ) {
             die "cannot process secondary and tertiary amines yet\n";
         }
 
