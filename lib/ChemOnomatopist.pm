@@ -71,7 +71,6 @@ use ChemOnomatopist::Util::SMILES qw( cycle_SMILES_explicit );
 use Chemistry::OpenSMILES qw(
     %bond_symbol_to_order
     is_double_bond
-    is_ring_atom
     is_single_bond
     is_triple_bond
 );
@@ -611,7 +610,7 @@ sub find_groups
 
     # First pass is to detect guanidine and hydrazine
     for my $atom ($graph->vertices) {
-        next if $atoms_in_cycles->has( $atom );
+        next if $graph->groups( $atom );
 
         my @neighbours = $graph->neighbours( $atom );
         my @H = grep { is_element( $_, 'H' ) } @neighbours;
