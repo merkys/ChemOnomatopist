@@ -663,13 +663,12 @@ sub find_groups
             # Detecting nitro
             my $nitro = ChemOnomatopist::Group::Nitro->new;
             graph_replace( $graph, $nitro, $atom, @O );
-        } elsif( is_element( $atom, 'N' ) && @neighbours == 3 && !is_ring_atom( $graph, $atom, -1 ) ) {
+        } elsif( is_element( $atom, 'N' ) && @neighbours == 3 ) {
             # Detecting amines
             # BBv2 P-62.3 says "amines must have three single bonds linked to at least one carbon atom"
             my $amine = ChemOnomatopist::Group::Amine->new;
             graph_replace( $graph, $amine, $atom, @H );
         } elsif( is_element( $atom, 'N' ) && @neighbours == 2 &&
-                 !is_ring_atom( $graph, $atom, -1 ) &&
                  any { is_double_bond( $graph, $atom, $_ ) } @neighbours ) {
             # Detecting imines
             # BBv2 P-62.3 says "Imines must have a double bond between a carbon atom and the nitrogen."
@@ -699,8 +698,7 @@ sub find_groups
         }
 
         # Ether
-        if( is_element( $atom, 'O' ) && @neighbours == 2 && @C == 2 &&
-            !is_ring_atom( $graph, $atom, -1 ) ) {
+        if( is_element( $atom, 'O' ) && @neighbours == 2 && @C == 2 ) {
             my $ether = ChemOnomatopist::Group::Ether->new;
             graph_replace( $graph, $ether, $atom );
         }
@@ -714,14 +712,14 @@ sub find_groups
 
         # Sulfinyl group and its analogues
         if( @neighbours == 3 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
-            !is_ring_atom( $graph, $atom ) && any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
+            any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
             my $sulfinyl = ChemOnomatopist::Group::Sulfinyl->new( element( $atom ) );
             graph_replace( $graph, $sulfinyl, $atom, @O );
         }
 
         # Sulfonyl group and its analogues
         if( @neighbours == 4 && @O == 2 && (all { is_double_bond( $graph, $atom, $_ ) } @O) &&
-            !is_ring_atom( $graph, $atom ) && any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
+            any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
             my $sulfonyl = ChemOnomatopist::Group::Sulfonyl->new( element( $atom ) );
             graph_replace( $graph, $sulfonyl, $atom, @O );
         }
