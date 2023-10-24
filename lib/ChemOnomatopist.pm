@@ -13,6 +13,7 @@ use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Bicycle;
 use ChemOnomatopist::Chain::Carboxamide;
 use ChemOnomatopist::Chain::Circular;
+use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Chain::FromHalves;
 use ChemOnomatopist::Chain::Imino;
 use ChemOnomatopist::Chain::Monocycle;
