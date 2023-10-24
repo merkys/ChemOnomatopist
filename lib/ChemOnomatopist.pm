@@ -606,8 +606,6 @@ sub find_groups
         $graph->add_group( $compound );
     }
 
-    my $atoms_in_cycles = set( map { $_->vertices } @ring_systems );
-
     # First pass is to detect guanidine and hydrazine
     for my $atom ($graph->vertices) {
         next if $graph->groups( $atom );
@@ -626,8 +624,7 @@ sub find_groups
             }
         }
 
-        if( is_element( $atom, 'N' ) && @N == 1 &&
-            (all { !$atoms_in_cycles->has( $_ ) } @N) &&
+        if( is_element( $atom, 'N' ) && @N == 1 && (all { !$graph->groups( $_ ) } @N) &&
             is_single_bond( $graph, $atom, @N ) ) {
             # Detecting hydrazine
             my $hydrazine = ChemOnomatopist::Group::Hydrazine->new( $graph, $atom, @N );
