@@ -506,6 +506,107 @@ sub find_groups
 {
     my( $graph ) = @_;
 
+    # Detecting cyclic compounds
+    my @ring_systems = cyclic_components( $graph );
+
+    # Aromatising mancudes - experimental
+    for my $core (@ring_systems) {
+        my %valences;
+        for my $edge ($core->edges) {
+            my $order = 1;
+            if( $core->has_edge_attribute( @$edge, 'bond' ) ) {
+                $order = $bond_symbol_to_order{$core->get_edge_attribute( @$edge, 'bond' )};
+            }
+            $valences{$edge->[0]} += $order;
+            $valences{$edge->[1]} += $order;
+        }
+
+        my %uniq = map { join( '', sort @$_ ) => $_ } SSSR( $core, 8 );
+        my @aromatic;
+        for my $cycle (values %uniq) {
+            next if any { $core->degree( $_ ) > 3 } @$cycle;
+
+            my @v2 = grep { $core->degree( $_ ) == 2 } @$cycle;
+            my @v3 = grep { $core->degree( $_ ) == 3 } @$cycle;
+
+            my @nonaromatic_atoms = grep { $valences{$_} < 3 } @v2;
+            if( @nonaromatic_atoms ) {
+                next if @nonaromatic_atoms > 1;
+                next unless element( $nonaromatic_atoms[0] ) =~ /^[NOP]$/;
+            }
+
+            push @aromatic, [ Graph::Traversal::DFS->new( subgraph( $core, @$cycle ) )->dfs ];
+        }
+        for my $cycle (@aromatic) {
+            my @vertices = @$cycle;
+            for (0..$#vertices) {
+                $graph->set_edge_attribute( $vertices[$_],
+                                            $vertices[($_ + 1) % @vertices],
+                                            'bond',
+                                            ':' );
+                if( $vertices[$_]->{symbol} =~ /^(Se|As|[BCNOPS])$/ ) {
+                    $vertices[$_]->{symbol} = lcfirst $vertices[$_]->{symbol};
+                }
+            }
+        }
+    }
+
+    for my $core (@ring_systems) {
+        my %vertices_by_degree;
+        for my $vertex ($core->vertices) {
+            my $degree = $core->degree( $vertex );
+            $vertices_by_degree{$degree} = [] unless $vertices_by_degree{$degree};
+            push @{$vertices_by_degree{$degree}}, $vertex;
+        }
+
+        my $compound;
+        if(      join( ',', sort keys %vertices_by_degree ) eq '2' ) {
+            # Monocycles
+            $compound = ChemOnomatopist::Chain::Monocycle->new( $graph, Graph::Traversal::DFS->new( $core )->dfs );
+        } elsif( ChemOnomatopist::Chain::Monospiro->has_form( $core ) ) {
+            # BBv2 P-24.2.1 Monospiro alicyclic ring systems
+            $compound = ChemOnomatopist::Chain::Monospiro->new( $graph, $core->vertices );
+        } elsif( ChemOnomatopist::Chain::Bicycle->has_form( $core ) ) {
+            # Ortho-fused as defined in BBv2 P-25.3.1.1.1
+            $compound = ChemOnomatopist::Chain::Bicycle->new( $graph, $core->vertices );
+        } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,3' ) {
+            # Fused ring systems of three or more rings
+            # Graph::MoreUtils::SSSR v0.1.0 does not know how to return unique rings
+            my %uniq = map { join( '', sort @$_ ) => $_ } SSSR( $core, 8 );
+            my @cycles = map { ChemOnomatopist::Chain::Monocycle->new( copy $graph, Graph::Traversal::DFS->new( $_ )->dfs ) }
+                         map { subgraph( $core, @$_ ) }
+                             values %uniq;
+            if( (grep {  $_->is_benzene }  @cycles) == 2 &&
+                (grep { !$_->is_benzene }  @cycles) == 1 &&
+                (all  {  $_->length == 6 } @cycles) &&
+                (any  { !$_->is_hydrocarbon } @cycles) &&
+                are_isomorphic( graph_without_edge_attributes( $core ),
+                                ChemOnomatopist::Chain::Xanthene->ideal_graph,
+                                sub { return 'C' } ) ) {
+                $compound = ChemOnomatopist::Chain::Xanthene->new( $graph, @cycles );
+            } elsif( @cycles >= 3 &&
+                     (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
+                     ChemOnomatopist::Chain::Polyacene->has_form( $core ) ) {
+                $compound = ChemOnomatopist::Chain::Polyacene->new( $graph, @cycles );
+            } elsif( @cycles == 3 &&
+                     (all { $_->length == 6 } @cycles) &&
+                     are_isomorphic( graph_without_edge_attributes( $core ),
+                                     ChemOnomatopist::Chain::Phenanthrene->ideal_graph,
+                                     sub { return 'C' } ) ) {
+                $compound = ChemOnomatopist::Chain::Phenanthrene->new( $graph, @cycles );
+            } elsif( @cycles >= 4 &&
+                     (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
+                     ChemOnomatopist::Chain::Polyaphene->has_form( $core ) ) {
+                $compound = ChemOnomatopist::Chain::Polyaphene->new( $graph, @cycles );
+            } else {
+                die "cannot handle complicated cyclic compounds\n";
+            }
+        } else {
+            die "cannot handle complicated cyclic compounds\n";
+        }
+        $graph->add_group( $compound );
+    }
+
     # First pass is to detect guanidine and hydrazine
     for my $atom ($graph->vertices) {
         my @neighbours = $graph->neighbours( $atom );
@@ -739,107 +840,6 @@ sub find_groups
         $parent->{hcount}++;
         push @{$parent->{h_isotope}}, $H->{isotope};
         $graph->delete_vertex( $H );
-    }
-
-    # Detecting cyclic compounds
-    my @ring_systems = cyclic_components( $graph );
-
-    # Aromatising mancudes - experimental
-    for my $core (@ring_systems) {
-        my %valences;
-        for my $edge ($core->edges) {
-            my $order = 1;
-            if( $core->has_edge_attribute( @$edge, 'bond' ) ) {
-                $order = $bond_symbol_to_order{$core->get_edge_attribute( @$edge, 'bond' )};
-            }
-            $valences{$edge->[0]} += $order;
-            $valences{$edge->[1]} += $order;
-        }
-
-        my %uniq = map { join( '', sort @$_ ) => $_ } SSSR( $core, 8 );
-        my @aromatic;
-        for my $cycle (values %uniq) {
-            next if any { $core->degree( $_ ) > 3 } @$cycle;
-
-            my @v2 = grep { $core->degree( $_ ) == 2 } @$cycle;
-            my @v3 = grep { $core->degree( $_ ) == 3 } @$cycle;
-
-            my @nonaromatic_atoms = grep { $valences{$_} < 3 } @v2;
-            if( @nonaromatic_atoms ) {
-                next if @nonaromatic_atoms > 1;
-                next unless element( $nonaromatic_atoms[0] ) =~ /^[NOP]$/;
-            }
-
-            push @aromatic, [ Graph::Traversal::DFS->new( subgraph( $core, @$cycle ) )->dfs ];
-        }
-        for my $cycle (@aromatic) {
-            my @vertices = @$cycle;
-            for (0..$#vertices) {
-                $graph->set_edge_attribute( $vertices[$_],
-                                            $vertices[($_ + 1) % @vertices],
-                                            'bond',
-                                            ':' );
-                if( $vertices[$_]->{symbol} =~ /^(Se|As|[BCNOPS])$/ ) {
-                    $vertices[$_]->{symbol} = lcfirst $vertices[$_]->{symbol};
-                }
-            }
-        }
-    }
-
-    for my $core (@ring_systems) {
-        my %vertices_by_degree;
-        for my $vertex ($core->vertices) {
-            my $degree = $core->degree( $vertex );
-            $vertices_by_degree{$degree} = [] unless $vertices_by_degree{$degree};
-            push @{$vertices_by_degree{$degree}}, $vertex;
-        }
-
-        my $compound;
-        if(      join( ',', sort keys %vertices_by_degree ) eq '2' ) {
-            # Monocycles
-            $compound = ChemOnomatopist::Chain::Monocycle->new( $graph, Graph::Traversal::DFS->new( $core )->dfs );
-        } elsif( ChemOnomatopist::Chain::Monospiro->has_form( $core ) ) {
-            # BBv2 P-24.2.1 Monospiro alicyclic ring systems
-            $compound = ChemOnomatopist::Chain::Monospiro->new( $graph, $core->vertices );
-        } elsif( ChemOnomatopist::Chain::Bicycle->has_form( $core ) ) {
-            # Ortho-fused as defined in BBv2 P-25.3.1.1.1
-            $compound = ChemOnomatopist::Chain::Bicycle->new( $graph, $core->vertices );
-        } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,3' ) {
-            # Fused ring systems of three or more rings
-            # Graph::MoreUtils::SSSR v0.1.0 does not know how to return unique rings
-            my %uniq = map { join( '', sort @$_ ) => $_ } SSSR( $core, 8 );
-            my @cycles = map { ChemOnomatopist::Chain::Monocycle->new( copy $graph, Graph::Traversal::DFS->new( $_ )->dfs ) }
-                         map { subgraph( $core, @$_ ) }
-                             values %uniq;
-            if( (grep {  $_->is_benzene }  @cycles) == 2 &&
-                (grep { !$_->is_benzene }  @cycles) == 1 &&
-                (all  {  $_->length == 6 } @cycles) &&
-                (any  { !$_->is_hydrocarbon } @cycles) &&
-                are_isomorphic( graph_without_edge_attributes( $core ),
-                                ChemOnomatopist::Chain::Xanthene->ideal_graph,
-                                sub { return 'C' } ) ) {
-                $compound = ChemOnomatopist::Chain::Xanthene->new( $graph, @cycles );
-            } elsif( @cycles >= 3 &&
-                     (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
-                     ChemOnomatopist::Chain::Polyacene->has_form( $core ) ) {
-                $compound = ChemOnomatopist::Chain::Polyacene->new( $graph, @cycles );
-            } elsif( @cycles == 3 &&
-                     (all { $_->length == 6 } @cycles) &&
-                     are_isomorphic( graph_without_edge_attributes( $core ),
-                                     ChemOnomatopist::Chain::Phenanthrene->ideal_graph,
-                                     sub { return 'C' } ) ) {
-                $compound = ChemOnomatopist::Chain::Phenanthrene->new( $graph, @cycles );
-            } elsif( @cycles >= 4 &&
-                     (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
-                     ChemOnomatopist::Chain::Polyaphene->has_form( $core ) ) {
-                $compound = ChemOnomatopist::Chain::Polyaphene->new( $graph, @cycles );
-            } else {
-                die "cannot handle complicated cyclic compounds\n";
-            }
-        } else {
-            die "cannot handle complicated cyclic compounds\n";
-        }
-        $graph->add_group( $compound );
     }
 
     # Detecting amides attached to cyclic chains
