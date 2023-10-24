@@ -49,11 +49,11 @@ my @rules = (
     [ \&is_C, \&is_C_chain, ( \&is_H ) x 2,
       sub { graph_replace( $_[0], $_[2], @_[1..4] ); push @{$_[2]->{vertices}}, $_[1] ],
     [ \&is_C, ( \&is_C_chain ) x 2, ( \&is_H ) x 2, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], { type => 'C_chain', length => $_[2]->{length} + $_[3]->{length} + 1 }, @_[1..5] ) } ],
+      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[2]->vertices ), $_[1], $_[3]->vertices ), @_[1..5] ) } ],
     [ \&is_C_chain, \&is_C_chain, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], { type => 'C_chain', length => $_[1]->{length} + $_[2]->{length} }, @_[1..2] ) } ],
+      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[1]->vertices ), $_[2]->vertices ), @_[1..2] ) } ],
     [ \&is_C_chain, \&is_headless_C_chain,
-      sub { graph_replace( $_[0], { type => 'C_chain', length => $_[1]->{length} + $_[2]->{length} }, @_[1..2] ) } ],
+      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[1]->vertices ), $_[2]->vertices ), @_[1..2] ) } ],
 
     # Handling of headless chains
     [ \&is_C, ( \&is_H ) x 2, ( \&anything ) x 2, NO_MORE_VERTICES, # Start a headless C chain
