@@ -8,6 +8,10 @@ use warnings;
 
 use parent ChemOnomatopist::Chain::Circular::;
 
+use ChemOnomatopist::Util::Graph qw(
+    graph_without_edge_attributes
+);
+use Graph::Nauty qw( are_isomorphic );
 use Graph::Undirected;
 
 sub has_form($$)
@@ -18,6 +22,10 @@ sub has_form($$)
     return '' unless @vertices == 24;
     return '' unless (grep { ChemOnomatopist::is_element( $_, 'C' ) } @vertices) == 20;
     return '' unless (grep { ChemOnomatopist::is_element( $_, 'N' ) } @vertices) ==  4;
+
+    return are_isomorphic( graph_without_edge_attributes( $graph ),
+                           $class->ideal_graph,
+                           sub { ChemOnomatopist::element( $_[0] ) } );
 }
 
 sub ideal_graph($)
