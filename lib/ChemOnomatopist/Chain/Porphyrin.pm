@@ -20,6 +20,9 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
+sub needs_heteroatom_locants() { return '' }
+sub needs_heteroatom_names() { return '' }
+
 sub has_form($$)
 {
     my( $class, $graph ) = @_;
@@ -45,5 +48,8 @@ sub ideal_graph($)
     }
     return $graph;
 }
+
+sub prefix() { return 'porphyrin' }
+sub suffix() { return 'porphyrin' }
 
 1;
