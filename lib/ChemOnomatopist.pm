@@ -72,7 +72,6 @@ use ChemOnomatopist::Util::SMILES qw( cycle_SMILES_explicit );
 use Chemistry::OpenSMILES qw(
     %bond_symbol_to_order
     is_double_bond
-    is_ring_atom
     is_single_bond
     is_triple_bond
 );
@@ -507,235 +506,11 @@ sub find_groups
 {
     my( $graph ) = @_;
 
-    # First pass is to detect guanidine and hydrazine
-    for my $atom ($graph->vertices) {
-        my @neighbours = $graph->neighbours( $atom );
-        my @H = grep { is_element( $_, 'H' ) } @neighbours;
-        my @N = grep { is_element( $_, 'N' ) } @neighbours;
-
-        if( is_element( $atom, 'C' ) && @neighbours == 3 && @N == 3 &&
-            !is_ring_atom( $graph, $atom, -1 ) ) {
-            # Detecting guanidine
-            my $guanidine = ChemOnomatopist::Group::Guanidine->new( $graph, $atom );
-            $graph->add_group( $guanidine );
-            $graph->delete_vertex( $atom );
-            for (combinations( \@N, 2 )) {
-                $graph->add_edge( @$_ );
-            }
-        }
-
-        if( is_element( $atom, 'N' ) && @N == 1 &&
-            (all { !is_ring_atom( $graph, $_, -1 ) } ( $atom, @N ) ) &&
-            is_single_bond( $graph, $atom, @N ) ) {
-            # Detecting hydrazine
-            my $hydrazine = ChemOnomatopist::Group::Hydrazine->new( $graph, $atom, @N );
-            $graph->add_group( $hydrazine );
-        }
-    }
-
-    for my $atom ($graph->vertices) {
-        next if $graph->groups( $atom );
-
-        my @neighbours = $graph->neighbours( $atom );
-        my @C  = grep { is_element( $_, 'C' ) } @neighbours;
-        my @H  = grep { is_element( $_, 'H' ) } @neighbours;
-        my @N  = grep { is_element( $_, 'N' ) } @neighbours;
-        my @O  = grep { is_element( $_, 'O' ) } @neighbours;
-        my @S  = grep { is_element( $_, 'S' ) } @neighbours;
-        my @Se = grep { is_element( $_, 'Se' ) } @neighbours;
-        my @Te = grep { is_element( $_, 'Te' ) } @neighbours;
-
-        # Nitroso and its analogues
-        if( @neighbours == 2 && @C == 1 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
-            any { is_element( $atom, $_ ) } qw( Br Cl F I N ) ) {
-            my $nitroso = ChemOnomatopist::Group::Nitroso->new( element( $atom ) );
-            graph_replace( $graph, $nitroso, $atom, @O );
-            next;
-        }
-
-        # N-based groups
-        if( is_element( $atom, 'N' ) && @C == 1 && @O == 2 && $atom->{charge} && $atom->{charge} == 1 &&
-                 (any {  is_double_bond( $graph, $atom, $_ ) } @O) &&
-                 (any { !is_double_bond( $graph, $atom, $_ ) && $_->{charge} && $_->{charge} == -1 } @O) ) {
-            # Detecting nitro
-            my $nitro = ChemOnomatopist::Group::Nitro->new;
-            graph_replace( $graph, $nitro, $atom, @O );
-        } elsif( is_element( $atom, 'N' ) && @neighbours == 3 && !is_ring_atom( $graph, $atom, -1 ) ) {
-            # Detecting amines
-            # BBv2 P-62.3 says "amines must have three single bonds linked to at least one carbon atom"
-            my $amine = ChemOnomatopist::Group::Amine->new;
-            graph_replace( $graph, $amine, $atom, @H );
-        } elsif( is_element( $atom, 'N' ) && @neighbours == 2 &&
-                 !is_ring_atom( $graph, $atom, -1 ) &&
-                 any { is_double_bond( $graph, $atom, $_ ) } @neighbours ) {
-            # Detecting imines
-            # BBv2 P-62.3 says "Imines must have a double bond between a carbon atom and the nitrogen."
-            my $imine = ChemOnomatopist::Group::Imino->new;
-            graph_replace( $graph, $imine, $atom );
-        } elsif( is_element( $atom, 'N' ) && @neighbours == 1 && @C == 1 &&
-                 $graph->degree( @C ) >= 2 &&
-                 is_triple_bond( $graph, $atom, @C ) ) {
-            # Detecting cyanide
-            my( $C ) = grep { $_ != $atom } $graph->neighbours( @C );
-            my $cyanide = ChemOnomatopist::Group::Cyanide->new;
-            graph_replace( $graph, $cyanide, $atom, @C );
-        }
-
-        # Hydroxy groups and their chalcogen analogues
-        if( @neighbours == 2 && ( @C || @N || @O || @S || @Se || @Te ) && @H == 1 &&
-            any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
-            my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( element( $atom ) );
-            graph_replace( $graph, $hydroxy, $atom, @H );
-        }
-
-        # Ketones and their chalcogen analogues
-        if( @neighbours == 1 && @C == 1 && is_double_bond( $graph, $atom, @C ) &&
-            any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
-            my $ketone = ChemOnomatopist::Group::Ketone->new( element( $atom ) );
-            graph_replace( $graph, $ketone, $atom );
-        }
-
-        # Ether
-        if( is_element( $atom, 'O' ) && @neighbours == 2 && @C == 2 &&
-            !is_ring_atom( $graph, $atom, -1 ) ) {
-            my $ether = ChemOnomatopist::Group::Ether->new;
-            graph_replace( $graph, $ether, $atom );
-        }
-
-        # XO3
-        if( @neighbours == 4 && @C == 1 && @O == 3 && (all { is_double_bond( $graph, $atom, $_ ) } @O) &&
-            any { is_element( $atom, $_ ) } qw( Br Cl F I ) ) {
-            my $XO3 = ChemOnomatopist::Group::XO3->new( element( $atom ) );
-            graph_replace( $graph, $XO3, $atom, @O );
-        }
-
-        # Sulfinyl group and its analogues
-        if( @neighbours == 3 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
-            !is_ring_atom( $graph, $atom ) && any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
-            my $sulfinyl = ChemOnomatopist::Group::Sulfinyl->new( element( $atom ) );
-            graph_replace( $graph, $sulfinyl, $atom, @O );
-        }
-
-        # Sulfonyl group and its analogues
-        if( @neighbours == 4 && @O == 2 && (all { is_double_bond( $graph, $atom, $_ ) } @O) &&
-            !is_ring_atom( $graph, $atom ) && any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
-            my $sulfonyl = ChemOnomatopist::Group::Sulfonyl->new( element( $atom ) );
-            graph_replace( $graph, $sulfonyl, $atom, @O );
-        }
-    }
-
-    if( any { !blessed $_ && exists $_->{charge} } $graph->vertices ) {
-        die "cannot handle charges for now\n";
-    }
-
-    # Due to the issue in Graph, bridges() returns strings instead of real objects.
-    # Graph issue: https://github.com/graphviz-perl/Graph/issues/29
-    my %vertices_by_name = map { $_ => $_ } $graph->vertices;
-    my $cut_vertices = set( map { $vertices_by_name{$_} } map { @$_ } $graph->bridges );
-
-    # Second pass is needed to build on top of these trivial groups
-    for my $atom ($graph->vertices) {
-        my @neighbours = $graph->neighbours( $atom );
-        my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) }
-                          @neighbours;
-        my @C = grep { is_element( $_, 'C' ) } @neighbours;
-        my @H = grep { is_element( $_, 'H' ) } @neighbours;
-        my @N = grep { is_element( $_, 'N' ) } @neighbours;
-        my @O = grep { is_element( $_, 'O' ) } @neighbours;
-
-        if( is_element( $atom, 'C' ) && @groups == 1 && @H == 1 &&
-            $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) &&
-            all { $graph->degree( $_ ) == 1 } @H ) {
-            # Detecting aldehyde
-            my $aldehyde = ChemOnomatopist::Group::Aldehyde->new( @groups );
-            $graph->delete_vertices( @groups, @H );
-            $graph->add_edges( map { $aldehyde, $_ } $graph->neighbours( $atom ) );
-            $graph->delete_vertex( $atom );
-        } elsif( is_element( $atom, 'C' ) && @neighbours == 3 && @groups >= 1 && @O == 2 &&
-            (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) &&
-            ( (any { $_->isa( ChemOnomatopist::Group::Hydroxy:: ) } @groups) ||
-              (all { $graph->degree( $_ ) == 1 } @O) ) ) {
-            # Detecting carboxyl
-            my( $parent ) = grep { !is_element( $_, 'O' ) && !is_element( $_, 'H' ) } @neighbours;
-            my $carboxyl = ChemOnomatopist::Group::Carboxyl->new( $parent );
-            $graph->delete_vertices( $atom, @O );
-            $graph->add_vertex( $carboxyl );
-            $graph->add_edges( $carboxyl, $parent ) if $parent;
-        } elsif( is_element( $atom, 'C' ) && @groups == 1 && @C == 1 && @O == 2 &&
-                 $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) &&
-                 all { $cut_vertices->has( $_ ) } @O ) {
-            # Detecting esters
-            # Both oxygens have to be cut vertices to avoid one being in a ring
-            $graph->delete_vertices( @groups );
-            my( $hydroxylic ) = grep { $_ != $atom } map { $graph->neighbours( $_ ) } grep { !blessed $_ } @O;
-            my( $acid ) = @C;
-            my $ester = ChemOnomatopist::Group::Ester->new( $hydroxylic, $acid );
-            $graph->add_edges( $ester, $hydroxylic );
-            $graph->add_edges( $ester, $acid );
-            $graph->delete_vertices( $atom, @O );
-        } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
-                 (any { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups) &&
-                 (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
-            # Detecting amides
-            my $amide = ChemOnomatopist::Group::Amide->new( $atom );
-            my( $amine ) = grep { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups;
-            my( $ketone ) = grep { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups;
-            $graph->delete_vertices( $ketone );
-            graph_replace( $graph, $amide, $amine );
-        } elsif( is_element( $atom, 'C' ) && @neighbours == 3 && @C == 1 &&
-                 @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) && is_element( @groups, 'O' ) &&
-                 element(   grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours ) =~ /^(F|Cl|Br|I)$/ ) {
-            my( $halide ) = grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours;
-            my $acyl_halide = ChemOnomatopist::Group::AcylHalide->new( $halide );
-            graph_replace( $graph, $acyl_halide, $atom, grep { blessed $_ || !is_element( $_, 'C' ) } @neighbours );
-        } elsif( is_element( $atom, 'C' ) && @N == 1 && @O == 1 &&
-                 $graph->groups( @N ) &&
-                 (any { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) } $graph->groups( @N )) &&
-                 $O[0]->isa( ChemOnomatopist::Group::Ketone:: ) ) {
-            # Detect hydrazide
-            my( $hydrazine ) = grep { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) }
-                                    $graph->groups( @N );
-            my @vertices = $hydrazine->vertices;
-            @vertices = reverse @vertices if $vertices[0] == $N[0];
-            my $hydrazide = ChemOnomatopist::Group::Hydrazide->new( $graph, @vertices );
-            $graph->delete_vertices( @O );
-            $graph->add_group( $hydrazide );
-            $graph->delete_group( $hydrazine );
-        }
-
-        if( !blessed $atom && is_element( $atom, 'N' ) &&
-            @neighbours - @H >= 2 && !is_ring_atom( $graph, $atom, -1 ) &&
-            !$graph->groups( $atom ) ) {
-            die "cannot process secondary and tertiary amines yet\n";
-        }
-
-        # Detecting sulfinic acids
-        if( !blessed $atom && is_element( $atom, 'S' ) && @neighbours == 3 && @C == 1 && @O == 2 &&
-            @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
-            is_double_bond( $graph, $atom, grep { !blessed $_ } @O ) ) {
-            my $acid = ChemOnomatopist::Group::SulfinicAcid->new( @C );
-            graph_replace( $graph, $acid, $atom, @O );
-        }
-        # Detecting sulfonic acids
-        if( !blessed $atom && is_element( $atom, 'S' ) && @neighbours == 4 && @C == 1 && @O == 3 &&
-            @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
-            all { is_double_bond( $graph, $atom, $_ ) } grep { !blessed $_ } @O ) {
-            my $acid = ChemOnomatopist::Group::SulfonicAcid->new( @C );
-            graph_replace( $graph, $acid, $atom, @O );
-        }
-
-        if( !blessed $atom && @C == 1 && @groups == 1 &&
-            ( is_element( $atom, 'O' ) || is_element( $atom, 'S' ) || is_element( $atom, 'Se' ) || is_element( $atom, 'Te' ) ) && 
-            $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) ) {
-            my $hydroperoxide = ChemOnomatopist::Group::Hydroperoxide->new( $atom, @groups );
-            graph_replace( $graph, $hydroperoxide, $atom, @groups );
-        }
-    }
-
-    # Hydrogen atoms are no longer important.
-    # They are demoted to hydrogen counts for future reference.
+    # Attaching hydrogen atoms to their heavier neighbours
     for my $H (grep { is_element( $_, 'H' ) } $graph->vertices) {
+        die "cannot handle shared hydrogen atoms\n" if $graph->degree( $H ) > 1;
         my( $parent ) = $graph->neighbours( $H );
+        die "cannot handle compounds with H-H bonds\n" if is_element( $parent, 'H' );
         $parent->{hcount} = 0 unless exists $parent->{hcount};
         $parent->{hcount}++;
         push @{$parent->{h_isotope}}, $H->{isotope};
@@ -841,6 +616,230 @@ sub find_groups
             die "cannot handle complicated cyclic compounds\n";
         }
         $graph->add_group( $compound );
+    }
+
+    # First pass is to detect guanidine and hydrazine
+    for my $atom ($graph->vertices) {
+        next if $graph->groups( $atom );
+
+        my @neighbours = $graph->neighbours( $atom );
+        my @N = grep { is_element( $_, 'N' ) } @neighbours;
+        my $H = $atom->{hcount} ? $atom->{hcount} : 0;
+
+        if( is_element( $atom, 'C' ) && @neighbours == 3 && @N == 3 && !$H ) {
+            # Detecting guanidine
+            my $guanidine = ChemOnomatopist::Group::Guanidine->new( $graph, $atom );
+            $graph->add_group( $guanidine );
+            $graph->delete_vertex( $atom );
+            for (combinations( \@N, 2 )) {
+                $graph->add_edge( @$_ );
+            }
+        }
+
+        if( is_element( $atom, 'N' ) && @N == 1 && (all { !$graph->groups( $_ ) } @N) &&
+            is_single_bond( $graph, $atom, @N ) ) {
+            # Detecting hydrazine
+            my $hydrazine = ChemOnomatopist::Group::Hydrazine->new( $graph, $atom, @N );
+            $graph->add_group( $hydrazine );
+        }
+    }
+
+    for my $atom ($graph->vertices) {
+        next if $graph->groups( $atom );
+
+        my @neighbours = $graph->neighbours( $atom );
+        my @C  = grep { is_element( $_, 'C' ) } @neighbours;
+        my @N  = grep { is_element( $_, 'N' ) } @neighbours;
+        my @O  = grep { is_element( $_, 'O' ) } @neighbours;
+        my @S  = grep { is_element( $_, 'S' ) } @neighbours;
+        my @Se = grep { is_element( $_, 'Se' ) } @neighbours;
+        my @Te = grep { is_element( $_, 'Te' ) } @neighbours;
+        my $H  = $atom->{hcount} ? $atom->{hcount} : 0;
+
+        # Nitroso and its analogues
+        if( @neighbours + $H == 2 && @C == 1 && @O == 1 &&
+            is_double_bond( $graph, $atom, @O ) &&
+            any { is_element( $atom, $_ ) } qw( Br Cl F I N ) ) {
+            my $nitroso = ChemOnomatopist::Group::Nitroso->new( element( $atom ) );
+            graph_replace( $graph, $nitroso, $atom, @O );
+            next;
+        }
+
+        # N-based groups
+        if( is_element( $atom, 'N' ) && @C == 1 && @O == 2 && $atom->{charge} && $atom->{charge} == 1 &&
+                 (any {  is_double_bond( $graph, $atom, $_ ) } @O) &&
+                 (any { !is_double_bond( $graph, $atom, $_ ) && $_->{charge} && $_->{charge} == -1 } @O) ) {
+            # Detecting nitro
+            my $nitro = ChemOnomatopist::Group::Nitro->new;
+            graph_replace( $graph, $nitro, $atom, @O );
+        } elsif( is_element( $atom, 'N' ) && @neighbours + $H == 3 ) {
+            # Detecting amines
+            # BBv2 P-62.3 says "amines must have three single bonds linked to at least one carbon atom"
+            my $amine = ChemOnomatopist::Group::Amine->new;
+            graph_replace( $graph, $amine, $atom );
+        } elsif( is_element( $atom, 'N' ) && @neighbours + $H == 2 &&
+                 any { is_double_bond( $graph, $atom, $_ ) } @neighbours ) {
+            # Detecting imines
+            # BBv2 P-62.3 says "Imines must have a double bond between a carbon atom and the nitrogen."
+            my $imine = ChemOnomatopist::Group::Imino->new;
+            graph_replace( $graph, $imine, $atom );
+        } elsif( is_element( $atom, 'N' ) && @neighbours + $H == 1 && @C == 1 &&
+                 $graph->degree( @C ) >= 2 &&
+                 is_triple_bond( $graph, $atom, @C ) ) {
+            # Detecting cyanide
+            my( $C ) = grep { $_ != $atom } $graph->neighbours( @C );
+            my $cyanide = ChemOnomatopist::Group::Cyanide->new;
+            graph_replace( $graph, $cyanide, $atom, @C );
+        }
+
+        # Hydroxy groups and their chalcogen analogues
+        if( @neighbours == 1 && $H == 1 && ( @C || @N || @O || @S || @Se || @Te ) &&
+            any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
+            my $hydroxy = ChemOnomatopist::Group::Hydroxy->new( element( $atom ) );
+            graph_replace( $graph, $hydroxy, $atom );
+        }
+
+        # Ketones and their chalcogen analogues
+        if( @neighbours + $H == 1 && @C == 1 && is_double_bond( $graph, $atom, @C ) &&
+            any { is_element( $atom, $_ ) } qw( O S Se Te ) ) {
+            my $ketone = ChemOnomatopist::Group::Ketone->new( element( $atom ) );
+            graph_replace( $graph, $ketone, $atom );
+        }
+
+        # Ether
+        if( is_element( $atom, 'O' ) && @neighbours + $H == 2 && @C == 2 ) {
+            my $ether = ChemOnomatopist::Group::Ether->new;
+            graph_replace( $graph, $ether, $atom );
+        }
+
+        # XO3
+        if( @neighbours + $H == 4 && @C == 1 && @O == 3 && (all { is_double_bond( $graph, $atom, $_ ) } @O) &&
+            any { is_element( $atom, $_ ) } qw( Br Cl F I ) ) {
+            my $XO3 = ChemOnomatopist::Group::XO3->new( element( $atom ) );
+            graph_replace( $graph, $XO3, $atom, @O );
+        }
+
+        # Sulfinyl group and its analogues
+        if( @neighbours + $H == 3 && @O == 1 && is_double_bond( $graph, $atom, @O ) &&
+            any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
+            my $sulfinyl = ChemOnomatopist::Group::Sulfinyl->new( element( $atom ) );
+            graph_replace( $graph, $sulfinyl, $atom, @O );
+        }
+
+        # Sulfonyl group and its analogues
+        if( @neighbours == 4 && @O == 2 && (all { is_double_bond( $graph, $atom, $_ ) } @O) &&
+            any { is_element( $atom, $_ ) } qw( S Se Te ) ) {
+            my $sulfonyl = ChemOnomatopist::Group::Sulfonyl->new( element( $atom ) );
+            graph_replace( $graph, $sulfonyl, $atom, @O );
+        }
+    }
+
+    if( any { !blessed $_ && exists $_->{charge} } $graph->vertices ) {
+        die "cannot handle charges for now\n";
+    }
+
+    # Due to the issue in Graph, bridges() returns strings instead of real objects.
+    # Graph issue: https://github.com/graphviz-perl/Graph/issues/29
+    my %vertices_by_name = map { $_ => $_ } $graph->vertices;
+    my $cut_vertices = set( map { $vertices_by_name{$_} } map { @$_ } $graph->bridges );
+
+    # Second pass is needed to build on top of these trivial groups
+    for my $atom ($graph->vertices) {
+        next if $graph->groups( $atom );
+
+        my @neighbours = $graph->neighbours( $atom );
+        my @groups = grep { blessed $_ && $_->isa( ChemOnomatopist::Group:: ) }
+                          @neighbours;
+        my @C = grep { is_element( $_, 'C' ) } @neighbours;
+        my @H = grep { is_element( $_, 'H' ) } @neighbours;
+        my @N = grep { is_element( $_, 'N' ) } @neighbours;
+        my @O = grep { is_element( $_, 'O' ) } @neighbours;
+        my $H = $atom->{hcount} ? $atom->{hcount} : 0;
+
+        if( is_element( $atom, 'C' ) && @groups == 1 && $H == 1 &&
+            $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) ) {
+            # Detecting aldehyde
+            my $aldehyde = ChemOnomatopist::Group::Aldehyde->new( @groups );
+            $graph->delete_vertices( @groups );
+            $graph->add_edges( map { $aldehyde, $_ } $graph->neighbours( $atom ) );
+            $graph->delete_vertex( $atom );
+        } elsif( is_element( $atom, 'C' ) && @neighbours + $H == 3 && @groups >= 1 && @O == 2 &&
+            (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) &&
+            ( (any { $_->isa( ChemOnomatopist::Group::Hydroxy:: ) } @groups) ||
+              (all { $graph->degree( $_ ) == 1 } @O) ) ) {
+            # Detecting carboxyl
+            my( $parent ) = grep { !is_element( $_, 'O' ) } @neighbours;
+            my $carboxyl = ChemOnomatopist::Group::Carboxyl->new( $parent );
+            $graph->delete_vertices( $atom, @O );
+            $graph->add_vertex( $carboxyl );
+            $graph->add_edges( $carboxyl, $parent ) if $parent;
+        } elsif( is_element( $atom, 'C' ) && @groups == 1 && @C == 1 && @O == 2 &&
+                 $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) &&
+                 all { $cut_vertices->has( $_ ) } @O ) {
+            # Detecting esters
+            # Both oxygens have to be cut vertices to avoid one being in a ring
+            $graph->delete_vertices( @groups );
+            my( $hydroxylic ) = grep { $_ != $atom } map { $graph->neighbours( $_ ) } grep { !blessed $_ } @O;
+            my( $acid ) = @C;
+            my $ester = ChemOnomatopist::Group::Ester->new( $hydroxylic, $acid );
+            $graph->add_edges( $ester, $hydroxylic );
+            $graph->add_edges( $ester, $acid );
+            $graph->delete_vertices( $atom, @O );
+        } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
+                 (any { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups) &&
+                 (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
+            # Detecting amides
+            my $amide = ChemOnomatopist::Group::Amide->new( $atom );
+            my( $amine ) = grep { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups;
+            my( $ketone ) = grep { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups;
+            $graph->delete_vertices( $ketone );
+            graph_replace( $graph, $amide, $amine );
+        } elsif( is_element( $atom, 'C' ) && @neighbours + $H == 3 && @C == 1 &&
+                 @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Ketone:: ) && is_element( @groups, 'O' ) &&
+                 element(   grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours ) =~ /^(F|Cl|Br|I)$/ ) {
+            my( $halide ) = grep { !blessed $_ && !is_element( $_, 'C' ) } @neighbours;
+            my $acyl_halide = ChemOnomatopist::Group::AcylHalide->new( $halide );
+            graph_replace( $graph, $acyl_halide, $atom, grep { blessed $_ || !is_element( $_, 'C' ) } @neighbours );
+        } elsif( is_element( $atom, 'C' ) && @N == 1 && @O == 1 &&
+                 $graph->groups( @N ) &&
+                 (any { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) } $graph->groups( @N )) &&
+                 $O[0]->isa( ChemOnomatopist::Group::Ketone:: ) ) {
+            # Detect hydrazide
+            my( $hydrazine ) = grep { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) }
+                                    $graph->groups( @N );
+            my @vertices = $hydrazine->vertices;
+            @vertices = reverse @vertices if $vertices[0] == $N[0];
+            my $hydrazide = ChemOnomatopist::Group::Hydrazide->new( $graph, @vertices );
+            $graph->delete_vertices( @O );
+            $graph->add_group( $hydrazide );
+            $graph->delete_group( $hydrazine );
+        }
+
+        if( !blessed $atom && is_element( $atom, 'N' ) && @neighbours >= 2 ) {
+            die "cannot process secondary and tertiary amines yet\n";
+        }
+
+        # Detecting sulfinic acids
+        if( !blessed $atom && is_element( $atom, 'S' ) && @neighbours + $H == 3 && @C == 1 && @O == 2 &&
+            @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
+            is_double_bond( $graph, $atom, grep { !blessed $_ } @O ) ) {
+            my $acid = ChemOnomatopist::Group::SulfinicAcid->new( @C );
+            graph_replace( $graph, $acid, $atom, @O );
+        }
+        # Detecting sulfonic acids
+        if( !blessed $atom && is_element( $atom, 'S' ) && @neighbours + $H == 4 && @C == 1 && @O == 3 &&
+            @groups == 1 && $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
+            all { is_double_bond( $graph, $atom, $_ ) } grep { !blessed $_ } @O ) {
+            my $acid = ChemOnomatopist::Group::SulfonicAcid->new( @C );
+            graph_replace( $graph, $acid, $atom, @O );
+        }
+
+        if( !blessed $atom && @C == 1 && @groups == 1 &&
+            ( is_element( $atom, 'O' ) || is_element( $atom, 'S' ) || is_element( $atom, 'Se' ) || is_element( $atom, 'Te' ) ) && 
+            $groups[0]->isa( ChemOnomatopist::Group::Hydroxy:: ) ) {
+            my $hydroperoxide = ChemOnomatopist::Group::Hydroperoxide->new( $atom, @groups );
+            graph_replace( $graph, $hydroperoxide, $atom, @groups );
+        }
     }
 
     # Detecting amides attached to cyclic chains
