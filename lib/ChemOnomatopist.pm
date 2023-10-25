@@ -507,7 +507,9 @@ sub find_groups
 
     # Attaching hydrogen atoms to their heavier neighbours
     for my $H (grep { is_element( $_, 'H' ) } $graph->vertices) {
+        die "cannot handle shared hydrogen atoms\n" if $graph->degree( $H ) > 1;
         my( $parent ) = $graph->neighbours( $H );
+        die "cannot handle compounds with H-H bonds\n" if is_element( $parent, 'H' );
         $parent->{hcount} = 0 unless exists $parent->{hcount};
         $parent->{hcount}++;
         push @{$parent->{h_isotope}}, $H->{isotope};
