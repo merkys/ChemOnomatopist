@@ -14,6 +14,12 @@ use ChemOnomatopist::Util::Graph qw(
 use Graph::Nauty qw( are_isomorphic );
 use Graph::Undirected;
 
+sub new
+{
+    my( $class, $graph, @vertices ) = @_;
+    return bless { graph => $graph, vertices => \@vertices }, $class;
+}
+
 sub has_form($$)
 {
     my( $class, $graph ) = @_;
