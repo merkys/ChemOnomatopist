@@ -9,12 +9,10 @@ use warnings;
 use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Util::Graph qw(
-    cyclic_components
     graph_replace
 );
 use Chemistry::OpenSMILES::Parser;
 use Graph::Grammar;
-use Graph::Writer::Dot;
 use List::Util qw( sum );
 use Scalar::Util qw( blessed );
 
@@ -105,36 +103,10 @@ my @rules = (
     [ \&is_C, \&is_cyano, \&is_cycle, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'carbonitrile' }, @_[1..2] ) } ],
 );
 
-$Graph::Grammar::DEBUG = 1;
-
-while( <> ) {
-    chomp;
-
-    my $parser = Chemistry::OpenSMILES::Parser->new;
-    my( $graph ) = $parser->parse( $_ );
-
-    # Deal with cyclic components
-    my @cyclic_components = cyclic_components( $graph );
-    for my $cyclic_component (@cyclic_components) {
-        my $cycle = {
-            type => 'cycle',
-            length => scalar $cyclic_component->vertices,
-            atoms => join '', map { $_->{symbol} } $cyclic_component->vertices,
-        };
-        if( $cycle->{atoms} eq 'CCCCCC' ) {
-            $cycle = { type => 'benzene' };
-        }
-        graph_replace( $graph, $cycle, $cyclic_component->vertices );
-    }
-
-    parse_graph( $graph, @rules );
-
-    for my $vertex ($graph->vertices) {
-        $graph->set_vertex_attribute( $vertex, 'label', exists $vertex->{symbol} ? $vertex->{symbol} : $vertex->{type} );
-    }
-
-    my $writer = Graph::Writer::Dot->new;
-    $writer->write_graph( $graph, '/dev/stdout' );
+sub parse_molecular_graph($)
+{
+    my( $graph ) = @_;
+    return parse_graph( $graph, @rules );
 }
 
 1;
