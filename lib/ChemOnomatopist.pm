@@ -21,6 +21,7 @@ use ChemOnomatopist::Chain::Monospiro;
 use ChemOnomatopist::Chain::Phenanthrene;
 use ChemOnomatopist::Chain::Polyacene;
 use ChemOnomatopist::Chain::Polyaphene;
+use ChemOnomatopist::Chain::Porphyrin;
 use ChemOnomatopist::Chain::Xanthene;
 use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Elements qw( %elements );
@@ -580,6 +581,9 @@ sub find_groups
         } elsif( ChemOnomatopist::Chain::Bicycle->has_form( $core ) ) {
             # Ortho-fused as defined in BBv2 P-25.3.1.1.1
             $compound = ChemOnomatopist::Chain::Bicycle->new( $graph, $core->vertices );
+        } elsif( ChemOnomatopist::Chain::Porphyrin->has_form( $core ) ) {
+            # Porphyrin
+            $compound = ChemOnomatopist::Chain::Porphyrin->new( $graph, $core->vertices );
         } elsif( join( ',', sort keys %vertices_by_degree ) eq '2,3' ) {
             # Fused ring systems of three or more rings
             # Graph::MoreUtils::SSSR v0.1.0 does not know how to return unique rings
