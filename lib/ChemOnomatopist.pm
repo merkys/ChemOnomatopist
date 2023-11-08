@@ -563,6 +563,7 @@ sub find_groups
         }
     }
 
+    # Identifying ring systems, any unknown ring system terminates the naming
     for my $core (@ring_systems) {
         my %vertices_by_degree;
         for my $vertex ($core->vertices) {
@@ -622,7 +623,7 @@ sub find_groups
         $graph->add_group( $compound );
     }
 
-    # First pass is to detect guanidine and hydrazine
+    # Detecting guanidine and hydrazine
     for my $atom ($graph->vertices) {
         next if $graph->groups( $atom );
 
@@ -648,6 +649,7 @@ sub find_groups
         }
     }
 
+    # Detecting the most simple groups
     for my $atom ($graph->vertices) {
         next if $graph->groups( $atom );
 
@@ -747,7 +749,7 @@ sub find_groups
     my %vertices_by_name = map { $_ => $_ } $graph->vertices;
     my $cut_vertices = set( map { $vertices_by_name{$_} } map { @$_ } $graph->bridges );
 
-    # Second pass is needed to build on top of these trivial groups
+    # Next pass is needed to build on top of the detected trivial groups
     for my $atom ($graph->vertices) {
         next if $graph->groups( $atom );
 
