@@ -1,4 +1,7 @@
-#!/usr/bin/perl
+package ChemOnomatopist::Grammar;
+
+# ABSTRACT: Grammar for chemical graphs
+# VERSION
 
 use strict;
 use warnings;
@@ -133,3 +136,5 @@ while( <> ) {
     my $writer = Graph::Writer::Dot->new;
     $writer->write_graph( $graph, '/dev/stdout' );
 }
+
+1;
