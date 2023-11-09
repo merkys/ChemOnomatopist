@@ -624,6 +624,8 @@ sub find_groups
         $graph->add_group( $compound );
     }
 
+    return parse_molecular_graph( $graph );
+
     # Detecting guanidine and hydrazine
     for my $atom ($graph->vertices) {
         next if $graph->groups( $atom );

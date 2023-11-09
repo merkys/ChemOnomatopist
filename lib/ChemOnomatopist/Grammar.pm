@@ -29,12 +29,12 @@ sub is_N { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'N' }
 sub is_O { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'O' }
 sub is_S { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
-sub is_CH2 { return is_C( @_ ) && $_[1]->{hcount} == 2 }
-sub is_CH3 { return is_C( @_ ) && $_[1]->{hcount} == 3 }
-sub is_NH2 { return is_N( @_ ) && $_[1]->{hcount} == 2 }
-sub is_NH3 { return is_N( @_ ) && $_[1]->{hcount} == 3 }
-sub is_OH  { return is_O( @_ ) && $_[1]->{hcount} == 1 }
-sub is_SH  { return is_S( @_ ) && $_[1]->{hcount} == 1 }
+sub is_CH2 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
+sub is_CH3 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
+sub is_NH2 { return is_N( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
+sub is_NH3 { return is_N( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
+sub is_OH  { return is_O( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub is_SH  { return is_S( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 
 sub is_any_chain { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
 
@@ -117,10 +117,19 @@ my @rules = (
     [ \&is_C, \&is_cyanide, \&is_cycle, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'carbonitrile' }, @_[1..2] ) } ],
 );
 
+# Conservative rules
+my @rules_conservative = (
+    # O-based groups
+    [ \&is_OH, \&anything, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
+    [ \&is_O,  \&anything, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
+);
+
 sub parse_molecular_graph($)
 {
     my( $graph ) = @_;
-    return parse_graph( $graph, @rules );
+    return parse_graph( $graph, @rules_conservative );
 }
 
 1;
