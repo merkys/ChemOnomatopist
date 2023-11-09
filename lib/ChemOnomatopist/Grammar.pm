@@ -9,6 +9,7 @@ use warnings;
 use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Ether;
+use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Util::Graph qw(
@@ -46,7 +47,7 @@ sub is_headless_C_chain { return exists $_[1]->{type} && $_[1]->{type} eq 'headl
 sub is_hydroxy { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
 sub is_ketone  { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
 
-sub is_cyano { return exists $_[1]->{type} && $_[1]->{type} eq 'cyano' }
+sub is_cyanide { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
 
 sub is_cycle   { return blessed $_[1] && $_->isa( ChemOnomatopist::Chain::Circular:: ) }
 sub is_benzene { return is_cycle( @_ ) && $_[1]->is_benzene }
@@ -103,7 +104,9 @@ my @rules = (
 
     [ \&is_C, \&is_NH2, \&is_ketone, \&anything, NO_MORE_VERTICES, { type => 'amide' } ],
 
-    [ \&is_N, \&is_C, NO_MORE_VERTICES, { type => 'cyano' } ],
+    [ \&is_N, \&is_C, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
+
     [ \&is_NH2, \&is_NH2, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'hydrazine' }, @_[1..2] ) } ],
 
     [ \&is_SH, { type => 'sulfanyl' } ],
@@ -111,7 +114,7 @@ my @rules = (
 
     [ \&is_benzene, \&is_hydroxy, sub { graph_replace( $_[0], { type => 'phenol' }, @_[1..2] ) } ],
 
-    [ \&is_C, \&is_cyano, \&is_cycle, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'carbonitrile' }, @_[1..2] ) } ],
+    [ \&is_C, \&is_cyanide, \&is_cycle, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'carbonitrile' }, @_[1..2] ) } ],
 );
 
 sub parse_molecular_graph($)
