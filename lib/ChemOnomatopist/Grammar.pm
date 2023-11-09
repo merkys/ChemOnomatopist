@@ -27,6 +27,10 @@ sub is_N { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'N' }
 sub is_O { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'O' }
 sub is_S { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
+sub is_CH2 { return is_C( @_ ) && $_[1]->{hcount} == 2 }
+sub is_CH3 { return is_C( @_ ) && $_[1]->{hcount} == 3 }
+sub is_OH  { return is_O( @_ ) && $_[1]->{hcount} == 1 }
+
 sub is_any_chain { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
 
 sub is_chain { return blessed $_[1] && blessed $_[1] eq ChemOnomatopist::Chain:: }
@@ -48,27 +52,27 @@ sub anything { return 1 }
 
 my @rules = (
     # O-based groups
-    [ \&is_O, \&is_H, \&anything, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'hydroxy' }, @_[1..2] ) } ],
-    [ \&is_O, \&anything, NO_MORE_VERTICES, { type => 'ketone' } ],
-    [ \&is_O, \&is_chain, \&anything, NO_MORE_VERTICES,
+    [ \&is_OH, \&anything, NO_MORE_VERTICES, { type => 'hydroxy' } ],
+    [ \&is_O,  \&anything, NO_MORE_VERTICES, { type => 'ketone' }  ],
+    [ \&is_O,  \&is_chain, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Chain::Ether->new( $_[0], undef, $_[2]->vertices, $_[1] ), @_[1..2] ) } ],
 
     # Rules to detect alkanes of any length
-    [ \&is_C, ( \&is_H ) x 3, \&anything, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, $_[1] ), @_[1..4] ) } ],
-    [ \&is_C, ( \&is_H ) x 2, \&anything, NO_MORE_VERTICES, # Terminal alkene
-      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, $_[1] ), @_[1..3] ) } ],
-    [ \&is_C, \&is_any_chain, ( \&is_H ) x 2, # Add carbon to any chain
-      sub { graph_replace( $_[0], $_[2], $_[1], @_[3..4] ); push @{$_[2]->{vertices}}, $_[1] } ],
-    [ \&is_C, ( \&is_chain ) x 2, ( \&is_H ) x 2, NO_MORE_VERTICES, # CHECKME: Why do we need this?
-      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[2]->vertices ), $_[1], $_[3]->vertices ), @_[1..5] ) } ],
+    [ \&is_CH3, \&anything, NO_MORE_VERTICES,
+      sub { ChemOnomatopist::Chain->new( $_[0], undef, $_[1] ) } ],
+    [ \&is_CH2, \&anything, NO_MORE_VERTICES, # Terminal alkene
+      sub { ChemOnomatopist::Chain->new( $_[0], undef, $_[1] ) } ],
+    [ \&is_CH2, \&is_any_chain, # Add carbon to any chain
+      sub { graph_replace( $_[0], $_[2], $_[1] ); push @{$_[2]->{vertices}}, $_[1] } ],
+    [ \&is_CH2, ( \&is_chain ) x 2, NO_MORE_VERTICES, # CHECKME: Why do we need this?
+      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[2]->vertices ), $_[1], $_[3]->vertices ), @_[1..3] ) } ],
     [ ( \&is_chain ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[1]->vertices ), $_[2]->vertices ), @_[1..2] ) } ],
     [ \&is_chain, \&is_headless_C_chain,
       sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[1]->vertices ), $_[2]->vertices ), @_[1..2] ) } ],
 
     # Handling of headless chains
-    [ \&is_C, ( \&is_H ) x 2, ( \&anything ) x 2, NO_MORE_VERTICES, # Start a headless C chain
+    [ \&is_CH2, ( \&anything ) x 2, NO_MORE_VERTICES, # Start a headless C chain
       sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, $_[1] ), @_[1..3] ) } ],
     [ \&is_headless_C_chain, \&is_headless_C_chain, # Join two headless C chains
       sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[1]->vertices ), $_[2]->vertices ), @_[1..2] ) } ],
