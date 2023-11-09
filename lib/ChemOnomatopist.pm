@@ -25,6 +25,7 @@ use ChemOnomatopist::Chain::Porphyrin;
 use ChemOnomatopist::Chain::Xanthene;
 use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Grammar qw( parse_molecular_graph );
 use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;

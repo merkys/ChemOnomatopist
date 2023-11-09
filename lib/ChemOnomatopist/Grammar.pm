@@ -16,6 +16,11 @@ use Graph::Grammar;
 use List::Util qw( sum );
 use Scalar::Util qw( blessed );
 
+use parent Exporter::;
+our @EXPORT_OK = qw(
+    parse_molecular_graph
+);
+
 sub is_C { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'C' }
 sub is_H { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'H' }
 sub is_N { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'N' }
