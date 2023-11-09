@@ -36,6 +36,7 @@ sub is_S { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
 sub is_CH2 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub is_CH3 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
+sub is_NH1 { return is_N( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub is_NH2 { return is_N( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub is_NH3 { return is_N( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 sub is_OH  { return is_O( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
@@ -138,7 +139,13 @@ my @rules_conservative = (
     # N-based groups
     [ \&is_N, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
-    [ \&is_N, ( \&anything ) x 3, NO_MORE_VERTICES,
+    [ \&is_N,   ( \&anything ) x 3, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
+    [ \&is_NH1, ( \&anything ) x 2, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
+    [ \&is_NH2,   \&anything, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
+    [ \&is_NH3, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
 );
 
