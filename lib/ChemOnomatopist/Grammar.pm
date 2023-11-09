@@ -56,10 +56,6 @@ sub anything { return 1 }
 
 my @rules = (
     # O-based groups
-    [ \&is_OH, \&anything, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
-    [ \&is_O,  \&anything, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
     [ \&is_O,  \&is_chain, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Chain::Ether->new( $_[0], undef, $_[2]->vertices, $_[1] ), @_[1..2] ) } ],
 
@@ -104,9 +100,6 @@ my @rules = (
 
     [ \&is_C, \&is_NH2, \&is_ketone, \&anything, NO_MORE_VERTICES, { type => 'amide' } ],
 
-    [ \&is_N, \&is_C, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
-
     [ \&is_NH2, \&is_NH2, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'hydrazine' }, @_[1..2] ) } ],
 
     [ \&is_SH, { type => 'sulfanyl' } ],
@@ -124,6 +117,10 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
     [ \&is_O,  \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
+
+    # N-based groups
+    [ \&is_N, \&is_C, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
 );
 
 sub parse_molecular_graph($)
