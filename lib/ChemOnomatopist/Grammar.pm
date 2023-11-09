@@ -9,6 +9,8 @@ use warnings;
 use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Ether;
+use ChemOnomatopist::Group::Amide;
+use ChemOnomatopist::Group::Amine;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Hydroxy;
@@ -47,6 +49,8 @@ sub is_C_chain { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) 
 sub is_C_chain_carboxyl { return exists $_[1]->{type} && $_[1]->{type} eq 'C_chain_carboxyl' }
 sub is_carboxyl { return exists $_[1]->{type} && $_[1]->{type} eq 'carboxyl' }
 sub is_headless_C_chain { return exists $_[1]->{type} && $_[1]->{type} eq 'headless_C_chain' }
+
+sub is_amine   { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
 sub is_hydroxy { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
 sub is_ketone  { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
 
@@ -119,6 +123,10 @@ my @rules_conservative = (
     [ \&is_C, \&is_hydroxy, \&is_ketone, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[4] ), @_[1..3] ) } ],
 
+    # Amide
+    [ \&is_C, \&is_amine, \&is_ketone,
+      sub { $_[0]->delete_vertices( $_[3] ); graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1] ), $_[2] ) } ],
+
     # O-based groups
     [ \&is_OH, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
@@ -130,6 +138,8 @@ my @rules_conservative = (
     # N-based groups
     [ \&is_N, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
+    [ \&is_N, ( \&anything ) x 3, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
 );
 
 sub parse_molecular_graph($)
