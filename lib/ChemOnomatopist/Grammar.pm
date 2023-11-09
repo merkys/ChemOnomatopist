@@ -70,7 +70,7 @@ sub anything { return 1 }
 
 my @rules = (
     # O-based groups
-    [ \&is_O,  \&is_chain, \&anything, NO_MORE_VERTICES,
+    [ \&is_O, \&is_chain, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Chain::Ether->new( $_[0], undef, $_[2]->vertices, $_[1] ), @_[1..2] ) } ],
 
     # Rules to detect alkanes of any length
@@ -94,8 +94,6 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[1]->vertices ), $_[2]->vertices ), @_[1..2] ) } ],
 
     # Carboxyl group and chains it is attached to
-    [ \&is_C, \&is_ketone, \&is_hydroxy, \&anything, NO_MORE_VERTICES, # Carboxyl group
-      sub { graph_replace( $_[0], { type => 'carboxyl' }, @_[1..3] ) } ],
     [ \&is_carboxyl, \&is_headless_C_chain, NO_MORE_VERTICES,
       sub { $_[2]->{type} = 'C_chain_carboxyl'; $_[2]->{length}++; $_[0]->delete_vertex( $_[1] ) } ],
     [ \&is_carboxyl, \&is_benzene, NO_MORE_VERTICES,
@@ -111,8 +109,6 @@ my @rules = (
 
     [ \&is_C, \&is_benzene, \&is_ketone, \&is_N, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], { type => 'benzamide' }, @_[1..4] ) } ],
-
-    [ \&is_C, \&is_NH2, \&is_ketone, \&anything, NO_MORE_VERTICES, { type => 'amide' } ],
 
     [ \&is_NH2, \&is_NH2, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'hydrazine' }, @_[1..2] ) } ],
 
