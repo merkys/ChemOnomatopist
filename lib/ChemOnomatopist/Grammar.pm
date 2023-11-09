@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Chain;
+use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Ketone;
@@ -49,7 +50,7 @@ sub is_ketone  { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ket
 sub is_cyano { return exists $_[1]->{type} && $_[1]->{type} eq 'cyano' }
 
 sub is_cycle { return exists $_[1]->{type} && $_[1]->{type} eq 'cycle' }
-sub is_benzene { return exists $_[1]->{type} && $_[1]->{type} eq 'benzene' }
+sub is_benzene { return blessed $_[1] && $_->isa( ChemOnomatopist::Chain::Circular:: ) && $_[1]->is_benzene }
 
 sub anything { return 1 }
 
