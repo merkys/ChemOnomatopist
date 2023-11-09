@@ -15,6 +15,8 @@ use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Ketone;
+use ChemOnomatopist::Group::SulfinicAcid;
+use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Util::Graph qw(
     graph_replace
 );
@@ -147,6 +149,12 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
     [ \&is_NH3, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
+
+    # S-based groups
+    [ \&is_S, \&is_O, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfinicAcid->new( $_[4] ), @_[1..3] ) } ],
+    [ \&is_S, ( \&is_O ) x 2, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfonicAcid->new( $_[5] ), @_[1..4] ) } ],
 );
 
 sub parse_molecular_graph($)
