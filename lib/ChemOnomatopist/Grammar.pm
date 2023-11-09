@@ -48,8 +48,8 @@ sub is_ketone  { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ket
 
 sub is_cyano { return exists $_[1]->{type} && $_[1]->{type} eq 'cyano' }
 
-sub is_cycle { return exists $_[1]->{type} && $_[1]->{type} eq 'cycle' }
-sub is_benzene { return blessed $_[1] && $_->isa( ChemOnomatopist::Chain::Circular:: ) && $_[1]->is_benzene }
+sub is_cycle   { return blessed $_[1] && $_->isa( ChemOnomatopist::Chain::Circular:: ) }
+sub is_benzene { return is_cycle( @_ ) && $_[1]->is_benzene }
 
 sub anything { return 1 }
 
