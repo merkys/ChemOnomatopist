@@ -14,7 +14,6 @@ use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Util::Graph qw(
     graph_replace
 );
-use Chemistry::OpenSMILES::Parser;
 use Graph::Grammar;
 use List::Util qw( sum );
 use Scalar::Util qw( blessed );
