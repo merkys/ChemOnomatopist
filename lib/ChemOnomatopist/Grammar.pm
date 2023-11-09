@@ -24,10 +24,12 @@ our @EXPORT_OK = qw(
     parse_molecular_graph
 );
 
-sub is_C { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'C' }
-sub is_N { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'N' }
-sub is_O { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'O' }
-sub is_S { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'S' }
+sub is_nongroup_atom { return !blessed $_[1] && !$_[0]->groups( $_[1] ) && exists $_[1]->{symbol} }
+
+sub is_C { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'C' }
+sub is_N { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'N' }
+sub is_O { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'O' }
+sub is_S { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
 sub is_CH2 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub is_CH3 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
@@ -115,8 +117,10 @@ my @rules_conservative = (
     # O-based groups
     [ \&is_OH, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
-    [ \&is_O,  \&anything, NO_MORE_VERTICES,
+    [ \&is_O, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
+    [ \&is_O, ( \&is_C ) x 2, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Ether->new, $_[1] ) } ],
 
     # N-based groups
     [ \&is_N, \&is_C, NO_MORE_VERTICES,
