@@ -37,7 +37,8 @@ sub is_N { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'N' }
 sub is_O { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'O' }
 sub is_S { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
-sub is_O_S_Se_Te { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(O|S|Se|Te)$/ }
+sub is_O_S_Se_Te     { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(O|S|Se|Te)$/ }
+sub is_C_N_O_S_Se_Te { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(C|N|O|S|Se|Te)$/ }
 
 sub is_CH2 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub is_CH3 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
@@ -140,6 +141,13 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
     [ \&is_O, ( \&is_C ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ether->new, $_[1] ) } ],
+
+    # Hydroxy groups and their chalcogen analogues
+    [ \&is_O_S_Se_Te, \&is_C_N_O_S_Se_Te, NO_MORE_VERTICES, # FIXME: Check for a hydrogen
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
+    # Ketones and their chalcogen analogues
+    [ \&is_O_S_Se_Te, \&is_C, NO_MORE_VERTICES, # FIXME: Check for double bond
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
 
     # N-based groups
     [ \&is_N, \&is_C, NO_MORE_VERTICES,
