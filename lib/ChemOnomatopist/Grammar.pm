@@ -9,6 +9,7 @@ use warnings;
 use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Ether;
+use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Ketone;
@@ -114,6 +115,10 @@ my @rules = (
 
 # Conservative rules
 my @rules_conservative = (
+    # Carboxylic acid
+    [ \&is_C, \&is_hydroxy, \&is_ketone, \&anything, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[4] ), @_[1..3] ) } ],
+
     # O-based groups
     [ \&is_OH, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
