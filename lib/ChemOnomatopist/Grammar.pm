@@ -8,6 +8,7 @@ use warnings;
 
 use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Ether;
+use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Util::Graph qw(
     graph_replace
 );
@@ -41,7 +42,7 @@ sub is_C_chain { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) 
 sub is_C_chain_carboxyl { return exists $_[1]->{type} && $_[1]->{type} eq 'C_chain_carboxyl' }
 sub is_carboxyl { return exists $_[1]->{type} && $_[1]->{type} eq 'carboxyl' }
 sub is_headless_C_chain { return exists $_[1]->{type} && $_[1]->{type} eq 'headless_C_chain' }
-sub is_hydroxy { return exists $_[1]->{type} && $_[1]->{type} eq 'hydroxy' }
+sub is_hydroxy { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
 sub is_ketone { return exists $_[1]->{type} && $_[1]->{type} eq 'ketone' }
 
 sub is_cyano { return exists $_[1]->{type} && $_[1]->{type} eq 'cyano' }
@@ -53,8 +54,9 @@ sub anything { return 1 }
 
 my @rules = (
     # O-based groups
-    [ \&is_OH, \&anything, NO_MORE_VERTICES, { type => 'hydroxy' } ],
-    [ \&is_O,  \&anything, NO_MORE_VERTICES, { type => 'ketone' }  ],
+    [ \&is_OH, \&anything, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
+    [ \&is_O,  \&anything, NO_MORE_VERTICES, { type => 'ketone' } ],
     [ \&is_O,  \&is_chain, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Chain::Ether->new( $_[0], undef, $_[2]->vertices, $_[1] ), @_[1..2] ) } ],
 
