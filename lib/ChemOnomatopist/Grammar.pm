@@ -22,7 +22,6 @@ our @EXPORT_OK = qw(
 );
 
 sub is_C { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'C' }
-sub is_H { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'H' }
 sub is_N { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'N' }
 sub is_O { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'O' }
 sub is_S { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'S' }
