@@ -29,7 +29,10 @@ sub is_S { return exists $_[1]->{symbol} && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
 sub is_CH2 { return is_C( @_ ) && $_[1]->{hcount} == 2 }
 sub is_CH3 { return is_C( @_ ) && $_[1]->{hcount} == 3 }
+sub is_NH2 { return is_N( @_ ) && $_[1]->{hcount} == 2 }
+sub is_NH3 { return is_N( @_ ) && $_[1]->{hcount} == 3 }
 sub is_OH  { return is_O( @_ ) && $_[1]->{hcount} == 1 }
+sub is_SH  { return is_S( @_ ) && $_[1]->{hcount} == 1 }
 
 sub is_any_chain { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
 
@@ -42,7 +45,6 @@ sub is_headless_C_chain { return exists $_[1]->{type} && $_[1]->{type} eq 'headl
 sub is_hydroxy { return exists $_[1]->{type} && $_[1]->{type} eq 'hydroxy' }
 sub is_ketone { return exists $_[1]->{type} && $_[1]->{type} eq 'ketone' }
 
-sub is_NH2 { return exists $_[1]->{type} && $_[1]->{type} eq 'NH2' }
 sub is_cyano { return exists $_[1]->{type} && $_[1]->{type} eq 'cyano' }
 
 sub is_cycle { return exists $_[1]->{type} && $_[1]->{type} eq 'cycle' }
@@ -96,15 +98,12 @@ my @rules = (
     [ \&is_C, \&is_benzene, \&is_ketone, \&is_N, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], { type => 'benzamide' }, @_[1..4] ) } ],
 
-    [ \&is_N, ( \&is_H ) x 3, { type => 'ammonia' } ],
-    [ \&is_N, ( \&is_H ) x 2, \&anything, sub { graph_replace( $_[0], { type => 'NH2' }, @_[1..3] ) } ],
-
     [ \&is_C, \&is_NH2, \&is_ketone, \&anything, NO_MORE_VERTICES, { type => 'amide' } ],
 
     [ \&is_N, \&is_C, NO_MORE_VERTICES, { type => 'cyano' } ],
     [ \&is_NH2, \&is_NH2, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'hydrazine' }, @_[1..2] ) } ],
 
-    [ \&is_S, \&is_H, sub { graph_replace( $_[0], { type => 'sulfanyl' }, @_[1..2] ) } ],
+    [ \&is_SH, { type => 'sulfanyl' } ],
     [ \&is_S, \&is_ketone, ( \&anything ) x 2, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'sulfoxide' }, @_[1..2] ) } ],
 
     [ \&is_benzene, \&is_hydroxy, sub { graph_replace( $_[0], { type => 'phenol' }, @_[1..2] ) } ],
