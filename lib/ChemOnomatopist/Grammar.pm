@@ -19,6 +19,7 @@ use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::SulfonicAcid;
+use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Util::Graph qw(
     graph_replace
 );
@@ -168,6 +169,8 @@ my @rules_conservative = (
     # Sulfoxide group and its analogues
     [ \&is_S_Se_Te, \&is_ketone, ( \&anything ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfinyl->new( ChemOnomatopist::element( $_[1] ) ), @_[1..2] ) } ],
+    [ \&is_S_Se_Te, ( \&is_ketone ) x 2, ( \&anything ) x 2, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfonyl->new( ChemOnomatopist::element( $_[1] ) ), @_[1..3] ) } ],
 
     # Hydroperoxide
     [ \&is_O_S_Se_Te, \&is_hydroxy, \&is_C,
