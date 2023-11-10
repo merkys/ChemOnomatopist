@@ -9,6 +9,7 @@ use warnings;
 use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Ether;
+use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine;
 use ChemOnomatopist::Group::Carboxyl;
@@ -47,6 +48,7 @@ sub is_S_Se_Te       { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol}
 sub is_O_S_Se_Te     { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(O|S|Se|Te)$/ }
 sub is_C_N_O_S_Se_Te { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(C|N|O|S|Se|Te)$/ }
 
+sub is_CH1 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub is_CH2 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub is_CH3 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 sub is_NH1 { return is_N( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
@@ -132,6 +134,10 @@ my @rules_conservative = (
     # Carboxylic acid
     [ \&is_C, \&is_hydroxy, \&is_ketone, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[4] ), @_[1..3] ) } ],
+
+    # Aldehyde
+    [ \&is_CH1, \&is_ketone,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Aldehyde->new( $_[2] ), @_[1..2] ) } ],
 
     # Amide
     [ \&is_C, \&is_amine, \&is_ketone,
