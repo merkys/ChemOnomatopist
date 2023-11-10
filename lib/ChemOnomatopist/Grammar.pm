@@ -71,6 +71,9 @@ sub is_SH  { &is_S &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub is_Np1 { &is_N &&  exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
 sub is_On1 { &is_O &&  exists $_[1]->{charge} && $_[1]->{charge} == -1 }
 
+sub charge_plus_one  { exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
+sub charge_minus_one { exists $_[1]->{charge} && $_[1]->{charge} == -1 }
+
 sub is_any_chain { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
 
 sub is_chain { blessed $_[1] && blessed $_[1] eq ChemOnomatopist::Chain:: }
@@ -201,7 +204,7 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
     [ \&is_NH1, \&is_C_new, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
-    [ \&is_Np1, \&is_ketone, \&is_On1, \&is_C_new,
+    [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, \&is_ketone, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&is_C_new,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitro->new, @_[1..3] ) } ],
 
     # Nitroso and its analogues
