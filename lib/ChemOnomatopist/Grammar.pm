@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Chain;
+use ChemOnomatopist::Chain::Carboxamide;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Group::AcylHalide;
@@ -77,14 +78,16 @@ sub is_C_chain_carboxyl { return exists $_[1]->{type} && $_[1]->{type} eq 'C_cha
 sub is_carboxyl { return exists $_[1]->{type} && $_[1]->{type} eq 'carboxyl' }
 sub is_headless_C_chain { return exists $_[1]->{type} && $_[1]->{type} eq 'headless_C_chain' }
 
+sub is_amide   { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide:: ) }
 sub is_amine   { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
 sub is_hydroxy { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
 sub is_ketone  { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
 
 sub is_cyanide { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
 
-sub is_cycle   { return blessed $_[1] && $_->isa( ChemOnomatopist::Chain::Circular:: ) }
-sub is_benzene { return is_cycle( @_ ) && $_[1]->is_benzene }
+sub is_circular  { return blessed $_[1] && $_->isa( ChemOnomatopist::Chain::Circular:: ) }
+sub is_benzene   { return is_monocycle( @_ ) && $_[1]->is_benzene }
+sub is_monocycle { return is_circular( @_ ) && $_->isa( ChemOnomatopist::Chain::Monocycle:: ) }
 
 sub anything { return 1 }
 
@@ -201,10 +204,10 @@ my @rules_conservative = (
 
     # Nitroso and its analogues
     [ \&is_Br_Cl_F_I_N, \&is_ketone, \&is_C, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitroso->new( element( $_[1] ) ), @_[1..2] ) } ],
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitroso->new( ChemOnomatopist::element( $_[1] ) ), @_[1..2] ) } ],
     # XO3
     [ \&is_Br_Cl_F_I, ( \&is_ketone ) x 3, \&is_C, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::XO3->new( element( $_[1] ) ), @_[1..4] ) } ],
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::XO3->new( ChemOnomatopist::element( $_[1] ) ), @_[1..4] ) } ],
 
     # S-based groups
     [ \&is_S, \&is_O, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
@@ -221,6 +224,10 @@ my @rules_conservative = (
     # Hydroperoxide
     [ \&is_O_S_Se_Te, \&is_hydroxy, \&is_C,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroperoxide->new( $_[1], $_[2] ), @_[1..2] ) } ],
+
+    # Detecting amides attached to cyclic chains
+    [ sub { return is_C( @_ ) && 1 == grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) && $_->{parent} == $_[1] } $_[0]->neighbours( $_[1] ) }, \&is_amide, \&is_monocycle, NO_MORE_VERTICES,
+      sub { $_[0]->delete_group( $_[3] ); $_[0]->add_group( ChemOnomatopist::Chain::Carboxamide->new( $_[0], $_[2], $_[1], $_[3] ) ) } ],
 );
 
 sub parse_molecular_graph($)
