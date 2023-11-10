@@ -28,8 +28,11 @@ use ChemOnomatopist::Group::XO3;
 use ChemOnomatopist::Util::Graph qw(
     graph_replace
 );
+use Chemistry::OpenSMILES qw(
+    is_double_bond
+);
 use Graph::Grammar;
-use List::Util qw( sum );
+use List::Util qw( all sum );
 use Scalar::Util qw( blessed );
 
 use parent Exporter::;
@@ -152,7 +155,7 @@ my @rules_conservative = (
     # O-based groups
     [ \&is_OH, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
-    [ \&is_O, \&anything, NO_MORE_VERTICES,
+    [ sub { return is_O( @_ ) && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
     [ \&is_O, ( \&is_C ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ether->new, $_[1] ) } ],
