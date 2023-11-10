@@ -32,7 +32,7 @@ use Chemistry::OpenSMILES qw(
     is_double_bond
 );
 use Graph::Grammar;
-use List::Util qw( all sum );
+use List::Util qw( all first sum );
 use Scalar::Util qw( blessed );
 
 use parent Exporter::;
@@ -151,6 +151,14 @@ my @rules_conservative = (
     # Amide
     [ \&is_C, \&is_amine, \&is_ketone,
       sub { $_[0]->delete_vertices( $_[3] ); graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1] ), $_[2] ) } ],
+
+    # Ester
+    [ \&is_C, \&is_ketone, \&is_O, \&is_C, NO_MORE_VERTICES,
+      sub {
+            my $hydroxylic = first { $_ != $_[1] } $_[0]->neighbours( $_[3] );
+            my $ester = ChemOnomatopist::Group::Ester->new( $hydroxylic, $_[4] );
+            graph_replace( $_[0], $ester, @_[1..3] );
+          } ],
 
     # O-based groups
     [ \&is_OH, \&anything, NO_MORE_VERTICES,
