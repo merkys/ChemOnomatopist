@@ -16,10 +16,12 @@ use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Ketone;
+use ChemOnomatopist::Group::Nitroso;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Group::Sulfonyl;
+use ChemOnomatopist::Group::XO3;
 use ChemOnomatopist::Util::Graph qw(
     graph_replace
 );
@@ -39,6 +41,8 @@ sub is_N { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'N' }
 sub is_O { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'O' }
 sub is_S { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
+sub is_Br_Cl_F_I     { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I)$/ }
+sub is_Br_Cl_F_I_N   { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I|N)$/ }
 sub is_S_Se_Te       { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(S|Se|Te)$/ }
 sub is_O_S_Se_Te     { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(O|S|Se|Te)$/ }
 sub is_C_N_O_S_Se_Te { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(C|N|O|S|Se|Te)$/ }
@@ -159,6 +163,13 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
     [ \&is_NH3, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
+
+    # Nitroso and its analogues
+    [ \&is_Br_Cl_F_I_N, \&is_ketone, \&is_C, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitroso->new( element( $_[1] ) ), @_[1..2] ) } ],
+    # XO3
+    [ \&is_Br_Cl_F_I, ( \&is_ketone ) x 3, \&is_C, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::XO3->new( element( $_[1] ) ), @_[1..4] ) } ],
 
     # S-based groups
     [ \&is_S, \&is_O, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
