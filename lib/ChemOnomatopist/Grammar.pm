@@ -42,54 +42,54 @@ our @EXPORT_OK = qw(
     parse_molecular_graph
 );
 
-sub is_nongroup_atom { return !blessed $_[1] && !$_[0]->groups( $_[1] ) && exists $_[1]->{symbol} }
+sub is_nongroup_atom { !blessed $_[1] && !$_[0]->groups( $_[1] ) && exists $_[1]->{symbol} }
 
-sub is_C { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'C' }
-sub is_N { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'N' }
-sub is_O { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'O' }
-sub is_S { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'S' }
+sub is_C { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'C' }
+sub is_N { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'N' }
+sub is_O { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'O' }
+sub is_S { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
-sub is_Br_Cl_F_I     { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I)$/ }
-sub is_Br_Cl_F_I_N   { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I|N)$/ }
-sub is_B_Cl_F_I      { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(B|Cl|F|I)$/ }
-sub is_S_Se_Te       { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(S|Se|Te)$/ }
-sub is_O_S_Se_Te     { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(O|S|Se|Te)$/ }
-sub is_C_N_O_S_Se_Te { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(C|N|O|S|Se|Te)$/ }
+sub is_Br_Cl_F_I     { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I)$/ }
+sub is_Br_Cl_F_I_N   { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I|N)$/ }
+sub is_B_Cl_F_I      { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(B|Cl|F|I)$/ }
+sub is_S_Se_Te       { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(S|Se|Te)$/ }
+sub is_O_S_Se_Te     { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(O|S|Se|Te)$/ }
+sub is_C_N_O_S_Se_Te { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(C|N|O|S|Se|Te)$/ }
 
-sub is_CH1 { return &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
-sub is_CH2 { return &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
-sub is_CH3 { return &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
-sub is_NH0 { return &is_N && !$_[1]->{hcount} }
-sub is_NH1 { return &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
-sub is_NH2 { return &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
-sub is_NH3 { return &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
-sub is_OH  { return &is_O &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
-sub is_SH  { return &is_S &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub is_CH1 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub is_CH2 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
+sub is_CH3 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
+sub is_NH0 { &is_N && !$_[1]->{hcount} }
+sub is_NH1 { &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub is_NH2 { &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
+sub is_NH3 { &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
+sub is_OH  { &is_O &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub is_SH  { &is_S &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 
-sub is_Np1 { return &is_N &&  exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
-sub is_On1 { return &is_O &&  exists $_[1]->{charge} && $_[1]->{charge} == -1 }
+sub is_Np1 { &is_N &&  exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
+sub is_On1 { &is_O &&  exists $_[1]->{charge} && $_[1]->{charge} == -1 }
 
-sub is_any_chain { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
+sub is_any_chain { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
 
-sub is_chain { return blessed $_[1] && blessed $_[1] eq ChemOnomatopist::Chain:: }
+sub is_chain { blessed $_[1] && blessed $_[1] eq ChemOnomatopist::Chain:: }
 
-sub is_C_chain { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
-sub is_C_chain_carboxyl { return exists $_[1]->{type} && $_[1]->{type} eq 'C_chain_carboxyl' }
-sub is_carboxyl { return exists $_[1]->{type} && $_[1]->{type} eq 'carboxyl' }
-sub is_headless_C_chain { return exists $_[1]->{type} && $_[1]->{type} eq 'headless_C_chain' }
+sub is_C_chain { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
+sub is_C_chain_carboxyl { exists $_[1]->{type} && $_[1]->{type} eq 'C_chain_carboxyl' }
+sub is_carboxyl { exists $_[1]->{type} && $_[1]->{type} eq 'carboxyl' }
+sub is_headless_C_chain { exists $_[1]->{type} && $_[1]->{type} eq 'headless_C_chain' }
 
-sub is_amide   { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide:: ) }
-sub is_amine   { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
-sub is_hydroxy { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
-sub is_ketone  { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
+sub is_amide   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide:: ) }
+sub is_amine   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
+sub is_hydroxy { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
+sub is_ketone  { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
 
-sub is_cyanide { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
+sub is_cyanide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
 
-sub is_circular  { return blessed $_[1] && $_->isa( ChemOnomatopist::Chain::Circular:: ) }
-sub is_benzene   { return &is_monocycle && $_[1]->is_benzene }
-sub is_monocycle { return &is_circular && $_->isa( ChemOnomatopist::Chain::Monocycle:: ) }
+sub is_circular  { blessed $_[1] && $_->isa( ChemOnomatopist::Chain::Circular:: ) }
+sub is_benzene   { &is_monocycle && $_[1]->is_benzene }
+sub is_monocycle { &is_circular && $_->isa( ChemOnomatopist::Chain::Monocycle:: ) }
 
-sub anything { return 1 }
+sub anything { 1 }
 
 my @rules = (
     # O-based groups
