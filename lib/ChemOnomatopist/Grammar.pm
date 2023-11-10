@@ -16,6 +16,7 @@ use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
+use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Nitroso;
 use ChemOnomatopist::Group::SulfinicAcid;
@@ -48,14 +49,15 @@ sub is_S_Se_Te       { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol}
 sub is_O_S_Se_Te     { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(O|S|Se|Te)$/ }
 sub is_C_N_O_S_Se_Te { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(C|N|O|S|Se|Te)$/ }
 
-sub is_CH1 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
-sub is_CH2 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
-sub is_CH3 { return is_C( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
-sub is_NH1 { return is_N( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
-sub is_NH2 { return is_N( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
-sub is_NH3 { return is_N( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
-sub is_OH  { return is_O( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
-sub is_SH  { return is_S( @_ ) && exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub is_CH1 { return is_C( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub is_CH2 { return is_C( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
+sub is_CH3 { return is_C( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
+sub is_NH0 { return is_N( @_ ) && !$_[1]->{hcount} }
+sub is_NH1 { return is_N( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub is_NH2 { return is_N( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
+sub is_NH3 { return is_N( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
+sub is_OH  { return is_O( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub is_SH  { return is_S( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 
 sub is_any_chain { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
 
@@ -169,6 +171,10 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
     [ \&is_NH3, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
+    [ \&is_NH0, \&is_C, \&anything, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
+    [ \&is_NH1, \&is_C, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
 
     # Nitroso and its analogues
     [ \&is_Br_Cl_F_I_N, \&is_ketone, \&is_C, NO_MORE_VERTICES,
