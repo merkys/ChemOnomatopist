@@ -54,7 +54,7 @@ sub is_Br_Cl_F_I_N   { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(Br|
 sub is_B_Cl_F_I      { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(B|Cl|F|I)$/ }
 sub is_S_Se_Te       { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(S|Se|Te)$/ }
 sub is_O_S_Se_Te     { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(O|S|Se|Te)$/ }
-sub is_C_N_O_S_Se_Te { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(C|N|O|S|Se|Te)$/ }
+sub is_C_N_O_S_Se_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(C|N|O|S|Se|Te)$/ }
 
 sub is_CH1 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub is_CH2 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
@@ -172,7 +172,7 @@ my @rules_conservative = (
     # O-based groups
     [ \&is_OH, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
-    [ sub { return is_O( @_ ) && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&anything, NO_MORE_VERTICES,
+    [ sub { &is_O && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
     [ \&is_O, ( \&is_C ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ether->new, $_[1] ) } ],
