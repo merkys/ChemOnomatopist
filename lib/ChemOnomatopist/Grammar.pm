@@ -17,6 +17,7 @@ use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::SulfinicAcid;
+use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Util::Graph qw(
     graph_replace
@@ -37,6 +38,7 @@ sub is_N { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'N' }
 sub is_O { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'O' }
 sub is_S { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
+sub is_S_Se_Te       { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(S|Se|Te)$/ }
 sub is_O_S_Se_Te     { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(O|S|Se|Te)$/ }
 sub is_C_N_O_S_Se_Te { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(C|N|O|S|Se|Te)$/ }
 
@@ -162,6 +164,10 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfinicAcid->new( $_[4] ), @_[1..3] ) } ],
     [ \&is_S, ( \&is_O ) x 2, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfonicAcid->new( $_[5] ), @_[1..4] ) } ],
+
+    # Sulfoxide group and its analogues
+    [ \&is_S_Se_Te, \&is_ketone, ( \&anything ) x 2, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfinyl->new( ChemOnomatopist::element( $_[1] ) ), @_[1..2] ) } ],
 
     # Hydroperoxide
     [ \&is_O_S_Se_Te, \&is_hydroxy, \&is_C,
