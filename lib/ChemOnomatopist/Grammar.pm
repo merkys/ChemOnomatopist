@@ -18,6 +18,7 @@ use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Ketone;
+use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::Sulfinyl;
@@ -58,6 +59,9 @@ sub is_NH2 { return is_N( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 
 sub is_NH3 { return is_N( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 sub is_OH  { return is_O( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub is_SH  { return is_S( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+
+sub is_Np1 { return is_N( @_ ) &&  exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
+sub is_On1 { return is_O( @_ ) &&  exists $_[1]->{charge} && $_[1]->{charge} == -1 }
 
 sub is_any_chain { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
 
@@ -175,6 +179,8 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
     [ \&is_NH1, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
+    [ \&is_Np1, \&is_ketone, \&is_On1, \&is_C,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitro->new, @_[1..3] ) } ],
 
     # Nitroso and its analogues
     [ \&is_Br_Cl_F_I_N, \&is_ketone, \&is_C, NO_MORE_VERTICES,
