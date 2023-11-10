@@ -9,6 +9,7 @@ use warnings;
 use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Ether;
+use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine;
@@ -49,6 +50,7 @@ sub is_S { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
 sub is_Br_Cl_F_I     { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I)$/ }
 sub is_Br_Cl_F_I_N   { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I|N)$/ }
+sub is_B_Cl_F_I      { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(B|Cl|F|I)$/ }
 sub is_S_Se_Te       { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(S|Se|Te)$/ }
 sub is_O_S_Se_Te     { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(O|S|Se|Te)$/ }
 sub is_C_N_O_S_Se_Te { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(C|N|O|S|Se|Te)$/ }
@@ -159,6 +161,10 @@ my @rules_conservative = (
             my $ester = ChemOnomatopist::Group::Ester->new( $hydroxylic, $_[4] );
             graph_replace( $_[0], $ester, @_[1..3] );
           } ],
+
+    # Acyl halide
+    [ \&is_C, \&is_B_Cl_F_I, \&is_ketone, \&is_C, NO_MORE_VERTICES, # FIXME: Ketone must be O
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[3] ), @_[1..3] ) } ],
 
     # O-based groups
     [ \&is_OH, \&anything, NO_MORE_VERTICES,
