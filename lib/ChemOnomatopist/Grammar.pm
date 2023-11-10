@@ -44,30 +44,30 @@ our @EXPORT_OK = qw(
 
 sub is_nongroup_atom { return !blessed $_[1] && !$_[0]->groups( $_[1] ) && exists $_[1]->{symbol} }
 
-sub is_C { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'C' }
-sub is_N { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'N' }
-sub is_O { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'O' }
-sub is_S { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) eq 'S' }
+sub is_C { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'C' }
+sub is_N { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'N' }
+sub is_O { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'O' }
+sub is_S { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
-sub is_Br_Cl_F_I     { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I)$/ }
-sub is_Br_Cl_F_I_N   { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I|N)$/ }
-sub is_B_Cl_F_I      { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(B|Cl|F|I)$/ }
-sub is_S_Se_Te       { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(S|Se|Te)$/ }
-sub is_O_S_Se_Te     { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(O|S|Se|Te)$/ }
-sub is_C_N_O_S_Se_Te { return is_nongroup_atom( @_ ) && ucfirst( $_[1]->{symbol} ) =~ /^(C|N|O|S|Se|Te)$/ }
+sub is_Br_Cl_F_I     { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I)$/ }
+sub is_Br_Cl_F_I_N   { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I|N)$/ }
+sub is_B_Cl_F_I      { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(B|Cl|F|I)$/ }
+sub is_S_Se_Te       { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(S|Se|Te)$/ }
+sub is_O_S_Se_Te     { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(O|S|Se|Te)$/ }
+sub is_C_N_O_S_Se_Te { return &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(C|N|O|S|Se|Te)$/ }
 
-sub is_CH1 { return is_C( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
-sub is_CH2 { return is_C( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
-sub is_CH3 { return is_C( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
-sub is_NH0 { return is_N( @_ ) && !$_[1]->{hcount} }
-sub is_NH1 { return is_N( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
-sub is_NH2 { return is_N( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
-sub is_NH3 { return is_N( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
-sub is_OH  { return is_O( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
-sub is_SH  { return is_S( @_ ) &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub is_CH1 { return &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub is_CH2 { return &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
+sub is_CH3 { return &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
+sub is_NH0 { return &is_N && !$_[1]->{hcount} }
+sub is_NH1 { return &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub is_NH2 { return &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
+sub is_NH3 { return &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
+sub is_OH  { return &is_O &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub is_SH  { return &is_S &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 
-sub is_Np1 { return is_N( @_ ) &&  exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
-sub is_On1 { return is_O( @_ ) &&  exists $_[1]->{charge} && $_[1]->{charge} == -1 }
+sub is_Np1 { return &is_N &&  exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
+sub is_On1 { return &is_O &&  exists $_[1]->{charge} && $_[1]->{charge} == -1 }
 
 sub is_any_chain { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
 
@@ -86,8 +86,8 @@ sub is_ketone  { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ket
 sub is_cyanide { return blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
 
 sub is_circular  { return blessed $_[1] && $_->isa( ChemOnomatopist::Chain::Circular:: ) }
-sub is_benzene   { return is_monocycle( @_ ) && $_[1]->is_benzene }
-sub is_monocycle { return is_circular( @_ ) && $_->isa( ChemOnomatopist::Chain::Monocycle:: ) }
+sub is_benzene   { return &is_monocycle && $_[1]->is_benzene }
+sub is_monocycle { return &is_circular && $_->isa( ChemOnomatopist::Chain::Monocycle:: ) }
 
 sub anything { return 1 }
 
