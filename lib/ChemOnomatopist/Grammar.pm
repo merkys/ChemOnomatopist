@@ -148,7 +148,7 @@ my @rules = (
 # Conservative rules
 my @rules_conservative = (
     # Carboxylic acid
-    [ \&is_C, \&is_hydroxy, \&is_ketone, \&anything, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_C }, \&is_hydroxy, \&is_ketone, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[4] ), @_[1..3] ) } ],
 
     # Aldehyde
@@ -156,11 +156,11 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Aldehyde->new( $_[2] ), @_[1..2] ) } ],
 
     # Amide
-    [ \&is_C, \&is_amine, \&is_ketone,
+    [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_ketone,
       sub { $_[0]->delete_vertices( $_[3] ); graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1] ), $_[2] ) } ],
 
     # Ester
-    [ \&is_C, \&is_ketone, \&is_O, \&is_C, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_C }, \&is_ketone, sub { &is_nongroup_atom && &is_O }, \&is_C_new, NO_MORE_VERTICES,
       sub {
             my $hydroxylic = first { $_ != $_[1] } $_[0]->neighbours( $_[3] );
             my $ester = ChemOnomatopist::Group::Ester->new( $hydroxylic, $_[4] );
@@ -168,7 +168,7 @@ my @rules_conservative = (
           } ],
 
     # Acyl halide
-    [ \&is_C, \&is_B_Cl_F_I, \&is_ketone, \&is_C_new, NO_MORE_VERTICES, # FIXME: Ketone must be O
+    [ sub { &is_nongroup_atom && &is_C }, \&is_B_Cl_F_I, \&is_ketone, \&is_C_new, NO_MORE_VERTICES, # FIXME: Ketone must be O
       sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[3] ), @_[1..3] ) } ],
 
     # O-based groups
@@ -187,9 +187,9 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
 
     # N-based groups
-    [ \&is_NH0, \&is_C, NO_MORE_VERTICES,
+    [ \&is_NH0, sub { &is_nongroup_atom && &is_C }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
-    [ \&is_N,   ( \&anything ) x 3, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N }, ( \&anything ) x 3, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
     [ \&is_NH1, ( \&anything ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
@@ -212,9 +212,9 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::XO3->new( ChemOnomatopist::element( $_[1] ) ), @_[1..4] ) } ],
 
     # S-based groups
-    [ \&is_S, \&is_O, \&is_hydroxy, \&is_C_new, NO_MORE_VERTICES,
+    [ \&is_S, sub { &is_nongroup_atom && &is_O }, \&is_hydroxy, \&is_C_new, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfinicAcid->new( $_[4] ), @_[1..3] ) } ],
-    [ \&is_S, ( \&is_O ) x 2, \&is_hydroxy, \&is_C_new, NO_MORE_VERTICES,
+    [ \&is_S, ( sub { &is_nongroup_atom && &is_O } ) x 2, \&is_hydroxy, \&is_C_new, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfonicAcid->new( $_[5] ), @_[1..4] ) } ],
 
     # Sulfoxide group and its analogues
