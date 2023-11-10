@@ -185,7 +185,7 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
 
     # N-based groups
-    [ \&is_N, \&is_C, NO_MORE_VERTICES,
+    [ \&is_NH0, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
     [ \&is_N,   ( \&anything ) x 3, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
