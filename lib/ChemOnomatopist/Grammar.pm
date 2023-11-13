@@ -61,8 +61,6 @@ sub is_C_N_O_S_Se_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::ele
 sub is_CH1 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub is_CH2 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub is_CH3 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
-sub is_NH0 { &is_N && !$_[1]->{hcount} }
-sub is_NH1 { &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub is_NH2 { &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub is_NH3 { &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 sub is_SH  { &is_S &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
@@ -70,7 +68,8 @@ sub is_SH  { &is_S &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub charge_plus_one  { exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
 sub charge_minus_one { exists $_[1]->{charge} && $_[1]->{charge} == -1 }
 
-sub has_H1 { exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub has_H0 { !$_[1]->{hcount} }
+sub has_H1 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 
 sub is_any_chain { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
 
@@ -153,7 +152,7 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[4] ), @_[1..3] ) } ],
 
     # Aldehyde
-    [ \&is_CH1, \&is_ketone,
+    [ sub { &is_nongroup_atom && &is_C && &has_H1 }, \&is_ketone,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Aldehyde->new( $_[2] ), @_[1..2] ) } ],
 
     # Amide
@@ -188,19 +187,19 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
 
     # N-based groups
-    [ \&is_NH0, sub { &is_nongroup_atom && &is_C }, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H0 }, sub { &is_nongroup_atom && &is_C }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
     [ sub { &is_nongroup_atom && &is_N }, ( \&anything ) x 3, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
-    [ \&is_NH1, ( \&anything ) x 2, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H1 }, ( \&anything ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
     [ \&is_NH2,   \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
     [ \&is_NH3, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
-    [ \&is_NH0, \&is_C_new, \&anything, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H0 }, \&is_C_new, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
-    [ \&is_NH1, \&is_C_new, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H1 }, \&is_C_new, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, \&is_ketone, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&is_C_new,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitro->new, @_[1..3] ) } ],
