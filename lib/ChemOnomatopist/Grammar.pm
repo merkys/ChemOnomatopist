@@ -46,10 +46,10 @@ sub is_nongroup_atom { !blessed $_[1] && !$_[0]->groups( $_[1] ) && exists $_[1]
 
 sub is_C { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'C' }
 sub is_N { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'N' }
-sub is_O { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'O' }
 sub is_S { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
 sub is_C_new { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'C' }
+sub is_O { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'O' }
 
 sub is_Br_Cl_F_I     { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I)$/ }
 sub is_Br_Cl_F_I_N   { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I|N)$/ }
@@ -169,7 +169,7 @@ my @rules_conservative = (
           } ],
 
     # Acyl halide
-    [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_B_Cl_F_I }, \&is_ketone, \&is_C_new, NO_MORE_VERTICES, # FIXME: Ketone must be O
+    [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_B_Cl_F_I }, sub { &is_ketone && &is_O }, \&is_C_new, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
 
     # O-based groups
