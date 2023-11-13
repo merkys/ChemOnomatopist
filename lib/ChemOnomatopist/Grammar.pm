@@ -181,7 +181,7 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ether->new, $_[1] ) } ],
 
     # Hydroxy groups and their chalcogen analogues
-    [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, sub { &is_nongroup_atom && &is_C_N_O_S_Se_Te }, NO_MORE_VERTICES, # FIXME: Check for a hydrogen
+    [ sub { &is_nongroup_atom && &is_O_S_Se_Te && &has_H1 }, sub { &is_nongroup_atom && &is_C_N_O_S_Se_Te }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
     # Ketones and their chalcogen analogues
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&is_C, NO_MORE_VERTICES,
