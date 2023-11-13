@@ -44,11 +44,10 @@ our @EXPORT_OK = qw(
 
 sub is_nongroup_atom { !blessed $_[1] && !$_[0]->groups( $_[1] ) && exists $_[1]->{symbol} }
 
-sub is_C { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'C' }
 sub is_N { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'N' }
 sub is_S { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'S' }
 
-sub is_C_new { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'C' }
+sub is_C { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'C' }
 sub is_O { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'O' }
 
 sub is_Br_Cl_F_I     { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I)$/ }
@@ -160,7 +159,7 @@ my @rules_conservative = (
       sub { $_[0]->delete_vertices( $_[3] ); graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1] ), $_[2] ) } ],
 
     # Ester
-    [ sub { &is_nongroup_atom && &is_C }, \&is_ketone, sub { &is_nongroup_atom && &is_O }, \&is_C_new, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_C }, \&is_ketone, sub { &is_nongroup_atom && &is_O }, \&is_C, NO_MORE_VERTICES,
       sub {
             my $hydroxylic = first { $_ != $_[1] } $_[0]->neighbours( $_[3] );
             my $ester = ChemOnomatopist::Group::Ester->new( $hydroxylic, $_[4] );
@@ -168,7 +167,7 @@ my @rules_conservative = (
           } ],
 
     # Acyl halide
-    [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_B_Cl_F_I }, sub { &is_ketone && &is_O }, \&is_C_new, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_B_Cl_F_I }, sub { &is_ketone && &is_O }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
 
     # O-based groups
@@ -183,7 +182,7 @@ my @rules_conservative = (
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, sub { &is_nongroup_atom && &is_C_N_O_S_Se_Te }, NO_MORE_VERTICES, # FIXME: Check for a hydrogen
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
     # Ketones and their chalcogen analogues
-    [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, \&is_C_new, NO_MORE_VERTICES, # FIXME: Check for double bond
+    [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, \&is_C, NO_MORE_VERTICES, # FIXME: Check for double bond
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
 
     # N-based groups
@@ -197,24 +196,24 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
     [ \&is_NH3, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
-    [ sub { &is_nongroup_atom && &is_N && &has_H0 }, \&is_C_new, \&anything, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H0 }, \&is_C, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
-    [ sub { &is_nongroup_atom && &is_N && &has_H1 }, \&is_C_new, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H1 }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
-    [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, \&is_ketone, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&is_C_new,
+    [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, \&is_ketone, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&is_C,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitro->new, @_[1..3] ) } ],
 
     # Nitroso and its analogues
-    [ sub { &is_nongroup_atom && &is_Br_Cl_F_I_N }, \&is_ketone, \&is_C_new, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_Br_Cl_F_I_N }, \&is_ketone, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitroso->new( ChemOnomatopist::element( $_[1] ) ), @_[1..2] ) } ],
     # XO3
-    [ sub { &is_nongroup_atom && &is_Br_Cl_F_I }, ( \&is_ketone ) x 3, \&is_C_new, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_Br_Cl_F_I }, ( \&is_ketone ) x 3, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::XO3->new( ChemOnomatopist::element( $_[1] ) ), @_[1..4] ) } ],
 
     # S-based groups
-    [ sub { &is_nongroup_atom && &is_S }, sub { &is_nongroup_atom && &is_O }, \&is_hydroxy, \&is_C_new, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_S }, sub { &is_nongroup_atom && &is_O }, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfinicAcid->new( $_[4] ), @_[1..3] ) } ],
-    [ sub { &is_nongroup_atom && &is_S }, ( sub { &is_nongroup_atom && &is_O } ) x 2, \&is_hydroxy, \&is_C_new, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_S }, ( sub { &is_nongroup_atom && &is_O } ) x 2, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfonicAcid->new( $_[5] ), @_[1..4] ) } ],
 
     # Sulfoxide group and its analogues
@@ -224,7 +223,7 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfonyl->new( ChemOnomatopist::element( $_[1] ) ), @_[1..3] ) } ],
 
     # Hydroperoxide
-    [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, \&is_hydroxy, \&is_C_new,
+    [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, \&is_hydroxy, \&is_C,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroperoxide->new( $_[1], $_[2] ), @_[1..2] ) } ],
 
     # Detecting amides attached to cyclic chains
