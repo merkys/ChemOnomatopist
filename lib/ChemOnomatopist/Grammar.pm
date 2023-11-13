@@ -51,11 +51,11 @@ sub is_S { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'S' }
 sub is_C_new { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'C' }
 sub is_O { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'O' }
 
-sub is_Br_Cl_F_I     { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I)$/ }
-sub is_Br_Cl_F_I_N   { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(Br|Cl|F|I|N)$/ }
-sub is_B_Cl_F_I      { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(B|Cl|F|I)$/ }
-sub is_S_Se_Te       { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(S|Se|Te)$/ }
-sub is_O_S_Se_Te     { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) =~ /^(O|S|Se|Te)$/ }
+sub is_Br_Cl_F_I     { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I)$/ }
+sub is_Br_Cl_F_I_N   { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I|N)$/ }
+sub is_B_Cl_F_I      { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(B|Cl|F|I)$/ }
+sub is_S_Se_Te       { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(S|Se|Te)$/ }
+sub is_O_S_Se_Te     { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(O|S|Se|Te)$/ }
 sub is_C_N_O_S_Se_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(C|N|O|S|Se|Te)$/ }
 
 sub is_CH1 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
