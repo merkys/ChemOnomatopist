@@ -67,9 +67,6 @@ sub is_NH2 { &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub is_NH3 { &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 sub is_SH  { &is_S &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 
-sub is_Np1 { &is_N &&  exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
-sub is_On1 { &is_O &&  exists $_[1]->{charge} && $_[1]->{charge} == -1 }
-
 sub charge_plus_one  { exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
 sub charge_minus_one { exists $_[1]->{charge} && $_[1]->{charge} == -1 }
 
