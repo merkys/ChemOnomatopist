@@ -65,7 +65,6 @@ sub is_NH0 { &is_N && !$_[1]->{hcount} }
 sub is_NH1 { &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub is_NH2 { &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub is_NH3 { &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
-sub is_OH  { &is_O &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub is_SH  { &is_S &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 
 sub is_Np1 { &is_N &&  exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
@@ -73,6 +72,8 @@ sub is_On1 { &is_O &&  exists $_[1]->{charge} && $_[1]->{charge} == -1 }
 
 sub charge_plus_one  { exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
 sub charge_minus_one { exists $_[1]->{charge} && $_[1]->{charge} == -1 }
+
+sub has_H1 { exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 
 sub is_any_chain { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
 
@@ -175,7 +176,7 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
 
     # O-based groups
-    [ \&is_OH, \&anything, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_O && &has_H1 }, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_O && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
