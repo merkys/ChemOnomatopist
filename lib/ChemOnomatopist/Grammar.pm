@@ -69,6 +69,8 @@ sub charge_minus_one { exists $_[1]->{charge} && $_[1]->{charge} == -1 }
 
 sub has_H0 { !$_[1]->{hcount} }
 sub has_H1 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
+sub has_H2 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
+sub has_H3 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 
 sub is_any_chain { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
 
@@ -192,9 +194,9 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &has_H1 }, ( \&anything ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
-    [ \&is_NH2,   \&anything, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H2 }, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
-    [ \&is_NH3, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H3 }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &has_H0 }, \&is_C, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
@@ -213,7 +215,7 @@ my @rules_conservative = (
     # S-based groups
     [ sub { &is_nongroup_atom && &is_S }, sub { &is_nongroup_atom && &is_O }, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfinicAcid->new( $_[4] ), @_[1..3] ) } ],
-    [ sub { &is_nongroup_atom && &is_S }, ( sub { &is_nongroup_atom && &is_O } ) x 2, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_S }, ( sub { &is_ketone && &is_O } ) x 2, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfonicAcid->new( $_[5] ), @_[1..4] ) } ],
 
     # Sulfoxide group and its analogues
