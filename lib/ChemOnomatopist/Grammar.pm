@@ -171,8 +171,8 @@ my @rules_conservative = (
           } ],
 
     # Acyl halide
-    [ sub { &is_nongroup_atom && &is_C }, \&is_B_Cl_F_I, \&is_ketone, \&is_C_new, NO_MORE_VERTICES, # FIXME: Ketone must be O
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[3] ), @_[1..3] ) } ],
+    [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_B_Cl_F_I }, \&is_ketone, \&is_C_new, NO_MORE_VERTICES, # FIXME: Ketone must be O
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
 
     # O-based groups
     [ \&is_OH, \&anything, NO_MORE_VERTICES,
