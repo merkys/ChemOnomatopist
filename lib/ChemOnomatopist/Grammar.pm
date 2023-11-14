@@ -160,6 +160,10 @@ my @rules_conservative = (
             }
         } ],
 
+    # Hydrazine
+    [ ( sub { &is_nongroup_atom && &is_N } ) x 2,
+        sub { $_[0]->add_group( ChemOnomatopist::Group::Hydrazine->new( @_[0..2] ) ) } ],
+
     # Carboxylic acid
     [ sub { &is_nongroup_atom && &is_C }, \&is_hydroxy, \&is_ketone, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[4] ), @_[1..3] ) } ],
