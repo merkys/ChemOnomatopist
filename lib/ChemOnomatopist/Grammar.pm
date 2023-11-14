@@ -57,9 +57,6 @@ sub is_S_Se_Te       { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::ele
 sub is_O_S_Se_Te     { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(O|S|Se|Te)$/ }
 sub is_C_N_O_S_Se_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(C|N|O|S|Se|Te)$/ }
 
-sub is_CH2 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
-sub is_CH3 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
-
 sub charge_plus_one  { exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
 sub charge_minus_one { exists $_[1]->{charge} && $_[1]->{charge} == -1 }
 
@@ -68,21 +65,13 @@ sub has_H1 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub has_H2 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub has_H3 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 
-sub is_any_chain { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
-
 sub is_chain { blessed $_[1] && blessed $_[1] eq ChemOnomatopist::Chain:: }
-
-sub is_C_chain { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Chain:: ) }
-sub is_C_chain_carboxyl { exists $_[1]->{type} && $_[1]->{type} eq 'C_chain_carboxyl' }
-sub is_carboxyl { exists $_[1]->{type} && $_[1]->{type} eq 'carboxyl' }
-sub is_headless_C_chain { exists $_[1]->{type} && $_[1]->{type} eq 'headless_C_chain' }
 
 sub is_amide   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide:: ) }
 sub is_amine   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
+sub is_cyanide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
 sub is_hydroxy { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
 sub is_ketone  { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
-
-sub is_cyanide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
 
 sub is_circular  { blessed $_[1] && $_->isa( ChemOnomatopist::Chain::Circular:: ) }
 sub is_benzene   { &is_monocycle && $_[1]->is_benzene }
@@ -96,37 +85,6 @@ my @rules = (
     # O-based groups
     [ \&is_O, \&is_chain, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Chain::Ether->new( $_[0], undef, $_[2]->vertices, $_[1] ), @_[1..2] ) } ],
-
-    # Rules to detect alkanes of any length
-    [ \&is_CH3, \&anything, NO_MORE_VERTICES,
-      sub { ChemOnomatopist::Chain->new( $_[0], undef, $_[1] ) } ],
-    [ \&is_CH2, \&anything, NO_MORE_VERTICES, # Terminal alkene
-      sub { ChemOnomatopist::Chain->new( $_[0], undef, $_[1] ) } ],
-    [ \&is_CH2, \&is_any_chain, # Add carbon to any chain
-      sub { graph_replace( $_[0], $_[2], $_[1] ); push @{$_[2]->{vertices}}, $_[1] } ],
-    [ \&is_CH2, ( \&is_chain ) x 2, NO_MORE_VERTICES, # CHECKME: Why do we need this?
-      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[2]->vertices ), $_[1], $_[3]->vertices ), @_[1..3] ) } ],
-    [ ( \&is_chain ) x 2, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[1]->vertices ), $_[2]->vertices ), @_[1..2] ) } ],
-    [ \&is_chain, \&is_headless_C_chain,
-      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[1]->vertices ), $_[2]->vertices ), @_[1..2] ) } ],
-
-    # Handling of headless chains
-    [ \&is_CH2, ( \&anything ) x 2, NO_MORE_VERTICES, # Start a headless C chain
-      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, $_[1] ), @_[1..3] ) } ],
-    [ \&is_headless_C_chain, \&is_headless_C_chain, # Join two headless C chains
-      sub { graph_replace( $_[0], ChemOnomatopist::Chain->new( $_[0], undef, reverse( $_[1]->vertices ), $_[2]->vertices ), @_[1..2] ) } ],
-
-    # Carboxyl group and chains it is attached to
-    [ \&is_carboxyl, \&is_headless_C_chain, NO_MORE_VERTICES,
-      sub { $_[2]->{type} = 'C_chain_carboxyl'; $_[2]->{length}++; $_[0]->delete_vertex( $_[1] ) } ],
-    [ \&is_carboxyl, \&is_benzene, NO_MORE_VERTICES,
-      sub { $_[2]->{type} = 'benzoic acid'; $_[0]->delete_vertex( $_[1] ) } ],
-
-    [ \&is_headless_C_chain, ( \&is_C_chain_carboxyl ) x 2, NO_MORE_VERTICES,
-      sub { $_[1]->{length} = sum map { $_->{length} } @_[1..3]; $_[1]->{type} = 'C_chain_dicarboxyl'; $_[0]->delete_vertices( @_[2..3] ) } ],
-    [ \&is_C_chain_carboxyl, \&is_carboxyl, NO_MORE_VERTICES,
-      sub { $_[1]->{length} += 1; $_[1]->{type} = 'C_chain_dicarboxyl'; $_[0]->delete_vertices( $_[2] ) } ],
 
     [ \&is_C, \&is_benzene, \&is_ketone, \&is_N, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], { type => 'benzamide' }, @_[1..4] ) } ],
