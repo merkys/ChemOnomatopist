@@ -35,7 +35,7 @@ use Chemistry::OpenSMILES qw(
     is_double_bond
 );
 use Graph::Grammar;
-use List::Util qw( all first sum );
+use List::Util qw( all any first sum );
 use Scalar::Util qw( blessed );
 
 use parent Exporter::;
@@ -92,6 +92,8 @@ sub is_cyanide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: 
 sub is_circular  { blessed $_[1] && $_->isa( ChemOnomatopist::Chain::Circular:: ) }
 sub is_benzene   { &is_monocycle && $_[1]->is_benzene }
 sub is_monocycle { &is_circular && $_->isa( ChemOnomatopist::Chain::Monocycle:: ) }
+
+sub is_hydrazine { any { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) } $_[0]->groups( $_[1] ) }
 
 sub anything { 1 }
 
@@ -163,6 +165,19 @@ my @rules_conservative = (
     # Hydrazine
     [ ( sub { &is_nongroup_atom && &is_N } ) x 2,
         sub { $_[0]->add_group( ChemOnomatopist::Group::Hydrazine->new( @_[0..2] ) ) } ],
+
+    # Hydrazide
+    [ sub { &is_nongroup_atom && &is_C }, \&is_hydrazine, sub { &is_ketone && &is_O },
+      sub {
+            my $hydrazine = first { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) }
+                                    $_[0]->groups( $_[1] );
+            my @vertices = $hydrazine->vertices;
+            @vertices = reverse @vertices if $vertices[0] == $_[1];
+            my $hydrazide = ChemOnomatopist::Group::Hydrazide->new( $_[0], @vertices );
+            $_[0]->delete_vertices( $_[2] );
+            $_[0]->add_group( $hydrazide );
+            $_[0]->delete_group( $hydrazine );
+        } ],
 
     # Carboxylic acid
     [ sub { &is_nongroup_atom && &is_C }, \&is_hydroxy, \&is_ketone, \&anything, NO_MORE_VERTICES,
