@@ -58,7 +58,6 @@ sub is_S_Se_Te       { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::ele
 sub is_O_S_Se_Te     { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(O|S|Se|Te)$/ }
 sub is_C_N_O_S_Se_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(C|N|O|S|Se|Te)$/ }
 
-sub is_CH1 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub is_CH2 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub is_CH3 { &is_C &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 sub is_NH2 { &is_N &&  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
@@ -133,13 +132,8 @@ my @rules = (
     [ \&is_C_chain_carboxyl, \&is_carboxyl, NO_MORE_VERTICES,
       sub { $_[1]->{length} += 1; $_[1]->{type} = 'C_chain_dicarboxyl'; $_[0]->delete_vertices( $_[2] ) } ],
 
-    [ \&is_C, ( \&is_N ) x 3, NO_MORE_VERTICES, # Guanidine
-      sub { graph_replace( $_[0], { type => 'guanidine' }, @_[1..3] ) } ],
-
     [ \&is_C, \&is_benzene, \&is_ketone, \&is_N, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], { type => 'benzamide' }, @_[1..4] ) } ],
-
-    [ \&is_NH2, \&is_NH2, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'hydrazine' }, @_[1..2] ) } ],
 
     [ \&is_SH, { type => 'sulfanyl' } ],
     [ \&is_S, \&is_ketone, ( \&anything ) x 2, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'sulfoxide' }, @_[1..2] ) } ],
