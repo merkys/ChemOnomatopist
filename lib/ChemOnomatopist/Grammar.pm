@@ -6,6 +6,7 @@ package ChemOnomatopist::Grammar;
 use strict;
 use warnings;
 
+use Algorithm::Combinatorics qw( combinations );
 use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Carboxamide;
 use ChemOnomatopist::Chain::Circular;
@@ -148,6 +149,17 @@ my @rules = (
 
 # Conservative rules
 my @rules_conservative = (
+    # Guanidine
+    [ sub { &is_nongroup_atom && &is_C && &has_H0 }, ( sub { &is_nongroup_atom && &is_N } ) x 3, NO_MORE_VERTICES,
+      sub {
+            my $guanidine = ChemOnomatopist::Group::Guanidine->new( $_[0], $_[1] );
+            $_[0]->add_group( $guanidine );
+            $_[0]->delete_vertex( $_[1] );
+            for (combinations( [ @_[2..4] ], 2 )) {
+                $_[0]->add_edge( @$_ );
+            }
+        } ],
+
     # Carboxylic acid
     [ sub { &is_nongroup_atom && &is_C }, \&is_hydroxy, \&is_ketone, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[4] ), @_[1..3] ) } ],
