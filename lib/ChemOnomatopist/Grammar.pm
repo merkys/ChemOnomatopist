@@ -132,8 +132,6 @@ my @rules = (
     [ \&is_C, \&is_benzene, \&is_ketone, \&is_N, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], { type => 'benzamide' }, @_[1..4] ) } ],
 
-    [ \&is_S, \&is_ketone, ( \&anything ) x 2, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'sulfoxide' }, @_[1..2] ) } ],
-
     [ \&is_benzene, \&is_hydroxy, sub { graph_replace( $_[0], { type => 'phenol' }, @_[1..2] ) } ],
 
     [ \&is_C, \&is_cyanide, \&is_cycle, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'carbonitrile' }, @_[1..2] ) } ],
