@@ -45,11 +45,10 @@ our @EXPORT_OK = qw(
 
 sub is_nongroup_atom { !blessed $_[1] && !$_[0]->groups( $_[1] ) && exists $_[1]->{symbol} }
 
-sub is_N { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'N' }
-sub is_S { &is_nongroup_atom && ucfirst( $_[1]->{symbol} ) eq 'S' }
-
 sub is_C { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'C' }
+sub is_N { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'N' }
 sub is_O { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'O' }
+sub is_S { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'S' }
 
 sub is_Br_Cl_F_I     { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I)$/ }
 sub is_Br_Cl_F_I_N   { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I|N)$/ }
