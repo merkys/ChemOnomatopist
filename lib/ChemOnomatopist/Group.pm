@@ -8,6 +8,7 @@ use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine;
+use ChemOnomatopist::Group::Carbonitrile;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
@@ -51,6 +52,7 @@ our @order = (
     ChemOnomatopist::Group::Hydrazide::,
     # Imides
     # 14. Nitriles
+    ChemOnomatopist::Group::Carbonitrile::,
     ChemOnomatopist::Group::Cyanide::,
     ChemOnomatopist::Group::Aldehyde::,
     ChemOnomatopist::Group::Ketone::,
