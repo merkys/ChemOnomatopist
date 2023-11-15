@@ -8,6 +8,7 @@ use warnings;
 
 use Algorithm::Combinatorics qw( combinations );
 use ChemOnomatopist::Chain;
+use ChemOnomatopist::Group::Carbonitrile;
 use ChemOnomatopist::Chain::Carboxamide;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Ether;
@@ -90,8 +91,6 @@ my @rules = (
       sub { graph_replace( $_[0], { type => 'benzamide' }, @_[1..4] ) } ],
 
     [ \&is_benzene, \&is_hydroxy, sub { graph_replace( $_[0], { type => 'phenol' }, @_[1..2] ) } ],
-
-    [ \&is_C, \&is_cyanide, \&is_cycle, NO_MORE_VERTICES, sub { graph_replace( $_[0], { type => 'carbonitrile' }, @_[1..2] ) } ],
 );
 
 # Conservative rules
@@ -180,6 +179,10 @@ my @rules_conservative = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, \&is_ketone, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&is_C,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitro->new, @_[1..3] ) } ],
+
+    # Carbonitrile, special case of cyanide
+    [ \&is_cyanide, \&is_circular, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
 
     # Nitroso and its analogues
     [ sub { &is_nongroup_atom && &is_Br_Cl_F_I_N }, \&is_ketone, \&is_C, NO_MORE_VERTICES,
