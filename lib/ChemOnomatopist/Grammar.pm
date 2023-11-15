@@ -76,7 +76,7 @@ sub is_ketone  { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: )
 
 sub is_circular  { any { $_->isa( ChemOnomatopist::Chain::Circular:: ) } $_[0]->groups( $_[1] ) }
 sub is_benzene   { &is_monocycle && $_[1]->is_benzene }
-sub is_monocycle { &is_circular && $_->isa( ChemOnomatopist::Chain::Monocycle:: ) }
+sub is_monocycle { any { $_->isa( ChemOnomatopist::Chain::Monocycle:: ) } $_[0]->groups( $_[1] ) }
 
 sub is_hydrazine { any { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) } $_[0]->groups( $_[1] ) }
 
