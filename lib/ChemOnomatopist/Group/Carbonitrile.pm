@@ -8,8 +8,6 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-# CHECKME: What to do with prefix if such occurs?
-
 sub prefix { return 'cyano' }
 sub suffix { return 'carbonitrile' }
 
