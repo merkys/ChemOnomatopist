@@ -60,7 +60,7 @@ sub ideal_graph($)
     my @graphs;
     for (0..1) {
         my $graph = Graph::Undirected->new( refvertexed => 1 );
-        $graph->add_cycle( map { { symbol => 'C', number => $_-1 } } 1..6 );
+        $graph->add_cycle( map { { symbol => 'C' } } 1..6 );
         push @graphs, $graph;
     }
     my $graph = merge_graphs( @graphs );
