@@ -29,7 +29,7 @@ sub new
                    set( $benzenes[0]->vertices  ) -
                    set( $benzenes[1]->vertices  ))->members;
     $subgraph->delete_vertices( $apex, $subgraph->neighbours( $apex ) );
-    my $start = first { $subgraph->degree( $_ ) == 1 } $subgraph->edges;
+    my $start = first { $subgraph->degree( $_ ) == 1 } $subgraph->vertices;
 
     $subgraph = $graph->subgraph( map { $_->vertices } @cycles );
     $subgraph->delete_edge( (set( $cyclopentane->vertices ) * set( $benzenes[0]->vertices ))->members );
@@ -76,5 +76,8 @@ sub ideal_graph($)
 
     return $graph;
 }
+
+sub prefix() { return 'fluorene' }
+sub suffix() { return 'fluorene' }
 
 1;
