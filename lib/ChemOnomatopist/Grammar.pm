@@ -69,8 +69,6 @@ sub has_H1 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub has_H2 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub has_H3 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 
-sub is_chain { blessed $_[1] && blessed $_[1] eq ChemOnomatopist::Chain:: }
-
 sub is_amide   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide:: ) }
 sub is_amine   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
 sub is_cyanide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
@@ -86,14 +84,6 @@ sub is_hydrazine { any { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) } $_[0]-
 sub anything { 1 }
 
 my @rules = (
-    [ \&is_C, \&is_benzene, \&is_ketone, \&is_N, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], { type => 'benzamide' }, @_[1..4] ) } ],
-
-    [ \&is_benzene, \&is_hydroxy, sub { graph_replace( $_[0], { type => 'phenol' }, @_[1..2] ) } ],
-);
-
-# Conservative rules
-my @rules_conservative = (
     # Guanidine
     [ sub { &is_nongroup_atom && &is_C && &has_H0 }, ( sub { &is_nongroup_atom && &is_N } ) x 3, NO_MORE_VERTICES,
       sub {
@@ -213,10 +203,18 @@ my @rules_conservative = (
       sub { $_[0]->delete_group( $_[3] ); $_[0]->add_group( ChemOnomatopist::Chain::Carboxamide->new( $_[0], $_[2], $_[1], $_[0]->groups( $_[3] ) ) ) } ],
 );
 
+# Old unused rules
+my @rules_old = (
+    [ \&is_C, \&is_benzene, \&is_ketone, \&is_N, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], { type => 'benzamide' }, @_[1..4] ) } ],
+
+    [ \&is_benzene, \&is_hydroxy, sub { graph_replace( $_[0], { type => 'phenol' }, @_[1..2] ) } ],
+);
+
 sub parse_molecular_graph($)
 {
     my( $graph ) = @_;
-    return parse_graph( $graph, @rules_conservative );
+    return parse_graph( $graph, @rules );
 }
 
 1;
