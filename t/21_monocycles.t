@@ -113,7 +113,7 @@ my @cases = (
     { smiles => 'S=C(CC1CC(CCC1)CC(CC)=O)CC', iupac => '1-[3-(2-sulfanylidenebutyl)cyclohexyl]butan-2-one' }, # From BBv2 P-64.7.3
 
     { smiles => 'C1=CC(=CC=C1F)Cl(=O)(=O)=O', iupac => '1-fluoro-4-perchlorylbenzene' }, # PubChem 24972904
-    { smiles => 'CCC1CN1Cl(=O)(=O)=O', iupac => '2-ethyl-1-perchlorylaziridine', AUTHOR => 1 }, # PubChem 24973518
+    { smiles => 'CCC1CN1Cl(=O)(=O)=O', iupac => '2-ethyl-1-perchlorylaziridine' }, # PubChem 24973518
     { smiles => 'CC(=CC(=C(C)C)C(=C)C1=CC=CC=C1)C', iupac => '(5-methyl-3-propan-2-ylidenehexa-1,4-dien-2-yl)benzene' }, # PubChem 141889885
 
     # From BBv2 P-59.2.1.6
