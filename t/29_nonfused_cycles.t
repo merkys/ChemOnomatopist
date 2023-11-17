@@ -20,6 +20,8 @@ my @cases = (
 
     { smiles => 'C1=CSC(=C1)SSC2=CC=CS2', iupac => '2-(thiophen-2-yldisulfanyl)thiophene' }, # PubChem 23347
     { smiles => 'CC1C(=O)NC(C(=O)N1C(C)C(C)C)C2CCCCC2', iupac => '3-cyclohexyl-6-methyl-1-(3-methylbutan-2-yl)piperazine-2,5-dione' }, # PubChem 64959818
+    { smiles => 'C1=CC2=C(C=CC(=C2)C(C3=NC=NC=C3)N)N=C1', iupac => 'pyrimidin-4-yl(quinolin-6-yl)methanamine', AUTHOR => 1 }, # PubChem 81231965
+    { smiles => 'C1OC2=C(O1)C=C(C=C2)C3=C(N=CS3)CN', iupac => '[5-(1,3-benzodioxol-5-yl)-1,3-thiazol-4-yl]methanamine', AUTHOR => 1 }, # PubChem 84144019
     { smiles => 'C1=CC(=C(N=C1)C2=NC(=NS2)N)Br', iupac => '5-(3-bromopyridin-2-yl)-1,2,4-thiadiazol-3-amine' }, # PubChem 107526369
     { smiles => 'C1=CC(=NC(=C1N)C2=CC(=C(C=C2Cl)Cl)Cl)C(=O)O', iupac => '5-amino-6-(2,4,5-trichlorophenyl)pyridine-2-carboxylic acid', AUTHOR => 1 }, # PubChem 133086582
     { smiles => 'CC1CCC(CC(C1)C)C2CCCCC2', iupac => '1-cyclohexyl-3,5-dimethylcycloheptane' }, # PubChem 149225482

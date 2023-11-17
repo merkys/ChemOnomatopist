@@ -62,6 +62,7 @@ my @cases = (
     { smiles => 'C1CCC(CC1)N2C=C(C(=N2)C(=O)N)N', iupac => '4-amino-1-cyclohexylpyrazole-3-carboxamide' }, # PubChem 107345270
     { smiles => 'CC1(CC1(Cl)Cl)C(=O)NC2=CC=CC(=C2)C3=NN=CO3', iupac => '2,2-dichloro-1-methyl-N-[3-(1,3,4-oxadiazol-2-yl)phenyl]cyclopropane-1-carboxamide' }, # PubChem 43061667
     { smiles => 'C1CC1N(CC2=CN=CC=C2)C(=O)C3CSCN3', iupac => 'N-cyclopropyl-N-(pyridin-3-ylmethyl)-1,3-thiazolidine-4-carboxamide' }, # PubChem 54869854
+    { smiles => 'C1=CC=C(C=C1)NC(=O)CS(=O)C2=CC=CC=C2', iupac => '2-(benzenesulfinyl)-N-phenylacetamide', AUTHOR => 1 }, # PubChem 13478044
 
     { smiles => 'C(C)(=O)N(C(C1=CC=CC=C1)=O)C(CCCl)=O', iupac => 'N-acetyl-N-(3-chloropropanoyl)benzamide', AUTHOR => 1 }, # BBv2 P-66.1.2.1
 );
