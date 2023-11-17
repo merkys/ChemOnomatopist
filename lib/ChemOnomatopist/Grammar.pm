@@ -113,7 +113,7 @@ my @rules_conservative = (
     [ sub { &is_nongroup_atom && &is_C }, \&is_hydrazine, sub { &is_ketone && &is_O },
       sub {
             my $hydrazine = first { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) }
-                                    $_[0]->groups( $_[1] );
+                                    $_[0]->groups( $_[2] );
             my @vertices = $hydrazine->vertices;
             @vertices = reverse @vertices if $vertices[0] == $_[1];
             my $hydrazide = ChemOnomatopist::Group::Hydrazide->new( $_[0], @vertices );
