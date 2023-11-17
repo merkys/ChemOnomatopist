@@ -58,6 +58,8 @@ sub is_S_Se_Te       { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::ele
 sub is_O_S_Se_Te     { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(O|S|Se|Te)$/ }
 sub is_C_N_O_S_Se_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(C|N|O|S|Se|Te)$/ }
 
+sub is_heteroatom { ChemOnomatopist::element( $_[1] ) && !&is_C }
+
 sub charge_plus_one  { exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
 sub charge_minus_one { exists $_[1]->{charge} && $_[1]->{charge} == -1 }
 sub no_charge { !$_[1]->{charge} }
@@ -179,6 +181,8 @@ my @rules_conservative = (
 
     # Carbonitrile, special case of cyanide
     [ \&is_cyanide, \&is_circular, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
+    [ \&is_cyanide, \&is_heteroatom, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
 
     # Nitroso and its analogues
