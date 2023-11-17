@@ -13,6 +13,7 @@ use ChemOnomatopist::Chain::Bicycle;
 use ChemOnomatopist::Chain::Carboxamide;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Ether;
+use ChemOnomatopist::Chain::Fluorene;
 use ChemOnomatopist::Chain::FromHalves;
 use ChemOnomatopist::Chain::Imino;
 use ChemOnomatopist::Chain::Monocycle;
@@ -600,6 +601,11 @@ sub find_groups
                                 ChemOnomatopist::Chain::Xanthene->ideal_graph,
                                 sub { return 'C' } ) ) {
                 $compound = ChemOnomatopist::Chain::Xanthene->new( $graph, @cycles );
+            } elsif( @cycles == 3 &&
+                     (grep { $_->is_benzene } @cycles) == 2 &&
+                     (grep { $_->is_hydrocarbon && $_->length == 5 } @cycles) &&
+                     ChemOnomatopist::Chain::Fluorene->has_form( $core ) ) {
+                $compound = ChemOnomatopist::Chain::Fluorene->new( $graph, @cycles );
             } elsif( @cycles >= 3 &&
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
                      ChemOnomatopist::Chain::Polyacene->has_form( $core ) ) {
