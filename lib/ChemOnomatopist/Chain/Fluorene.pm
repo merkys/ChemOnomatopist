@@ -6,6 +6,7 @@ package ChemOnomatopist::Chain::Fluorene;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Name;
 use ChemOnomatopist::Util::Graph qw(
     graph_without_edge_attributes
     merge_graphs
@@ -77,7 +78,7 @@ sub ideal_graph($)
     return $graph;
 }
 
-sub prefix() { return 'fluorene' }
-sub suffix() { return 'fluorene' }
+sub prefix() { return ChemOnomatopist::Name->new( 'fluorene' ) }
+sub suffix() { return ChemOnomatopist::Name->new( 'fluorene' ) }
 
 1;
