@@ -7,9 +7,35 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Util::Graph qw( merge_graphs );
+use Graph::Traversal::DFS;
 use Graph::Undirected;
+use List::Util qw( first );
+use Set::Object qw( set );
 
 use parent ChemOnomatopist::Chain::Circular::;
+
+sub new
+{
+    my( $class, $graph, @cycles ) = @_;
+
+    my $subgraph = $graph->subgraph( map { $_->vertices } @cycles );
+
+    my( $cyclopentane, @benzenes ) = sort { $a->length <=> $b->length } @cycles;
+    my( $apex ) = (set( $cyclopentane->vertices ) -
+                   set( $benzenes[0]->vertices  ) -
+                   set( $benzenes[1]->vertices  ))->members;
+    $subgraph->delete_vertices( $apex, $subgraph->neighbours( $apex ) );
+    my $start = first { $subgraph->degree( $_ ) == 1 } $subgraph->edges;
+
+    $subgraph = $graph->subgraph( map { $_->vertices } @cycles );
+    $subgraph->delete_edge( (set( $cyclopentane->vertices ) * set( $benzenes[0]->vertices ))->members );
+    $subgraph->delete_edge( (set( $cyclopentane->vertices ) * set( $benzenes[1]->vertices ))->members );
+    $subgraph->delete_edge( $start, (set( $subgraph->neighbours( $start ) ) *
+                                     set( $cyclopentane->vertices ))->members );
+    my @vertices = Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs;
+
+    return bless { graph => $graph, vertices => \@vertices }, $class;
+}
 
 sub ideal_graph($)
 {
