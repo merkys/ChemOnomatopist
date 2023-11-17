@@ -6,7 +6,11 @@ package ChemOnomatopist::Chain::Fluorene;
 use strict;
 use warnings;
 
-use ChemOnomatopist::Util::Graph qw( merge_graphs );
+use ChemOnomatopist::Util::Graph qw(
+    graph_without_edge_attributes
+    merge_graphs
+);
+use Graph::Nauty qw( are_isomorphic );
 use Graph::Traversal::DFS;
 use Graph::Undirected;
 use List::Util qw( first );
@@ -35,6 +39,17 @@ sub new
     my @vertices = Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs;
 
     return bless { graph => $graph, vertices => \@vertices }, $class;
+}
+
+sub has_form($$)
+{
+    my( $class, $graph ) = @_;
+
+    return '' unless $graph->vertices == 13;
+
+    return are_isomorphic( graph_without_edge_attributes( $graph ),
+                           $class->ideal_graph,
+                           sub { ChemOnomatopist::element( $_[0] ) } );
 }
 
 sub ideal_graph($)
