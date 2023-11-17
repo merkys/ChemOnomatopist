@@ -60,6 +60,7 @@ sub is_C_N_O_S_Se_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::ele
 
 sub charge_plus_one  { exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
 sub charge_minus_one { exists $_[1]->{charge} && $_[1]->{charge} == -1 }
+sub no_charge { !$_[1]->{charge} }
 
 sub has_H0 { !$_[1]->{hcount} }
 sub has_H1 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
@@ -161,7 +162,7 @@ my @rules_conservative = (
     # N-based groups
     [ sub { &is_nongroup_atom && &is_N && &has_H0 }, sub { &is_nongroup_atom && &is_C }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
-    [ sub { &is_nongroup_atom && &is_N }, ( \&anything ) x 3, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &no_charge }, ( \&anything ) x 3, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &has_H1 }, ( \&anything ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
