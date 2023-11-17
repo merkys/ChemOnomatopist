@@ -8,6 +8,7 @@ use warnings;
 
 use parent ChemOnomatopist::Chain::Circular::;
 
+use ChemOnomatopist::Name;
 use ChemOnomatopist::Util::Graph qw(
     graph_without_edge_attributes
 );
@@ -49,7 +50,7 @@ sub ideal_graph($)
     return $graph;
 }
 
-sub prefix() { return 'porphyrin' }
-sub suffix() { return 'porphyrin' }
+sub prefix() { return ChemOnomatopist::Name->new( 'porphyrin' ) }
+sub suffix() { return ChemOnomatopist::Name->new( 'porphyrin' ) }
 
 1;

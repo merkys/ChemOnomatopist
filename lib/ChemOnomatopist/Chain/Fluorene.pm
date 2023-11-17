@@ -6,6 +6,8 @@ package ChemOnomatopist::Chain::Fluorene;
 use strict;
 use warnings;
 
+use parent ChemOnomatopist::Chain::Circular::;
+
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util::Graph qw(
     graph_without_edge_attributes
@@ -16,8 +18,6 @@ use Graph::Traversal::DFS;
 use Graph::Undirected;
 use List::Util qw( first );
 use Set::Object qw( set );
-
-use parent ChemOnomatopist::Chain::Circular::;
 
 sub new
 {
