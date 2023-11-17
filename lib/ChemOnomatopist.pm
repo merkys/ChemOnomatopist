@@ -634,6 +634,15 @@ sub find_groups
         }
     }
 
+    # Safeguarding against multiple cycle amides sharing the same amido group.
+    # Otherwise this may lead to endless loops.
+    my @amides_in_carboxamides = map  { $_->{amide} }
+                                 grep { $_->isa( ChemOnomatopist::Chain::Carboxamide:: ) }
+                                      $graph->groups;
+    if( @amides_in_carboxamides > uniq @amides_in_carboxamides ) {
+        die "cannot process multiple cycle amides sharing the same amide group\n";
+    }
+
     return;
 }
 
