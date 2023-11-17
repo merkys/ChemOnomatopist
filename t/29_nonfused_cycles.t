@@ -29,6 +29,7 @@ my @cases = (
     { smiles => 'CCOC1=C(C(=CC(=C1)CNCC2=NN=C(N2C)C)Cl)OC', iupac => '1-(3-chloro-5-ethoxy-4-methoxyphenyl)-N-[(4,5-dimethyl-1,2,4-triazol-3-yl)methyl]methanamine', AUTHOR => 1 }, # PubChem 56822512 # incorrectly selected parent chain
     { smiles => 'C1CC1=CC2=CC=CC=C2Cl', iupac => '1-chloro-2-(cyclopropylidenemethyl)benzene' }, # PubChem 54594307
     { smiles => 'COC1=NN=C(C=C1C(=O)O)C2=CC=CC=N2', iupac => '3-methoxy-6-pyridin-2-ylpyridazine-4-carboxylic acid', AUTHOR => 1 }, # PubChem 117127049 # differs in brackets
+    { smiles => 'C1=CC=C2C(=C1)N=C(C(=N2)SC3=CC=CC=N3)SC4=CC=CC=N4', iupac => '2,3-bis(pyridin-2-ylsulfanyl)quinoxaline', AUTHOR => 1 }, # PubChem 16044110
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
