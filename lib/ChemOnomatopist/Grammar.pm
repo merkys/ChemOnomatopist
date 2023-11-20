@@ -122,16 +122,7 @@ my @rules = (
 
     # Amide
     [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_ketone,
-      sub { $_[0]->delete_vertices( $_[3] ); graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1] ), $_[2] ) } ],
-
-    #~ } elsif( is_element( $atom, 'C' ) && @groups == 2 &&
-             #~ (any { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups) &&
-             #~ (any { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups) ) {
-        #~ # Detecting amides
-        #~ my( $amine ) = grep { $_->isa( ChemOnomatopist::Group::Amine:: ) } @groups;
-        #~ my( $ketone ) = grep { $_->isa( ChemOnomatopist::Group::Ketone:: ) } @groups;
-        #~ my $amide = ChemOnomatopist::Group::Amide->new( $graph, $amine, $ketone, $atom );
-        #~ $graph->add_group( $amide );
+      sub { $_[0]->add_group( ChemOnomatopist::Group::Amide->new( $_[0], $_[2], $_[3], $_[1] ) ) } ],
 
     # Detecting amides attached to chains
     #~ for my $amide (grep { $_->isa( ChemOnomatopist::Group::Amide:: ) } $graph->groups) {
