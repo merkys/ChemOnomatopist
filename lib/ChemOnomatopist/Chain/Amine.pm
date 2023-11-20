@@ -62,6 +62,7 @@ sub suffix()
 
     my $neighbour = first { $self->graph->has_edge( $self->{amine}, $_ ) }
                           $self->{chain}->vertices;
+    die "cannot perceive connectivity in an amino chain\n" unless defined $neighbour;
 
     return $suffix->append_locants( $self->{chain}->locants( $self->vertex_ids( $neighbour ) ) );
 }
