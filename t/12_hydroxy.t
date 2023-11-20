@@ -8,6 +8,8 @@ use Test::More;
 
 my @cases = (
     { smiles => 'OCC(CO)(CO)CO', iupac => '2,2-bis(hydroxymethyl)propane-1,3-diol' },
+    { smiles => 'C1(CCCCC1)CCO', iupac => '2-cyclohexylethan-1-ol' }, # From BBv2 P-13.5.2
+    { smiles => 'C1(CCCCC1)CO', iupac => 'cyclohexylmethanol' }, # From BBv2 P-15.6.1.1
     { smiles => 'CC(C)(C)O', iupac => '2-methylpropan-2-ol' }, # From BBv2 P-63.1.2
     { smiles => 'ON1CC(CCC1)C#N', iupac => '1-hydroxypiperidine-3-carbonitrile' }, # From BBv2 P-63.1.4
 

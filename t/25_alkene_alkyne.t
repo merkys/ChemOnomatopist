@@ -33,7 +33,7 @@ my @cases = (
 
     { smiles => 'CCC=CCC', iupac => 'hex-3-ene' }, # Chain halves are joined by double bond
 
-    { smiles => 'CC#CCC(=O)CNCC#C', iupac => '1-(prop-2-ynylamino)hex-4-yn-2-one', AUTHOR => 1 }, # PubChem 116589377
+    { smiles => 'CC#CCC(=O)CNCC#C', iupac => '1-(prop-2-ynylamino)hex-4-yn-2-one' }, # PubChem 116589377
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};

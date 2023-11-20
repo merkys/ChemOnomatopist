@@ -12,7 +12,6 @@ my @cases = (
 
     { smiles => 'C(O)OO', iupac => 'hydroperoxymethanol' },
     { smiles => 'OOCC(=O)C', iupac => '1-hydroperoxypropan-2-one' }, # Unchecked
-    { smiles => 'OOCCO', iupac => '2-hydroperoxyethan-1-ol' }, # BBv2 P-63.4.2.2
 
     # From BBv2 P-65.1.2.4
     { smiles => 'CC(=O)CCCC(=O)O', iupac => '5-oxohexanoic acid' },

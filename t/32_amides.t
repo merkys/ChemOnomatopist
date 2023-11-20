@@ -8,6 +8,11 @@ use Test::More;
 
 my @cases = (
     { smiles => 'C(C)N(C(=O)C=1OC=CC1)CC', iupac => 'N,N-diethylfuran-2-carboxamide' }, # From BBv2 P-16.2.1
+
+    # From BBv2 P-62.2.3
+    { smiles => 'N(C1=CC=CC=C1)C=1C=C(C(=O)O)C=CC1', iupac => '3-anilinobenzoic acid', AUTHOR => 1 },
+    { smiles => 'CN(C1=CC=CC=C1)C=1C=C(C=CC1)O', iupac => '3-(N-methylanilino)phenol', AUTHOR => 1 },
+
     { smiles => 'S(S)C=1C=C(C(=O)N)C=CC1SS', iupac => '3,4-bis(disulfanyl)benzamide', AUTHOR => 1 }, # From BBv2 P-63.4.2.2
     { smiles => 'ONC(=O)C1CCCCC1', iupac => 'N-hydroxycyclohexanecarboxamide' }, # From BBv2 P-65.1.3.4
 
@@ -55,6 +60,9 @@ my @cases = (
     { smiles => 'CC(CCOC)NC(=O)CCCCCCN', iupac => '7-amino-N-(4-methoxybutan-2-yl)heptanamide', AUTHOR => 1 }, # PubChem 64604850
     { smiles => 'C1CCN(CC1)CCCCC(=O)N=C(CC(=N)C2=CC=NC=C2)N', iupac => 'N-(1-amino-3-imino-3-pyridin-4-ylpropylidene)-5-piperidin-1-ylpentanamide', AUTHOR => 1 }, # PubChem 90937303
     { smiles => 'C1CCC(CC1)N2C=C(C(=N2)C(=O)N)N', iupac => '4-amino-1-cyclohexylpyrazole-3-carboxamide' }, # PubChem 107345270
+    { smiles => 'CC1(CC1(Cl)Cl)C(=O)NC2=CC=CC(=C2)C3=NN=CO3', iupac => '2,2-dichloro-1-methyl-N-[3-(1,3,4-oxadiazol-2-yl)phenyl]cyclopropane-1-carboxamide' }, # PubChem 43061667
+    { smiles => 'C1CC1N(CC2=CN=CC=C2)C(=O)C3CSCN3', iupac => 'N-cyclopropyl-N-(pyridin-3-ylmethyl)-1,3-thiazolidine-4-carboxamide' }, # PubChem 54869854
+    { smiles => 'C1=CC=C(C=C1)NC(=O)CS(=O)C2=CC=CC=C2', iupac => '2-(benzenesulfinyl)-N-phenylacetamide', AUTHOR => 1 }, # PubChem 13478044
 
     { smiles => 'C(C)(=O)N(C(C1=CC=CC=C1)=O)C(CCCl)=O', iupac => 'N-acetyl-N-(3-chloropropanoyl)benzamide', AUTHOR => 1 }, # BBv2 P-66.1.2.1
 );

@@ -39,7 +39,19 @@ sub locants(@)
     return map { $_ ? $self->{chain}->locants( $_ - 1 ) : 'N' } @_;
 }
 
-sub needs_substituent_locants() { return 1 }
+sub needs_substituent_locants()
+{
+    my( $self ) = @_;
+    return $self->{chain}->length > 0;
+}
+
+sub prefix()
+{
+    my( $self ) = @_;
+    my $prefix = $self->{chain}->prefix;
+    $prefix .= 'amino';
+    return $prefix;
+}
 
 sub suffix()
 {
