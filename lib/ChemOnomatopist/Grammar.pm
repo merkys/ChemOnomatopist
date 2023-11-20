@@ -200,9 +200,12 @@ my @rules = (
 
     # Detecting amides attached to cyclic chains
     [ sub { &is_C && &is_amide }, \&is_monocycle,
-      sub { $_[0]->add_group( ChemOnomatopist::Group::Carboxamide->new( $_[0], map { $_[0]->groups( $_ ) } ( $_[1], $_[2] ) ) ),
-            $_[0]->delete_group( $_[0]->groups( $_[1] ) );
-            $_[0]->delete_group( $_[0]->groups( $_[2] ) ) } ],
+      sub { my( $amide )     = $_[0]->groups( $_[1] );
+            my( $monocycle ) = $_[0]->groups( $_[2] );
+            $monocycle->parent( $_[1] );
+            $_[0]->add_group( ChemOnomatopist::Group::Carboxamide->new( $_[0], $amide, $monocycle ) );
+            $_[0]->delete_group( $amide );
+            $_[0]->delete_group( $monocycle ) } ],
 );
 
 # Old unused rules
