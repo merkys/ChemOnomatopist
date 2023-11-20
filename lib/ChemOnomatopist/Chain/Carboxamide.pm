@@ -6,8 +6,9 @@ use warnings;
 # ABSTRACT: Carboxamide chain
 # VERSION
 
-use parent ChemOnomatopist::Chain::;
+use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
+use ChemOnomatopist::Chain::Monocycle;
 use List::Util qw( first );
 
 sub new
@@ -34,7 +35,7 @@ sub prefix() { return 'benzamido' }
 sub suffix()
 {
     my( $self ) = @_;
-    return 'benz' if $self->{chain}->is_benzene;
+    return 'benzamide' if $self->{chain}->is_benzene;
 
     my $suffix = $self->{chain}->suffix;
     if( !$self->{chain}->isa( ChemOnomatopist::Chain::Monocycle:: ) ||
@@ -44,7 +45,7 @@ sub suffix()
                            0..$#vertices;
         $suffix->append_locants( $locant + 1 );
     }
-    $suffix .= 'carbox';
+    $suffix .= 'carboxamide';
     return $suffix;
 }
 

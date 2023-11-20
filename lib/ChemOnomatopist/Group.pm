@@ -3,6 +3,7 @@ package ChemOnomatopist::Group;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Chain::Carboxamide;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
@@ -46,6 +47,7 @@ our @order = (
     ChemOnomatopist::Group::Ester::,
     # Acid halides and pseudohalides
     # Amides
+    ChemOnomatopist::Chain::Carboxamide::,
     ChemOnomatopist::Group::Amide::,
     ChemOnomatopist::Group::Guanidine::,
     # Hydrazides

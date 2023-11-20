@@ -6,15 +6,16 @@ use warnings;
 # ABSTRACT: Monocyclic group
 # VERSION
 
-use parent ChemOnomatopist::Chain::Circular::;
-
 use ChemOnomatopist;
+use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Name;
 use List::Util qw( all );
 use Scalar::Util qw( blessed );
+
+use parent ChemOnomatopist::Chain::Circular::;
 
 # From BBv2 P-22.2.1
 our %names = (
