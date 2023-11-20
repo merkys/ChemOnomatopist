@@ -69,12 +69,12 @@ sub has_H1 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub has_H2 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub has_H3 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 
-sub is_amide   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide:: ) }
 sub is_amine   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
 sub is_cyanide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
 sub is_hydroxy { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
 sub is_ketone  { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
 
+sub is_amide     { any { $_->isa( ChemOnomatopist::Group::Amide:: ) } $_[0]->groups( $_[1] ) }
 sub is_benzene   { any { $_->isa( ChemOnomatopist::Chain::Monocycle:: ) && $_->is_benzene } $_[0]->groups( $_[1] ) }
 sub is_circular  { any { $_->isa( ChemOnomatopist::Chain::Circular:: ) } $_[0]->groups( $_[1] ) }
 sub is_monocycle { any { $_->isa( ChemOnomatopist::Chain::Monocycle:: ) } $_[0]->groups( $_[1] ) }
@@ -123,20 +123,6 @@ my @rules = (
     # Amide
     [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_ketone,
       sub { $_[0]->add_group( ChemOnomatopist::Group::Amide->new( $_[0], $_[2], $_[3], $_[1] ) ) } ],
-
-    # Detecting amides attached to chains
-    #~ for my $amide (grep { $_->isa( ChemOnomatopist::Group::Amide:: ) } $graph->groups) {
-        #~ my $vertices = set( $amide->vertices );
-        #~ my $ring_atom = first { !$vertices->has( $_ ) } $graph->neighbours( $amide->{C} );
-        #~ next unless $ring_atom;
-
-        #~ my( $cycle ) = $graph->groups( $ring_atom );
-        #~ next unless $cycle;
-        #~ next unless $cycle->isa( ChemOnomatopist::Chain::Monocycle:: );
-
-        #~ $graph->delete_group( $amide );
-        #~ $graph->delete_group( $cycle );
-        #~ $graph->add_group( ChemOnomatopist::Chain::Carboxamide->new( $graph, $amide, $cycle ) );
 
     # Ester
     [ sub { &is_nongroup_atom && &is_C }, \&is_ketone, sub { &is_nongroup_atom && &is_O }, \&is_C, NO_MORE_VERTICES,
@@ -213,8 +199,10 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroperoxide->new( $_[1], $_[2] ), @_[1..2] ) } ],
 
     # Detecting amides attached to cyclic chains
-    [ sub { &is_nongroup_atom && &is_C && 1 == grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) && $_->{parent} == $_[1] } $_[0]->neighbours( $_[1] ) }, \&is_amide, \&is_monocycle, NO_MORE_VERTICES,
-      sub { $_[0]->delete_group( $_[3] ); $_[0]->add_group( ChemOnomatopist::Chain::Carboxamide->new( $_[0], $_[2], $_[1], $_[0]->groups( $_[3] ) ) ) } ],
+    [ sub { &is_C && &is_amide }, \&is_monocycle,
+      sub { $_[0]->add_group( ChemOnomatopist::Chain::Carboxamide->new( $_[0], map { $_[0]->groups( $_ ) } ( $_[1], $_[2] ) ) ),
+            $_[0]->delete_group( $_[0]->groups( $_[1] ) );
+            $_[0]->delete_group( $_[0]->groups( $_[2] ) ) } ],
 );
 
 # Old unused rules
