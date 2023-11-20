@@ -1,4 +1,4 @@
-package ChemOnomatopist::Chain::Carboxamide;
+package ChemOnomatopist::Group::Carboxamide;
 
 use strict;
 use warnings;

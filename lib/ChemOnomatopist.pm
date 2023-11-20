@@ -10,7 +10,6 @@ use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Amide;
 use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Bicycle;
-use ChemOnomatopist::Chain::Carboxamide;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Chain::Fluorene;
@@ -31,6 +30,7 @@ use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine;
+use ChemOnomatopist::Group::Carboxamide;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Ester;
@@ -643,7 +643,7 @@ sub find_groups
     # Safeguarding against multiple cycle amides sharing the same amido group.
     # Otherwise this may lead to endless loops.
     #~ my @amides_in_carboxamides = map  { $_->{amide} }
-                                 #~ grep { $_->isa( ChemOnomatopist::Chain::Carboxamide:: ) }
+                                 #~ grep { $_->isa( ChemOnomatopist::Group::Carboxamide:: ) }
                                       #~ $graph->groups;
     #~ if( @amides_in_carboxamides > uniq @amides_in_carboxamides ) {
         #~ die "cannot process multiple cycle amides sharing the same amide group\n";
@@ -902,7 +902,7 @@ sub select_mainchain
 
     # Recognising amide chains
     if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Amide:: &&
-        !$chain->isa( ChemOnomatopist::Chain::Carboxamide:: ) ) {
+        !$chain->isa( ChemOnomatopist::Group::Carboxamide:: ) ) {
         $chain = ChemOnomatopist::Chain::Amide->new( $graph, $chain, @groups );
     }
     # Recognising amine chains

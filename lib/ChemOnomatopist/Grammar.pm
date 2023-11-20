@@ -8,14 +8,14 @@ use warnings;
 
 use Algorithm::Combinatorics qw( combinations );
 use ChemOnomatopist::Chain;
-use ChemOnomatopist::Group::Carbonitrile;
-use ChemOnomatopist::Chain::Carboxamide;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine;
+use ChemOnomatopist::Group::Carbonitrile;
+use ChemOnomatopist::Group::Carboxamide;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Hydroperoxide;
@@ -200,7 +200,7 @@ my @rules = (
 
     # Detecting amides attached to cyclic chains
     [ sub { &is_C && &is_amide }, \&is_monocycle,
-      sub { $_[0]->add_group( ChemOnomatopist::Chain::Carboxamide->new( $_[0], map { $_[0]->groups( $_ ) } ( $_[1], $_[2] ) ) ),
+      sub { $_[0]->add_group( ChemOnomatopist::Group::Carboxamide->new( $_[0], map { $_[0]->groups( $_ ) } ( $_[1], $_[2] ) ) ),
             $_[0]->delete_group( $_[0]->groups( $_[1] ) );
             $_[0]->delete_group( $_[0]->groups( $_[2] ) ) } ],
 );
