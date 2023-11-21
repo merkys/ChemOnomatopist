@@ -21,6 +21,7 @@ use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
+use ChemOnomatopist::Group::Isocyanide;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
@@ -154,8 +155,12 @@ my @rules = (
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
 
+    # Isocyanide
+    [ sub { &is_nongroup_atom && &is_C && &has_H0 && &charge_minus_one }, sub { &is_nongroup_atom && &is_N && &has_H0 && &charge_plus_one }, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Isocyanide->new, @_[1..2] ) } ],
+
     # N-based groups
-    [ sub { &is_nongroup_atom && &is_N && &has_H0 }, sub { &is_nongroup_atom && &is_C }, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H0 && &no_charge }, sub { &is_nongroup_atom && &is_C && &no_charge }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &no_charge }, ( \&anything ) x 3, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
