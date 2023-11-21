@@ -7,6 +7,8 @@ use warnings;
 # VERSION
 
 use ChemOnomatopist::Elements qw( %elements );
+use List::Util qw( any );
+use Scalar::Util qw( blessed );
 
 use parent ChemOnomatopist::Group::;
 
@@ -21,7 +23,8 @@ sub element() { return 'C' }
 sub prefix()
 {
     my( $self ) = @_;
-    my $name = 'carbono' . $elements{$self->{halide}{symbol}}->{prefix};
+    my $name = 'carbono';
+    $name .= blessed $self->{halide} ? $self->{halide}->prefix : $elements{$self->{halide}{symbol}}->{prefix};
     $name =~ s/a$/idoyl/;
     return $name;
 }
@@ -29,14 +32,16 @@ sub prefix()
 sub suffix()
 {
     my( $self ) = @_;
-    my $name = 'oyl ' . $elements{$self->{halide}{symbol}}->{prefix};
-    $name =~ s/a$/ide/;
+    my $name = 'oyl ';
+    $name .= blessed $self->{halide} ? $self->{halide}->prefix : $elements{$self->{halide}{symbol}}->{prefix};
+    $name =~ s/[ao]$/ide/;
     return $name;
 }
 
 sub _cmp_instances
 {
     my( $A, $B ) = @_;
+    return if any { blessed $_ } ( $A, $B ); # FIXME: Need proper sorting
     return $A->{halide}{symbol} cmp $B->{halide}{symbol};
 }
 
