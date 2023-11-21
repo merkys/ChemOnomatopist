@@ -14,6 +14,12 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
+sub locants(@)
+{
+    my $self = shift;
+    return map { $_ ? 'N' . '\'' x ($_ - 1) : 1 } @_;
+}
+
 sub prefix { return 'urea' }
 sub suffix { return 'urea' }
 
