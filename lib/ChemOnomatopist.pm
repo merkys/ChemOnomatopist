@@ -641,6 +641,11 @@ sub find_groups
         }
     }
 
+    # Charges are not handled yet
+    if( any { !blessed $_ && exists $_->{charge} } $graph->vertices ) {
+        die "cannot handle charges for now\n";
+    }
+
     # Safeguarding against multiple cycle amides sharing the same amido group.
     # Otherwise this may lead to endless loops.
     my @amides_in_carboxamides = map  { $_->{amide} }
