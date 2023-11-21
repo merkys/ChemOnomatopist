@@ -34,8 +34,8 @@ sub prefix() { return 'benzamido' }
 my %infix = (
     O => 'x',
     S => 'thio',
-    Se => 'seleno', # CHECKME: Is this true?
-    Te => 'telluro', # CHECKME: Is this true?
+    Se => 'seleno',
+    Te => 'telluro',
 );
 
 sub suffix()
