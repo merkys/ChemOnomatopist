@@ -6,6 +6,10 @@ package ChemOnomatopist::Group::Urea;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Group::Amide;
+use Scalar::Util qw( blessed );
+
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 sub new
@@ -22,7 +26,20 @@ sub locants(@)
     return map { $_ ? 'N' . '\'' x ($_ - 1) : 1 } @_;
 }
 
-sub prefix { return 'urea' }
-sub suffix { return 'urea' }
+sub prefix()
+{
+    my( $self ) = @_;
+    my( $ketone_element ) = map  { $_->{ketone}->element }
+                            grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) }
+                                 $self->vertices;
+    my $name = '';
+    if( $ketone_element ne 'O' ) {
+        $name = $elements{$ketone_element}->{prefix};
+        $name =~ s/a$/o/;
+    }
+    return $name . 'urea';
+}
+
+sub suffix() { &prefix }
 
 1;
