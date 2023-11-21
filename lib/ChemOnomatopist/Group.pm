@@ -22,6 +22,7 @@ use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::SulfonicAcid;
+use ChemOnomatopist::Group::Urea;
 
 use List::Util qw( any );
 use Scalar::Util qw( blessed );
@@ -46,6 +47,7 @@ our @order = (
     ChemOnomatopist::Group::Ester::,
     # Acid halides and pseudohalides
     # Amides
+    ChemOnomatopist::Group::Urea::,
     ChemOnomatopist::Group::Amide::,
     ChemOnomatopist::Group::Guanidine::,
     # Hydrazides
