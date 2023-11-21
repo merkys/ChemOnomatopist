@@ -14,7 +14,7 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
-sub needs_substituent_locants() { $_[0]->number_of_branches > 1 }
+sub needs_substituent_locants() { $_[0]->number_of_branches > 1 && $_[0]->number_of_branches < 4 }
 
 sub locants(@)
 {
