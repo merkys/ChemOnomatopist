@@ -201,6 +201,10 @@ my @rules = (
     # Detecting amides attached to cyclic chains
     [ sub { &is_nongroup_atom && &is_C && 1 == grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) && $_->{parent} == $_[1] } $_[0]->neighbours( $_[1] ) }, \&is_amide, \&is_monocycle, NO_MORE_VERTICES,
       sub { $_[0]->delete_group( $_[3] ); $_[0]->add_group( ChemOnomatopist::Chain::Carboxamide->new( $_[0], $_[2], $_[1], $_[0]->groups( $_[3] ) ) ) } ],
+
+    # Refuse to process urea
+    [ sub { &is_nongroup_atom && &is_C }, \&is_amide, \&is_amine, NO_MORE_VERTICES,
+      sub { die "cannot name urea-containing compounds yet\n" } ],
 );
 
 # Old unused rules
