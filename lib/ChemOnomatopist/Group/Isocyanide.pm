@@ -9,6 +9,6 @@ use warnings;
 use parent ChemOnomatopist::Group::;
 
 sub prefix() { 'isocyano' }
-sub suffix() { 'isocyano' } # CHECKE: May be incorrect
+sub suffix() { 'isocyanide' } # CHECKE: May be incorrect
 
 1;

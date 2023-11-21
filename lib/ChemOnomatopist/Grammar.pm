@@ -75,6 +75,7 @@ sub is_amide   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide:: ) 
 sub is_amine   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
 sub is_cyanide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
 sub is_hydroxy { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
+sub is_isocyanide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanide:: ) }
 sub is_ketone  { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
 
 sub is_benzene   { any { $_->isa( ChemOnomatopist::Chain::Monocycle:: ) && $_->is_benzene } $_[0]->groups( $_[1] ) }
@@ -137,7 +138,7 @@ my @rules = (
     # Acyl halide
     [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_B_Cl_F_I }, sub { &is_ketone && &is_O }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
-    [ sub { &is_nongroup_atom && &is_C }, \&is_cyanide, sub { &is_ketone && &is_O }, \&is_C, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_C }, sub { &is_cyanide || &is_isocyanide }, sub { &is_ketone && &is_O }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
 
     # O-based groups

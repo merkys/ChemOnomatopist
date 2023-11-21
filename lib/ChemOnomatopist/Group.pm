@@ -19,6 +19,7 @@ use ChemOnomatopist::Group::Hydrazine;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
+use ChemOnomatopist::Group::Isocyanide;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::SulfonicAcid;
@@ -56,6 +57,7 @@ our @order = (
     # 14. Nitriles
     ChemOnomatopist::Group::Carbonitrile::,
     ChemOnomatopist::Group::Cyanide::,
+    ChemOnomatopist::Group::Isocyanide::, # CHECKME: Is this correct?
     ChemOnomatopist::Group::Aldehyde::,
     ChemOnomatopist::Group::Ketone::,
     ChemOnomatopist::Group::Hydroxy::,
