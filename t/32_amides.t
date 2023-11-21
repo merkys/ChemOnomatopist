@@ -56,6 +56,10 @@ my @cases = (
     { smiles => 'N1(CCCCC1)C(C)=O', iupac => '1-(piperidin-1-yl)ethan-1-one' },
     { smiles => 'N1(CCCC2=CC=CC=C12)C(CC)=O', iupac => '1-(3,4-dihydroquinolin-1(2H)-yl)propan-1-one', AUTHOR => 1 },
 
+    # From BBv2 P-66.1.4.1.1
+    { smiles => 'C1(=CC=CC=C1)C(N)=S', iupac => 'benzenecarbothioamide', AUTHOR => 1 },
+    { smiles => 'N1=C(C=CC=C1)C(N)=S', iupac => 'pyridine-2-carbothioamide' },
+
     { smiles => 'CCC(=O)N(C1CCN(CC1)CCC2=CC=CC=C2)C3=CC=CC=C3', iupac => 'N-phenyl-N-[1-(2-phenylethyl)piperidin-4-yl]propanamide' }, # PubChem 3345
     { smiles => 'CC(CCOC)NC(=O)CCCCCCN', iupac => '7-amino-N-(4-methoxybutan-2-yl)heptanamide', AUTHOR => 1 }, # PubChem 64604850
     { smiles => 'C1CCN(CC1)CCCCC(=O)N=C(CC(=N)C2=CC=NC=C2)N', iupac => 'N-(1-amino-3-imino-3-pyridin-4-ylpropylidene)-5-piperidin-1-ylpentanamide', AUTHOR => 1 }, # PubChem 90937303
