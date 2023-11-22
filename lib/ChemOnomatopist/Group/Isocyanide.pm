@@ -1,10 +1,10 @@
 package ChemOnomatopist::Group::Isocyanide;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Isocyanide group
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Group::;
 

@@ -21,6 +21,7 @@ use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
+use ChemOnomatopist::Group::Isocyanate;
 use ChemOnomatopist::Group::Isocyanide;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Nitro;
@@ -71,12 +72,13 @@ sub has_H1 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub has_H2 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub has_H3 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 
-sub is_amide   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide:: ) }
-sub is_amine   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
-sub is_cyanide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
-sub is_hydroxy { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
+sub is_amide      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide:: ) }
+sub is_amine      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
+sub is_cyanide    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
+sub is_hydroxy    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
+sub is_isocyanate { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanate:: ) }
 sub is_isocyanide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanide:: ) }
-sub is_ketone  { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
+sub is_ketone     { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
 
 sub is_benzene   { any { $_->isa( ChemOnomatopist::Chain::Monocycle:: ) && $_->is_benzene } $_[0]->groups( $_[1] ) }
 sub is_circular  { any { $_->isa( ChemOnomatopist::Chain::Circular:: ) } $_[0]->groups( $_[1] ) }
@@ -138,7 +140,7 @@ my @rules = (
     # Acyl halide
     [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_B_Cl_F_I }, sub { &is_ketone && &is_O }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
-    [ sub { &is_nongroup_atom && &is_C }, sub { &is_cyanide || &is_isocyanide }, sub { &is_ketone && &is_O }, \&is_C, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_C }, sub { &is_cyanide || &is_isocyanide || &is_isocyanate }, sub { &is_ketone && &is_O }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
 
     # O-based groups
@@ -160,6 +162,10 @@ my @rules = (
     [ sub { &is_nongroup_atom && &is_C && &has_H0 && &charge_minus_one }, sub { &is_nongroup_atom && &is_N && &has_H0 && &charge_plus_one }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Isocyanide->new, @_[1..2] ) } ],
 
+    # Isocyanate
+    [ sub { &is_nongroup_atom && &is_C && &has_H0 && &no_charge }, \&is_ketone, \&is_N, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Isocyanate->new, @_[1..3] ) } ],
+
     # N-based groups
     [ sub { &is_nongroup_atom && &is_N && &has_H0 && &no_charge }, sub { &is_nongroup_atom && &is_C && &no_charge }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
@@ -171,9 +177,9 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &has_H3 }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
-    [ sub { &is_nongroup_atom && &is_N && &has_H0 && any { ChemOnomatopist::element( $_ ) eq 'C' && is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&is_C, \&anything, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H0 && any { ChemOnomatopist::element( $_ ) eq 'C' && is_double_bond( @_, $_ ) && $_[0]->degree( $_ ) + ($_->{hcount} ? $_->{hcount} : 0) == 3 } $_[0]->neighbours( $_[1] ) }, \&is_C, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
-    [ sub { &is_nongroup_atom && &is_N && &has_H1 && any { ChemOnomatopist::element( $_ ) eq 'C' && is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&is_C, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H1 && any { ChemOnomatopist::element( $_ ) eq 'C' && is_double_bond( @_, $_ ) && $_[0]->degree( $_ ) + ($_->{hcount} ? $_->{hcount} : 0) == 3 } $_[0]->neighbours( $_[1] ) }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, \&is_ketone, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&is_C,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitro->new, @_[1..3] ) } ],
