@@ -81,7 +81,7 @@ use Graph::MoreUtils qw( SSSR );
 use Graph::Nauty qw( are_isomorphic );
 use Graph::Traversal::DFS;
 use Graph::Undirected;
-use List::Util qw( all any first max min pairs sum0 uniq );
+use List::Util qw( all any first max min pairs uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
@@ -341,7 +341,7 @@ sub get_mainchain_name
         $most_senior_group = blessed $chain;
     }
 
-    # Collect the heteroatoms and isotopes in the chain
+    # Collect heteroatoms, isotopes and nonstandard bonding numbers from the chain
     my %heteroatoms;
     for (pairs zip $chain->heteroatoms, $chain->heteroatom_positions) {
         my( $element, $i ) = @$_;
@@ -349,6 +349,7 @@ sub get_mainchain_name
     }
 
     my %isotopes;
+    my %nonstandard_bonding_numbers;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         next if blessed $atom;
@@ -361,6 +362,10 @@ sub get_mainchain_name
             for (grep { defined $_ } @{$atom->{h_isotope}}) {
                 push @{$isotopes{$_ . 'H'}}, $i;
             }
+        }
+
+        if( exists $atom->{valence} ) {
+            $nonstandard_bonding_numbers{$i} = $atom->{valence};
         }
     }
 
@@ -429,6 +434,17 @@ sub get_mainchain_name
         }
 
         $name .= $attachment;
+    }
+
+    # Attaching nonstandard bonding numbers
+    if( %nonstandard_bonding_numbers ) {
+        if( $chain->needs_substituent_locants ) { # FIXME: Is this right?
+            $name .= '-' . join( ',', map { $chain->locants( $_ ) . 'λ' . $nonstandard_bonding_numbers{$_} }
+                                          sort keys %nonstandard_bonding_numbers ) . '-';
+        } else {
+            $name .= '-' . join( ',', map { 'λ' . $nonstandard_bonding_numbers{$_} }
+                                          sort keys %nonstandard_bonding_numbers ) . '-';
+        }
     }
 
     # Collecting names of all heteroatoms
@@ -518,6 +534,22 @@ sub find_groups
         $parent->{hcount}++;
         push @{$parent->{h_isotope}}, $H->{isotope};
         $graph->delete_vertex( $H );
+    }
+
+    # Recording nonstandard bonding numbers
+    for my $atom ($graph->vertices) {
+        next unless exists $elements{element( $atom )}->{standard_bonding_number};
+        my $valence = 0;
+        $valence += $atom->{hcount} if defined $atom->{hcount};
+        for my $neighbour ($graph->neighbours( $atom )) {
+            my $order = 1;
+            if( $graph->has_edge_attribute( $atom, $neighbour, 'bond' ) ) {
+                $order = $bond_symbol_to_order{$graph->get_edge_attribute( $atom, $neighbour, 'bond' )};
+            }
+            $valence += $order;
+        }
+        next if $valence == $elements{element( $atom )}->{standard_bonding_number};
+        $atom->{valence} = $valence;
     }
 
     # Detecting cyclic compounds
