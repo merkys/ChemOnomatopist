@@ -49,10 +49,12 @@ our @EXPORT_OK = qw(
 
 sub is_nongroup_atom { !blessed $_[1] && !$_[0]->groups( $_[1] ) && exists $_[1]->{symbol} }
 
-sub is_C { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'C' }
-sub is_N { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'N' }
-sub is_O { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'O' }
-sub is_S { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'S' }
+sub is_C  { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'C' }
+sub is_N  { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'N' }
+sub is_O  { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'O' }
+sub is_S  { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'S' }
+sub is_Se { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'Se' }
+sub is_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'Te' }
 
 sub is_Br_Cl_F_I     { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I)$/ }
 sub is_Br_Cl_F_I_N   { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I|N)$/ }
@@ -99,6 +101,11 @@ my @rules = (
                 $_[0]->add_edge( @$_ );
             }
         } ],
+
+    [ ( sub { &is_nongroup_atom && &is_O  } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
+    [ ( sub { &is_nongroup_atom && &is_S  } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
+    [ ( sub { &is_nongroup_atom && &is_Se } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
+    [ ( sub { &is_nongroup_atom && &is_Te } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
 
     # Hydrazine
     [ ( sub { &is_nongroup_atom && &is_N } ) x 2,
