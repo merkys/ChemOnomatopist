@@ -1,10 +1,10 @@
 package ChemOnomatopist::Elements;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Element properties from IUPAC Blue Book
 # VERSION
+
+use strict;
+use warnings;
 
 use parent Exporter::;
 our @EXPORT_OK = qw( %elements );
@@ -466,6 +466,7 @@ our %elements = (
 );
 
 # Hantzsch-Widman system prefixes, where different, taken from BBv2 P-22.2.2.1.1, Table 2.4
+# Standard bonding numbers are taken from BBv2 P-14.1.2, Table 1.3
 my %old_elements = (
     B => {
         standard_bonding_number => 3,
