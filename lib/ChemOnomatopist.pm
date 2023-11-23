@@ -785,7 +785,11 @@ sub select_mainchain
                 my $chain = select_sidechain( $graph, (blessed $groups[0] && $groups[0]->is_terminal ? @groups : undef), @parents );
                 my @vertices = $chain->vertices;
                 push @chains, ChemOnomatopist::Chain->new( $graph, undef, @vertices );
-                push @chains, ChemOnomatopist::Chain->new( $graph, undef, reverse @vertices ) if @vertices > 1;
+                if( @vertices > 1 && !$chains[-1]->isa( ChemOnomatopist::Chain::Amine:: ) ) {
+                    # There is no use in reversing chains of single vertices.
+                    # ChemOnomatopist::Chain::Amine chains start with amine group, cannot be reversed.
+                    push @chains, ChemOnomatopist::Chain->new( $graph, undef, reverse @vertices );
+                }
             }
         } elsif( @parents ) {
             my $copy = $graph->copy;
