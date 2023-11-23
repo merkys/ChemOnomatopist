@@ -655,6 +655,12 @@ sub find_groups
         die "cannot process multiple cycle amides sharing the same amide group\n";
     }
 
+    # Safeguarding against multiple urea groups which as well leads to endless loops.
+    # Failcase: 2,4-diimidotricarbonic diamide (from BBv2)
+    if( (grep { $_->isa( ChemOnomatopist::Group::Urea:: ) } $graph->groups) > 1 ) {
+        die "cannot process multiple urea groups\n";
+    }
+
     return;
 }
 
