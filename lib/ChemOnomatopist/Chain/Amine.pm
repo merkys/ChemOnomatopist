@@ -49,7 +49,10 @@ sub prefix()
 {
     my( $self ) = @_;
     my $prefix = $self->{chain}->prefix;
-    $prefix .= 'amino';
+    pop @$prefix if $prefix->[-1] eq 'e'; # FIXME: Dirty
+    pop @$prefix if $prefix->[-1] eq 'an';
+    $prefix .= 'yl' unless $prefix =~ /[oy]$/;
+    $prefix->append_stem( 'amino' );
     return $prefix;
 }
 
