@@ -364,7 +364,7 @@ sub get_mainchain_name
             }
         }
 
-        if( exists $atom->{valence} ) {
+        if( exists $atom->{valence} && element( $atom ) ne 'C' ) {
             $nonstandard_bonding_numbers{$i} = $atom->{valence};
         }
     }
