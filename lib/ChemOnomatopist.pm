@@ -437,23 +437,22 @@ sub get_mainchain_name
         $name .= $attachment;
     }
 
-    # Attaching nonstandard bonding numbers
-    if( %nonstandard_valences ) {
-        if( $chain->needs_substituent_locants ) { # FIXME: Is this right?
-            $name .= '-' . join( ',', map { join( '', $chain->locants( $_ ) ) . 'λ' . $nonstandard_valences{$_} }
-                                          sort keys %nonstandard_valences ) . '-';
-        } else {
-            $name .= '-' . join( ',', map { 'λ' . $nonstandard_valences{$_} }
-                                          sort keys %nonstandard_valences ) . '-';
-        }
-    }
-
     # Collecting names of all heteroatoms
     for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
                           keys %heteroatoms) {
 
+        my @locants;
+        for my $i (@{$heteroatoms{$element}}) {
+            my( $locant ) = $chain->locants( $i );
+            if( exists $nonstandard_valences{$i} ) {
+                $locant .= 'λ' . $nonstandard_valences{$i};
+            }
+            push @locants, $locant;
+        }
+
+        # FIXME: nonstandard valences have to be shown even if heteroatom locants are not required
         if( $chain->needs_heteroatom_locants ) {
-            $name->append_locants( $chain->locants( @{$heteroatoms{$element}} ) );
+            $name->append_locants( @locants );
         }
 
         if( $chain->needs_heteroatom_names ) {
