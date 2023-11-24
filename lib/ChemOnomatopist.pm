@@ -348,8 +348,13 @@ sub get_mainchain_name
         push @{$heteroatoms{$element}}, $i;
     }
 
+    my %nonstandard_valences;
+    for (pairs zip $chain->nonstandard_valences, $chain->nonstandard_valence_positions) {
+        my( $valence, $i ) = @$_;
+        $nonstandard_valences{$i} = $valence;
+    }
+
     my %isotopes;
-    my %nonstandard_bonding_numbers;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         next if blessed $atom;
@@ -362,10 +367,6 @@ sub get_mainchain_name
             for (grep { defined $_ } @{$atom->{h_isotope}}) {
                 push @{$isotopes{$_ . 'H'}}, $i;
             }
-        }
-
-        if( exists $atom->{valence} && element( $atom ) ne 'C' ) {
-            $nonstandard_bonding_numbers{$i} = $atom->{valence};
         }
     }
 
@@ -437,13 +438,13 @@ sub get_mainchain_name
     }
 
     # Attaching nonstandard bonding numbers
-    if( %nonstandard_bonding_numbers ) {
+    if( %nonstandard_valences ) {
         if( $chain->needs_substituent_locants ) { # FIXME: Is this right?
-            $name .= '-' . join( ',', map { $chain->locants( $_ ) . 'λ' . $nonstandard_bonding_numbers{$_} }
-                                          sort keys %nonstandard_bonding_numbers ) . '-';
+            $name .= '-' . join( ',', map { join( '', $chain->locants( $_ ) ) . 'λ' . $nonstandard_valences{$_} }
+                                          sort keys %nonstandard_valences ) . '-';
         } else {
-            $name .= '-' . join( ',', map { 'λ' . $nonstandard_bonding_numbers{$_} }
-                                          sort keys %nonstandard_bonding_numbers ) . '-';
+            $name .= '-' . join( ',', map { 'λ' . $nonstandard_valences{$_} }
+                                          sort keys %nonstandard_valences ) . '-';
         }
     }
 

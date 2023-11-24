@@ -170,6 +170,25 @@ sub heteroatom_positions()
 # CHECKME: Can chains have indicated hydrogens?
 sub indicated_hydrogens() { my @hydrogen_positions; return @hydrogen_positions }
 
+sub nonstandard_valence_positions()
+{
+    my( $self ) = @_;
+
+    return @{$self->{nonstandard_valence_positions}} if $self->{nonstandard_valence_positions};
+
+    my @vertices = $self->vertices;
+    my @nonstandard_valence_positions;
+    for (0..$#vertices) {
+        next if blessed $vertices[$_];
+        next if ChemOnomatopist::is_element( $vertices[$_], 'C' );
+        next unless exists $vertices[$_]->{valence};
+        push @nonstandard_valence_positions, $_;
+    }
+
+    $self->{nonstandard_valence_positions} = \@nonstandard_valence_positions;
+    return @nonstandard_valence_positions;
+}
+
 sub is_hydrocarbon()
 {
     my( $self ) = @_;
@@ -340,6 +359,14 @@ sub heteroatoms()
     my @vertices = $self->vertices;
     return map { ChemOnomatopist::element( $vertices[$_] ) }
                $self->heteroatom_positions;
+}
+
+sub nonstandard_valences()
+{
+    my( $self ) = @_;
+    my @vertices = $self->vertices;
+    return map { $vertices[$_]->{valence} }
+               $self->nonstandard_valence_positions;
 }
 
 sub length()
