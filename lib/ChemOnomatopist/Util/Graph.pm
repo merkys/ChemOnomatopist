@@ -162,6 +162,7 @@ sub graph_cycles
 sub graph_has_cycle
 {
     my( $graph ) = @_;
+    return '' unless $graph->vertices;
     return $graph->edges > $graph->vertices - 1;
 }
 
