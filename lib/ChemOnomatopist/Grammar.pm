@@ -32,13 +32,11 @@ use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Group::Urea;
 use ChemOnomatopist::Group::XO3;
-use ChemOnomatopist::Util::Graph qw(
-    graph_replace
-);
 use Chemistry::OpenSMILES qw(
     is_double_bond
 );
 use Graph::Grammar;
+use Graph::MoreUtils qw( graph_replace );
 use List::Util qw( all any first sum );
 use Scalar::Util qw( blessed );
 

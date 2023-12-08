@@ -64,7 +64,6 @@ use ChemOnomatopist::Util::Graph qw(
     graph_has_cycle
     graph_longest_paths_from_vertex
     graph_path_between_vertices
-    graph_replace
     graph_without_edge_attributes
     subgraph
     tree_branch_positions
@@ -77,7 +76,7 @@ use Chemistry::OpenSMILES qw(
     is_single_bond
     is_triple_bond
 );
-use Graph::MoreUtils qw( SSSR );
+use Graph::MoreUtils qw( SSSR graph_replace );
 use Graph::Nauty qw( are_isomorphic );
 use Graph::Traversal::DFS;
 use Graph::Undirected;
