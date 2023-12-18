@@ -14,6 +14,7 @@ use ChemOnomatopist::Util::Graph qw(
 );
 use Graph::Nauty qw( are_isomorphic );
 use Graph::Undirected;
+use List::Util qw( first );
 use Set::Object qw( set );
 
 sub new
@@ -21,24 +22,26 @@ sub new
     my( $class, $graph, @cycles ) = @_;
 
     my @vertices = map { $_->vertices } @cycles;
+
+    # Take a subgraph of only triple-connected vertices
+    my $g3 = subgraph( $graph, @vertices );
+    # Leave only triple-connected vertices
+    $g3->delete_vertices( grep { $g3->degree( $_ ) < 3 } $g3->vertices );
+    # There will be only two two-connected vertices now
+    my $end = first { $g3->degree( $_ ) == 2 } $g3->vertices;
+
+    # Take a subgraph of all participating vertices
     my $subgraph = subgraph( $graph, @vertices );
-    # Identify the triple-connected vertices
-    my $d3 = set( grep { $subgraph->degree( $_ ) == 3 } $subgraph->vertices );
-    # Remove them and intermediate atoms
-    $subgraph->delete_vertices( @$d3,
-                                grep { set( $subgraph->neighbours( $_ ) ) <= $d3 }
-                                     $subgraph->vertices );
     # Find the first vertex
-    my( $start ) = grep { $subgraph->degree( $_ ) == 1 }
-                        $subgraph->vertices;
-    $subgraph = subgraph( $graph, @vertices ); # Restore the subgraph
-    # Delete the edge which closes the all-encompassing cycle
-    $subgraph->delete_edge( $start, grep { $subgraph->degree( $_ ) == 3 }
-                                         $subgraph->neighbours( $start ) );
-    $subgraph->delete_edges( map  { @$_ }
-                             grep { $subgraph->degree( $_->[0] ) == 3 &&
-                                    $subgraph->degree( $_->[1] ) == 3 }
-                                  $subgraph->edges );
+    my $start = first { $subgraph->degree( $_ ) == 2 } $subgraph->neighbours( $end );
+
+    # Delete all bridges from the subgraph and the last edge as well
+    $subgraph->delete_edges( $start, $end,
+                             map  { @$_ }
+                             grep { $subgraph->degree( $_->[0] ) == 1 ||
+                                    $subgraph->degree( $_->[1] ) == 1 }
+                                    $subgraph->edges );
+
     @vertices = reverse( Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs );
 
     return bless { graph => $graph, vertices => \@vertices }, $class;
