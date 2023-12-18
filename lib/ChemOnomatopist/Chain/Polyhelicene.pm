@@ -93,7 +93,7 @@ sub ideal_graph($$)
 sub suffix
 {
     my( $self ) = @_;
-    return ChemOnomatopist::IUPAC_numerical_multiplier( ($self->length - 2) / 4 ) . 'helicene';
+    return ChemOnomatopist::IUPAC_numerical_multiplier( ($self->length - 2) / 4, 1 ) . 'helicene';
 }
 
 1;
