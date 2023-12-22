@@ -49,6 +49,10 @@ my @cases = (
     { smiles => 'CC1=C(C2=C(C=C1)C=C(S2)O)CO', iupac => '7-(hydroxymethyl)-6-methyl-1-benzothiophen-2-ol' }, # PubChem 130803523
     { smiles => 'COC1=C(C2=C(C=C1)SC(=N2)N)Br', iupac => '4-bromo-5-methoxy-1,3-benzothiazol-2-amine' }, # PubChem 131985781
 
+    { smiles => 'C1=CC=C2C(=C1)N=CS2', iupac => '1,3-benzothiazole' }, # PubChem 7222
+    { smiles => 'C1=CC=C2C(=C1)C=NS2', iupac => '1,2-benzothiazole' }, # PubChem 9225
+    { smiles => 'C1=CC2=CSN=C2C=C1', iupac => '2,1-benzothiazole', AUTHOR => 1 }, # PubChem 638008 # FIXME: Incorrect heteroatom order
+
     { smiles => 'C1(=CC=C(C=2C(=CC=C(C12)C(=O)O)C(=O)O)C(=O)O)C(=O)O', iupac => 'naphthalene-1,4,5,8-tetracarboxylic acid' },
 );
 
