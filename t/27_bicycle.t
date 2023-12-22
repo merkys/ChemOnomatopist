@@ -51,7 +51,7 @@ my @cases = (
 
     { smiles => 'C1=CC=C2C(=C1)N=CS2', iupac => '1,3-benzothiazole' }, # PubChem 7222
     { smiles => 'C1=CC=C2C(=C1)C=NS2', iupac => '1,2-benzothiazole' }, # PubChem 9225
-    { smiles => 'C1=CC2=CSN=C2C=C1', iupac => '2,1-benzothiazole', AUTHOR => 1 }, # PubChem 638008 # FIXME: Incorrect heteroatom order
+    { smiles => 'C1=CC2=CSN=C2C=C1', iupac => '2,1-benzothiazole' }, # PubChem 638008
 
     { smiles => 'C1(=CC=C(C=2C(=CC=C(C12)C(=O)O)C(=O)O)C(=O)O)C(=O)O', iupac => 'naphthalene-1,4,5,8-tetracarboxylic acid' },
 );

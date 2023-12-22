@@ -95,6 +95,13 @@ sub name()
     my %names = %ChemOnomatopist::Chain::Monocycle::names;
 
     # Check the preserved names
+    if( $self->length == 5 && $self->is_aromatic ) {
+        if(      join( '', $self->heteroatoms ) eq 'O' ) {
+            return ChemOnomatopist::Name->new( 'furan' );
+        } elsif( join( '', $self->heteroatoms ) eq 'S' ) {
+            return ChemOnomatopist::Name->new( 'thiophene' );
+        }
+    }
     return ChemOnomatopist::Name->new( $names{$SMILES} ) if exists $names{$SMILES};
 
     # Check for aromatic notation

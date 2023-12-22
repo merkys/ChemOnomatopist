@@ -333,9 +333,8 @@ sub suffix()
 
     if( any { $_->is_benzene } $self->cycles ) {
         my( $other ) = grep { !$_->is_benzene } $self->cycles;
-        $other = ChemOnomatopist::Chain::Monocycle->new( $other->graph, $other->vertices );
 
-        my $SMILES = $other->backbone_SMILES;
+        my $SMILES = ChemOnomatopist::Chain::Monocycle->new( $other->graph, $other->vertices )->backbone_SMILES;
         if( $SMILES =~ /^C=C((?<el>O|S|\[Se\]|\[Te\])C|C(?<el>O|S|\[Se\]|\[Te\]))c:c$/ ) {
             # Names according to BBv2 P-25.2.1, Table 2.8, (23) and (24)
             my $element = $+{el};
