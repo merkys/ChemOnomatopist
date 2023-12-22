@@ -86,6 +86,12 @@ sub is_homogeneous()
     return  1;
 }
 
+my %five_membered_aromatic_single_heteroatom = (
+    N => '1H-pyrrole', # CHECKME: Do we need to adjust for isomerism?
+    O => 'furan',
+    S => 'thiophene',
+);
+
 sub name()
 {
     my( $self ) = @_;
@@ -95,12 +101,9 @@ sub name()
     my %names = %ChemOnomatopist::Chain::Monocycle::names;
 
     # Check the preserved names
-    if( $self->length == 5 && $self->is_aromatic ) {
-        if(      join( '', $self->heteroatoms ) eq 'O' ) {
-            return ChemOnomatopist::Name->new( 'furan' );
-        } elsif( join( '', $self->heteroatoms ) eq 'S' ) {
-            return ChemOnomatopist::Name->new( 'thiophene' );
-        }
+    if( $self->length == 5 && $self->is_aromatic &&
+        exists $five_membered_aromatic_single_heteroatom{join( '', $self->heteroatoms )} ) {
+        return ChemOnomatopist::Name->new( $five_membered_aromatic_single_heteroatom{join( '', $self->heteroatoms )} );
     }
     return ChemOnomatopist::Name->new( $names{$SMILES} ) if exists $names{$SMILES};
 

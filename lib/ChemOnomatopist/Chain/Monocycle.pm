@@ -28,22 +28,15 @@ our %names = (
     CCNCCN => 'piperazine',
     CCNCCO => 'morpholine',
 
-    # 5-membered aromatic
-    'C=CC=CO' => 'furan',
-    'C=COc:c' => 'furan', # For fused rings
+    # 5-membered aromatic (monoheteroatoms are handled elsewhere)
 
     'C=CN=CN'  => '1H-imidazole', # FIXME: Adjust for isomerism
     'C=CN=CO'  => '1,3-oxazole',
     'C=CC=NO'  => '1,2-oxazole',
     'C=CC=NN'  => 'pyrazole', # FIXME: Adjust for isomerism
 
-    'C=CC=CN'  => '1H-pyrrole', # FIXME: Adjust for isomerism
-    'C=CNc:c'  => '1H-pyrrole', # For fused rings
-
     'C=CC=C[Se]' => 'selenophene',
     'C=CC=C[Te]' => 'tellurophene',
-    'C=CC=CS' => 'thiophene',
-    'C=CSc:c' => 'thiophene', # For fused rings
 
     # 6-membered aromatic
     'c:c:c:c:c:c:' => 'benzene',
