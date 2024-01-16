@@ -8,6 +8,7 @@ use warnings;
 
 use Algorithm::Combinatorics qw( combinations );
 use ChemOnomatopist::Chain;
+use ChemOnomatopist::Group::Carbaldehyde;
 use ChemOnomatopist::Group::Carbonitrile;
 use ChemOnomatopist::Chain::Carboxamide;
 use ChemOnomatopist::Chain::Circular;
@@ -72,6 +73,7 @@ sub has_H1 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub has_H2 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub has_H3 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 
+sub is_aldehyde   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Aldehyde:: ) }
 sub is_amide      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide:: ) }
 sub is_amine      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
 sub is_cyanide    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
@@ -129,6 +131,10 @@ my @rules = (
     # Aldehyde
     [ sub { &is_nongroup_atom && &is_C && &has_H1 }, \&is_ketone,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Aldehyde->new( $_[2] ), @_[1..2] ) } ],
+
+    # Aldehydes attached to carbon in cyclic system or a heteroatom
+    [ \&is_aldehyde, sub { &is_circular || &is_heteroatom }, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbaldehyde->new( $_[1] ), $_[1] ) } ],
 
     # Amide
     [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_ketone,
