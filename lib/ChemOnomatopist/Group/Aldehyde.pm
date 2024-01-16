@@ -14,11 +14,11 @@ sub new
     return bless { ketone => $ketone }, $class;
 }
 
-sub element { return 'C' }
+sub element() { 'C' }
 
-sub is_part_of_chain() { return 1 }
+sub is_part_of_chain() { 1 }
 
-sub prefix { return 'formyl' }
+sub prefix { 'formyl' }
 
 sub suffix()
 {
@@ -28,7 +28,7 @@ sub suffix()
     return $name;
 }
 
-sub multisuffix { return 'carbaldehyde' }
-sub suffix_if_cycle_substituent { return 'carbaldehyde' }
+sub multisuffix { 'carbaldehyde' }
+sub suffix_if_cycle_substituent { 'carbaldehyde' }
 
 1;
