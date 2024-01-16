@@ -16,8 +16,6 @@ sub new
 
 sub element() { 'C' }
 
-sub is_part_of_chain() { 1 }
-
 sub prefix() { 'formyl' }
 sub suffix() { 'carbaldehyde' }
 
