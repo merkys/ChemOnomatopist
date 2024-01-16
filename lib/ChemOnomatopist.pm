@@ -443,13 +443,14 @@ sub get_mainchain_name
 
         my @locants;
         for my $i (@{$heteroatoms{$element}}) {
-            my( $locant ) = $chain->locants( $i );
+            my $locant = '';
+            if( $chain->needs_heteroatom_locants ) {
+                ( $locant ) = $chain->locants( $i );
+            }
             if( exists $nonstandard_valences{$i} ) {
                 $locant .= 'λ' . $nonstandard_valences{$i};
-            } elsif( !$chain->needs_heteroatom_locants ) {
-                next;
             }
-            push @locants, $locant;
+            push @locants, $locant unless $locant eq '';
         }
 
         $name->append_locants( @locants );
