@@ -19,6 +19,21 @@ sub element() { return 'N' }
 sub is_terminal() { return 1 }
 
 sub prefix { return 'amido' }
-sub suffix { return 'amide' }
+
+my %infix = (
+    S => 'thio',
+    Se => 'seleno',
+    Te => 'telluro',
+);
+
+sub suffix
+{
+    my( $self ) = @_;
+    my $suffix = '';
+    if( exists $infix{$self->{ketone}->element} ) {
+        $suffix .= $infix{$self->{ketone}->element};
+    }
+    return $suffix . 'amide';
+}
 
 1;

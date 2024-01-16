@@ -57,8 +57,13 @@ my @cases = (
     { smiles => 'N1(CCCC2=CC=CC=C12)C(CC)=O', iupac => '1-(3,4-dihydroquinolin-1(2H)-yl)propan-1-one', AUTHOR => 1 },
 
     # From BBv2 P-66.1.4.1.1
+    { smiles => 'C(N)=S', iupac => 'methanethioamide', AUTHOR => 1 },
+    { smiles => 'C(C)(N)=S', iupac => 'ethanethioamide' },
     { smiles => 'C1(=CC=CC=C1)C(N)=S', iupac => 'benzenecarbothioamide', AUTHOR => 1 },
+    { smiles => 'C(CCC(N)=S)(N)=S', iupac => 'butanedithioamide', AUTHOR => 1 },
     { smiles => 'N1=C(C=CC=C1)C(N)=S', iupac => 'pyridine-2-carbothioamide' },
+    { smiles => 'C1=C(C=CC2=CC=CC=C12)S(N)(=S)=S', iupac => 'naphthalene-2-sulfonodithioamide', AUTHOR => 1 },
+    { smiles => 'N1=CC=C(C=C1)C(N)=S', iupac => 'pyridine-4-carbothioamide' },
 
     { smiles => 'CCC(=O)N(C1CCN(CC1)CCC2=CC=CC=C2)C3=CC=CC=C3', iupac => 'N-phenyl-N-[1-(2-phenylethyl)piperidin-4-yl]propanamide' }, # PubChem 3345
     { smiles => 'CC(CCOC)NC(=O)CCCCCCN', iupac => '7-amino-N-(4-methoxybutan-2-yl)heptanamide', AUTHOR => 1 }, # PubChem 64604850

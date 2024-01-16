@@ -29,14 +29,7 @@ sub locants(@)
 }
 
 # FIXME: This is a source of possible failures
-sub prefix() { return 'benzamido' }
-
-my %infix = (
-    O => 'x',
-    S => 'thio',
-    Se => 'seleno',
-    Te => 'telluro',
-);
+sub prefix() { 'benzamido' }
 
 sub suffix()
 {
@@ -51,7 +44,10 @@ sub suffix()
                            0..$#vertices;
         $suffix->append_locants( $locant + 1 );
     }
-    $suffix .= 'carbo' . $infix{$self->{vertices}[0]{ketone}->element};
+    $suffix .= 'carbo';
+    if( $self->{vertices}[0]{ketone}->element eq 'O' ) {
+        $suffix .= 'x';
+    }
     return $suffix;
 }
 
