@@ -28,7 +28,7 @@ my @cases = (
     { smiles => 'O=C(CC=O)C', iupac => '3-oxobutanal' },
     { smiles => 'C=C(C=O)CCCC', iupac => '2-methylidenehexanal' },
     { smiles => 'OC1=C(C=O)C=CC=C1', iupac => '2-hydroxybenzaldehyde', AUTHOR => 1 },
-    { smiles => 'OCC1=CC=C(O1)C=O', iupac => '5-(hydroxymethyl)furan-2-carbaldehyde', AUTHOR => 1 },
+    { smiles => 'OCC1=CC=C(O1)C=O', iupac => '5-(hydroxymethyl)furan-2-carbaldehyde' },
     { smiles => 'O(C1=CC=CC=C1)CC=O', iupac => 'phenoxyacetaldehyde', AUTHOR => 1 },
     { smiles => 'FC=1C(=C(C=O)C=CC1)C', iupac => '3-fluoro-2-methylbenzaldehyde', AUTHOR => 1 },
 );

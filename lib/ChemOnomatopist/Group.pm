@@ -8,6 +8,7 @@ use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine;
+use ChemOnomatopist::Group::Carbaldehyde;
 use ChemOnomatopist::Group::Carbonitrile;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
@@ -60,6 +61,7 @@ our @order = (
     ChemOnomatopist::Group::Cyanide::,
     ChemOnomatopist::Group::Isocyanate::, # CHECKME: Is this correct?
     ChemOnomatopist::Group::Isocyanide::, # CHECKME: Is this correct?
+    ChemOnomatopist::Group::Carbaldehyde::, # CHECKME: How is this related to ChemOnomatopist::Group::Aldehyde?
     ChemOnomatopist::Group::Aldehyde::,
     ChemOnomatopist::Group::Ketone::,
     ChemOnomatopist::Group::Hydroxy::,
