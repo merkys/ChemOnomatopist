@@ -446,14 +446,13 @@ sub get_mainchain_name
             my( $locant ) = $chain->locants( $i );
             if( exists $nonstandard_valences{$i} ) {
                 $locant .= 'λ' . $nonstandard_valences{$i};
+            } elsif( !$chain->needs_heteroatom_locants ) {
+                next;
             }
             push @locants, $locant;
         }
 
-        # FIXME: nonstandard valences have to be shown even if heteroatom locants are not required
-        if( $chain->needs_heteroatom_locants ) {
-            $name->append_locants( @locants );
-        }
+        $name->append_locants( @locants );
 
         if( $chain->needs_heteroatom_names ) {
             if( @{$heteroatoms{$element}} > 1 ) {
