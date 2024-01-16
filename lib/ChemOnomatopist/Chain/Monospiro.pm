@@ -83,6 +83,8 @@ sub has_form($$)
     return 1;
 }
 
+sub needs_multiple_bond_locants() { 1 }
+
 sub locants() { shift; return map { $_ + 1 } @_ }
 
 sub prefix()
