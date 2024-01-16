@@ -41,8 +41,10 @@ sub suffix()
 sub _cmp_instances
 {
     my( $A, $B ) = @_;
-    return if any { blessed $_ } ( $A, $B ); # FIXME: Need proper sorting
-    return $A->{halide}{symbol} cmp $B->{halide}{symbol};
+    # Halides are either simple atoms or various cyano groups
+    my $A_symbol = blessed $A->{halide} ? 'N' : $A->{halide}{symbol};
+    my $B_symbol = blessed $B->{halide} ? 'N' : $B->{halide}{symbol};
+    return $A_symbol cmp $B_symbol;
 }
 
 1;
