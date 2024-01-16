@@ -25,6 +25,7 @@ sub suffix()
     my( $self ) = @_;
     my $name = $self->{ketone}->suffix;
     $name =~ s/one$/al/;
+    $name = 'selenal' if $name eq 'selal';
     return $name;
 }
 
