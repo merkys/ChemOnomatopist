@@ -42,6 +42,9 @@ my @cases = (
     { smiles => 'C(C)N(C(=O)C=1OC=CC1)CC', iupac => 'N,N-diethylfuran-2-carboxamide' },
 
     # From BBv2 P-66.1.1.3.4
+    { smiles => 'C1(=CC=CC=C1)NC=O', iupac => 'N-phenylformamide', AUTHOR => 1 },
+    { smiles => 'C1(=CC=CC=C1)NC(C)=O', iupac => 'N-phenylacetamide' },
+    { smiles => 'C1(=CC=CC=C1)NC(CCCCC)=O', iupac => 'N-phenylhexanamide' },
     { smiles => 'CN(C(C1=CC=CC=C1)=O)C1=CC=CC=C1', iupac => 'N-methyl-N-phenylbenzamide' },
     { smiles => 'CN(C(C1=CC=C(C=C1)C)=O)C1=CC(=CC=C1)C', iupac => 'N,4-dimethyl-N-(3-methylphenyl)benzamide' },
 
