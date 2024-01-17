@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Amide;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Amide chain
 # VERSION
+
+use strict;
+use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Name;

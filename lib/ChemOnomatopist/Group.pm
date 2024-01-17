@@ -1,5 +1,8 @@
 package ChemOnomatopist::Group;
 
+# ABSTRACT: Chemical group
+# VERSION
+
 use strict;
 use warnings;
 
@@ -29,9 +32,6 @@ use ChemOnomatopist::Group::Urea;
 
 use List::Util qw( any );
 use Scalar::Util qw( blessed );
-
-# ABSTRACT: Chemical group
-# VERSION
 
 # Order from BBv2 P-41
 our @order = (
@@ -189,6 +189,6 @@ sub cmp
 }
 
 # Two instances of the same group are thought to be of the same seniority
-sub _cmp_instances { return 0 }
+sub _cmp_instances { 0 }
 
 1;

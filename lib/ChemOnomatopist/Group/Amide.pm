@@ -1,10 +1,10 @@
 package ChemOnomatopist::Group::Amide;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Amide group
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Group::;
 
@@ -14,11 +14,11 @@ sub new
     return bless { parent => $parent, ketone => $ketone }, $class;
 }
 
-sub element() { return 'N' }
+sub element() { 'N' }
 
-sub is_terminal() { return 1 }
+sub is_terminal() { 1 }
 
-sub prefix { return 'amido' }
+sub prefix { 'amido' }
 
 my %infix = (
     S => 'thio',

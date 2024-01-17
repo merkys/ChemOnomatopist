@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Monocycle;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Monocyclic group
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Chain::Circular::;
 

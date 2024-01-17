@@ -1,10 +1,10 @@
 package ChemOnomatopist::Group::Aldehyde;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Aldehyde group
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Group::;
 
