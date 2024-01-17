@@ -42,8 +42,8 @@ my @cases = (
     { smiles => 'O1CCCCCCC1',   iupac => 'oxocane' },
 
     # From BBv2 P-22.2.2.1.5.2
-    { smiles => 'O1CCC1',     iupac => 'oxetane' },
-    { smiles => 'N1CCC1',     iupac => 'azetidine' },
+    { smiles => 'O1CCC1', iupac => 'oxetane' },
+    { smiles => 'N1CCC1', iupac => 'azetidine' },
 
     { smiles => 'C1NNN1', iupac => 'triazetidine' }, # PubChem 23033474
 
@@ -108,7 +108,7 @@ my @cases = (
     { smiles => 'O(c1cc(cc(OC)c1OC)CCN)C', iupac => '2-(3,4,5-trimethoxyphenyl)ethanamine' }, # mescaline, SMILES from Wikipedia
     { smiles => 'COC=1C=C(C=C(C1OC)OC)CCN', iupac => '2-(3,4,5-trimethoxyphenyl)ethanamine' }, # mescaline
 
-    { smiles => 'C1CCCCC1C=O', iupac => 'cyclohexanecarbaldehyde', AUTHOR => 1 }, # From BBv2 P-66.6.1.1.3
+    { smiles => 'C1CCCCC1C=O', iupac => 'cyclohexanecarbaldehyde' }, # From BBv2 P-66.6.1.1.3
 
     { smiles => 'S=C(CC1CC(CCC1)CC(CC)=O)CC', iupac => '1-[3-(2-sulfanylidenebutyl)cyclohexyl]butan-2-one' }, # From BBv2 P-64.7.3
 
