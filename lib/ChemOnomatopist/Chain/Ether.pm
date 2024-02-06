@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Ether;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Ether chain
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Chain::;
 
@@ -32,9 +32,27 @@ sub ether_position()
                  0..$#vertices;
 }
 
-# FIXME: The following are incorrect
-sub needs_heteroatom_locants() { '' }
-sub needs_heteroatom_names() { '' }
+sub heteroatom_positions()
+{
+    my( $self ) = @_;
+
+    return @{$self->{heteroatom_positions}} if $self->{heteroatom_positions};
+
+    my @vertices = $self->vertices;
+    my $ether_position = $self->ether_position;
+    my @heteroatom_positions;
+    for (0..$#vertices) {
+        next if $_ == $ether_position;
+        next if ChemOnomatopist::is_element( $vertices[$_], 'C' );
+        push @heteroatom_positions, $_;
+    }
+
+    $self->{heteroatom_positions} = \@heteroatom_positions;
+    return @heteroatom_positions;
+}
+
+sub needs_heteroatom_locants() { 1 }
+sub needs_heteroatom_names() { 1 }
 
 sub prefix()
 {
