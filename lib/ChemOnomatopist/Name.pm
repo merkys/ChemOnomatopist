@@ -43,13 +43,6 @@ sub append($)
     $self->[-1] =~ s/a$// if $name =~ /^a/ && @$self;
     $self->[-1] =~ s/o$// if $name =~ /^o/ && @$self && $self->[-1] ne 'cyclo';
 
-    # BBv2 P-16.7.1 (d)
-    my $terminal_element;
-    if( @$self && blessed $self->[-1] && $self->[-1]->isa( ChemOnomatopist::Name::Part::Element:: ) &&
-        "$name" =~ /^[aeiouy]/ ) {
-        $self->[-1] =~ s/a$//;
-    }
-
     # If names are combined and the second one starts with a number, a separator is added.
     if( @$self && blessed $name && $name->isa( ChemOnomatopist::Name:: ) && $name =~ /^\d/ ) {
         push @$self, '-';
