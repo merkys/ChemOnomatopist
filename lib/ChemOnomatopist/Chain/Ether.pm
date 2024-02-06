@@ -11,6 +11,7 @@ use parent ChemOnomatopist::Chain::;
 use ChemOnomatopist;
 use ChemOnomatopist::Group::Ether;
 use ChemOnomatopist::Name;
+use List::Util qw( first );
 use Scalar::Util qw( blessed );
 
 sub new
@@ -21,8 +22,19 @@ sub new
     return bless $self, $class;
 }
 
-sub needs_heteroatom_locants() { return '' }
-sub needs_heteroatom_names() { return '' }
+sub ether_position()
+{
+    my( $self ) = @_;
+
+    my @vertices = $self->vertices;
+    return first { blessed $vertices[$_] &&
+                   $vertices[$_]->isa( ChemOnomatopist::Group::Ether:: ) }
+                 0..$#vertices;
+}
+
+# FIXME: The following are incorrect
+sub needs_heteroatom_locants() { '' }
+sub needs_heteroatom_names() { '' }
 
 sub prefix()
 {
@@ -31,9 +43,7 @@ sub prefix()
     my @vertices = $self->vertices;
     return 'oxy' if @vertices == 1;
 
-    my( $cut_position ) = grep { blessed $vertices[$_] &&
-                                 $vertices[$_]->isa( ChemOnomatopist::Group::Ether:: ) }
-                               0..$#vertices;
+    my $cut_position = $self->ether_position;
     if( $cut_position ) {
         my @chains = ( ChemOnomatopist::Chain->new( $self->graph,
                                                     $self->parent,
@@ -65,9 +75,7 @@ sub suffix()
     my( $self ) = @_;
 
     my @vertices = $self->vertices;
-    my( $cut_position ) = grep { blessed $vertices[$_] &&
-                                 $vertices[$_]->isa( ChemOnomatopist::Group::Ether:: ) }
-                               0..$#vertices;
+    my $cut_position = $self->ether_position;
 
     my @chains = ( ChemOnomatopist::Chain->new( $self->graph,
                                                 $self->parent,
