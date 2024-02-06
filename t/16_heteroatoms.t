@@ -16,6 +16,8 @@ my @cases = (
     { smiles => 'C1CCCCC1CCOCC', iupac => '(2-ethoxyethyl)cyclohexane' },
     { smiles => 'C1CCCCC1OCCCC', iupac => 'butoxycyclohexane' }, # PubChem 13299482
 
+    { smiles => '[SiH3][SiH2]OCCS[SiH2][SiH3]', iupac => '3-oxa-6-thia-1,2,7,8-tetrasilaoctane', AUTHOR => 1 }, # BBv2 P-15.3.4.1.1
+
     # From BBv2 P-15.4.3.1
     { smiles => 'COCSSCCOCC[Se]C', iupac => '2,8-dioxa-4,5-dithia-11-selenadodecane' },
     { smiles => '[SiH3]OCS[SiH3]', iupac => '2-oxa-4-thia-1,5-disilapentane' },
@@ -29,6 +31,11 @@ my @cases = (
     { smiles => 'C[SiH2]C[SiH2]C[SiH2]C[SiH2]CCO', iupac => '2,4,6,8-tetrasiladecan-10-ol' },
 
     { smiles => 'C[SiH2]C[SiH2]C[SiH2]C[SiH2]C=C', iupac => '2,4,6,8-tetrasiladec-9-ene' }, # BBv2 P-15.4.3.2.4
+
+    # From BBv2 P-21.2.3.2
+    { smiles => 'COCOCCOCCOC', iupac => '2,4,7,10-tetraoxaundecane', AUTHOR => 1 },
+    { smiles => 'CSC[SiH2]CCOCCOC', iupac => '7,10-dioxa-2-thia-4-silaundecane', AUTHOR => 1 },
+    { smiles => 'CO[SiH2]CC[SiH2]SC', iupac => '2-oxa-7-thia-3,6-disilaoctane', AUTHOR => 1 },
 
     { smiles => 'BrC(CCCC(CCl)CBr)Cl', iupac => '1-bromo-5-(bromomethyl)-1,6-dichlorohexane', AUTHOR => 1 }, # BBv2 P-45.2.3
 
