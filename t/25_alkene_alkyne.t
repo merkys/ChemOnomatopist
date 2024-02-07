@@ -34,6 +34,8 @@ my @cases = (
     { smiles => 'CCC=CCC', iupac => 'hex-3-ene' }, # Chain halves are joined by double bond
 
     { smiles => 'CC#CCC(=O)CNCC#C', iupac => '1-(prop-2-ynylamino)hex-4-yn-2-one' }, # PubChem 116589377
+
+    { smiles => 'C=CC([Br])C(CCC)CC(CC)=C(F)C', iupac => '6-bromo-3-ethyl-2-fluoro-5-propyl-2,7-octadiene', AUTHOR => 1 }, # Taken from school's assignment
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
