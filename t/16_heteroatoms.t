@@ -39,6 +39,10 @@ my @cases = (
 
     { smiles => 'BrC(CCCC(CCl)CBr)Cl', iupac => '1-bromo-5-(bromomethyl)-1,6-dichlorohexane', AUTHOR => 1 }, # BBv2 P-45.2.3
 
+    # From BBv3 P-61.3.1
+    { smiles => 'ClC(C)(C)C', iupac => '2-chloro-2-methylpropane', AUTHOR => 1 },
+    { smiles => 'ClC(C)CCCC', iupac => '2-chlorohexane', AUTHOR => 1 },
+
     # From BBv2 P-61.5.2
     { smiles => 'ON(O)OC(C)(C)C(C(O)=O)NC(C)(C)C', iupac => '2-(tert-butylimino)-3-methyl-3-(nitrooxy)butanoic acid', AUTHOR => 1 },
 
