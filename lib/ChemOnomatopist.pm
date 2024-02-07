@@ -1,10 +1,10 @@
 package ChemOnomatopist;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Give molecule a name
 # VERSION
+
+use strict;
+use warnings;
 
 use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Amide;
@@ -777,7 +777,8 @@ sub select_mainchain
         $most_senior_group = blessed $groups[0] if @groups;
     }
 
-    print STDERR ">>> most senior functional group: $most_senior_group\n" if $DEBUG;
+    print STDERR '>>> most senior functional group: ' .
+                 ($most_senior_group ? $most_senior_group : '(none)') . "\n" if $DEBUG;
 
     my @parents = @POI;
 
