@@ -10,8 +10,8 @@ my @cases = (
     { smiles => 'COCCOCCOCCOCC', iupac => '2,5,8,11-tetraoxatridecane' }, # BBv2 P-12.1
     { smiles => 'C(F)(F)(F)C(F)(F)CO', iupac => '2,2,3,3,3-pentafluoropropan-1-ol' }, # BBv2 P-14.3.4.5
 
-    { smiles => 'ClC(C(Cl)(Cl)Cl)(Cl)Cl', iupac => 'hexachloroethane', AUTHOR => 1 },
-    { smiles => 'ClC(=C(Cl)Cl)Cl', iupac => 'tetrachloroethene', AUTHOR => 1 },
+    { smiles => 'ClC(C(Cl)(Cl)Cl)(Cl)Cl', iupac => 'hexachloroethane' },
+    { smiles => 'ClC(=C(Cl)Cl)Cl', iupac => 'tetrachloroethene' },
 
     { smiles => 'C1CCCCC1CCOCC', iupac => '(2-ethoxyethyl)cyclohexane' },
     { smiles => 'C1CCCCC1OCCCC', iupac => 'butoxycyclohexane' }, # PubChem 13299482
@@ -37,13 +37,13 @@ my @cases = (
     { smiles => 'CSC[SiH2]CCOCCOC', iupac => '7,10-dioxa-2-thia-4-silaundecane' },
     { smiles => 'CO[SiH2]CC[SiH2]SC', iupac => '2-oxa-7-thia-3,6-disilaoctane' },
 
-    { smiles => 'BrC(CCCC(CCl)CBr)Cl', iupac => '1-bromo-5-(bromomethyl)-1,6-dichlorohexane', AUTHOR => 1 }, # BBv2 P-45.2.3
+    { smiles => 'BrC(CCCC(CCl)CBr)Cl', iupac => '1-bromo-5-(bromomethyl)-1,6-dichlorohexane' }, # BBv2 P-45.2.3
 
     # From BBv3 P-61.3.1
-    { smiles => 'ClC(C)(C)C', iupac => '2-chloro-2-methylpropane', AUTHOR => 1 },
-    { smiles => 'ClC(C)CCCC', iupac => '2-chlorohexane', AUTHOR => 1 },
+    { smiles => 'ClC(C)(C)C', iupac => '2-chloro-2-methylpropane' },
+    { smiles => 'ClC(C)CCCC', iupac => '2-chlorohexane' },
 
-    { smiles => 'BrC(Br)Br', iupac => 'tribromomethane', AUTHOR => 1 }, # From BBv3 P-61.3.4
+    { smiles => 'BrC(Br)Br', iupac => 'tribromomethane' }, # From BBv3 P-61.3.4
 
     # From BBv2 P-61.5.2
     { smiles => 'ON(O)OC(C)(C)C(C(O)=O)NC(C)(C)C', iupac => '2-(tert-butylimino)-3-methyl-3-(nitrooxy)butanoic acid', AUTHOR => 1 },

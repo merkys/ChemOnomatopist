@@ -895,9 +895,14 @@ sub select_mainchain
         # Here the candidate halves for the longest (and "best") path are placed in @path_parts.
         # Each of candidate halves start with center atom.
         my $subgraph = copy $graph;
+        $subgraph->delete_vertices( grep { !blessed $_ &&
+                                           $subgraph->degree( $_ ) == 1 &&
+                                           element( $_ ) =~ /^(F|Cl|Br|I)$/ }
+                                         $subgraph->vertices );
         $subgraph->delete_vertices( grep { blessed $_ &&
                                            $_->isa( ChemOnomatopist::Group:: ) &&
-                                           !$_->is_part_of_chain } $subgraph->vertices );
+                                           !$_->is_part_of_chain }
+                                         $subgraph->vertices );
         my @center = graph_center( $subgraph );
         my @path_parts;
         if( @center == 1 ) {
