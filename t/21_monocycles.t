@@ -81,7 +81,7 @@ my @cases = (
     { smiles => 'O1C=COCCOCCOCC1', iupac => '1,4,7,10-tetraoxacyclododec-2-ene' },
     { smiles => 'O1CC=NCCCCCCCC1', iupac => '1-oxa-4-azacyclododec-3-ene' },
     { smiles => '[SiH2]1CC#CC=CC=CCC[SiH2]CCCCCCCCC1', iupac => '1,11-disilacycloicosa-5,7-dien-3-yne' },
-    { smiles => '[SiH2]1CCCCCCCC[SiH2]CC=CC=CC=CC#CC1', iupac => '1,10-disilacycloicosa-12,14,16-trien-18-yne', AUTHOR => 1 }, # flaky
+    { smiles => '[SiH2]1CCCCCCCC[SiH2]CC=CC=CC=CC#CC1', iupac => '1,10-disilacycloicosa-12,14,16-trien-18-yne', AUTHOR => 'flaky' },
 
     # From BBv2 P-31.1.3.4
     { smiles => 'C=CC1=CC=CC=C1', iupac => 'ethenylbenzene' },
@@ -99,7 +99,7 @@ my @cases = (
 
     { smiles => 'C(=O)(O)CC([Br])([Br])C1CCCCC1', iupac => '3,3-dibromo-3-cyclohexylpropanoic acid' },
     { smiles => 'ClC=1C=CC=CC=1C(F)(F)C(F)(F)F',  iupac => '1-chloro-2-(pentafluoroethyl)benzene' }, # From BBv2 P-14.3.4.5
-    { smiles => 'CC(CCC)C1=CC=C(C=C1)C(CC)CC', iupac => '1-(pentan-2-yl)-4-(pentan-3-yl)benzene', AUTHOR => 1 }, # From BBv2 P-14.5.4 # flaky
+    { smiles => 'CC(CCC)C1=CC=C(C=C1)C(CC)CC', iupac => '1-(pentan-2-yl)-4-(pentan-3-yl)benzene', AUTHOR => 'flaky' }, # From BBv2 P-14.5.4
 
     # From BBv2 P-14.5.3
     { smiles => 'C(C)(C)(C)C=1C=CC=C(C(C)CC)C=1', iupac => '1-(butan-2-yl)-3-tert-butylbenzene' },
@@ -143,5 +143,8 @@ for my $case (@cases) {
     eval { $ok = is ChemOnomatopist::get_name( $case->{smiles} ), $case->{iupac}, $case->{smiles} };
     $@ =~ s/\n$// if $@;
     fail $case->{smiles} . ": $@" if $@;
-    diag 'test supposed to fail with AUTHOR_TESTING' if $case->{AUTHOR} && $ok;
+    if( $case->{AUTHOR} && $ok ) {
+        diag 'test supposed to fail with AUTHOR_TESTING' .
+             ( $case->{AUTHOR} !~ /^1$/ ? ': ' . $case->{AUTHOR} : '' );
+    }
 }
