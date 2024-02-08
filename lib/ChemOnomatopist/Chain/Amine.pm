@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Amine;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Amine chain
 # VERSION
+
+use strict;
+use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Name;

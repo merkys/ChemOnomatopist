@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Circular;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Chain whose first and last members are connected
 # VERSION
+
+use strict;
+use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Chain; # FIXME: Not sure why it is needed

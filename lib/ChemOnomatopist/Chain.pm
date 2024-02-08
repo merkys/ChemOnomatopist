@@ -1,5 +1,8 @@
 package ChemOnomatopist::Chain;
 
+# ABSTRACT: Chain of atoms
+# VERSION
+
 use strict;
 use warnings;
 
@@ -13,9 +16,6 @@ use Graph::Traversal::DFS;
 use List::Util qw( all any sum0 uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
-
-# ABSTRACT: Chain of atoms
-# VERSION
 
 sub vertices();
 

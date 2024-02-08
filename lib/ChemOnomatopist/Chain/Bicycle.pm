@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Bicycle;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Fused bicyclic chain
 # VERSION
+
+use strict;
+use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Chain::Circular;
