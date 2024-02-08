@@ -1135,6 +1135,7 @@ sub filter_chains
                    # TODO: P-44.4.1.10: Lowest locants for prefixes/suffixes expressing degrees of hydrogenation
                    #                    This is not fully implemented now
                    \&rule_lowest_numbered_multiple_bonds,
+                   \&rule_lowest_numbered_double_bonds,
                    # TODO: P-44.4.1.11: Concerns isotopes
                    # TODO: P-44.4.1.12: Concerns stereogenic centers
 
@@ -1202,6 +1203,16 @@ sub rule_lowest_numbered_multiple_bonds
     my( $max_value ) = sort { cmp_arrays( $a, $b ) }
                        map  {  [ $_->multiple_bond_positions ] } @chains;
     return grep { !cmp_arrays( [ $_->multiple_bond_positions ],
+                               $max_value ) }
+                @chains;
+}
+
+sub rule_lowest_numbered_double_bonds
+{
+    my @chains = @_;
+    my( $max_value ) = sort { cmp_arrays( $a, $b ) }
+                       map  {  [ $_->double_bond_positions ] } @chains;
+    return grep { !cmp_arrays( [ $_->double_bond_positions ],
                                $max_value ) }
                 @chains;
 }

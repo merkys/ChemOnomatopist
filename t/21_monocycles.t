@@ -110,6 +110,7 @@ my @cases = (
     { smiles => 'O(c1cc(cc(OC)c1OC)CCN)C', iupac => '2-(3,4,5-trimethoxyphenyl)ethanamine' }, # mescaline, SMILES from Wikipedia
     { smiles => 'COC=1C=C(C=C(C1OC)OC)CCN', iupac => '2-(3,4,5-trimethoxyphenyl)ethanamine' }, # mescaline
 
+    { smiles => 'C1=CC=CC=CC=CC=CC#C1', iupac => 'cyclododeca-1,3,5,7,9-pentaen-11-yne' }, # From BBv3 P-54.2
     { smiles => 'C1CCCCC1C=O', iupac => 'cyclohexanecarbaldehyde' }, # From BBv2 P-66.6.1.1.3
 
     { smiles => 'S=C(CC1CC(CCC1)CC(CC)=O)CC', iupac => '1-[3-(2-sulfanylidenebutyl)cyclohexyl]butan-2-one' }, # From BBv2 P-64.7.3

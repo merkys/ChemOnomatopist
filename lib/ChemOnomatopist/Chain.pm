@@ -272,6 +272,13 @@ sub multiple_bond_positions()
     return grep { $bonds[$_] =~ /^[=#\$]$/ } 0..$#bonds;
 }
 
+sub double_bond_positions()
+{
+    my( $self ) = @_;
+    my @bonds = $self->bonds;
+    return grep { $bonds[$_] eq '=' } 0..$#bonds;
+}
+
 sub needs_multiple_bond_locants()
 {
     my( $self ) = @_;
