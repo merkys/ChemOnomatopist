@@ -149,13 +149,16 @@ sub parent(;$)
 sub needs_heteroatom_locants()
 {
     my( $self ) = @_;
+    return '' if $self->is_hydrocarbon;
+    return '' if $self->is_monoreplaced && !$self->number_of_branches;
     return $self->length < 3 || $self->length > 10 || all { $_->{symbol} !~ /^[cC]$/ } $self->vertices;
 }
 
 sub needs_heteroatom_names()
 {
     my( $self ) = @_;
-    return $self->needs_heteroatom_locants;
+    return '' if $self->is_hydrocarbon;
+    return $self->length < 3 || $self->length > 10 || all { $_->{symbol} !~ /^[cC]$/ } $self->vertices;
 }
 
 sub prefix()

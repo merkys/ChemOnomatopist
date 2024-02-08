@@ -34,6 +34,8 @@ my @cases = (
 
     { smiles => 'N1C=NC=C1', iupac => '1H-imidazole' }, # From BBv2 P-22.2.1
 
+    { smiles => 'S1CCCCCCCCCCC1', iupac => 'thiacyclododecane' }, # From BBv3 P-22.2.3.1
+
     # From BBv2 P-61.5.1
     { smiles => 'CC1=C(C=C(C=C1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-]', iupac => '2-methyl-1,3,5-trinitrobenzene' },
 

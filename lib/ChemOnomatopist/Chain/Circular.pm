@@ -86,6 +86,12 @@ sub is_homogeneous()
     return  1;
 }
 
+sub is_monoreplaced()
+{
+    my( $self ) = @_;
+    return $self->number_of_heteroatoms == 1;
+}
+
 my %five_membered_aromatic_single_heteroatom = (
     N => '1H-pyrrole', # CHECKME: Do we need to adjust for isomerism?
     O => 'furan',
