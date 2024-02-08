@@ -201,6 +201,12 @@ sub is_saturated()
     return all { $_ eq '-' } $self->bonds;
 }
 
+sub is_substituted()
+{
+    my( $self ) = @_;
+    return $self->number_of_branches > 0;
+}
+
 # Returns maximum number of substitutable locations
 sub max_valence()
 {

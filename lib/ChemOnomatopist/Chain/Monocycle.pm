@@ -150,7 +150,7 @@ sub needs_heteroatom_locants()
 {
     my( $self ) = @_;
     return '' if $self->is_hydrocarbon;
-    return '' if $self->is_monoreplaced && !$self->number_of_branches;
+    return '' if $self->is_monoreplaced && !$self->is_substituted;
     return $self->length < 3 || $self->length > 10 || all { $_->{symbol} !~ /^[cC]$/ } $self->vertices;
 }
 
