@@ -79,6 +79,7 @@ sub is_amide      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide::
 sub is_amine      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
 sub is_cyanide    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
 sub is_hydroxy    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
+sub is_imine      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Imino:: ) }
 sub is_isocyanate { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanate:: ) }
 sub is_isocyanide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanide:: ) }
 sub is_ketone     { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
@@ -108,6 +109,10 @@ my @rules = (
     [ ( sub { &is_nongroup_atom && &is_Se } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
     [ ( sub { &is_nongroup_atom && &is_Te } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
 
+    # Carboxylic acid
+    [ sub { &is_nongroup_atom && &is_C }, \&is_hydroxy, \&is_ketone, \&anything, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[4] ), @_[1..3] ) } ],
+
     # Hydrazine and diazene
     [ ( sub { &is_nongroup_atom && &is_N } ) x 2,
         sub { is_double_bond( @_ )
@@ -126,10 +131,6 @@ my @rules = (
             $_[0]->add_group( $hydrazide );
             $_[0]->delete_group( $hydrazine );
         } ],
-
-    # Carboxylic acid
-    [ sub { &is_nongroup_atom && &is_C }, \&is_hydroxy, \&is_ketone, \&anything, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[4] ), @_[1..3] ) } ],
 
     # Aldehyde
     [ sub { &is_nongroup_atom && &is_C && &has_H1 }, \&is_ketone,
@@ -209,6 +210,10 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
     [ \&is_cyanide, \&is_heteroatom, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
+
+    # Amidines (BBv3 P-66.4.1)
+    [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_imine,
+      sub { die "cannot handle amidines yet\n" } ],
 
     # Nitroso and its analogues
     [ sub { &is_nongroup_atom && &is_Br_Cl_F_I_N }, \&is_ketone, \&is_C, NO_MORE_VERTICES,
