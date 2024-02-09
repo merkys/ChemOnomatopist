@@ -122,7 +122,7 @@ my @rules = (
             my @vertices = $hydrazine->vertices;
             @vertices = reverse @vertices if $vertices[0] == $_[1];
             my $hydrazide = ChemOnomatopist::Group::Hydrazide->new( $_[0], @vertices );
-            $_[0]->delete_vertices( $_[2] );
+            $_[0]->delete_vertices( $_[3] );
             $_[0]->add_group( $hydrazide );
             $_[0]->delete_group( $hydrazine );
         } ],
