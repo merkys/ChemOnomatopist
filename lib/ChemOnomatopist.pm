@@ -452,6 +452,8 @@ sub get_mainchain_name
     # Attaching isotopes
     my $isotopes = '';
     for my $isotope (sort { cmp_isotopes( $a, $b ) } keys %isotopes) {
+        $isotopes .= ',' if $isotopes;
+
         if( $chain->needs_substituent_locants ) { # FIXME: Is this right?
             $isotopes .= join( ',', $chain->locants( @{$isotopes{$isotope}} ) ) . '-';
         }
