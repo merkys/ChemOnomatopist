@@ -8,6 +8,7 @@ use warnings;
 
 use Algorithm::Combinatorics qw( combinations );
 use ChemOnomatopist::Chain;
+use ChemOnomatopist::Group::Amidine;
 use ChemOnomatopist::Group::Carbaldehyde;
 use ChemOnomatopist::Group::Carbonitrile;
 use ChemOnomatopist::Chain::Carboxamide;
@@ -212,8 +213,9 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
 
     # Amidines (BBv3 P-66.4.1)
-    [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_imine,
-      sub { die "cannot handle amidines yet\n" } ],
+    # FIXME: Uncomment
+    # [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_imine,
+    #   sub { $_[0]->add_group( ChemOnomatopist::Group::Amidine->new( $_[0], @_[2..$#_] ) ) } ],
 
     # Nitroso and its analogues
     [ sub { &is_nongroup_atom && &is_Br_Cl_F_I_N }, \&is_ketone, \&is_C, NO_MORE_VERTICES,

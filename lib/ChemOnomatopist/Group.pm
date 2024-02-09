@@ -10,6 +10,7 @@ use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
+use ChemOnomatopist::Group::Amidine;
 use ChemOnomatopist::Group::Amine;
 use ChemOnomatopist::Group::Carbaldehyde;
 use ChemOnomatopist::Group::Carbonitrile;
@@ -66,6 +67,7 @@ our @order = (
     ChemOnomatopist::Group::Ketone::,
     ChemOnomatopist::Group::Hydroxy::,
     ChemOnomatopist::Group::Hydroperoxide::,
+    ChemOnomatopist::Group::Amidine::, # CHECKME: Is this correct?
     ChemOnomatopist::Group::Amine::,
     ChemOnomatopist::Group::Imino::,
 
