@@ -19,7 +19,7 @@ my @cases = (
     { smiles => 'C(#N)C(CCSC)NC(=O)NC', iupac => 'N-[1-cyano-3-(methylsulfanyl)propyl]-N\'-methylurea', AUTHOR => 1 },
 
     # From BBv2
-    { smiles => 'CC(CC)NC(=[Se])N', iupac => 'N-(butan-2-yl)selenourea', AUTHOR => 1 },
+    { smiles => 'CC(CC)NC(=[Se])N', iupac => 'N-(butan-2-yl)selenourea', AUTHOR => 1 }, # From BBv3 P-66.1.6.1.3.1
     { smiles => 'C(N)(=N)NC(=O)N', iupac => 'N-carbamimidoylurea', AUTHOR => 1 },
 
     # From BBv3 P-66.1.6.1.1.3
