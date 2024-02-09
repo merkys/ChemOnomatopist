@@ -1,12 +1,14 @@
 package ChemOnomatopist::Group::Hydrazine;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Hydrazine group
 # VERSION
 
+use strict;
+use warnings;
+
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
+
+use Chemistry::OpenSMILES qw( is_double_bond );
 
 sub new
 {
@@ -24,8 +26,8 @@ sub candidates()
     return @chains;
 }
 
-sub needs_heteroatom_locants() { return '' }
-sub needs_heteroatom_names() { return '' }
+sub needs_heteroatom_locants() { '' }
+sub needs_heteroatom_names() { '' }
 sub needs_substituent_locants()
 {
     my( $self ) = @_;
@@ -35,13 +37,21 @@ sub needs_substituent_locants()
 sub prefix()
 {
     my( $self ) = @_;
-    return 'hydrazinyl';
+    if( is_double_bond( $self->{graph}, $self->vertices ) ) {
+        return 'diazenyl';
+    } else {
+        return 'hydrazinyl';
+    }
 }
 
 sub suffix()
 {
     my( $self ) = @_;
-    return 'hydrazine';
+    if( is_double_bond( $self->{graph}, $self->vertices ) ) {
+        return 'diazene';
+    } else {
+        return 'hydrazine';
+    }
 }
 
 1;
