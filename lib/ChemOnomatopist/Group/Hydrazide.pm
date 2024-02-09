@@ -10,8 +10,8 @@ use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 sub new
 {
-    my( $class, $graph, @vertices ) = @_;
-    return bless { graph => $graph, vertices => \@vertices }, $class;
+    my( $class, $graph, $ketone, @vertices ) = @_;
+    return bless { graph => $graph, ketone => $ketone, vertices => \@vertices }, $class;
 }
 
 sub needs_heteroatom_locants() { return '' }
@@ -28,7 +28,9 @@ sub locants(@)
     return map { $_ == 0 ? "N'" : $_ == 1 ? 'N' : $_ - 1 } @_;
 }
 
-sub prefix() { 'hydrazidyl' }
-sub suffix() { 'hydrazide' }
+my %suffixes = ( O => '', S => 'thio', Se => 'seleno', Te => 'telluro' );
+
+sub prefix() { $suffixes{$_[0]->{ketone}->element} . 'hydrazidyl' }
+sub suffix() { $suffixes{$_[0]->{ketone}->element} . 'hydrazide' }
 
 1;

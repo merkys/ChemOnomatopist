@@ -22,6 +22,11 @@ my @cases = (
     { smiles => 'C(C1=CC=CC=C1)(=O)NN', iupac => 'benzohydrazide', AUTHOR => 1 },
     { smiles => 'C(C(=O)NN)(=O)NN', iupac => 'oxalohydrazide', AUTHOR => 1 },
     { smiles => 'C(C)(NN)=N', iupac => 'ethanimidohydrazide', AUTHOR => 1 },
+
+    # From BBv3 P-66.3.4
+    { smiles => 'C(CC)(NN)=S', iupac => 'propanethiohydrazide', AUTHOR => 1 },
+    { smiles => 'C1(=CC=CC=C1)C(NN)=S', iupac => 'benzenecarbothiohydrazide', AUTHOR => 1 },
+    { smiles => 'N(N)C(C(=O)NN)=S', iupac => '2-hydrazinyl-2-sulfanylideneacetohydrazide', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};

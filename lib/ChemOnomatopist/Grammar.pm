@@ -115,13 +115,13 @@ my @rules = (
                 : $_[0]->add_group( ChemOnomatopist::Group::Hydrazine->new( @_[0..2] ) ) } ],
 
     # Hydrazide
-    [ sub { &is_nongroup_atom && &is_C }, \&is_hydrazine, sub { &is_ketone && &is_O },
+    [ sub { &is_nongroup_atom && &is_C }, \&is_hydrazine, \&is_ketone,
       sub {
             my $hydrazine = first { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) }
                                     $_[0]->groups( $_[2] );
             my @vertices = $hydrazine->vertices;
             @vertices = reverse @vertices if $vertices[0] == $_[1];
-            my $hydrazide = ChemOnomatopist::Group::Hydrazide->new( $_[0], @vertices );
+            my $hydrazide = ChemOnomatopist::Group::Hydrazide->new( $_[0], $_[3], @vertices );
             $_[0]->delete_vertices( $_[3] );
             $_[0]->add_group( $hydrazide );
             $_[0]->delete_group( $hydrazine );
