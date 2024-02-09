@@ -26,7 +26,9 @@ sub locants(@)
     return map { $_ ? 'N' . '\'' x ($_ - 1) : 1 } @_;
 }
 
-sub prefix()
+sub prefix() { 'carbamoylamino' }
+
+sub suffix()
 {
     my( $self ) = @_;
     my( $ketone_element ) = map  { $_->{ketone}->element }
@@ -39,7 +41,5 @@ sub prefix()
     }
     return $name . 'urea';
 }
-
-sub suffix() { &prefix }
 
 1;
