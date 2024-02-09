@@ -16,10 +16,7 @@ use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
-    my $amide  = first { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) } @vertices;
     my $ketone = first { blessed $_ && $_->isa( ChemOnomatopist::Group::Ketone:: ) } @vertices;
-    my $ketone_element = 'O';
-    $ketone = $amide->{ketone} if $amide;
     return bless { graph => $graph,
                    vertices => \@vertices,
                    ketone_element => $ketone->{element} },
