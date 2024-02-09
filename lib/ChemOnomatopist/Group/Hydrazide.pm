@@ -1,10 +1,10 @@
 package ChemOnomatopist::Group::Hydrazide;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Hydrazide group
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
@@ -28,16 +28,7 @@ sub locants(@)
     return map { $_ == 0 ? "N'" : $_ == 1 ? 'N' : $_ - 1 } @_;
 }
 
-sub prefix()
-{
-    my( $self ) = @_;
-    return 'hydrazidyl';
-}
-
-sub suffix()
-{
-    my( $self ) = @_;
-    return 'hydrazide';
-}
+sub prefix() { 'hydrazidyl' }
+sub suffix() { 'hydrazide' }
 
 1;
