@@ -19,6 +19,7 @@ use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
+use ChemOnomatopist::Group::Diazene;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Imino;
@@ -107,9 +108,11 @@ my @rules = (
     [ ( sub { &is_nongroup_atom && &is_Se } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
     [ ( sub { &is_nongroup_atom && &is_Te } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
 
-    # Hydrazine
+    # Hydrazine and diazene
     [ ( sub { &is_nongroup_atom && &is_N } ) x 2,
-        sub { $_[0]->add_group( ChemOnomatopist::Group::Hydrazine->new( @_[0..2] ) ) } ],
+        sub { is_double_bond( @_ )
+                ? $_[0]->add_group( ChemOnomatopist::Group::Diazene->new( @_[0..2] ) )
+                : $_[0]->add_group( ChemOnomatopist::Group::Hydrazine->new( @_[0..2] ) ) } ],
 
     # Hydrazide
     [ sub { &is_nongroup_atom && &is_C }, \&is_hydrazine, sub { &is_ketone && &is_O },
