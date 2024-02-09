@@ -14,6 +14,14 @@ my @cases = (
     { smiles => 'N1(CCCCC1)C(=O)NN', iupac => 'piperidine-1-carbohydrazide', AUTHOR => 1 },
     { smiles => 'CS(=O)(=O)NN', iupac => 'methanesulfonohydrazide', AUTHOR => 1 },
     { smiles => 'C(C)(C(=O)NN)(C(=O)NN)C(=O)NN', iupac => 'ethane-1,1,1-tricarbohydrazide', AUTHOR => 1 },
+
+    # From BBv2 P-66.3.1.2.1
+    { smiles => 'C(#N)NN', iupac => 'cyanohydrazide', AUTHOR => 1 },
+    { smiles => 'C(=O)NN', iupac => 'formohydrazide', AUTHOR => 1 },
+    { smiles => 'C(C)(=O)NN', iupac => 'acetohydrazide', AUTHOR => 1 },
+    { smiles => 'C(C1=CC=CC=C1)(=O)NN', iupac => 'benzohydrazide', AUTHOR => 1 },
+    { smiles => 'C(C(=O)NN)(=O)NN', iupac => 'oxalohydrazide', AUTHOR => 1 },
+    { smiles => 'C(C)(NN)=N', iupac => 'ethanimidohydrazide', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
