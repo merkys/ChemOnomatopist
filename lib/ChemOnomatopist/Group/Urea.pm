@@ -8,6 +8,7 @@ use warnings;
 
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Amide;
+use List::Util qw( first );
 use Scalar::Util qw( blessed );
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
@@ -15,21 +16,24 @@ use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
-    my( $ketone_element ) = map  { $_->{ketone}->element }
-                            grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) }
-                                 @vertices;
+    my $amide  = first { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) } @vertices;
+    my $ketone = first { blessed $_ && $_->isa( ChemOnomatopist::Group::Ketone:: ) } @vertices;
+    my $ketone_element = 'O';
+    $ketone = $amide->{ketone} if $amide;
     return bless { graph => $graph,
                    vertices => \@vertices,
-                   ketone_element => $ketone_element },
+                   ketone_element => $ketone->{element} },
                  $class;
 }
+
+sub heteroatom_positions() { () }
 
 sub needs_substituent_locants() { $_[0]->number_of_branches > 1 && $_[0]->number_of_branches < 4 }
 
 sub locants(@)
 {
     my $self = shift;
-    return map { $_ ? 'N' . '\'' x ($_ - 1) : 1 } @_;
+    return map { $_ ? 'N' . '\'' x ($_ - 2) : 1 } @_;
 }
 
 sub prefix() { 'carbamoylamino' }

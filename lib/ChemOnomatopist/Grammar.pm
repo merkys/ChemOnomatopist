@@ -171,6 +171,10 @@ my @rules = (
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
 
+    # Urea
+    [ sub { &is_nongroup_atom && &is_C }, \&is_ketone, ( sub { &is_nongroup_atom && &is_N } ) x 2, NO_MORE_VERTICES,
+      sub { $_[0]->add_group( ChemOnomatopist::Group::Urea->new( @_ ) ) } ],
+
     # Isocyanide
     [ sub { &is_nongroup_atom && &is_C && &has_H0 && &charge_minus_one }, sub { &is_nongroup_atom && &is_N && &has_H0 && &charge_plus_one }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Isocyanide->new, @_[1..2] ) } ],
@@ -229,10 +233,6 @@ my @rules = (
     # Detecting amides attached to cyclic chains
     [ sub { &is_nongroup_atom && &is_C && 1 == grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) && $_->{parent} == $_[1] } $_[0]->neighbours( $_[1] ) }, \&is_amide, \&is_monocycle, NO_MORE_VERTICES,
       sub { $_[0]->delete_group( $_[3] ); $_[0]->add_group( ChemOnomatopist::Chain::Carboxamide->new( $_[0], $_[2], $_[1], $_[0]->groups( $_[3] ) ) ) } ],
-
-    # Urea
-    [ sub { &is_nongroup_atom && &is_C }, \&is_amide, \&is_amine, NO_MORE_VERTICES,
-      sub { $_[0]->add_group( ChemOnomatopist::Group::Urea->new( @_ ) ) } ],
 );
 
 # Old unused rules
