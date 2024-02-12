@@ -48,6 +48,7 @@ our @EXPORT_OK = qw(
     parse_molecular_graph
 );
 
+sub is_nongroup      { !$_[0]->groups( $_[1] ) }
 sub is_nongroup_atom { !blessed $_[1] && !$_[0]->groups( $_[1] ) && exists $_[1]->{symbol} }
 
 sub is_C  { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'C' }
@@ -213,9 +214,8 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
 
     # Amidines (BBv3 P-66.4.1)
-    # FIXME: Uncomment
-    # [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_imine,
-    #   sub { $_[0]->add_group( ChemOnomatopist::Group::Amidine->new( $_[0], @_[2..$#_] ) ) } ],
+    [ sub { &is_nongroup_atom && &is_C }, sub { &is_amine && &is_nongroup }, sub { &is_imine && &is_nongroup },
+      sub { $_[0]->add_group( ChemOnomatopist::Group::Amidine->new( @_ ) ) } ],
 
     # Nitroso and its analogues
     [ sub { &is_nongroup_atom && &is_Br_Cl_F_I_N }, \&is_ketone, \&is_C, NO_MORE_VERTICES,
