@@ -214,7 +214,7 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
 
     # Amidines (BBv3 P-66.4.1)
-    [ sub { &is_nongroup_atom && &is_C }, sub { &is_amine && &is_nongroup }, sub { &is_imine && &is_nongroup }, \&anything, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_C }, sub { &is_amine && &is_nongroup }, sub { &is_imine && &is_nongroup },
       sub { $_[0]->add_group( ChemOnomatopist::Group::Amidine->new( @_[0..3] ) ) } ],
     [ sub { &is_nongroup_atom && &is_S_Se_Te }, sub { &is_amine && &is_nongroup }, sub { &is_nongroup_atom && &is_N && &has_H1 }, \&anything, NO_MORE_VERTICES,
       sub { $_[0]->add_group( ChemOnomatopist::Group::Amidine->new( @_[0..3] ) ) } ],
