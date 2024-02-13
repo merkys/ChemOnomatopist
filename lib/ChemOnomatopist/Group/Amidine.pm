@@ -78,7 +78,7 @@ sub prefix()
 
     $name .= 'sulfon'    if $N == 2 &&  $O == 1;
     $name .= 'sulfonodi' if $N == 3 && !$O;
-    $name .= 'sulfin';
+    $name .= 'sulfin'    if $N == 2 && !$O;
 
     $name .= 'imidoyl';
     return $name;
