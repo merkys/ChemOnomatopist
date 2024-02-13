@@ -22,7 +22,7 @@ sub new
     my $parent = first { !set( @others )->has( $_ ) }
                        $graph->neighbours( $central_atom );
     my $is_carboximidamide = $central_atom->{symbol} eq 'C';
-    if( $parent && $central_atom->{symbol} eq 'C' && !$graph->groups( $parent ) ) {
+    if( $central_atom->{symbol} eq 'C' && (!$parent || !$graph->groups( $parent )) ) {
         $is_carboximidamide = '';
         my $temp = clone $central_atom;
         for (@others) {
