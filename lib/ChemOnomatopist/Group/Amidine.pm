@@ -9,12 +9,33 @@ use warnings;
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 use ChemOnomatopist::Name::Part::Locants;
+use Clone qw( clone );
+use List::Util qw( first );
 use Scalar::Util qw( blessed );
+use Set::Object qw( set );
 
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
-    return bless { graph => $graph, vertices => \@vertices }, $class;
+    my( $central_atom, @others ) = @vertices;
+
+    my $parent = first { !set( @others )->has( $_ ) }
+                       $graph->neighbours( $central_atom );
+    my $is_carboximidamide = $central_atom->{symbol} eq 'C';
+    if( $parent && $central_atom->{symbol} eq 'C' && !$graph->groups( $parent ) ) {
+        $is_carboximidamide = '';
+        my $temp = clone $central_atom;
+        for (@others) {
+            next unless $graph->has_edge( $central_atom, $_ );
+            $graph->delete_edge( $central_atom, $_ );
+            $graph->add_path( $central_atom, $temp, $_ );
+        }
+        @vertices = ( $temp, @others );
+    }
+
+    return bless { graph => $graph,
+                   vertices => \@vertices,
+                   is_carboximidamide => $is_carboximidamide }, $class;
 }
 
 sub nonstandard_valence_positions()
@@ -68,6 +89,7 @@ sub suffix()
     my( $central_atom, @others ) = $self->vertices;
 
     my $name = $prefixes{$central_atom->{symbol}};
+    $name .= 'carbox' if $self->{is_carboximidamide};
     if( $central_atom->{symbol} ne 'C' ) {
         my $N = grep { ChemOnomatopist::element( $_ ) eq 'N' } @others;
         my $O = grep { ChemOnomatopist::element( $_ ) eq 'O' } @others;
