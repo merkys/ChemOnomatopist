@@ -68,9 +68,10 @@ sub suffix()
     my( $central_atom, @others ) = $self->vertices;
 
     my $name = $prefixes{$central_atom->{symbol}};
-    if( $central_atom->{symbol} ne 'C' && @others == 3 ) {
+    if( $central_atom->{symbol} ne 'C' ) {
         my $N = grep { ChemOnomatopist::element( $_ ) eq 'N' } @others;
         my $O = grep { ChemOnomatopist::element( $_ ) eq 'O' } @others;
+        $name .= 'in'    if $N == 2;
         $name .= 'on'    if $N == 2 && $O == 1;
         $name .= 'onodi' if $N == 3;
     }

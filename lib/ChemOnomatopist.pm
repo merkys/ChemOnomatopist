@@ -417,6 +417,11 @@ sub get_mainchain_name
             }
         }
 
+        if( $chain->isa( ChemOnomatopist::Group::Amidine:: ) &&
+            !$attachment->is_enclosed && $i == $#order ) {
+            $attachment->[-1] =~ s/yl$/ane/;
+        }
+
         $name .= $attachment;
     }
 

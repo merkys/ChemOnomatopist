@@ -11,7 +11,7 @@ my @cases = (
     { smiles => 'C(CCCCC)(N)=N', iupac => 'hexanimidamide', AUTHOR => 1 },
     { smiles => 'C1(CCCCC1)C(N)=N', iupac => 'cyclohexanecarboximidamide', AUTHOR => 1 },
     { smiles => 'C(C)(N)=N', iupac => 'ethanimidamide', AUTHOR => 1 },
-    { smiles => 'CS(N)=N', iupac => 'methanesulfinimidamide', AUTHOR => 1 },
+    { smiles => 'CS(N)=N', iupac => 'methanesulfinimidamide' },
     { smiles => 'C(N)=N', iupac => 'methanimidamide', AUTHOR => 1 },
     { smiles => 'C(CCCC(N)=N)(N)=N', iupac => 'pentanediimidamide', AUTHOR => 1 },
     { smiles => '[SiH2]([SiH2]C(N)=N)C(N)=N', iupac => 'disilane-1,2-dicarboximidamide', AUTHOR => 1 },
