@@ -8,6 +8,7 @@ use warnings;
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
+use ChemOnomatopist::Name::Part::Locants;
 use Scalar::Util qw( blessed );
 
 sub new
@@ -41,11 +42,29 @@ sub needs_substituent_locants { '' }
 
 my %prefixes = ( C => '', S => 'sulf', Se => 'selen', Te => 'tellur' ); # CHECKME: Is Te correct?
 
-sub prefix() { 'carbamimidoyl' }
+sub prefix()
+{
+    my( $self ) = @_;
+    my( $central_atom, @others ) = $self->vertices;
+    return 'carbamimidoyl' unless $central_atom->{symbol} eq 'S';
+
+    my $N = grep { ChemOnomatopist::element( $_ ) eq 'N' } @others;
+    my $O = grep { ChemOnomatopist::element( $_ ) eq 'O' } @others;
+
+    my $name = ChemOnomatopist::Name::Part::Locants->new( 'S-' )->to_name;
+    $name .= 'amino';
+
+    $name .= 'sulfon'    if $N == 2 &&  $O == 1;
+    $name .= 'sulfonodi' if $N == 3 && !$O;
+    $name .= 'sulfin';
+
+    $name .= 'imidoyl';
+    return $name;
+}
+
 sub suffix()
 {
     my( $self ) = @_;
-
     my( $central_atom, @others ) = $self->vertices;
 
     my $name = $prefixes{$central_atom->{symbol}};
