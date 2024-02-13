@@ -42,6 +42,7 @@ for (@lines) {
         run3 [ 'java', '-jar', '/usr/share/java/opsin.jar' ], \$iupac, \$smiles, \$stderr;
         $smiles =~ s/\n$//;
     }
+    $iupac =~ s/'/\\'/g;
 
     print "{ smiles => '$smiles', iupac => '$iupac' },";
     print " # $source" if $source;
