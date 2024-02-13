@@ -39,18 +39,24 @@ sub needs_heteroatom_locants() { '' }
 sub needs_heteroatom_names() { '' }
 sub needs_substituent_locants { '' }
 
+my %prefixes = ( C => '', S => 'sulf', Se => 'selen', Te => 'tellur' ); # CHECKME: Is Te correct?
+
 sub prefix() { 'carbamimidoyl' }
 sub suffix()
 {
     my( $self ) = @_;
 
-    # FIXME: Not fully implemented
     my( $central_atom, @others ) = $self->vertices;
-    if( $central_atom->{symbol} eq 'S' ) {
-        return 'sulfinimidamide';
+
+    my $name = $prefixes{$central_atom->{symbol}};
+    if( $central_atom->{symbol} ne 'C' && @others == 3 ) {
+        my $N = grep { ChemOnomatopist::element( $_ ) eq 'N' } @others;
+        my $O = grep { ChemOnomatopist::element( $_ ) eq 'O' } @others;
+        $name .= 'on'    if $N == 2 && $O == 1;
+        $name .= 'onodi' if $N == 3;
     }
 
-    return 'imidamide';
+    return $name . 'imidamide';
 }
 
 1;
