@@ -419,7 +419,9 @@ sub get_mainchain_name
 
         if( $chain->isa( ChemOnomatopist::Group::Amidine:: ) &&
             !$attachment->is_enclosed && $i == $#order ) {
+            # This is not nice, albeit works; have to look for a better solution.
             $attachment->[-1] =~ s/yl$/ane/;
+            $attachment->[-1] =~ s/e$// if $chain->suffix =~ /^i/;
         }
 
         $name .= $attachment;
