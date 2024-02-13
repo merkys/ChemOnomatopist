@@ -19,6 +19,17 @@ sub needs_heteroatom_names() { '' }
 sub needs_substituent_locants { '' }
 
 sub prefix() { 'carbamimidoyl' }
-sub suffix() { 'imidamide' }
+sub suffix()
+{
+    my( $self ) = @_;
+
+    # FIXME: Not fully implemented
+    my( $central_atom, @others ) = $self->vertices;
+    if( $central_atom->{symbol} eq 'S' ) {
+        return 'sulfinimidamide';
+    }
+
+    return 'imidamide';
+}
 
 1;
