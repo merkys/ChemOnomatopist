@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 use ChemOnomatopist::Name::Part::Locants;
+use ChemOnomatopist::Name::Part::Stem;
 use Clone qw( clone );
 use List::Util qw( first );
 use Scalar::Util qw( blessed );
@@ -88,7 +89,7 @@ sub suffix()
     my( $self ) = @_;
     my( $central_atom, @others ) = $self->vertices;
 
-    my $name = $prefixes{$central_atom->{symbol}};
+    my $name = ChemOnomatopist::Name::Part::Stem->new( $prefixes{$central_atom->{symbol}} )->to_name;
     $name .= 'carbox' if $self->{is_carboximidamide};
     if( $central_atom->{symbol} ne 'C' ) {
         my $N = grep { ChemOnomatopist::element( $_ ) eq 'N' } @others;
@@ -97,8 +98,9 @@ sub suffix()
         $name .= 'on'    if $N == 2 && $O == 1;
         $name .= 'onodi' if $N == 3;
     }
+    $name .= 'imidamide';
 
-    return $name . 'imidamide';
+    return $name;
 }
 
 1;
