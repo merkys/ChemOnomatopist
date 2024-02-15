@@ -15,6 +15,9 @@ my @cases = (
     { smiles => 'OC(=O)CCC(C(=O)O)CCC(=O)O', iupac => 'pentane-1,3,5-tricarboxylic acid' },
     { smiles => 'C(C(=O)O)(C(=O)O)C(C(=O)O)(C(=O)O)', iupac => 'ethane-1,1,2,2-tetracarboxylic acid' },
 
+    # From BBv2 P-65.1.5.2
+    { smiles => 'C=1(C(=CC=CC1)C(O)=S)C(O)=S', iupac => 'benzene-1,2-dicarbothioic acid' },
+
     { smiles => 'C(=O)O', iupac => 'formic acid', AUTHOR => 1 },
 
     { smiles => 'C1=CC2=C(C=C1C(=O)O)SC(=N2)C(F)F', iupac => '2-(difluoromethyl)-1,3-benzothiazole-6-carboxylic acid' }, # PubChem 84692459
