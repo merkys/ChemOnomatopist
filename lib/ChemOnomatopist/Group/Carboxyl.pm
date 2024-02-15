@@ -8,10 +8,16 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
+sub new()
+{
+    my( $class, $ketone ) = @_;
+    return bless { ketone => $ketone }, $class;
+}
+
 sub element() { 'C' }
 
 sub prefix() { 'carboxy' }
-sub suffix() { 'oic acid' } # FIXME: Should be 'carboxylic acid' if attached to cycles
+sub suffix() { 'oic acid' }
 sub multisuffix() { 'carboxylic acid' }
 sub suffix_if_cycle_substituent() { $_[0]->multisuffix }
 
