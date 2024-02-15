@@ -26,6 +26,9 @@ my @cases = (
     # From BBv3 P-66.4.1.3.5
     { smiles => 'C(C)(NC1=CC=C(C(=O)O)C=C1)=N', iupac => '4-ethanimidamidobenzoic acid', AUTHOR => 1 },
     { smiles => 'C(C)S(NC1=C(C(=O)O)C=CC=C1)(=N)=N', iupac => '2-(ethanesulfonodiimidamido)benzoic acid', AUTHOR => 1 },
+
+    { smiles => '[NH]=C(N)c1ccccc1', iupac => 'benzenecarboximidamide', AUTHOR => 1 }, # From Wikipedia Benzamidine
+    { smiles => 'CC1=CC(=CC=C1)CC(=NCC(C)OC2=CC=CC(=C2)OC)N', iupac => 'N\'-[2-(3-methoxyphenoxy)propyl]-2-(3-methylphenyl)ethanimidamide', AUTHOR => 1 }, # From Wikipedia Xylamidine
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
