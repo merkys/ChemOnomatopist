@@ -19,7 +19,16 @@ sub new()
 sub element() { 'C' }
 
 sub prefix() { 'carboxy' }
-sub suffix() { 'oic acid' }
+sub suffix()
+{
+    my( $self ) = @_;
+    my $ketone = $self->{ketone};
+    return 'oic acid' if $ketone->element eq 'O';
+
+    my $name = $elements{$ketone->element}->{prefix};
+    $name =~ s/a$/oic acid/;
+    return $name;
+}
 
 sub multisuffix()
 {
@@ -27,7 +36,7 @@ sub multisuffix()
     my $ketone = $self->{ketone};
     return 'carboxylic acid' if $ketone->element eq 'O';
 
-    my $name = 'carbo' . $elements{$self->{ketone}->element}->{prefix};
+    my $name = 'carbo' . $elements{$ketone->element}->{prefix};
     $name =~ s/a$/oic acid/;
     return $name;
 }
