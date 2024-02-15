@@ -20,8 +20,8 @@ my @cases = (
     { smiles => 'C1(=CC=CC=C1)C=S', iupac => 'benzenecarbothialdehyde' },
     { smiles => 'C(CCCCC)=[Se]', iupac => 'hexaneselenal' },
     { smiles => 'C(CCCC=S)=S', iupac => 'pentanedithial' },
-    { smiles => 'C(=S)C1=CC=C(C(=O)O)C=C1', iupac => '4-(methanethioyl)benzoic acid', AUTHOR => 1 },
-    { smiles => 'C(=[Se])C1CCC(CC1)C(=O)O', iupac => '4-(methaneselenoyl)cyclohexane-1-carboxylic acid', AUTHOR => 1 },
+    { smiles => 'C(=S)C1=CC=C(C(=O)O)C=C1', iupac => '4-(methanethioyl)benzoic acid' },
+    { smiles => 'C(=[Se])C1CCC(CC1)C(=O)O', iupac => '4-(methaneselenoyl)cyclohexane-1-carboxylic acid' },
     { smiles => 'S=C1CCC(CC1)C=[Se]', iupac => '4-sulfanylidenecyclohexane-1-carboselenaldehyde' },
 
     # From BBv2 P-66.6.4
