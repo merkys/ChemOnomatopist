@@ -14,13 +14,14 @@ my @cases = (
     { smiles => 'CC(C)(C)O', iupac => '2-methylpropan-2-ol' }, # From BBv2 P-63.1.2
     { smiles => 'ON1CC(CCC1)C#N', iupac => '1-hydroxypiperidine-3-carbonitrile' }, # From BBv2 P-63.1.4
 
-    # From BBv2 P-63.1.5
+    # From BBv3 P-63.1.5
     { smiles => 'CC(C)S', iupac => 'propane-2-thiol' },
     { smiles => 'C(C)[SeH]', iupac => 'ethaneselenol' },
     { smiles => 'SCCCCS', iupac => 'butane-1,4-dithiol' },
     { smiles => 'SC1=CC=CC=C1', iupac => 'benzenethiol' },
     { smiles => 'SCCC(=O)O', iupac => '3-sulfanylpropanoic acid' },
     { smiles => 'SC1=C(C=CC=C1)O', iupac => '2-sulfanylphenol' },
+    { smiles => 'SC1=CC=C(C=C1)SSC=1C=C(C=CC1)S', iupac => '3-[(4-sulfanylphenyl)disulfanyl]benzene-1-thiol' },
     { smiles => 'OC(CS)C1CCC(C(C1)O)S', iupac => '5-(1-hydroxy-2-sulfanylethyl)-2-sulfanylcyclohexan-1-ol' },
     { smiles => 'SC(CC(=O)O)CS', iupac => '3,4-bis(sulfanyl)butanoic acid' },
 );
