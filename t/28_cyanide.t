@@ -11,7 +11,7 @@ my @cases = (
     { smiles => 'C(CCCCC)#N', iupac => 'hexanenitrile', AUTHOR => 1 },
     { smiles => 'C(CCCC#N)#N', iupac => 'pentanedinitrile', AUTHOR => 1 },
 
-    { smiles => 'C(CCC)(C#N)(C#N)C#N', iupac => 'butane-1,1,1-tricarbonitrile', AUTHOR => 1 }, # BBv2 P-66.5.1.1.2
+    { smiles => 'C(CCC)(C#N)(C#N)C#N', iupac => 'butane-1,1,1-tricarbonitrile' }, # BBv2 P-66.5.1.1.2
 
     # From BBv2 P-66.5.1.1.3
     { smiles => '[SiH3]C#N', iupac => 'silanecarbonitrile' },
