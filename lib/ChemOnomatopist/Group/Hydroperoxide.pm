@@ -1,16 +1,16 @@
 package ChemOnomatopist::Group::Hydroperoxide;
 
+# ABSTRACT: Hydroperoxide group
+# VERSION
+
 use strict;
 use warnings;
 
-# ABSTRACT: Hydroperoxide group
-# VERSION
+use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name::Part::Multiplier;
 use List::Util qw( all );
-
-use parent ChemOnomatopist::Group::;
 
 sub new
 {
@@ -18,9 +18,9 @@ sub new
     return bless { atoms => \@atoms }, $class;
 }
 
-sub element() { return $_[0]->{atoms}[0]{symbol} }
+sub element() { $_[0]->{atoms}[0]{symbol} }
 
-sub prefix
+sub prefix()
 {
     my( $self ) = @_;
 
@@ -46,7 +46,7 @@ sub prefix
     return $name;
 }
 
-sub suffix
+sub suffix()
 {
     my( $self ) = @_;
 
