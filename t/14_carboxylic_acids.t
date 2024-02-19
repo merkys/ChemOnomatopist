@@ -26,7 +26,7 @@ my @cases = (
     { smiles => 'C=1(C(=CC=CC1)C(O)=S)C(O)=S', iupac => 'benzene-1,2-dicarbothioic acid' },
     { smiles => 'C(=S)(O)C1=C(C=CC=C1)C(S)=O', iupac => '2-(thiocarboxy)benzene-1-carbothioic S-acid', AUTHOR => 1 },
     { smiles => '[SeH]C(=O)C1=CC=C(C(=O)O)C=C1', iupac => '4-(selanylcarbonyl)benzoic acid', AUTHOR => 1 },
-    { smiles => 'C=1(C(=CC=CC1)C(=S)S)C(=S)S', iupac => 'benzene-1,2-dicarbodithioic acid', AUTHOR => 1 },
+    { smiles => 'C=1(C(=CC=CC1)C(=S)S)C(=S)S', iupac => 'benzene-1,2-dicarbodithioic acid' },
     { smiles => 'C(C(=S)S)(=S)S', iupac => 'ethanebis(dithioic acid)', AUTHOR => 1 },
 
     { smiles => 'C(=O)O', iupac => 'formic acid', AUTHOR => 1 },
