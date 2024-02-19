@@ -9,6 +9,8 @@ use warnings;
 use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Name;
+use ChemOnomatopist::Name::Part::Multiplier;
 
 sub new()
 {
@@ -24,12 +26,14 @@ sub suffix()
     my( $self ) = @_;
     my $hydroxy = $self->{hydroxy};
     my $ketone = $self->{ketone};
-    return 'oic acid' if $ketone->element eq 'O';
+    return ChemOnomatopist::Name->new( 'oic acid' ) if $ketone->element eq 'O';
 
-    my $name = '';
-    $name .= 'di' if $hydroxy->element eq $ketone->element;
-    $name .= $elements{$ketone->element}->{prefix};
-    $name =~ s/a$/oic acid/;
+    my $element_prefix = $elements{$ketone->element}->{prefix};
+    $element_prefix =~ s/a$/oic acid/;
+
+    my $name = ChemOnomatopist::Name->new;
+    $name .= ChemOnomatopist::Name::Part::Multiplier->new( 'di' ) if $hydroxy->element eq $ketone->element;
+    $name .= $element_prefix;
     return $name;
 }
 
@@ -38,12 +42,14 @@ sub multisuffix()
     my( $self ) = @_;
     my $hydroxy = $self->{hydroxy};
     my $ketone = $self->{ketone};
-    return 'carboxylic acid' if $ketone->element eq 'O';
+    return ChemOnomatopist::Name->new( 'carboxylic acid' ) if $ketone->element eq 'O';
 
-    my $name = 'carbo';
-    $name .= 'di' if $hydroxy->element eq $ketone->element;
-    $name .= $elements{$ketone->element}->{prefix};
-    $name =~ s/a$/oic acid/;
+    my $element_prefix = $elements{$ketone->element}->{prefix};
+    $element_prefix =~ s/a$/oic acid/;
+
+    my $name = ChemOnomatopist::Name->new( 'carbo' );
+    $name .= ChemOnomatopist::Name::Part::Multiplier->new( 'di' ) if $hydroxy->element eq $ketone->element;
+    $name .= $element_prefix;
     return $name;
 }
 
