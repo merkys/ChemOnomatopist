@@ -20,7 +20,7 @@ my @cases = (
 
     # From BBv2 P-63.4.2.2
     { smiles => 'OOCCO', iupac => '2-hydroperoxyethan-1-ol' },
-    { smiles => 'SSCC(=O)O', iupac => 'disulfanylacetic acid' },
+    { smiles => 'SSCC(=O)O', iupac => 'disulfanylacetic acid', AUTHOR => 1 },
 
     # From BBv2 P-63.7
     { smiles => '[SeH]OCCOO', iupac => '2-(selanyloxy)ethane-1-peroxol', AUTHOR => 1 },

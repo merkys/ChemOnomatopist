@@ -7,6 +7,7 @@ use warnings;
 # VERSION
 
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Name::Part::Multiplier;
 use List::Util qw( all );
 
 use parent ChemOnomatopist::Group::;
@@ -26,7 +27,11 @@ sub prefix
     my @elements = map { ChemOnomatopist::element( $_ ) } @{$self->{atoms}};
 
     return 'hydroperoxy' if all { $_ eq 'O' } @elements;
-    return 'disulfanyl'  if all { $_ eq 'S' } @elements;
+    if( all { $_ eq 'S' } @elements ) {
+        my $name = ChemOnomatopist::Name::Part::Multiplier->new( 'di' )->to_name;
+        $name .= 'sulfanyl';
+        return $name;
+    }
 
     my $name = '';
     for my $element (reverse @elements) { # FIXME: Incomplete

@@ -13,7 +13,7 @@ my @cases = (
     { smiles => 'N(C1=CC=CC=C1)C=1C=C(C(=O)O)C=CC1', iupac => '3-anilinobenzoic acid' },
     { smiles => 'CN(C1=CC=CC=C1)C=1C=C(C=CC1)O', iupac => '3-(N-methylanilino)phenol', AUTHOR => 1 },
 
-    { smiles => 'S(S)C=1C=C(C(=O)N)C=CC1SS', iupac => '3,4-bis(disulfanyl)benzamide', AUTHOR => 1 }, # From BBv2 P-63.4.2.2
+    { smiles => 'S(S)C=1C=C(C(=O)N)C=CC1SS', iupac => '3,4-bis(disulfanyl)benzamide' }, # From BBv2 P-63.4.2.2
 
     # From BBv2 P-65.1.1.3.2
     { smiles => 'ONC(CC)=O', iupac => 'N-hydroxypropanamide' },
