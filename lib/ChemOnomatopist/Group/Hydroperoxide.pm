@@ -10,7 +10,6 @@ use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name;
-use ChemOnomatopist::Name::Part::Multiplier;
 use List::Util qw( all );
 
 sub new
@@ -29,7 +28,10 @@ sub prefix()
 
     return 'hydroperoxy' if all { $_ eq 'O' } @elements;
     if( all { $_ eq 'S' } @elements ) {
-        return ChemOnomatopist::Name::Part::Multiplier->new( 'di' )->to_name . 'sulfanyl';
+        my $name = ChemOnomatopist::Name->new;
+        $name->append_multiplier( 'di' );
+        $name->append_stem( 'sulfanyl' );
+        return $name;
     }
 
     my $name = '';

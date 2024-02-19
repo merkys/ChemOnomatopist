@@ -392,7 +392,7 @@ sub get_mainchain_name
 
         if( @{$attachments{$attachment_name}} > 1 ) {
             my $number;
-            if( $attachment->is_enclosed ) {
+            if( !$attachment->is_simple ) {
                 $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
             } else {
                 $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
