@@ -10,7 +10,6 @@ use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name;
-use ChemOnomatopist::Name::Part::Multiplier;
 
 sub new()
 {
@@ -32,7 +31,7 @@ sub suffix()
     $element_prefix =~ s/a$/oic /;
 
     my $name = ChemOnomatopist::Name->new;
-    $name .= ChemOnomatopist::Name::Part::Multiplier->new( 'di' ) if $hydroxy->element eq $ketone->element;
+    $name->append_multiplier( 'di' ) if $hydroxy->element eq $ketone->element;
     $name .= $element_prefix;
     $name .= 'acid';
     return $name;
@@ -49,7 +48,7 @@ sub multisuffix()
     $element_prefix =~ s/a$/oic /;
 
     my $name = ChemOnomatopist::Name->new( 'carbo' );
-    $name .= ChemOnomatopist::Name::Part::Multiplier->new( 'di' ) if $hydroxy->element eq $ketone->element;
+    $name->append_multiplier( 'di' ) if $hydroxy->element eq $ketone->element;
     $name .= $element_prefix;
     $name .= 'acid';
     return $name;
