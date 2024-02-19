@@ -26,7 +26,9 @@ sub suffix()
     my $ketone = $self->{ketone};
     return 'oic acid' if $ketone->element eq 'O';
 
-    my $name = $elements{$ketone->element}->{prefix};
+    my $name = '';
+    $name .= 'di' if $hydroxy->element eq $ketone->element;
+    $name .= $elements{$ketone->element}->{prefix};
     $name =~ s/a$/oic acid/;
     return $name;
 }
