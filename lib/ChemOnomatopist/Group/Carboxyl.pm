@@ -24,10 +24,13 @@ sub prefix()
     my( $self ) = @_;
     my $ketone = $self->{ketone};
 
-    my $name = '';
-    $name = $elements{$ketone->element}->{prefix} unless $ketone->element eq 'O';
-    $name =~ s/a$/o/;
-    return $name . 'carboxy';
+    my $name = ChemOnomatopist::Name->new;
+    if( $ketone->element ne 'O' ) {
+        my $element_prefix = $elements{$ketone->element}->{prefix};
+        $element_prefix =~ s/a$/o/;
+        $name->append_element( $element_prefix );
+    }
+    return $name->append_stem( 'carboxy' );
 }
 
 sub suffix()
