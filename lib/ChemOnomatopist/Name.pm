@@ -6,6 +6,7 @@ use warnings;
 # ABSTRACT: Chemical name
 # VERSION
 
+use overload '.'   => \&concatenate;
 use overload '.='  => \&append;
 use overload '""'  => sub { return join '', @{$_[0]->{name}} };
 use overload 'eq'  => sub { return  "$_[0]" eq  "$_[1]" };
