@@ -153,6 +153,12 @@ sub bracket_numeric_locants()
     }
 }
 
+sub concatenate()
+{
+    my( $A, $B ) = @_;
+    return clone( $A )->append( $B );
+}
+
 sub has_locant()
 {
     my( $self ) = @_;
