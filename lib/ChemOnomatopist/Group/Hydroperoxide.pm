@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::Multiplier;
 use List::Util qw( all );
 
@@ -52,10 +53,12 @@ sub suffix()
 
     return 'peroxol' if all { $_ eq 'O' } @elements;
 
-    my $name;
+    my $name = ChemOnomatopist::Name->new;
     if( $elements[0] eq $elements[1] ) {
-        $name = 'di' . $elements{$elements[0]}->{prefix};
-        $name =~ s/a$/o/;
+        $name->append_multiplier( 'di' );
+        my $element_prefix = $elements{$elements[0]}->{prefix};
+        $element_prefix =~ s/a$/o/;
+        $name .= $element_prefix;
     } else {
         $name = '-' . join( '', @elements ) . '-' .
                 join '', sort map { s/a$/o/; $_ } map { $elements{$_}->{prefix} } grep { $_ ne 'O' } @elements;
