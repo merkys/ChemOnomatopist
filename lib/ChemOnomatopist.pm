@@ -491,17 +491,19 @@ sub get_mainchain_name
             $name->append_locants( $chain->locants( @senior_group_attachments ) );
         }
         $name->append_multiplier( $number );
+
+        my $suffix;
         if( $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
-            $name->append_suffix( $groups[0]->suffix_if_cycle_substituent );
+            $suffix = $groups[0]->suffix_if_cycle_substituent;
         } elsif( @senior_group_attachments > 2 ) {
-            $name->append_suffix( $groups[0]->multisuffix );
+            $suffix = $groups[0]->multisuffix;
         } else {
-            my $suffix = $groups[0]->suffix;
-            if( @senior_group_attachments > 1 && blessed $suffix && $suffix->starts_with_multiplier ) {
-                $suffix->bracket;
-            }
-            $name->append_suffix( $suffix );
+            $suffix = $groups[0]->suffix;
         }
+        if( @senior_group_attachments > 1 && blessed $suffix && $suffix->starts_with_multiplier ) {
+            $suffix->bracket;
+        }
+        $name->append_suffix( $suffix );
     }
 
     $name =~ s/benzen(-1-)?ol$/phenol/;
