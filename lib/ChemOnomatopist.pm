@@ -496,7 +496,11 @@ sub get_mainchain_name
         } elsif( @senior_group_attachments > 2 ) {
             $name->append_suffix( $groups[0]->multisuffix );
         } else {
-            $name->append_suffix( $groups[0]->suffix );
+            my $suffix = $groups[0]->suffix;
+            if( @senior_group_attachments > 1 && blessed $suffix && $suffix->starts_with_multiplier ) {
+                $suffix->bracket;
+            }
+            $name->append_suffix( $suffix );
         }
     }
 
