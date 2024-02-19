@@ -12,8 +12,8 @@ use ChemOnomatopist::Elements qw( %elements );
 
 sub new()
 {
-    my( $class, $ketone ) = @_;
-    return bless { ketone => $ketone }, $class;
+    my( $class, $hydroxy, $ketone ) = @_;
+    return bless { hydroxy => $hydroxy, ketone => $ketone }, $class;
 }
 
 sub element() { 'C' }

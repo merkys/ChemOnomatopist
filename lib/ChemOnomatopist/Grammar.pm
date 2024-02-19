@@ -113,7 +113,7 @@ my @rules = (
 
     # Carboxylic acid
     [ sub { &is_nongroup_atom && &is_C }, \&is_hydroxy, \&is_ketone, \&anything, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[3] ), @_[1..3] ) } ],
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[2], $_[3] ), @_[1..3] ) } ],
 
     # Hydrazine and diazene
     [ ( sub { &is_nongroup_atom && &is_N } ) x 2,
