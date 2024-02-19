@@ -28,9 +28,7 @@ sub prefix()
 
     return 'hydroperoxy' if all { $_ eq 'O' } @elements;
     if( all { $_ eq 'S' } @elements ) {
-        my $name = ChemOnomatopist::Name::Part::Multiplier->new( 'di' )->to_name;
-        $name .= 'sulfanyl';
-        return $name;
+        return ChemOnomatopist::Name::Part::Multiplier->new( 'di' )->to_name . 'sulfanyl';
     }
 
     my $name = '';
