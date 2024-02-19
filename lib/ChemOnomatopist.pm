@@ -383,16 +383,9 @@ sub get_mainchain_name
             $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
         }
 
-        # FIXME: More rules from BBv2 P-16.3.4 and P-16.5.1 should be added
-        if( !$attachment->is_enclosed &&
-            ( $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
-              $attachment =~ /^[0-9]/ ) ) {
-              $attachment->bracket;
-        }
-
         if( @{$attachments{$attachment_name}} > 1 ) {
             my $number;
-            if( !$attachment->is_simple ) {
+            if( !$attachment->is_simple || $attachment->starts_with_multiplier ) {
                 $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
             } else {
                 $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
@@ -415,6 +408,13 @@ sub get_mainchain_name
                 $attachment ne 'tert-butyl' ) {
                 $attachment->bracket;
             }
+        }
+
+        # FIXME: More rules from BBv2 P-16.3.4 and P-16.5.1 should be added
+        if( !$attachment->is_enclosed &&
+            ( $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
+              $attachment =~ /^[0-9]/ ) ) {
+              $attachment->bracket;
         }
 
         if( $chain->isa( ChemOnomatopist::Group::Amidine:: ) &&
