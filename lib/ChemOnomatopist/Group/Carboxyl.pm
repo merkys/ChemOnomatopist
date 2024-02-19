@@ -19,7 +19,17 @@ sub new()
 
 sub element() { 'C' }
 
-sub prefix() { 'carboxy' }
+sub prefix()
+{
+    my( $self ) = @_;
+    my $ketone = $self->{ketone};
+
+    my $name = '';
+    $name = $elements{$ketone->element}->{prefix} unless $ketone->element eq 'O';
+    $name =~ s/a$/o/;
+    return $name . 'carboxy';
+}
+
 sub suffix()
 {
     my( $self ) = @_;
