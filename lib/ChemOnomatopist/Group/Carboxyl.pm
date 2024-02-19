@@ -56,4 +56,12 @@ sub multisuffix()
 
 sub suffix_if_cycle_substituent() { $_[0]->multisuffix }
 
+# CHECKME: Not sure if the order is correct here
+sub _cmp_instances($$)
+{
+    my( $A, $B ) = @_;
+    return $A->{ketone}->element cmp $B->{ketone}->element ||
+           $A->{hydroxy}->element cmp $B->{hydroxy}->element;
+}
+
 1;
