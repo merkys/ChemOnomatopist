@@ -482,15 +482,10 @@ sub get_mainchain_name
                                                            @senior_group_positions;
         }
 
-        my $number = IUPAC_numerical_multiplier( scalar @senior_group_attachments );
-        $number = '' if $number eq 'mono';
-        $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
-
         # Terminal locants are not cited for 1 or 2 senior group attachments according to BBv2 P-14.3.4.1
         if( $chain->needs_suffix_locant ) {
             $name->append_locants( $chain->locants( @senior_group_attachments ) );
         }
-        $name->append_multiplier( $number );
 
         my $suffix;
         if( $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
@@ -503,6 +498,16 @@ sub get_mainchain_name
         if( @senior_group_attachments > 1 && blessed $suffix && $suffix->starts_with_multiplier ) {
             $suffix->bracket;
         }
+
+        my $number;
+        if( blessed $suffix && $suffix->is_enclosed ) {
+            $number = IUPAC_complex_numerical_multiplier( scalar @senior_group_attachments );
+        } else {
+            $number = IUPAC_numerical_multiplier( scalar @senior_group_attachments );
+            $number = '' if $number eq 'mono';
+            $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
+        }
+        $name->append_multiplier( $number );
         $name->append_suffix( $suffix );
     }
 
