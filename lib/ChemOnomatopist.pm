@@ -517,7 +517,7 @@ sub get_mainchain_name
         $name =~ s/([ae]n)e$/$1ide/;
     }
     if( (grep { !blessed $_ && $_->{charge} && $_->{charge} ==  1 } @chain) == 1 ) {
-        $name =~ s/ane$/ylium/;
+        $name =~ s/[ae]ne$/ylium/;
     }
 
     $name =~ s/benzen(-1-)?ol$/phenol/;
