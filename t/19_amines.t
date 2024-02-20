@@ -27,9 +27,12 @@ my @cases = (
 
     { smiles => 'CC1=CC=C(N)C=C1', iupac => '4-methylaniline' }, # BBv2 P-62.2.1.1.2
 
-    # From BBv2 P-62.2.1.2
+    # From BBv3 P-62.2.1.2
     { smiles => 'CN', iupac => 'methanamine' },
     { smiles => 'CC(CN)C', iupac => '2-methylpropan-1-amine' },
+    { smiles => 'S1CC(CCCCCCCCCC1)N', iupac => '1-thiacyclotridecan-3-amine', AUTHOR => 1 },
+    { smiles => 'CC1C(CCCC1)N', iupac => '2-methylcyclohexan-1-amine' },
+    { smiles => 'ClCCN', iupac => '2-chloroethan-1-amine', AUTHOR => 1 },
 
     # From BBv2 P-62.2.2.1
     { smiles => 'C(C)N(CC)CC', iupac => 'N,N-diethylethanamine' },
