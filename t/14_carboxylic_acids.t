@@ -29,6 +29,11 @@ my @cases = (
     { smiles => 'C=1(C(=CC=CC1)C(=S)S)C(=S)S', iupac => 'benzene-1,2-dicarbodithioic acid' },
     { smiles => 'C(C(=S)S)(=S)S', iupac => 'ethanebis(dithioic acid)' },
 
+    # From BBv3 P-65.1.5.3
+    { smiles => 'CC(=O)OS', iupac => 'ethane(thioperoxoic) OS-acid', AUTHOR => 1 },
+    { smiles => 'c1ccccc1C(=O)SO', iupac => 'benzenecarbo(thioperoxoic) SO-acid', AUTHOR => 1 },
+    { smiles => 'C1=C(C=CC2=CC=CC=C12)C(OO)=S', iupac => 'naphthalene-2-carboperoxothioic acid' },
+
     { smiles => 'C(=O)O', iupac => 'formic acid', AUTHOR => 1 },
 
     { smiles => 'C1=CC2=C(C=C1C(=O)O)SC(=N2)C(F)F', iupac => '2-(difluoromethyl)-1,3-benzothiazole-6-carboxylic acid' }, # PubChem 84692459

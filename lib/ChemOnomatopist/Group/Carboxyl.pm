@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Name;
 use Scalar::Util qw( blessed );
 
@@ -68,6 +69,9 @@ sub multisuffix()
     $element_prefix =~ s/a$/o/;
 
     my $name = ChemOnomatopist::Name->new( 'carbo' );
+    if( $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: ) ) {
+        $name .= 'peroxo';
+    }
     $name->append_multiplier( 'di' ) if $hydroxy->element eq $ketone->element;
     $name .= $element_prefix;
     $name .= blessed $hydroxy ? 'ic acid' : 'ate';

@@ -76,15 +76,16 @@ sub has_H1 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub has_H2 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub has_H3 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 
-sub is_aldehyde   { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Aldehyde:: ) }
-sub is_amide      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide:: ) }
-sub is_amine      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
-sub is_cyanide    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
-sub is_hydroxy    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
-sub is_imine      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Imino:: ) }
-sub is_isocyanate { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanate:: ) }
-sub is_isocyanide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanide:: ) }
-sub is_ketone     { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
+sub is_aldehyde      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Aldehyde:: ) }
+sub is_amide         { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide:: ) }
+sub is_amine         { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
+sub is_cyanide       { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
+sub is_hydroxy       { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
+sub is_hydroperoxide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroperoxide:: ) }
+sub is_imine         { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Imino:: ) }
+sub is_isocyanate    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanate:: ) }
+sub is_isocyanide    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanide:: ) }
+sub is_ketone        { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
 
 sub is_benzene   { any { $_->isa( ChemOnomatopist::Chain::Monocycle:: ) && $_->is_benzene } $_[0]->groups( $_[1] ) }
 sub is_circular  { any { $_->isa( ChemOnomatopist::Chain::Circular:: ) } $_[0]->groups( $_[1] ) }
@@ -115,6 +116,8 @@ my @rules = (
     [ sub { &is_nongroup_atom && &is_C }, \&is_hydroxy, \&is_ketone, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[2], $_[3] ), @_[1..3] ) } ],
     [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&is_ketone, \&anything, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[2], $_[3] ), @_[1..3] ) } ],
+    [ sub { &is_nongroup_atom && &is_C }, \&is_hydroperoxide, \&is_ketone, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[2], $_[3] ), @_[1..3] ) } ],
 
     # Hydrazine and diazene
