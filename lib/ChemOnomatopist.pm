@@ -513,7 +513,10 @@ sub get_mainchain_name
         $name->append_suffix( $suffix );
     }
 
-    if( (grep { !blessed $_ && $_->{charge} && $_->{charge} == 1 } @chain) == 1 ) {
+    if( (grep { !blessed $_ && $_->{charge} && $_->{charge} == -1 } @chain) == 1 ) {
+        $name =~ s/([ae]n)e$/$1ide/;
+    }
+    if( (grep { !blessed $_ && $_->{charge} && $_->{charge} ==  1 } @chain) == 1 ) {
         $name =~ s/ane$/ylium/;
     }
 
