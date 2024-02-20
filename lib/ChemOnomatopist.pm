@@ -551,7 +551,8 @@ sub find_groups
     for my $atom ($graph->vertices) {
         next unless exists $elements{element( $atom )}->{standard_bonding_number};
         my $valence = 0;
-        $valence += $atom->{hcount} if defined $atom->{hcount};
+        $valence += $atom->{charge} if $atom->{charge};
+        $valence += $atom->{hcount} if $atom->{hcount};
         for my $neighbour ($graph->neighbours( $atom )) {
             my $order = 1;
             if( $graph->has_edge_attribute( $atom, $neighbour, 'bond' ) ) {
