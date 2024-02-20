@@ -513,6 +513,10 @@ sub get_mainchain_name
         $name->append_suffix( $suffix );
     }
 
+    if( (grep { !blessed $_ && $_->{charge} && $_->{charge} == 1 } @chain) == 1 ) {
+        $name =~ s/ane$/ylium/;
+    }
+
     $name =~ s/benzen(-1-)?ol$/phenol/;
     $name = 'anisole'      if $name eq 'methoxybenzene';         # BBv2 P-63.2.4.1
     $name = 'benzoic acid' if $name eq 'benzenecarboxylic acid'; # BBv2 P-65.1.1.1
@@ -683,7 +687,7 @@ sub find_groups
     }
 
     # Charges are not handled yet
-    if( any { !blessed $_ && exists $_->{charge} } $graph->vertices ) {
+    if( $CAUTIOUS && any { !blessed $_ && exists $_->{charge} } $graph->vertices ) {
         die "cannot handle charges for now\n";
     }
 
