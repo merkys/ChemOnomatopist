@@ -11,10 +11,11 @@ my @cases = (
 
     { smiles => 'S(=O)(O)CC(=O)O', iupac => 'sulfinoacetic acid' }, # From BBv2 P-65.3.2.1
 
-    # From BBv2 P-65.3.1
+    # From BBv3 P-65.3.1
     { smiles => 'C1(=CC=CC=C1)S(=O)(=O)O', iupac => 'benzenesulfonic acid' },
     { smiles => 'CC(CC)S(=O)O', iupac => 'butane-2-sulfinic acid' },
     { smiles => 'CC1=C(C=C(C=C1)S(=O)(=O)O)S(=O)(=O)O', iupac => '4-methylbenzene-1,3-disulfonic acid' },
+    { smiles => 'C=1(C(=CC=C2C=CC=CC12)S(=O)(=O)O)C1=CC2=CC=CC=C2C=C1', iupac => '[1,2′-binaphthalene]-2-sulfonic acid', AUTHOR => 1 },
     { smiles => 'NC1=CC=C(C=C1)S(=O)(=O)O', iupac => '4-aminobenzene-1-sulfonic acid' },
 );
 
