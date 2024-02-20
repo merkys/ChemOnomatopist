@@ -8,8 +8,9 @@ use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Chain; # FIXME: Not sure why it is needed
-use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Chain::Monocycle;
+use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Name::Part::NondetachablePrefix;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_single_bond );
 use List::Util qw( all any uniq );
@@ -136,7 +137,7 @@ sub name()
 
     # Check for cycloalkanes
     if( $self->is_hydrocarbon ) {
-        my $name = ChemOnomatopist::Name->new( 'cyclo' );
+        my $name = ChemOnomatopist::Name::Part::NondetachablePrefix->new( 'cyclo' )->to_name;
         $name .= ChemOnomatopist::unbranched_chain_name( $self );
         return $name;
     }

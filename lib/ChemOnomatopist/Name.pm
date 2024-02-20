@@ -31,7 +31,7 @@ sub new
     if( defined $name && blessed $name ) {
         push @name_parts, $name;
     } elsif( defined $name && $name ne '' ) {
-        push @name_parts, $name;
+        push @name_parts, ChemOnomatopist::Name::Part::Stem->new( $name );
     }
     return bless { name => \@name_parts }, $class;
 }

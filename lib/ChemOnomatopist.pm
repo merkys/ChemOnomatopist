@@ -301,7 +301,7 @@ sub get_sidechain_name
         pop @$name;
         pop @$name;
         $name .= 'anilino';
-    }
+    } use Data::Dumper; print Dumper $name;
 
     return $name;
 }
