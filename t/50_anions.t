@@ -8,7 +8,7 @@ use Test::More;
 
 my @cases = (
     # From BBv3 P-72.2.2.2.1.1
-    { smiles => 'C(C)(=O)[O-]', iupac => 'acetate', AUTHOR => 1 },
+    { smiles => 'C(C)(=O)[O-]', iupac => 'acetate' },
     { smiles => 'C(CC)(=O)O[O-]', iupac => 'propaneperoxoate', AUTHOR => 1 },
     { smiles => 'C(C)(O[O-])=S', iupac => 'ethaneperoxothioate', AUTHOR => 1 },
     { smiles => 'CC(=O)O[S-]', iupac => 'ethane(OS-thioperoxoate)', AUTHOR => 1 },

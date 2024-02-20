@@ -521,7 +521,7 @@ sub get_mainchain_name
     $name =~ s/^(\d,\d-)dimethylbenzene$/$1xylene/;
     $name = 'formic acid' if $name eq 'methanoic acid';
     $name =~ s/ethanamide$/acetamide/;
-    $name =~ s/ethanoic acid$/acetic acid/; # BBv2 P-65.1.1.1
+    $name =~ s/ethano(ate|ic acid)$/acet$1/; # BBv2 P-65.1.1.1
     $name =~ s/benzen(-1-)?amine$/aniline/;
     $name =~ s/benzene-1-carbaldehyde$/benzaldehyde/;
     $name =~ s/benzene-1-carboxylic acid$/benzoic acid/;

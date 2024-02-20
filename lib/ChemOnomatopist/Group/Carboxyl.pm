@@ -39,7 +39,10 @@ sub suffix()
     my( $self ) = @_;
     my $hydroxy = $self->{hydroxy};
     my $ketone = $self->{ketone};
-    return ChemOnomatopist::Name->new( 'oic acid' ) if $ketone->element eq 'O';
+    if( $ketone->element eq 'O' ) {
+        return ChemOnomatopist::Name->new( 'oic acid' ) if blessed $hydroxy;
+        return ChemOnomatopist::Name->new( 'oate' );
+    }
 
     my $element_prefix = $elements{$ketone->element}->{prefix};
     $element_prefix =~ s/a$/o/;
@@ -67,7 +70,7 @@ sub multisuffix()
     my $name = ChemOnomatopist::Name->new( 'carbo' );
     $name->append_multiplier( 'di' ) if $hydroxy->element eq $ketone->element;
     $name .= $element_prefix;
-    $name .= 'ic acid';
+    $name .= blessed $hydroxy ? 'ic acid' : 'ate';
     return $name;
 }
 
