@@ -10,6 +10,7 @@ use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name;
+use Scalar::Util qw( blessed );
 
 sub new()
 {
@@ -44,7 +45,7 @@ sub suffix()
     $element_prefix =~ s/a$/oic /;
 
     my $name = ChemOnomatopist::Name->new;
-    $name->append_multiplier( 'di' ) if $hydroxy->element eq $ketone->element;
+    $name->append_multiplier( 'di' ) if ChemOnomatopist::element( $hydroxy ) eq $ketone->element;
     $name .= $element_prefix;
     $name .= 'acid';
     return $name;
@@ -55,7 +56,10 @@ sub multisuffix()
     my( $self ) = @_;
     my $hydroxy = $self->{hydroxy};
     my $ketone = $self->{ketone};
-    return ChemOnomatopist::Name->new( 'carboxylic acid' ) if $ketone->element eq 'O';
+    if( $ketone->element eq 'O' ) {
+        return ChemOnomatopist::Name->new( 'carboxylic acid' ) if blessed $hydroxy;
+        return ChemOnomatopist::Name->new( 'carboxylate' );
+    }
 
     my $element_prefix = $elements{$ketone->element}->{prefix};
     $element_prefix =~ s/a$/oic /;
@@ -74,7 +78,7 @@ sub _cmp_instances($$)
 {
     my( $A, $B ) = @_;
     return $A->{ketone}->element cmp $B->{ketone}->element ||
-           $A->{hydroxy}->element cmp $B->{hydroxy}->element;
+           ChemOnomatopist::element( $A->{hydroxy} ) cmp ChemOnomatopist::element( $B->{hydroxy} );
 }
 
 1;

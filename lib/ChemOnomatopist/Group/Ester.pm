@@ -38,6 +38,4 @@ sub name
     return "$hydroxylic_part $acid_part";
 }
 
-sub suffix() { 'carboxylate' }
-
 1;

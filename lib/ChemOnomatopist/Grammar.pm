@@ -114,6 +114,8 @@ my @rules = (
     # Carboxylic acid
     [ sub { &is_nongroup_atom && &is_C }, \&is_hydroxy, \&is_ketone, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[2], $_[3] ), @_[1..3] ) } ],
+    [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&is_ketone, \&anything, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[2], $_[3] ), @_[1..3] ) } ],
 
     # Hydrazine and diazene
     [ ( sub { &is_nongroup_atom && &is_N } ) x 2,
@@ -149,7 +151,7 @@ my @rules = (
       sub { $_[0]->delete_vertices( $_[3] ); graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1], $_[3] ), $_[2] ) } ],
 
     # Ester
-    [ sub { &is_nongroup_atom && &is_C }, \&is_ketone, sub { &is_nongroup_atom && &is_O }, \&is_C, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_C }, \&is_ketone, sub { &is_nongroup_atom && &is_O && &no_charge }, \&is_C, NO_MORE_VERTICES,
       sub {
             my $hydroxylic = first { $_ != $_[1] } $_[0]->neighbours( $_[3] );
             my $ester = ChemOnomatopist::Group::Ester->new( $hydroxylic, $_[4] );
