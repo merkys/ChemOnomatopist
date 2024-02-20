@@ -1,10 +1,10 @@
 package ChemOnomatopist::Group::Ester;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Ester group
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Group::;
 
@@ -18,7 +18,7 @@ sub new
     return bless { hydroxylic => $hydroxylic, acid => $acid }, $class;
 }
 
-sub element { return 'C' }
+sub element { 'C' }
 
 sub name
 {
