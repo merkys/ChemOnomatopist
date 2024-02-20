@@ -47,7 +47,7 @@ sub suffix()
     my $name = ChemOnomatopist::Name->new;
     $name->append_multiplier( 'di' ) if ChemOnomatopist::element( $hydroxy ) eq $ketone->element;
     $name .= $element_prefix;
-    $name .= 'ic acid';
+    $name .= blessed $hydroxy ? 'ic acid' : 'ate';
     return $name;
 }
 
