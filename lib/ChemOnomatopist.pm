@@ -407,7 +407,6 @@ sub get_mainchain_name
             # However, they are quite vague, thus there is not much of guarantee the following code is correct.
             if( !$attachment->is_enclosed &&
                 ($attachment->has_locant || !$attachment->is_simple) &&
-                $chain->needs_substituent_locants &&
                 $attachment ne 'tert-butyl' ) {
                 $attachment->bracket;
             }
