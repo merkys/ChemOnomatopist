@@ -11,8 +11,8 @@ my @cases = (
     { smiles => 'N(=NC=O)C=O', iupac => 'diazenedicarbaldehyde', AUTHOR => 1 },
     { smiles => 'C1(=CC=CC=C1)N=NC#N', iupac => 'phenyldiazenecarbonitrile' },
     { smiles => 'CN=NCC(=O)O', iupac => '(methyldiazenyl)acetic acid' },
-    { smiles => 'N(=N)CCC(=O)O', iupac => '3-diazenylpropanoic acid' },
-    { smiles => 'N(=N)C=1C=C(C(=O)O)C=CC1N=N', iupac => '3,4-bis(diazenyl)benzoic acid', AUTHOR => 1 },
+    { smiles => 'N(=N)CCC(=O)O', iupac => '3-diazenylpropanoic acid', AUTHOR => 1 },
+    { smiles => 'N(=N)C=1C=C(C(=O)O)C=CC1N=N', iupac => '3,4-bis(diazenyl)benzoic acid' },
 
     # From BBv3 P-68.3.1.3.2.1
     { smiles => 'CN=NC', iupac => 'dimethyldiazene' },
