@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Phenanthrene;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Phenanthrene or its derivative
 # VERSION
+
+use strict;
+use warnings;
 
 use ChemOnomatopist::Chain::Polyaphene;
 use ChemOnomatopist::Util::Graph qw( merge_graphs );
@@ -102,7 +102,7 @@ sub needs_heteroatom_locants()
     return $self->number_of_heteroatoms == 2;
 }
 
-sub needs_heteroatom_names() { return '' }
+sub needs_heteroatom_names() { '' }
 
 sub prefix()
 {
