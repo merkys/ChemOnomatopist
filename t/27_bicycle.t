@@ -29,7 +29,7 @@ my @cases = (
     { smiles => '[AsH]1C=CC2=CC=CC=C12', iupac => 'arsindole', AUTHOR => 1 },
     { smiles => 'P1C=CC2=CC=CC=C12', iupac => 'phosphindole' }, # Not sure if H prefix is not needed
     { smiles => 'C=1C=CN2C=CC=CC12', iupac => 'indolizine' },
-    { smiles => 'C=1C=C[As]2C=CC=CC12', iupac => 'arsindolizine', AUTHOR => 1 },
+    { smiles => 'C=1C=C[As]2C=CC=CC12', iupac => 'arsindolizine' },
     { smiles => 'C=1C=CP2C=CC=CC12', iupac => 'phosphindolizine' },
     { smiles => 'C=1NC=C2C=CC=CC12', iupac => 'isoindole' },
     { smiles => 'C=1[AsH]C=C2C=CC=CC12', iupac => 'isoarsindole', AUTHOR => 1 },

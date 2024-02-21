@@ -54,8 +54,8 @@ our @names = (
 for my $name (qw( 1H-indole indolizine isoindole isoquinoline quinoline quinolizine )) {
     for (grep { $_->[2] eq $name } @names) {
         my @As_parts = @$_;
-        $As_parts[0] =~ s/N/\[As\]/g;
-        $As_parts[1] =~ s/N/\[As\]/g;
+        $As_parts[0] =~ s/n/\[as\]/g;
+        $As_parts[1] =~ s/n/\[as\]/g;
         $As_parts[2] =~ s/^1H-//;
         $As_parts[2] = 'ars' . $As_parts[2] unless $As_parts[2] =~ s/^iso/isoars/;
         push @names, \@As_parts;
