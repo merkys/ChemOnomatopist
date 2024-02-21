@@ -514,7 +514,7 @@ sub get_mainchain_name
     }
 
     if( (grep { !blessed $_ && $_->{charge} && $_->{charge} == -1 } @chain) == 1 ) {
-        $name =~ s/([ae]n)e$/$1ide/;
+        $name =~ s/e$/ide/; # BBv3 P-72.2.2.1
     }
     if( (grep { !blessed $_ && $_->{charge} && $_->{charge} ==  1 } @chain) == 1 ) {
         $name =~ s/[ae]ne$/ylium/;
