@@ -113,6 +113,11 @@ sub prefix()
         return 'phenanthroline' if $self->number_of_heteroatoms == 2;
     }
 
+    if( $self->number_of_heteroatoms == 1 ) {
+        return 'arsanthridine'    if all { $_ eq 'As' } $self->heteroatoms;
+        return 'phosphanthridine' if all { $_ eq 'P' } $self->heteroatoms;
+    }
+
     return 'phenanthrene';
 }
 
