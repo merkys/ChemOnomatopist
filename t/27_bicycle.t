@@ -21,30 +21,29 @@ my @cases = (
     { smiles => 'C1[Se]C=CC2=C1C=CC=C2', iupac => '1H-2-benzoselenopyran' },
     { smiles => 'N1=CC=CC2=CC=CC=C12', iupac => 'quinoline' },
 
-    # From BBv2 P-25.2.1, Table 2.9
+    # From BBv3 P-25.2.1, Table 2.9
     { smiles => 'C1=CC=CC2=NC3=CC=CC=C3C=C12', iupac => 'acridine' },
     { smiles => 'C1=CC=CC2=[As]C3=CC=CC=C3C=C12', iupac => 'acridarsine' },
     { smiles => 'C1=CC=CC2=PC3=CC=CC=C3C=C12', iupac => 'acridophosphine' },
-    { smiles => 'N1C=CC2=CC=CC=C12', iupac => 'indole' },
-    { smiles => '[AsH]1C=CC2=CC=CC=C12', iupac => 'arsindole' },
-    { smiles => 'P1C=CC2=CC=CC=C12', iupac => 'phosphindole' },
+    { smiles => 'N1C=CC2=CC=CC=C12', iupac => 'indole', AUTHOR => 1 },
+    { smiles => '[AsH]1C=CC2=CC=CC=C12', iupac => 'arsindole', AUTHOR => 1 },
+    { smiles => 'P1C=CC2=CC=CC=C12', iupac => 'phosphindole' }, # Not sure if H prefix is not needed
     { smiles => 'C=1C=CN2C=CC=CC12', iupac => 'indolizine' },
-    { smiles => 'C=1C=C[As]2C=CC=CC12', iupac => 'arsindolizine' },
+    { smiles => 'C=1C=C[As]2C=CC=CC12', iupac => 'arsindolizine', AUTHOR => 1 },
     { smiles => 'C=1C=CP2C=CC=CC12', iupac => 'phosphindolizine' },
     { smiles => 'C=1NC=C2C=CC=CC12', iupac => 'isoindole' },
-    { smiles => 'C=1[AsH]C=C2C=CC=CC12', iupac => 'isoarsindole' },
-    { smiles => 'C=1PC=C2C=CC=CC12', iupac => 'isophosphindole' },
-    { smiles => 'C1=[As]C=CC2=CC=CC=C12', iupac => 'isoarsinoline' },
+    { smiles => 'C=1[AsH]C=C2C=CC=CC12', iupac => 'isoarsindole', AUTHOR => 1 },
+    { smiles => 'C=1PC=C2C=CC=CC12', iupac => 'isophosphindole', AUTHOR => 1 },
+    { smiles => 'C1=[As]C=CC2=CC=CC=C12', iupac => 'isoarsinoline', AUTHOR => 1 },
     { smiles => 'C1=PC=CC2=CC=CC=C12', iupac => 'isophosphinoline' },
     { smiles => 'C1=CC=CC2=NC=C3C=CC=CC3=C12', iupac => 'phenanthridine' },
-    { smiles => 'C1=CC=CC2=[As]C=C3C=CC=CC3=C12', iupac => 'arsanthridine' },
-    { smiles => 'C1=CC=CC2=PC=C3C=CC=CC3=C12', iupac => 'phosphanthridine' },
-    { smiles => '[As]1=CC=CC2=CC=CC=C12', iupac => 'arsinoline' },
+    { smiles => 'C1=CC=CC2=[As]C=C3C=CC=CC3=C12', iupac => 'arsanthridine', AUTHOR => 1 },
+    { smiles => 'C1=CC=CC2=PC=C3C=CC=CC3=C12', iupac => 'phosphanthridine', AUTHOR => 1 },
+    { smiles => '[As]1=CC=CC2=CC=CC=C12', iupac => 'arsinoline', AUTHOR => 1 },
     { smiles => 'P1=CC=CC2=CC=CC=C12', iupac => 'phosphinoline' },
-    { smiles => 'C=1C=CC[As]2C=CC=CC12', iupac => 'arsinolizine' },
-    { smiles => 'C=1C=CCP2C=CC=CC12', iupac => 'phosphinolizine' },
+    { smiles => 'C=1C=CC[As]2C=CC=CC12', iupac => 'arsinolizine', AUTHOR => 1 },
+    { smiles => 'C=1C=CCP2C=CC=CC12', iupac => 'phosphinolizine', AUTHOR => 1 },
 
-    { smiles => 'P1C=CC2=CC=CC=C12', iupac => 'phosphindole' }, # Not sure if H prefix is not needed
     { smiles => 'C1=CC=C2C(=C1)C(=C(P2(Cl)(Cl)Cl)Cl)Cl', iupac => '1,1,1,2,3-pentachlorophosphindole', AUTHOR => 1 }, # PubChem 2784508, why λ5 is not present?
 
     { smiles => 'C1=CC=C2C(C(C=CC2=C1)O)O', iupac => 'naphthalene-1,2-diol' }, # PubChem 362 has 1,2-dihydronaphthalene-1,2-diol, which is clearly incorrect

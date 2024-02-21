@@ -64,7 +64,8 @@ for my $name (qw( 1H-indole indolizine isoindole isoquinoline quinoline quinoliz
         $P_parts[0] =~ s/n/p/g;
         $P_parts[1] =~ s/n/p/g;
         $P_parts[2] =~ s/^1H-//;
-        $P_parts[2] = 'phosph' . $P_parts[2] unless $P_parts[2] =~ s/^iso/isophosph/;
+        $P_parts[2] =~ s/^qu//;
+        $P_parts[2] = 'phosph' . $P_parts[2] unless $P_parts[2] =~ s/^iso(qu)/isophosph/;
         push @names, \@P_parts;
     }
 }
