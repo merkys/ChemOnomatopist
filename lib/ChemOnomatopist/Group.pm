@@ -16,6 +16,7 @@ use ChemOnomatopist::Group::Carbaldehyde;
 use ChemOnomatopist::Group::Carbonitrile;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Cyanide;
+use ChemOnomatopist::Group::Diazene;
 use ChemOnomatopist::Group::Ester;
 use ChemOnomatopist::Group::Ether;
 use ChemOnomatopist::Group::Guanidine;
@@ -76,6 +77,7 @@ our @order = (
     # TODO: Classes denoted by the senior atom in heterane nomenclature should go here
     # 21. Nitrogen compounds
     ChemOnomatopist::Group::Hydrazine::,
+    ChemOnomatopist::Group::Diazene::,
     # 41. Ethers, then sulfides, sulfoxides, sulfones; then selenides, selenoxides, etc.
     ChemOnomatopist::Group::Ether::,
 );
