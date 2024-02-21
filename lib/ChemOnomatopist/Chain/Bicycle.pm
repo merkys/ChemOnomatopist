@@ -57,7 +57,7 @@ for my $name (qw( 1H-indole indolizine isoindole isoquinoline quinoline quinoliz
         $As_parts[0] =~ s/n/\[as\]/g;
         $As_parts[1] =~ s/n/\[as\]/g;
         $As_parts[2] =~ s/^1H-//;
-        $As_parts[2] = 'ars' . $As_parts[2] unless $As_parts[2] =~ s/^iso/isoars/;
+        $As_parts[2] = 'ars' . $As_parts[2] unless $As_parts[2] =~ s/^iso(qu)/isoars/;
         push @names, \@As_parts;
 
         my @P_parts = @$_;

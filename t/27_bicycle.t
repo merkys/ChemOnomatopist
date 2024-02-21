@@ -34,7 +34,7 @@ my @cases = (
     { smiles => 'C=1NC=C2C=CC=CC12', iupac => 'isoindole' },
     { smiles => 'C=1[AsH]C=C2C=CC=CC12', iupac => 'isoarsindole', AUTHOR => 1 },
     { smiles => 'C=1PC=C2C=CC=CC12', iupac => 'isophosphindole', AUTHOR => 1 },
-    { smiles => 'C1=[As]C=CC2=CC=CC=C12', iupac => 'isoarsinoline', AUTHOR => 1 },
+    { smiles => 'C1=[As]C=CC2=CC=CC=C12', iupac => 'isoarsinoline' },
     { smiles => 'C1=PC=CC2=CC=CC=C12', iupac => 'isophosphinoline' },
     { smiles => 'C1=CC=CC2=NC=C3C=CC=CC3=C12', iupac => 'phenanthridine' },
     { smiles => 'C1=CC=CC2=[As]C=C3C=CC=CC3=C12', iupac => 'arsanthridine' },
