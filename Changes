@@ -1,3 +1,15 @@
+unreleased
+
+    - 27.7% correctness rate for all PINs from the Blue Book (2013).
+    - Implement nonstandard valences.
+    - Implement support for fluorene.
+    - Implement support for polyhelicene.
+    - Implement support for amidines.
+    - Implement support for diazenes.
+    - Implement support for isocyanates and isocyanides.
+    - Implement support for urea.
+    - Fix issues with naming carbaldehydes, carbonitriles and carboxyls.
+
 0.6.1 2023-10-31
 
     - Implement partial support for porphyrins.
