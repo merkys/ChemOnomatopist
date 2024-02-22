@@ -5,7 +5,7 @@ From: debian:unstable
 %post
     apt-get update
 
-    apt-get install --yes libalgorithm-combinatorics-perl cpanminus git libchemistry-opensmiles-perl libdbi-perl libdist-zilla-perl libdist-zilla-plugin-autometaresources-perl libdist-zilla-plugin-ourpkgversion-perl libgraph-perl libipc-run3-perl libset-object-perl 
+    apt-get install --yes libalgorithm-combinatorics-perl cpanminus git libchemistry-opensmiles-perl libdbi-perl libdist-zilla-perl libdist-zilla-plugin-autometaresources-perl libdist-zilla-plugin-ourpkgversion-perl libgraph-perl libgraph-moreutils-perl libgraph-nauty-perl libipc-run3-perl libset-object-perl
     git clone https://github.com/merkys/ChemOnomatopist
     cd ChemOnomatopist
     dzil test
