@@ -1,12 +1,20 @@
 package ChemOnomatopist::Group::Hydroxy;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Hydroxy group
 # VERSION
 
+use strict;
+use warnings;
+
 use parent ChemOnomatopist::Group::;
+
+sub new
+{
+    my( $class, $atom ) = @_;
+    return bless { atom => $atom }, $class;
+}
+
+sub element() { $_[0]->{atom}->{symbol} }
 
 # From BBv2 P-63.1.5
 my %prefixes = ( O => 'hydroxy', S => 'sulfanyl', Se => 'selanyl', Te => 'tellanyl' );
@@ -21,7 +29,13 @@ sub prefix
 sub suffix
 {
     my( $self ) = @_;
-    return $suffixes{$self->element};
+
+    my $suffix = '';
+    if( exists $self->{atom}->{isotope} ) {
+        $suffix = '(' . $self->{atom}->{isotope} . $self->element . ')';
+    }
+
+    return $suffix . $suffixes{$self->element};
 }
 
 sub _cmp_instances
