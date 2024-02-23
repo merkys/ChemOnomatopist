@@ -6,6 +6,9 @@ package ChemOnomatopist::Isotope;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Util qw( array_frequencies );
+use List::Util qw( uniq );
+
 sub new
 {
     my( $class, $element, $atomic_number, $locant ) = @_;
@@ -17,5 +20,32 @@ sub new
 sub element()       { $_[0]->{element} }
 sub atomic_number() { $_[0]->{atomic_number} }
 sub locant()        { $_[0]->{locant} }
+
+sub cmp_isotope_lists
+{
+    my( $A, $B ) = @_;
+
+    # BBv3 P-44.4.1.11.1: Senior set is larger
+    return @$B <=> @$A if @$B <=> @$A;
+
+    my %A_atomic_number_freq = array_frequencies map { $_->atomic_number } @$A;
+    my %B_atomic_number_freq = array_frequencies map { $_->atomic_number } @$B;
+
+    # BBv3 P-44.4.1.11.2: Senior set has greater number of nuclides of higher atomic number
+    # CHECKME: P-44.4.1.11.3 seems to be covered by this as well?
+    my @keys = (keys %A_atomic_number_freq, keys %B_atomic_number_freq);
+    for (reverse sort uniq @keys) {
+        return  1 if !exists $A_atomic_number_freq{$_};
+        return -1 if !exists $B_atomic_number_freq{$_};
+        return $A_atomic_number_freq{$_} <=> $B_atomic_number_freq{$_};
+    }
+
+    # BBv3 P-44.4.1.11.4: Senior set has lower locants
+    my $cmp_arrays = ChemOnomatopist::cmp_arrays( [ map { $_->locant } @$A ],
+                                                  [ map { $_->locant } @$B ] );
+    return $cmp_arrays if $cmp_arrays;
+
+    return 0;
+}
 
 1;

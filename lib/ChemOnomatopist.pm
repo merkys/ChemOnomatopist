@@ -1169,7 +1169,7 @@ sub filter_chains
                    \&rule_lowest_numbered_double_bonds,
                    # TODO: P-44.4.1.11: Concerns isotopes
                    # P-44.4.1.11.1: Maximum number of isotopes
-                   \&rule_most_isotopes,
+                   \&rule_isotopes,
                    # TODO: P-44.4.1.12: Concerns stereogenic centers
 
                    # TODO: P-45.1: Multiplication of identical senior parent structures
@@ -1343,6 +1343,18 @@ sub rule_most_isotopes
     my( $max_value ) = sort { $b <=> $a }
                        map  { $_->number_of_isotopes } @chains;
     return grep { $_->number_of_isotopes == $max_value } @chains;
+}
+
+sub rule_isotopes
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { ChemOnomatopist::Isotope::cmp_isotope_lists( $a, $b ) }
+                       map  { [ $_->isotopes ] }
+                            @chains;
+    return grep { !ChemOnomatopist::Isotope::cmp_isotope_lists( [ $_->isotopes ],
+                                                                $max_value ) }
+                @chains;
 }
 
 sub rule_most_indicated_hydrogens

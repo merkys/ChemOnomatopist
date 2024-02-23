@@ -8,14 +8,26 @@ use warnings;
 
 use Exporter;
 use Graph::Undirected;
+use List::Util qw( pairs );
 use Scalar::Util qw( blessed );
 
 use parent Exporter::;
 
 our @EXPORT_OK = qw(
+    array_frequencies
     copy
     zip
 );
+
+sub array_frequencies(@)
+{
+    my %frequencies;
+    for (@_) {
+        $frequencies{$_} = 0 unless exists $frequencies{$_};
+        $frequencies{$_}++;
+    }
+    return %frequencies;
+}
 
 sub copy($)
 {

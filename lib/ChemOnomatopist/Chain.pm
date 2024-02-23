@@ -386,7 +386,7 @@ sub nonstandard_valences()
 sub isotopes()
 {
     my( $self ) = @_;
-    return @{$self->{isotopes}} if $self->{isotopes};
+    # return @{$self->{isotopes}} if $self->{isotopes};
 
     my @vertices = $self->vertices;
     my @isotopes;
@@ -406,7 +406,8 @@ sub isotopes()
         }
     }
 
-    $self->{isotopes} = \@isotopes;
+    # $self->{isotopes} = \@isotopes;
+    return @isotopes;
 }
 
 sub length()

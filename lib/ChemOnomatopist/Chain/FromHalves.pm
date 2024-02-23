@@ -90,6 +90,12 @@ sub locant_names()
            $self->{halves}[1]->locant_names;
 }
 
+sub isotopes() # FIXME: Exclude center atom
+{
+    my( $self ) = @_;
+    return reverse( $self->{halves}[0]->isotopes ), $self->{halves}[1]->isotopes;
+}
+
 # Not sure why this has to be overriden
 sub number_of_branches()
 {
