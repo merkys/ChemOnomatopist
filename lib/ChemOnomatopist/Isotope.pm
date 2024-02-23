@@ -37,7 +37,8 @@ sub cmp_isotope_lists
     for (reverse sort uniq @keys) {
         return  1 if !exists $A_atomic_number_freq{$_};
         return -1 if !exists $B_atomic_number_freq{$_};
-        return $A_atomic_number_freq{$_} <=> $B_atomic_number_freq{$_};
+        return $A_atomic_number_freq{$_} <=> $B_atomic_number_freq{$_}
+            if $A_atomic_number_freq{$_} <=> $B_atomic_number_freq{$_};
     }
 
     # BBv3 P-44.4.1.11.4: Senior set has lower locants
