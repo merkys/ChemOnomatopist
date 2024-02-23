@@ -468,6 +468,8 @@ sub get_mainchain_name
         }
 
         $isotopes .= $isotope;
+        # FIXME: It is not clear when a numeric suffix has to be added.
+        # It is explained in BBv3 P-82.2.1 using a concept of polysubstitution which is quite vague.
         $isotopes .= scalar @{$isotopes{$isotope}} if @{$isotopes{$isotope}} > 1 || $isotope =~ /H$/;
     }
     $name .= "($isotopes)" if $isotopes ne '';
