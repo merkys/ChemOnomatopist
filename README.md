@@ -19,24 +19,20 @@ The easiest way to install it is using [Dist::Zilla](https://metacpan.org/releas
 ## Support
 
 This tool is under development.
-Support for the variety of chemical compounds is underway.
+Support for the variety of organic chemical compounds is underway.
 Currently *ChemOnomatopist* supports:
 
-* Branched acyclic hydrocarbons
-* Monocycles
-* Monospiro compounds
+* Branched acyclic compounds
+* Monocycles and monospiro compounds
 * Bicyclic compounds
-* Polyacenes
-* Polyaphenes
-* Xanthenes and similar compounds
+* Regular polycylic aromatic hydrocarbons (polyacenes, polyaphenes, xanthenes and others)
 
 Issues known to produce names deviating from IUPAC guidelines:
 
 * Possibly incorrect seniority for *tert* substituents (Blue Book is not quite clear about them)
-* Incorrect addition/omission of unambiguous locants
-* Incorrect addition/omission of parentheses
+* Incorrect addition/omission of unambiguous locants and parentheses
 * Monocycles with multiple substituents are sometimes named incorrectly
-* Linear compounds with heteroatoms are usually named incorrectly
+* Linear hetero compounds composed of repeating units are usually named incorrectly
 
 ## Contributors
 
