@@ -7,7 +7,7 @@ use ChemOnomatopist;
 use ChemOnomatopist::Isotope;
 use Test::More;
 
-plan tests => 11;
+plan tests => 12;
 
 my @sorted;
 
@@ -45,11 +45,15 @@ is ChemOnomatopist::Isotope::cmp_isotope_lists( [ $isotopes[0], $isotopes[0] ], 
 is ChemOnomatopist::Isotope::cmp_isotope_lists( [ $isotopes[0] ], [ $isotopes[1] ] ), -1;
 
 # From BBv3 P-44.4.1.11.3
-@isotopes = ( ChemOnomatopist::Isotope->new( 'C', 14, 1 ),
-              ChemOnomatopist::Isotope->new( 'C', 13, 1 ) );
-is ChemOnomatopist::Isotope::cmp_isotope_lists( [ $isotopes[0] ], [ $isotopes[1] ] ), -1;
+is ChemOnomatopist::Isotope::cmp_isotope_lists( [ ChemOnomatopist::Isotope->new( 'C', 14, 1 ) ],
+                                                [ ChemOnomatopist::Isotope->new( 'C', 13, 1 ) ] ), -1;
 
 # From BBv3 P-44.4.1.11.4
-@isotopes = ( ChemOnomatopist::Isotope->new( 'H', 2, 2 ),
-              ChemOnomatopist::Isotope->new( 'H', 2, 3 ) );
-is ChemOnomatopist::Isotope::cmp_isotope_lists( [ $isotopes[0] ], [ $isotopes[1] ] ), -1;
+is ChemOnomatopist::Isotope::cmp_isotope_lists( [ ChemOnomatopist::Isotope->new( 'H', 2, 2 ) ],
+                                                [ ChemOnomatopist::Isotope->new( 'H', 2, 3 ) ] ), -1;
+
+# From BBv3 P-44.4.1.11.5
+is ChemOnomatopist::Isotope::cmp_isotope_lists( [ ChemOnomatopist::Isotope->new( 'C', 13, 4 ),
+                                                  ChemOnomatopist::Isotope->new( 'C', 14, 5 ) ],
+                                                [ ChemOnomatopist::Isotope->new( 'C', 13, 5 ),
+                                                  ChemOnomatopist::Isotope->new( 'C', 14, 4 ) ] ), -1;
