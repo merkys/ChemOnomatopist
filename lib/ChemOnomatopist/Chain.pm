@@ -9,6 +9,7 @@ use warnings;
 use ChemOnomatopist;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Isotope;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Ether;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
@@ -187,26 +188,6 @@ sub nonstandard_valence_positions()
 
     $self->{nonstandard_valence_positions} = \@nonstandard_valence_positions;
     return @nonstandard_valence_positions;
-}
-
-sub isotope_positions()
-{
-    my( $self ) = @_;
-
-    return @{$self->{isotope_positions}} if $self->{isotope_positions};
-
-    my @vertices = $self->vertices;
-    my @isotope_positions;
-    for (0..$#vertices) {
-        next if blessed $vertices[$_];
-        push @isotope_positions, $_ if exists $vertices[$_]->{isotope};
-        if( exists $vertices[$_]->{h_isotope} ) {
-            push @isotope_positions, ( $_ ) x grep { defined $_ } @{$vertices[$_]->{h_isotope}};
-        }
-    }
-
-    $self->{isotope_positions} = \@isotope_positions;
-    return @isotope_positions;
 }
 
 sub is_hydrocarbon()
@@ -402,13 +383,30 @@ sub nonstandard_valences()
                $self->nonstandard_valence_positions;
 }
 
-# TODO: Complete
 sub isotopes()
 {
     my( $self ) = @_;
+    return @{$self->{isotopes}} if $self->{isotopes};
+
     my @vertices = $self->vertices;
-    return map { $vertices[$_]->{isotope} }
-               $self->isotope_positions;
+    my @isotopes;
+    for my $i (0..$#vertices) {
+        next if blessed $vertices[$i];
+
+        if( exists $vertices[$i]->{isotope} ) {
+            push @isotopes, ChemOnomatopist::Isotope->new( ChemOnomatopist::element( $vertices[$i] ),
+                                                           $vertices[$i]->{isotope},
+                                                           $self->locants( $i ) );
+        }
+        if( exists $vertices[$i]->{h_isotope} ) {
+            for (@{$vertices[$i]->{h_isotope}}) {
+                next unless defined $_;
+                push @isotopes, ChemOnomatopist::Isotope->new( 'H', $_, $self->locants( $i ) );
+            }
+        }
+    }
+
+    $self->{isotopes} = \@isotopes;
 }
 
 sub length()
