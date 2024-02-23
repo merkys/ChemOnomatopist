@@ -7,6 +7,23 @@ use ChemOnomatopist;
 use Test::More;
 
 my @cases = (
+    # From BBv3 P-44.4.1.11.1
+    { smiles => 'C(CCCC)[2H]', iupac => '(1-2H1)pentane', AUTHOR => 1 },
+    { smiles => 'C1(CCCCC1)([2H])[2H]', iupac => '(1,1-2H2)cyclohexane', AUTHOR => 1 },
+    { smiles => '[14CH2]1CCCCC1', iupac => '(14C1)cyclohexane', AUTHOR => 1 },
+
+    # From BBv3 P-44.4.1.11.2
+    { smiles => '[14CH2]1CCCC1', iupac => '(14C1)cyclopentane', AUTHOR => 1 },
+    { smiles => 'C1(CCCC1)[2H]', iupac => '(2H1)cyclopentane', AUTHOR => 1 },
+
+    # From BBv3 P-44.4.1.11.3
+    { smiles => 'C1(=CC=CC=C1)[3H]', iupac => '(3H1)benzene', AUTHOR => 1 },
+    { smiles => 'C1(=CC=CC=C1)[2H]', iupac => '(2H1)benzene', AUTHOR => 1 },
+
+    # From BBv3 P-44.4.1.11.4
+    { smiles => 'N1=C(C=CC=C1)[2H]', iupac => '(2-2H)pyridine', AUTHOR => 1 },
+    { smiles => 'N1=CC(=CC=C1)[2H]', iupac => '(3-2H)pyridine', AUTHOR => 1 },
+
     # From BBv2 P-82.2.1
     { smiles => '[14CH4]', iupac => '(14C)methane' },
     { smiles => 'C[2H]', iupac => '(2H1)methane' },
