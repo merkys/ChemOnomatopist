@@ -41,10 +41,17 @@ sub cmp_isotope_lists
             if $A_atomic_number_freq{$_} <=> $B_atomic_number_freq{$_};
     }
 
-    # BBv3 P-44.4.1.11.4: Senior set has lower locants
-    my $cmp_arrays = ChemOnomatopist::cmp_arrays( [ map { $_->locant } @$A ],
-                                                  [ map { $_->locant } @$B ] );
-    return $cmp_arrays if $cmp_arrays;
+    my $cmp_result = 0;
+
+    # BBv3 P-44.4.1.11.4: Senior set has lower overall locants
+    $cmp_result = ChemOnomatopist::cmp_arrays( [ sort map { $_->locant } @$A ],
+                                               [ sort map { $_->locant } @$B ] );
+    return $cmp_result if $cmp_result;
+
+    # BBv3 P-44.4.1.11.5:
+    $cmp_result = ChemOnomatopist::cmp_arrays( [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } @$A ],
+                                               [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } @$B ] );
+    return $cmp_result if $cmp_result;
 
     return 0;
 }

@@ -7,7 +7,7 @@ use ChemOnomatopist;
 use ChemOnomatopist::Isotope;
 use Test::More;
 
-plan tests => 12;
+plan tests => 13;
 
 my @sorted;
 
@@ -53,6 +53,12 @@ is ChemOnomatopist::Isotope::cmp_isotope_lists( [ ChemOnomatopist::Isotope->new(
 
 # From BBv3 P-44.4.1.11.5
 is ChemOnomatopist::Isotope::cmp_isotope_lists( [ ChemOnomatopist::Isotope->new( 'C', 13, 4 ),
-                                                  ChemOnomatopist::Isotope->new( 'C', 14, 5 ) ],
+                                                  ChemOnomatopist::Isotope->new( 'H',  2, 5 ) ],
                                                 [ ChemOnomatopist::Isotope->new( 'C', 13, 5 ),
+                                                  ChemOnomatopist::Isotope->new( 'H',  2, 4 ) ] ), -1;
+
+# From BBv3 P-44.4.1.11.6
+is ChemOnomatopist::Isotope::cmp_isotope_lists( [ ChemOnomatopist::Isotope->new( 'C', 13, 4 ),
+                                                  ChemOnomatopist::Isotope->new( 'C', 14, 3 ) ],
+                                                [ ChemOnomatopist::Isotope->new( 'C', 13, 3 ),
                                                   ChemOnomatopist::Isotope->new( 'C', 14, 4 ) ] ), -1;
