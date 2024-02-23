@@ -9,7 +9,7 @@ use Test::More;
 my @cases = (
     # From BBv3 P-44.4.1.11.1
     { smiles => 'C(CCCC)[2H]', iupac => '(1-2H1)pentane', AUTHOR => 1 },
-    { smiles => 'C1(CCCCC1)([2H])[2H]', iupac => '(1,1-2H2)cyclohexane', AUTHOR => 1 },
+    { smiles => 'C1(CCCCC1)([2H])[2H]', iupac => '(1,1-2H2)cyclohexane', AUTHOR => 'flaky' },
     { smiles => '[14CH2]1CCCCC1', iupac => '(14C1)cyclohexane', AUTHOR => 1 },
 
     # From BBv3 P-44.4.1.11.2
@@ -49,5 +49,8 @@ for my $case (@cases) {
     eval { $ok = is ChemOnomatopist::get_name( $case->{smiles} ), $case->{iupac}, $case->{smiles} };
     $@ =~ s/\n$// if $@;
     fail $case->{smiles} . ": $@" if $@;
-    diag 'test supposed to fail with AUTHOR_TESTING' if $case->{AUTHOR} && $ok;
+    if( $case->{AUTHOR} && $ok ) {
+        diag 'test supposed to fail with AUTHOR_TESTING' .
+             ( $case->{AUTHOR} !~ /^1$/ ? ': ' . $case->{AUTHOR} : '' );
+    }
 }
