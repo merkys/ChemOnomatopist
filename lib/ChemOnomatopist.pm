@@ -1336,15 +1336,6 @@ sub rule_most_double_bonds
     return grep { $_->number_of_double_bonds == $max_value } @chains;
 }
 
-sub rule_most_isotopes
-{
-    my( @chains ) = @_;
-
-    my( $max_value ) = sort { $b <=> $a }
-                       map  { $_->number_of_isotopes } @chains;
-    return grep { $_->number_of_isotopes == $max_value } @chains;
-}
-
 sub rule_isotopes
 {
     my( @chains ) = @_;
