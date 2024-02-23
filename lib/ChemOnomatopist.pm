@@ -463,7 +463,7 @@ sub get_mainchain_name
     for my $isotope (sort { cmp_isotopes( $a, $b ) } keys %isotopes) {
         $isotopes .= ',' if $isotopes;
 
-        if( $chain->needs_substituent_locants ) { # FIXME: Is this right?
+        if( $chain->needs_isotope_locants ) {
             $isotopes .= join( ',', $chain->locants( @{$isotopes{$isotope}} ) ) . '-';
         }
 

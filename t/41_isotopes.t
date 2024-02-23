@@ -14,11 +14,11 @@ my @cases = (
 
     # From BBv3 P-44.4.1.11.2
     { smiles => '[14CH2]1CCCC1', iupac => '(14C1)cyclopentane', AUTHOR => 1 },
-    { smiles => 'C1(CCCC1)[2H]', iupac => '(2H1)cyclopentane', AUTHOR => 1 },
+    { smiles => 'C1(CCCC1)[2H]', iupac => '(2H1)cyclopentane' },
 
     # From BBv3 P-44.4.1.11.3
-    { smiles => 'C1(=CC=CC=C1)[3H]', iupac => '(3H1)benzene', AUTHOR => 1 },
-    { smiles => 'C1(=CC=CC=C1)[2H]', iupac => '(2H1)benzene', AUTHOR => 1 },
+    { smiles => 'C1(=CC=CC=C1)[3H]', iupac => '(3H1)benzene' },
+    { smiles => 'C1(=CC=CC=C1)[2H]', iupac => '(2H1)benzene' },
 
     # From BBv3 P-44.4.1.11.4
     { smiles => 'N1=C(C=CC=C1)[2H]', iupac => '(2-2H)pyridine', AUTHOR => 1 },

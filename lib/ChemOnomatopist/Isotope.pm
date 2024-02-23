@@ -48,7 +48,7 @@ sub cmp_isotope_lists
                                                [ sort map { $_->locant } @$B ] );
     return $cmp_result if $cmp_result;
 
-    # BBv3 P-44.4.1.11.5:
+    # BBv3 P-44.4.1.11.5: Senior set has lower locants for nuclides of higher atomic number
     $cmp_result = ChemOnomatopist::cmp_arrays( [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } @$A ],
                                                [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } @$B ] );
     return $cmp_result if $cmp_result;

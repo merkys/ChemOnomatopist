@@ -367,6 +367,8 @@ sub needs_substituent_locants()
     return 1;
 }
 
+sub needs_isotope_locants() { &needs_substituent_locants }
+
 sub heteroatoms()
 {
     my( $self ) = @_;
