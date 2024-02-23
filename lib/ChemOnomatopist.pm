@@ -1168,6 +1168,8 @@ sub filter_chains
                    \&rule_lowest_numbered_multiple_bonds,
                    \&rule_lowest_numbered_double_bonds,
                    # TODO: P-44.4.1.11: Concerns isotopes
+                   # P-44.4.1.11.1: Maximum number of isotopes
+                   \&rule_most_isotopes,
                    # TODO: P-44.4.1.12: Concerns stereogenic centers
 
                    # TODO: P-45.1: Multiplication of identical senior parent structures
@@ -1332,6 +1334,15 @@ sub rule_most_double_bonds
     my( $max_value ) = sort { $b <=> $a }
                        map { $_->number_of_double_bonds } @chains;
     return grep { $_->number_of_double_bonds == $max_value } @chains;
+}
+
+sub rule_most_isotopes
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { $b <=> $a }
+                       map  { $_->number_of_isotopes } @chains;
+    return grep { $_->number_of_isotopes == $max_value } @chains;
 }
 
 sub rule_most_indicated_hydrogens

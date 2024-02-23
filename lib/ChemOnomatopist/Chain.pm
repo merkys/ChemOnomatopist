@@ -189,6 +189,26 @@ sub nonstandard_valence_positions()
     return @nonstandard_valence_positions;
 }
 
+sub isotope_positions()
+{
+    my( $self ) = @_;
+
+    return @{$self->{isotope_positions}} if $self->{isotope_positions};
+
+    my @vertices = $self->vertices;
+    my @isotope_positions;
+    for (0..$#vertices) {
+        next if blessed $vertices[$_];
+        push @isotope_positions, $_ if exists $vertices[$_]->{isotope};
+        if( exists $vertices[$_]->{h_isotope} ) {
+            push @isotope_positions, ( $_ ) x grep { defined $_ } @{$vertices[$_]->{h_isotope}};
+        }
+    }
+
+    $self->{isotope_positions} = \@isotope_positions;
+    return @isotope_positions;
+}
+
 sub is_hydrocarbon()
 {
     my( $self ) = @_;
@@ -382,6 +402,15 @@ sub nonstandard_valences()
                $self->nonstandard_valence_positions;
 }
 
+# TODO: Complete
+sub isotopes()
+{
+    my( $self ) = @_;
+    my @vertices = $self->vertices;
+    return map { $vertices[$_]->{isotope} }
+               $self->isotope_positions;
+}
+
 sub length()
 {
     my( $self ) = @_;
@@ -496,6 +525,12 @@ sub number_of_indicated_hydrogens()
 {
     my( $self ) = @_;
     return scalar $self->indicated_hydrogens;
+}
+
+sub number_of_isotopes()
+{
+    my( $self ) = @_;
+    return scalar $self->isotopes;
 }
 
 sub number_of_multiple_bonds()
