@@ -24,13 +24,6 @@ sub element()       { $_[0]->{element} }
 sub atomic_number() { $_[0]->{atomic_number} }
 sub locant()        { $_[0]->{locant} }
 
-# TODO: Employ in ChemOnomatopist
-sub cmp($$)
-{
-    my( $A, $B ) = @_;
-    $A->element cmp $B->element || $A->atomic_number <=> $B->atomic_number;
-}
-
 sub cmp_isotope_lists($$)
 {
     my( $A, $B ) = @_;
@@ -69,7 +62,8 @@ sub cmp_isotope_lists($$)
 sub collate($@)
 {
     my $needs_isotope_locants = shift;
-    my @isotopes = sort { ChemOnomatopist::Isotope::cmp( $a, $b ) } @_;
+    my @isotopes = sort { $a->element cmp $b->element ||
+                          $a->atomic_number <=> $b->atomic_number } @_;
     my @order;
     my %freq;
     for my $isotope (@isotopes) {
