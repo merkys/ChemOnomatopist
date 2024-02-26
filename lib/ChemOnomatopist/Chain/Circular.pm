@@ -138,7 +138,7 @@ sub name()
     # Check for cycloalkanes
     if( $self->is_hydrocarbon ) {
         my $name = ChemOnomatopist::Name::Part::NondetachablePrefix->new( 'cyclo' )->to_name;
-        $name .= ChemOnomatopist::unbranched_chain_name( $self );
+        $name .= $self->SUPER::suffix;
         return $name;
     }
 
@@ -211,7 +211,7 @@ sub name()
     }
 
     my $name = ChemOnomatopist::Name->new( 'cyclo' );
-    $name .= ChemOnomatopist::unbranched_chain_name( $self );
+    $name .= $self->SUPER::suffix;
     return $name;
 }
 

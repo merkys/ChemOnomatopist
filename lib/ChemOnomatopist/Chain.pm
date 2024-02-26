@@ -584,7 +584,7 @@ sub prefix()
         return ChemOnomatopist::Name->new( 'tellan' ) if ChemOnomatopist::is_element( $self->vertices, 'Te' );
     }
 
-    return ChemOnomatopist::unbranched_chain_name( $self ); # FIXME: Add proper suffix
+    return $self->suffix; # FIXME: Add proper suffix
 }
 
 sub suffix()
