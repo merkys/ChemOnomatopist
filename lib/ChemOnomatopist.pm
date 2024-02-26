@@ -166,20 +166,8 @@ sub get_sidechain_name
     # names according to their lengths via calls to get_sidechain_name()
     my %attachments;
     my %attachment_objects;
-    my %isotopes;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
-
-        if( !blessed $atom && exists $atom->{isotope} ) {
-            push @{$isotopes{$atom->{isotope} . element( $atom )}}, $i;
-        }
-
-        if( exists $atom->{h_isotope} && grep { defined $_ } @{$atom->{h_isotope}} ) {
-            for (grep { defined $_ } @{$atom->{h_isotope}}) {
-                push @{$isotopes{$_ . 'H'}}, $i;
-            }
-        }
-
         for my $neighbour ($graph->neighbours( $atom )) {
             next if any { $neighbour == $_ } @chain; # Skip atoms from this chain
             next if $parent && $neighbour == $parent;
@@ -317,7 +305,7 @@ sub get_mainchain_name
         $most_senior_group = blessed $chain;
     }
 
-    # Collect heteroatoms, isotopes and nonstandard bonding numbers from the chain
+    # Collect heteroatoms and nonstandard bonding numbers from the chain
     my %heteroatoms;
     for (pairs zip $chain->heteroatoms, $chain->heteroatom_positions) {
         my( $element, $i ) = @$_;
@@ -328,22 +316,6 @@ sub get_mainchain_name
     for (pairs zip $chain->nonstandard_valences, $chain->nonstandard_valence_positions) {
         my( $valence, $i ) = @$_;
         $nonstandard_valences{$i} = $valence;
-    }
-
-    my %isotopes;
-    for my $i (0..$#chain) {
-        my $atom = $chain[$i];
-        next if blessed $atom;
-
-        if( exists $atom->{isotope} ) {
-            push @{$isotopes{$atom->{isotope} . element( $atom )}}, $i;
-        }
-
-        if( exists $atom->{h_isotope} && grep { defined $_ } @{$atom->{h_isotope}} ) {
-            for (grep { defined $_ } @{$atom->{h_isotope}}) {
-                push @{$isotopes{$_ . 'H'}}, $i;
-            }
-        }
     }
 
     # Collect the substituents
