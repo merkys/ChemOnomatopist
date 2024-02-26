@@ -455,20 +455,8 @@ sub get_mainchain_name
     }
 
     # Attaching isotopes
-    my $isotopes = '';
-    for my $isotope (sort { cmp_isotopes( $a, $b ) } keys %isotopes) {
-        $isotopes .= ',' if $isotopes;
-
-        if( $chain->needs_isotope_locants ) {
-            $isotopes .= join( ',', $chain->locants( @{$isotopes{$isotope}} ) ) . '-';
-        }
-
-        $isotopes .= $isotope;
-        # FIXME: It is not clear when a numeric suffix has to be added.
-        # It is explained in BBv3 P-82.2.1 using a concept of polysubstitution which is quite vague.
-        $isotopes .= scalar @{$isotopes{$isotope}} if @{$isotopes{$isotope}} > 1 || $isotope =~ /H$/;
-    }
-    $name .= "($isotopes)" if $isotopes ne '';
+    my @isotopes = $chain->isotopes;
+    $name .= ChemOnomatopist::Isotope::collate( $chain->needs_isotope_locants, @isotopes ) if @isotopes;
 
     $name .= $chain->suffix;
 
