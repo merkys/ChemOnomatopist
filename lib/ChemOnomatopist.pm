@@ -244,16 +244,8 @@ sub get_sidechain_name
     }
 
     # Attaching isotopes
-    my $isotopes = '';
-    for my $isotope (sort { cmp_isotopes( $a, $b ) } keys %isotopes) {
-        if( $chain->needs_substituent_locants ) { # FIXME: Is this right?
-            $isotopes .= join( ',', $chain->locants( @{$isotopes{$isotope}} ) ) . '-';
-        }
-
-        $isotopes .= $isotope;
-        $isotopes .= scalar @{$isotopes{$isotope}} if @{$isotopes{$isotope}} > 1 || $isotope =~ /H$/;
-    }
-    $name .= "($isotopes)" if $isotopes ne '';
+    my @isotopes = $chain->isotopes;
+    $name .= ChemOnomatopist::Isotope::collate( $chain->needs_isotope_locants, @isotopes ) if @isotopes;
 
     if( $chain->isa( ChemOnomatopist::Chain::Circular:: ) || $chain->isa( ChemOnomatopist::Group:: ) ) {
         $chain->parent( $parent ) if $chain->can( 'parent' );

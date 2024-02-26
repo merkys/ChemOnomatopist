@@ -66,4 +66,29 @@ sub cmp_isotope_lists($$)
     return 0;
 }
 
+sub collate($@)
+{
+    my $needs_isotope_locants = shift;
+    my @isotopes = sort { ChemOnomatopist::Isotope::cmp( $a, $b ) } @_;
+    my @order;
+    my %freq;
+    for my $isotope (@isotopes) {
+        my $key = $isotope->atomic_number . $isotope->element;
+        if( !$freq{$key} ) {
+            $freq{$key} = [];
+            push @order, $key;
+        }
+        push @{$freq{$key}}, $isotope;
+    }
+    my $isotopes = '';
+    for my $key (@order) {
+        $isotopes .= ',' if $isotopes;
+        $isotopes .= join ',', map { $_->locant } @{$freq{$key}} if $needs_isotope_locants;
+        $isotopes .= '-' if $needs_isotope_locants;
+        $isotopes .= $key;
+        $isotopes .= scalar @{$freq{$key}} if @{$freq{$key}} > 1 || $key =~ /H$/;
+    }
+    return "($isotopes)";
+}
+
 1;
