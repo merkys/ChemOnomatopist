@@ -542,6 +542,13 @@ sub number_of_multiple_bonds()
     return scalar grep { $_ =~ /^[=#\$]$/ } $self->bonds;
 }
 
+sub isotope_part()
+{
+    my( $self ) = @_;
+    return ChemOnomatopist::Isotope::collate( $self->needs_isotope_locants,
+                                              $self->isotopes );
+}
+
 sub prefix()
 {
     my( $self ) = @_;

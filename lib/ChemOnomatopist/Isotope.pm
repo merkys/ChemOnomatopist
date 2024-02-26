@@ -64,6 +64,8 @@ sub collate($@)
     my $needs_isotope_locants = shift;
     my @isotopes = sort { $a->element cmp $b->element ||
                           $a->atomic_number <=> $b->atomic_number } @_;
+    return '' unless @isotopes;
+
     my @order;
     my %freq;
     for my $isotope (@isotopes) {

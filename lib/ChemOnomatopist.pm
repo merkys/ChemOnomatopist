@@ -243,9 +243,7 @@ sub get_sidechain_name
         }
     }
 
-    # Attaching isotopes
-    my @isotopes = $chain->isotopes;
-    $name .= ChemOnomatopist::Isotope::collate( $chain->needs_isotope_locants, @isotopes ) if @isotopes;
+    $name .= $chain->isotope_part;
 
     if( $chain->isa( ChemOnomatopist::Chain::Circular:: ) || $chain->isa( ChemOnomatopist::Group:: ) ) {
         $chain->parent( $parent ) if $chain->can( 'parent' );
@@ -454,10 +452,7 @@ sub get_mainchain_name
         }
     }
 
-    # Attaching isotopes
-    my @isotopes = $chain->isotopes;
-    $name .= ChemOnomatopist::Isotope::collate( $chain->needs_isotope_locants, @isotopes ) if @isotopes;
-
+    $name .= $chain->isotope_part;
     $name .= $chain->suffix;
 
     if( $most_senior_group && !$most_senior_group->isa( ChemOnomatopist::Chain:: ) ) {
