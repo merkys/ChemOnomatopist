@@ -6,7 +6,10 @@ package ChemOnomatopist::Isotope;
 use strict;
 use warnings;
 
-use ChemOnomatopist::Util qw( array_frequencies );
+use ChemOnomatopist::Util qw(
+    array_frequencies
+    cmp_arrays
+);
 use List::Util qw( uniq );
 
 sub new
@@ -44,13 +47,13 @@ sub cmp_isotope_lists
     my $cmp_result = 0;
 
     # BBv3 P-44.4.1.11.4: Senior set has lower overall locants
-    $cmp_result = ChemOnomatopist::cmp_arrays( [ sort map { $_->locant } @$A ],
-                                               [ sort map { $_->locant } @$B ] );
+    $cmp_result = cmp_arrays( [ sort map { $_->locant } @$A ],
+                              [ sort map { $_->locant } @$B ] );
     return $cmp_result if $cmp_result;
 
     # BBv3 P-44.4.1.11.5: Senior set has lower locants for nuclides of higher atomic number
-    $cmp_result = ChemOnomatopist::cmp_arrays( [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } @$A ],
-                                               [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } @$B ] );
+    $cmp_result = cmp_arrays( [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } @$A ],
+                              [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } @$B ] );
     return $cmp_result if $cmp_result;
 
     return 0;

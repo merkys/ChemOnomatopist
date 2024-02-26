@@ -37,7 +37,11 @@ use ChemOnomatopist::MolecularGraph;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Stem;
-use ChemOnomatopist::Util qw( copy zip );
+use ChemOnomatopist::Util qw(
+    cmp_arrays
+    copy
+    zip
+);
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
@@ -1486,18 +1490,6 @@ sub cmp_only_aphabetical
 
     return $a_has_tert <=> $b_has_tert if $a_has_tert <=> $b_has_tert;
     return $a cmp $b;
-}
-
-# Sorts arrays from lowest to biggest by values
-sub cmp_arrays
-{
-    my( $a, $b ) = @_;
-
-    for (0..min( scalar( @$a ), scalar( @$b ) )-1) {
-        return $a->[$_] <=> $b->[$_] if $a->[$_] <=> $b->[$_];
-    }
-
-    return @$a <=> @$b;
 }
 
 # Sorts given names only based on alphabetical part of the name

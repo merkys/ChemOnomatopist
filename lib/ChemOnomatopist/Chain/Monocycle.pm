@@ -13,6 +13,7 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Name;
+use ChemOnomatopist::Util qw( cmp_arrays );
 use List::Util qw( all );
 use Scalar::Util qw( blessed );
 
@@ -224,10 +225,10 @@ sub _cmp
                        sort { $elements{$B_heteroatoms[$a]}->{seniority} <=>
                               $elements{$B_heteroatoms[$b]}->{seniority} } 0..$#B_positions;
 
-    return ChemOnomatopist::cmp_arrays( \@A_positions, \@B_positions )
-        if ChemOnomatopist::cmp_arrays( \@A_positions, \@B_positions );
+    return cmp_arrays( \@A_positions, \@B_positions )
+        if cmp_arrays( \@A_positions, \@B_positions );
 
-    return ChemOnomatopist::cmp_arrays( [ $A->multiple_bond_positions ], [ $B->multiple_bond_positions ] );
+    return cmp_arrays( [ $A->multiple_bond_positions ], [ $B->multiple_bond_positions ] );
 }
 
 1;

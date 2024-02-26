@@ -1,20 +1,21 @@
 package ChemOnomatopist::Util;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Generic utilities
 # VERSION
 
+use strict;
+use warnings;
+
 use Exporter;
 use Graph::Undirected;
-use List::Util qw( pairs );
+use List::Util qw( min pairs );
 use Scalar::Util qw( blessed );
 
 use parent Exporter::;
 
 our @EXPORT_OK = qw(
     array_frequencies
+    cmp_arrays
     copy
     zip
 );
@@ -27,6 +28,20 @@ sub array_frequencies(@)
         $frequencies{$_}++;
     }
     return %frequencies;
+}
+
+# Takes two arrays and compares them.
+# Comparison is first performed numerically on the corresponding array elements.
+# Then, if all corresponding elements are equal, arrays are compared by length. 
+sub cmp_arrays($$)
+{
+    my( $a, $b ) = @_;
+
+    for (0..min( scalar( @$a ), scalar( @$b ) )-1) {
+        return $a->[$_] <=> $b->[$_] if $a->[$_] <=> $b->[$_];
+    }
+
+    return @$a <=> @$b;
 }
 
 sub copy($)

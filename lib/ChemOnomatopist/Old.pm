@@ -1,15 +1,16 @@
 package ChemOnomatopist::Old;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Give molecule a name
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::;
 
 use ChemOnomatopist::Chain;
 use ChemOnomatopist::MolecularGraph;
+use ChemOnomatopist::Util qw( cmp_arrays );
 use ChemOnomatopist::Util::Graph qw(
     BFS_calculate_chain_length
     BFS_is_chain_branched
