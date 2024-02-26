@@ -24,7 +24,14 @@ sub element()       { $_[0]->{element} }
 sub atomic_number() { $_[0]->{atomic_number} }
 sub locant()        { $_[0]->{locant} }
 
-sub cmp_isotope_lists
+# TODO: Employ in ChemOnomatopist
+sub cmp($$)
+{
+    my( $A, $B ) = @_;
+    $A->element cmp $B->element || $A->atomic_number <=> $B->atomic_number;
+}
+
+sub cmp_isotope_lists($$)
 {
     my( $A, $B ) = @_;
 
