@@ -1561,7 +1561,7 @@ sub unbranched_chain_name($)
 
     if( @double ) {
         $name .= 'a' if @double >= 2; # BBv2 P-16.8.2
-        if( $chain->needs_multiple_bond_locants || @double > 1 || @triple ) {
+        if( $chain->needs_multiple_bond_locants ) {
             $name->append_locants( $chain->bond_locants( @double ) );
         }
         if( @double > 1 ) {
@@ -1573,7 +1573,7 @@ sub unbranched_chain_name($)
     }
     if( @triple ) {
         $name .= 'a' if @triple >= 2 && !@double; # BBv2 P-16.8.2
-        if( $chain->needs_multiple_bond_locants || @triple > 1 || @double ) {
+        if( $chain->needs_multiple_bond_locants ) {
             $name->append_locants( $chain->bond_locants( @triple ) );
         }
         if( @triple > 1 ) {

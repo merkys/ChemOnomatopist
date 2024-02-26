@@ -83,6 +83,9 @@ my @cases = (
     { smiles => '[SiH2]1CC#CC=CC=CCC[SiH2]CCCCCCCCC1', iupac => '1,11-disilacycloicosa-5,7-dien-3-yne' },
     { smiles => '[SiH2]1CCCCCCCC[SiH2]CC=CC=CC=CC#CC1', iupac => '1,10-disilacycloicosa-12,14,16-trien-18-yne', AUTHOR => 'flaky' },
 
+    # From BBv2 P-31.1.3.3
+    { smiles => 'C=1=C=C=C=C=C=C=C=C=C=C1', iupac => 'cycloundecaundecaene' },
+
     # From BBv2 P-31.1.3.4
     { smiles => 'C=CC1=CC=CC=C1', iupac => 'ethenylbenzene' },
     { smiles => 'C=C1C=CC=C1', iupac => '5-methylidenecyclopenta-1,3-diene', AUTHOR => 1 },

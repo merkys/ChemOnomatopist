@@ -218,9 +218,9 @@ sub name()
 sub needs_multiple_bond_locants()
 {
     my( $self ) = @_;
-    return 1 if $self->number_of_multiple_bonds > 1;
     return 1 if $self->number_of_branches || $self->parent;
-    return scalar( uniq map { $_->{symbol} } $self->vertices ) > 1;
+    return 1 if scalar( uniq map { $_->{symbol} } $self->vertices ) > 1;
+    return $self->number_of_multiple_bonds > 1 && $self->number_of_multiple_bonds < $self->length;
 }
 
 sub needs_substituent_locants()
