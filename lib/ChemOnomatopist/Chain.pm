@@ -545,8 +545,32 @@ sub number_of_multiple_bonds()
 sub isotope_part()
 {
     my( $self ) = @_;
-    return ChemOnomatopist::Isotope::collate( $self->needs_isotope_locants,
-                                              $self->isotopes );
+
+    my @isotopes = sort { $a->element cmp $b->element ||
+                          $a->atomic_number <=> $b->atomic_number }
+                        $self->isotopes;
+    return '' unless @isotopes;
+
+    my @order;
+    my %freq;
+    for my $isotope (@isotopes) {
+        my $key = $isotope->atomic_number . $isotope->element;
+        if( !$freq{$key} ) {
+            $freq{$key} = [];
+            push @order, $key;
+        }
+        push @{$freq{$key}}, $isotope;
+    }
+    my $isotopes = '';
+    for my $key (@order) {
+        $isotopes .= ',' if $isotopes;
+        $isotopes .= join ',', map { $_->locant } @{$freq{$key}} if $self->needs_isotope_locants;
+        $isotopes .= '-' if $self->needs_isotope_locants;
+        $isotopes .= $key;
+        $isotopes .= scalar @{$freq{$key}} if @{$freq{$key}} > 1 || $key =~ /H$/;
+    }
+
+    return "($isotopes)";
 }
 
 sub prefix()
