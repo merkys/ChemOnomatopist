@@ -1120,8 +1120,7 @@ sub filter_chains
                    #                    This is not fully implemented now
                    \&rule_lowest_numbered_multiple_bonds,
                    \&rule_lowest_numbered_double_bonds,
-                   # TODO: P-44.4.1.11: Concerns isotopes
-                   # P-44.4.1.11.1: Maximum number of isotopes
+                   # P-44.4.1.11: Concerns isotopes
                    \&rule_isotopes,
                    # TODO: P-44.4.1.12: Concerns stereogenic centers
 
