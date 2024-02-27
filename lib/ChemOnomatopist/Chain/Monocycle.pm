@@ -29,6 +29,10 @@ our %names = (
     CCNCCN => 'piperazine',
     CCNCCO => 'morpholine',
 
+    'CCNCCS'    => 'thiomorpholine',
+    'CCNCC[Se]' => 'selenomorpholine',
+    'CCNCC[Te]' => 'telluromorpholine',
+
     # 5-membered aromatic (monoheteroatoms are handled elsewhere)
 
     'C=CN=CN'  => '1H-imidazole', # FIXME: Adjust for isomerism
