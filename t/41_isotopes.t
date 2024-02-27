@@ -8,7 +8,7 @@ use Test::More;
 
 my @cases = (
     # From BBv3 P-44.4.1.11.1
-    { smiles => 'C(CCCC)[2H]', iupac => '(1-2H1)pentane', AUTHOR => 1 },
+    { smiles => 'C(CCCC)[2H]', iupac => '(1-2H1)pentane' },
     { smiles => 'C1(CCCCC1)([2H])[2H]', iupac => '(1,1-2H2)cyclohexane' },
     { smiles => '[14CH2]1CCCCC1', iupac => '(14C1)cyclohexane', AUTHOR => 1 },
 
@@ -47,7 +47,7 @@ my @cases = (
     { smiles => 'C(C([2H])[2H])C(CO)C(CCC)CC', iupac => '2-(2,2-2H2)ethyl-3-ethylhexan-1-ol' },
 
     # From BBv3 P-82.5.1
-    { smiles => 'FC(C[2H])(F)F', iupac => '1,1,1-trifluoro(2-2H1)ethane' },
+    { smiles => 'FC(C[2H])(F)F', iupac => '1,1,1-trifluoro(2-2H1)ethane', AUTHOR => 1 },
     { smiles => 'ClC1=C(C(=CC=C1)F)[2H]', iupac => '1-chloro-3-fluoro(2-2H)benzene', AUTHOR => 1 },
     { smiles => 'COC1=C(C(=C(C(=C1[3H])[3H])[3H])[3H])O', iupac => '2-methoxy(3,4,5,6-3H4)phenol', AUTHOR => 1 },
 

@@ -7,6 +7,7 @@ use warnings;
 # VERSION
 
 use Chemistry::OpenSMILES qw( is_single_bond );
+use Clone qw( clone );
 use List::Util qw( all sum sum0 );
 
 use parent ChemOnomatopist::Chain::;
@@ -90,10 +91,22 @@ sub locant_names()
            $self->{halves}[1]->locant_names;
 }
 
-sub isotopes() # FIXME: Exclude center atom
+sub isotopes()
 {
     my( $self ) = @_;
-    return reverse( $self->{halves}[0]->isotopes ), $self->{halves}[1]->isotopes;
+    # Cloning is needed in order not to affect the original arrays
+    my @half0_isotopes = map { clone $_ } $self->{halves}[0]->isotopes;
+    my @half1_isotopes = map { clone $_ } $self->{halves}[1]->isotopes;
+    @half1_isotopes = grep { $_->{index} } @half1_isotopes unless $self->{halves}[0]{other_center};
+    for (@half0_isotopes) {
+        $_->{index} = $self->{halves}[0]->length - $_->{index} - 1;
+        ( $_->{locant} ) = $self->locants( $_->{index} );
+    }
+    for (@half1_isotopes) {
+        $_->{index} = $self->{halves}[1]->length + $_ - !defined $self->{halves}[0]{other_center};
+        ( $_->{locant} ) = $self->locants( $_->{index} );
+    }
+    return reverse( @half0_isotopes ), @half1_isotopes;
 }
 
 # Not sure why this has to be overriden
