@@ -8,10 +8,10 @@ use warnings;
 
 use overload '.'   => \&concatenate;
 use overload '.='  => \&append;
-use overload '""'  => sub { return join '', @{$_[0]->{name}} };
-use overload 'eq'  => sub { return  "$_[0]" eq  "$_[1]" };
-use overload 'cmp' => sub { return ("$_[0]" cmp "$_[1]") * ($_[2] ? -1 : 1) };
-use overload '@{}' => sub { return $_[0]->{name} };
+use overload '""'  => sub { join '', @{$_[0]->{name}} };
+use overload 'eq'  => sub {  "$_[0]" eq  "$_[1]" };
+use overload 'cmp' => sub { ("$_[0]" cmp "$_[1]") * ($_[2] ? -1 : 1) };
+use overload '@{}' => sub { $_[0]->{name} };
 
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Element;
