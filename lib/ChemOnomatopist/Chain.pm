@@ -403,12 +403,13 @@ sub isotopes()
         if( exists $vertices[$i]->{isotope} ) {
             push @isotopes, ChemOnomatopist::Isotope->new( ChemOnomatopist::element( $vertices[$i] ),
                                                            $vertices[$i]->{isotope},
+                                                           $i,
                                                            $self->locants( $i ) );
         }
         if( exists $vertices[$i]->{h_isotope} ) {
             for (@{$vertices[$i]->{h_isotope}}) {
                 next unless defined $_;
-                push @isotopes, ChemOnomatopist::Isotope->new( 'H', $_, $self->locants( $i ) );
+                push @isotopes, ChemOnomatopist::Isotope->new( 'H', $_, $i, $self->locants( $i ) );
             }
         }
     }

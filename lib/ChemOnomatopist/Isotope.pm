@@ -14,14 +14,16 @@ use List::Util qw( uniq );
 
 sub new
 {
-    my( $class, $element, $atomic_number, $locant ) = @_;
+    my( $class, $element, $atomic_number, $index, $locant ) = @_;
     return bless { element => $element,
                    atomic_number => $atomic_number,
+                   index => $index,
                    locant => $locant }, $class;
 }
 
 sub element()       { $_[0]->{element} }
 sub atomic_number() { $_[0]->{atomic_number} }
+sub index()         { $_[0]->{index} }
 sub locant()        { $_[0]->{locant} }
 
 sub cmp_isotope_lists($$)
