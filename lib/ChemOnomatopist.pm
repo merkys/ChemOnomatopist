@@ -266,7 +266,6 @@ sub get_sidechain_name
         }
 
         $name .= 'yl' unless $name =~ /[oy]$/;
-        $name->bracket if $name =~ /hydroxymethyl$/; # FIXME: Dirty
     }
 
     if( $chain->needs_multiple_bond_suffix ) {
