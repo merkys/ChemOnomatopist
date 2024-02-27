@@ -29,6 +29,14 @@ my @cases = (
     { smiles => 'O1CC(=CC=C1)NNC1[SiH2]CCC1', iupac => '1-(2H-pyran-3-yl)-2-(silolan-2-yl)hydrazine' },
     { smiles => 'C(SCSCSCSC)NCOCOCOCOC', iupac => 'N-(2,4,6,8-tetrathianonan-1-yl)-2,4,6,8-tetraoxanonan-1-amine', AUTHOR => 1 },
     { smiles => 'C([SiH2]C[SiH2]C[SiH2]C[SiH2]C)C1CC(COC1)COCOCOCOC', iupac => '1-[5-(2,4,6,8-tetrasilanonan-1-yl)oxan-3-yl]-2,4,6,8-tetraoxanonane', AUTHOR => 1 },
+
+    # From BBv3 P-44.1.2.2
+    { smiles => 'C(CCCCCC)C1=CC=CC=C1', iupac => 'heptylbenzene' },
+    { smiles => 'C(=C)C1CCCCC1', iupac => 'ethenylcyclohexane' },
+    { smiles => 'C(C1=CC=CC=C1)C1=CC=CC=C1', iupac => '1,1\'-methylenedibenzene', AUTHOR => 1 },
+    { smiles => 'C(=CC1CCCCC1)C1CCCCC1', iupac => '1,1\'-(ethene-1,2-diyl)dicyclohexane', AUTHOR => 1 },
+    { smiles => 'N(N)C1=NC=CC=C1', iupac => '2-hydrazinylpyridine', AUTHOR => 1 },
+    { smiles => 'N(N)C=1NCCN1', iupac => '2-hydrazinyl-4,5-dihydro-1H-imidazole', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
