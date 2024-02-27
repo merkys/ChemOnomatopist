@@ -7,8 +7,6 @@ use ChemOnomatopist;
 use Test::More;
 
 my @cases = (
-    { smiles => 'C1CCNC1', iupac => 'pyrrolidine' },
-
     { smiles => 'C1=CC=CC=C1',  iupac => 'benzene' },
     { smiles => 'C=1C=CC=CC=1', iupac => 'benzene' },
     { smiles => 'c1ccccc1',     iupac => 'benzene' },
@@ -32,7 +30,47 @@ my @cases = (
     { smiles => 'N(=O)C1=CC=CC=C1',  iupac => 'nitrosobenzene' },  # From BBv2 P-59.1.9
     { smiles => 'Br(=O)C1=CC=CC=C1', iupac => 'bromosylbenzene' }, # From BBv2 P-67.1.4.5
 
-    { smiles => 'N1C=NC=C1', iupac => '1H-imidazole' }, # From BBv2 P-22.2.1
+    # From BBv3 P-22.2.1
+    { smiles => 'O1C=CC=C1', iupac => 'furan' },
+    { smiles => 'N1C=NC=C1', iupac => '1H-imidazole' },
+    { smiles => 'O1C=NC=C1', iupac => '1,3-oxazole' },
+    { smiles => 'S1C=NC=C1', iupac => '1,3-thiazole' },
+    { smiles => '[Se]1C=NC=C1', iupac => '1,3-selenazole' },
+    { smiles => '[Te]1C=NC=C1', iupac => '1,3-tellurazole' },
+    { smiles => 'O1N=CC=C1', iupac => '1,2-oxazole' },
+    { smiles => 'S1N=CC=C1', iupac => '1,2-thiazole' },
+    { smiles => '[Se]1N=CC=C1', iupac => '1,2-selenazole' },
+    { smiles => '[Te]1N=CC=C1', iupac => '1,2-tellurazole' },
+    { smiles => 'O1CC=CC=C1', iupac => '2H-pyran' },
+    { smiles => 'S1CC=CC=C1', iupac => '2H-thiopyran', AUTHOR => 1 },
+    { smiles => '[Se]1CC=CC=C1', iupac => '2H-selenopyran', AUTHOR => 1 },
+    { smiles => '[Te]1CC=CC=C1', iupac => '2H-telluropyran', AUTHOR => 1 },
+    { smiles => 'N1=CC=NC=C1', iupac => 'pyrazine' },
+    { smiles => 'N1N=CC=C1', iupac => '1H-pyrazole', AUTHOR => 1 },
+    { smiles => 'N1=NC=CC=C1', iupac => 'pyridazine' },
+    { smiles => 'N1=CC=CC=C1', iupac => 'pyridine' },
+    { smiles => 'N1=CN=CC=C1', iupac => 'pyrimidine' },
+    { smiles => 'N1C=CC=C1', iupac => '1H-pyrrole' },
+    { smiles => '[Se]1C=CC=C1', iupac => 'selenophene' },
+    { smiles => '[Te]1C=CC=C1', iupac => 'tellurophene' },
+    { smiles => 'S1C=CC=C1', iupac => 'thiophene' },
+    { smiles => 'O1CNCC1', iupac => '1,3-oxazolidine' },
+    { smiles => 'O1NCCC1', iupac => '1,2-oxazolidine' },
+    { smiles => 'S1CNCC1', iupac => '1,3-thiazolidine' },
+    { smiles => 'S1NCCC1', iupac => '1,2-thiazolidine' },
+    { smiles => '[Se]1CNCC1', iupac => '1,3-selenazolidine' },
+    { smiles => '[Se]1NCCC1', iupac => '1,2-selenazolidine' },
+    { smiles => '[Te]1CNCC1', iupac => '1,3-tellurazolidine' },
+    { smiles => '[Te]1NCCC1', iupac => '1,2-tellurazolidine' },
+    { smiles => 'N1CCCC1', iupac => 'pyrrolidine' },
+    { smiles => 'N1CCOCC1', iupac => 'morpholine' },
+    { smiles => 'N1CCSCC1', iupac => 'thiomorpholine', AUTHOR => 1 },
+    { smiles => 'N1CC[Se]CC1', iupac => 'selenomorpholine', AUTHOR => 1 },
+    { smiles => 'N1CC[Te]CC1', iupac => 'telluromorpholine', AUTHOR => 1 },
+    { smiles => 'N1NCCC1', iupac => 'pyrazolidine' },
+    { smiles => 'N1CNCC1', iupac => 'imidazolidine' },
+    { smiles => 'N1CCCCC1', iupac => 'piperidine' },
+    { smiles => 'N1CCNCC1', iupac => 'piperazine' },
 
     { smiles => 'S1CCCCCCCCCCC1', iupac => 'thiacyclododecane' }, # From BBv3 P-22.2.3.1
 
