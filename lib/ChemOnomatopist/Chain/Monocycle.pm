@@ -45,6 +45,9 @@ our %names = (
     'c:c:c:c:c:c:' => 'benzene',
 
     'C=CC=CCO'     => '2H-pyran', # FIXME: Adjust for isomerism
+    'C=CC=CCS'     => '2H-thiopyran', # FIXME: Adjust for isomerism
+    'C=CC=CC[Se]'  => '2H-selenopyran', # FIXME: Adjust for isomerism
+    'C=CC=CC[Te]'  => '2H-telluropyran', # FIXME: Adjust for isomerism
 
     'c:c:n:c:c:n:' => 'pyrazine',
     'c:c:c:c:n:n:' => 'pyridazine',
