@@ -46,6 +46,11 @@ my @cases = (
     { smiles => '[13CH3]C1=NC=CC=C1C', iupac => '2-(13C)methyl-3-methylpyridine' },
     { smiles => 'C(C([2H])[2H])C(CO)C(CCC)CC', iupac => '2-(2,2-2H2)ethyl-3-ethylhexan-1-ol' },
 
+    # From BBv3 P-82.5.1
+    { smiles => 'FC(C[2H])(F)F', iupac => '1,1,1-trifluoro(2-2H1)ethane' },
+    { smiles => 'ClC1=C(C(=CC=C1)F)[2H]', iupac => '1-chloro-3-fluoro(2-2H)benzene', AUTHOR => 1 },
+    { smiles => 'COC1=C(C(=C(C(=C1[3H])[3H])[3H])[3H])O', iupac => '2-methoxy(3,4,5,6-3H4)phenol', AUTHOR => 1 },
+
     { smiles => '[14C](CCCC)(=O)[O][3H]', iupac => '(1-14C)pentan(3H)oic acid', AUTHOR => 1 }, # From BBv3 P-82.2.4
     { smiles => 'C[14CH2]C(C)[2H]', iupac => '(2-14C,3-2H1)butane' }, # From BBv3 P-82.5.2
     { smiles => 'CCO[2H]', iupac => 'ethan(2H)ol', AUTHOR => 1 }, # From BBv3 P-82.6.1.1
