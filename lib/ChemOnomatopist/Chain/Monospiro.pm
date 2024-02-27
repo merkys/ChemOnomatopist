@@ -105,11 +105,9 @@ sub prefix()
     return $name;
 }
 
-# FIXME: This is a bit strange: class and object method with the same name
 sub suffix(@)
 {
     my( $self ) = @_;
-    return '' unless ref $self;
     my $name = ChemOnomatopist::Name->new( 'spiro' );
     $name .= ChemOnomatopist::Name::Part::Fusion->new( '[' . join( '.', map { scalar @$_ } $self->components ) . ']' );
     $name .= ChemOnomatopist::unbranched_chain_name( $self );

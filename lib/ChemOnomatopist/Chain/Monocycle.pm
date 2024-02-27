@@ -197,11 +197,9 @@ sub prefix()
     return $name;
 }
 
-# FIXME: This is a bit strange: class and object method with the same name
 sub suffix()
 {
     my( $self ) = @_;
-    return '' unless ref $self;
     my $name = $self->name;
     return blessed $name ? $name : ChemOnomatopist::Name->new( $name );
 }

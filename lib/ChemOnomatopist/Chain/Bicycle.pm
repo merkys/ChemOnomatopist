@@ -308,11 +308,9 @@ sub prefix()
     return $name;
 }
 
-# FIXME: This is a bit strange: class and object method with the same name
 sub suffix()
 {
     my( $self ) = @_;
-    return '' unless ref $self;
 
     if( $self->is_hydrocarbon ) {
         # FIXME: Check if aromatic, but with caution, as substitutions will break aromaticity
