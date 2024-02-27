@@ -14,7 +14,7 @@ sub new
     return bless { atom => $atom }, $class;
 }
 
-sub element() { $_[0]->{atom}->{symbol} }
+sub element() { $_[0]->{atom}{symbol} }
 
 # From BBv2 P-63.1.5
 my %prefixes = ( O => 'hydroxy', S => 'sulfanyl', Se => 'selanyl', Te => 'tellanyl' );
@@ -31,8 +31,12 @@ sub suffix
     my( $self ) = @_;
 
     my $suffix = '';
-    if( exists $self->{atom}->{isotope} ) {
-        $suffix = '(' . $self->{atom}->{isotope} . $self->element . ')';
+    # FIXME: Isotopes have to come inside the same parenthesis
+    if( exists $self->{atom}{isotope} ) {
+        $suffix = '(' . $self->{atom}{isotope} . $self->element . ')';
+    }
+    if( @{$self->{atom}{h_isotope}} && defined $self->{atom}{h_isotope}[0] ) {
+        $suffix = '(' . $self->{atom}{h_isotope}[0] . 'H)';
     }
 
     return $suffix . $suffixes{$self->element};
