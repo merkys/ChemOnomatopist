@@ -7,11 +7,14 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Chain::Amide;
+use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Elements qw( %elements );
-use ChemOnomatopist::Isotope;
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Ether;
+use ChemOnomatopist::Isotope;
+use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Graph::Traversal::DFS;
 use List::Util qw( all any sum0 uniq );
@@ -589,8 +592,64 @@ sub prefix()
 
 sub suffix()
 {
-    my( $self ) = @_;
-    return ChemOnomatopist::unbranched_chain_name( $self );
+    my( $chain ) = @_;
+
+    my @chain = $chain->vertices;
+
+    my $name = ChemOnomatopist::Name->new;
+    if( $chain->length == 1 && !blessed $chain[0] && !ChemOnomatopist::is_element( @chain, 'C' ) ) {
+        $name .= 'ne'; # Leaving element prefix appending to the caller
+        return $name;
+    }
+
+    my @bonds = $chain->bonds;
+    my @double = grep { $bonds[$_] eq '=' } 0..$#bonds;
+    my @triple = grep { $bonds[$_] eq '#' } 0..$#bonds;
+
+    # BBv2 P-63.2.2.2
+    if( $chain->parent && (all { !blessed $_ } @chain) && ChemOnomatopist::is_element( $chain[0], 'O' ) &&
+        !@double && !@triple && all { ChemOnomatopist::is_element( $_, 'C' ) } @chain[1..$#chain] ) {
+        $name->append_stem( ChemOnomatopist::alkane_chain_name( $chain->length - 1 ) );
+        $name .= 'oxy';
+        return $name;
+    }
+
+    if( $chain->isa( ChemOnomatopist::Chain::Amide:: ) ||
+        $chain->isa( ChemOnomatopist::Chain::Amine:: ) ) {
+        $name->append_stem( ChemOnomatopist::alkane_chain_name( scalar grep { !blessed $_ } $chain->vertices ) );
+    } elsif( (any { ChemOnomatopist::is_element( $_, 'C' ) } @chain) ||
+        scalar( uniq map { ChemOnomatopist::element( $_ ) } @chain ) > 1 ) {
+        $name->append_stem( ChemOnomatopist::alkane_chain_name( $chain->length ) );
+    }
+
+    if( @double ) {
+        $name .= 'a' if @double >= 2; # BBv2 P-16.8.2
+        if( $chain->needs_multiple_bond_locants ) {
+            $name->append_locants( $chain->bond_locants( @double ) );
+        }
+        if( @double > 1 ) {
+            my $multiplier = ChemOnomatopist::IUPAC_numerical_multiplier( scalar @double );
+            $multiplier .= 'a' unless $multiplier =~ /i$/; # BBv2 P-31.1.1.2
+            $name->append_multiplier( $multiplier );
+        }
+        $name .= 'en';
+    }
+    if( @triple ) {
+        $name .= 'a' if @triple >= 2 && !@double; # BBv2 P-16.8.2
+        if( $chain->needs_multiple_bond_locants ) {
+            $name->append_locants( $chain->bond_locants( @triple ) );
+        }
+        if( @triple > 1 ) {
+            my $multiplier = ChemOnomatopist::IUPAC_numerical_multiplier( scalar @triple );
+            $multiplier .= 'a' unless $multiplier =~ /i$/; # BBv2 P-31.1.1.2
+            $name->append_multiplier( $multiplier );
+        }
+        $name .= 'yn';
+    }
+
+    $name .= ChemOnomatopist::Name::Part::AlkaneANSuffix->new( 'an' ) unless @double || @triple;
+    $name .= 'e';
+    return $name;
 }
 
 sub vertex_ids

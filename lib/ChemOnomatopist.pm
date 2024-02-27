@@ -35,7 +35,6 @@ use ChemOnomatopist::Group::Imino;
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::MolecularGraph;
 use ChemOnomatopist::Name;
-use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Stem;
 use ChemOnomatopist::Util qw(
     cmp_arrays
@@ -1525,68 +1524,6 @@ sub alkane_chain_name($)
 
     return $names[$N] if $N < @names;
     return IUPAC_numerical_multiplier( $N );
-}
-
-sub unbranched_chain_name($)
-{
-    my( $chain ) = @_;
-
-    my @chain = $chain->vertices;
-
-    my $name = ChemOnomatopist::Name->new;
-    if( $chain->length == 1 && !blessed $chain[0] && !is_element( @chain, 'C' ) ) {
-        $name .= 'ne'; # Leaving element prefix appending to the caller
-        return $name;
-    }
-
-    my @bonds = $chain->bonds;
-    my @double = grep { $bonds[$_] eq '=' } 0..$#bonds;
-    my @triple = grep { $bonds[$_] eq '#' } 0..$#bonds;
-
-    # BBv2 P-63.2.2.2
-    if( $chain->parent && (all { !blessed $_ } @chain) && is_element( $chain[0], 'O' ) &&
-        !@double && !@triple && all { is_element( $_, 'C' ) } @chain[1..$#chain] ) {
-        $name->append_stem( alkane_chain_name( $chain->length - 1 ) );
-        $name .= 'oxy';
-        return $name;
-    }
-
-    if( $chain->isa( ChemOnomatopist::Chain::Amide:: ) ||
-        $chain->isa( ChemOnomatopist::Chain::Amine:: ) ) {
-        $name->append_stem( alkane_chain_name scalar grep { !blessed $_ } $chain->vertices );
-    } elsif( (any { is_element( $_, 'C' ) } @chain) ||
-        scalar( uniq map { element $_ } @chain ) > 1 ) {
-        $name->append_stem( alkane_chain_name $chain->length );
-    }
-
-    if( @double ) {
-        $name .= 'a' if @double >= 2; # BBv2 P-16.8.2
-        if( $chain->needs_multiple_bond_locants ) {
-            $name->append_locants( $chain->bond_locants( @double ) );
-        }
-        if( @double > 1 ) {
-            my $multiplier = IUPAC_numerical_multiplier scalar @double;
-            $multiplier .= 'a' unless $multiplier =~ /i$/; # BBv2 P-31.1.1.2
-            $name->append_multiplier( $multiplier );
-        }
-        $name .= 'en';
-    }
-    if( @triple ) {
-        $name .= 'a' if @triple >= 2 && !@double; # BBv2 P-16.8.2
-        if( $chain->needs_multiple_bond_locants ) {
-            $name->append_locants( $chain->bond_locants( @triple ) );
-        }
-        if( @triple > 1 ) {
-            my $multiplier = IUPAC_numerical_multiplier scalar @triple;
-            $multiplier .= 'a' unless $multiplier =~ /i$/; # BBv2 P-31.1.1.2
-            $name->append_multiplier( $multiplier );
-        }
-        $name .= 'yn';
-    }
-
-    $name .= ChemOnomatopist::Name::Part::AlkaneANSuffix->new( 'an' ) unless @double || @triple;
-    $name .= 'e';
-    return $name;
 }
 
 1;
