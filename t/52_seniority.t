@@ -16,6 +16,19 @@ my @cases = (
     { smiles => 'C(C)[SiH2]C(=O)O', iupac => 'ethylsilanecarboxylic acid', AUTHOR => 1 },
     { smiles => 'C(CCC)OCCOCC(SCCSCC(=O)O)(CCSCCSCC(=O)O)COCCOCCCC', iupac => '7,7-bis[(2-butoxyethoxy)methyl]-3,6,10,13-tetrathiapentadecane-1,15-dioic acid', AUTHOR => 1 },
     { smiles => '[SiH2](CC[SiH3])CC[SiH3]', iupac => '[silanediyldi(ethane-2,1-diyl)]bis(silane)', AUTHOR => 1 },
+
+    # From BBv3 P-44.1.2.1
+    { smiles => 'C[Si](C)(C)C', iupac => 'tetramethylsilane', AUTHOR => 1 },
+    { smiles => 'CP[SiH3]', iupac => 'methyl(silyl)phosphane', AUTHOR => 1 },
+    { smiles => 'C(C)(C)(C)[Si](OCC1OC1)(C)C', iupac => 'tert-butyldi(methyl)(oxiranylmethoxy)silane', AUTHOR => 1 },
+    { smiles => 'C(=O)(O)CC[SiH2][SiH2]C(=O)O', iupac => '2-(2-carboxyethyl)disilane-1-carboxylic acid', AUTHOR => 1 },
+    { smiles => 'O1C(=CC2=C1C=CC=C2)P', iupac => '(1-benzofuran-2-yl)phosphane', AUTHOR => 1 },
+    { smiles => 'C[Si](N1C=NC=C1)(C)C', iupac => '1-(trimethylsilyl)-1H-imidazole', AUTHOR => 1 },
+    { smiles => 'C(#N)C1=PC=CC(=C1)C1CC(OCC1)C#N', iupac => '4-(2-cyanophosphinin-4-yl)oxane-2-carbonitrile' },
+    { smiles => 'P1=C(C=CC=C1)PC=1OC=CC1', iupac => '2-[(phosphinin-2-yl)phosphanyl]furan', AUTHOR => 1 },
+    { smiles => 'O1CC(=CC=C1)NNC1[SiH2]CCC1', iupac => '1-(2H-pyran-3-yl)-2-(silolan-2-yl)hydrazine' },
+    { smiles => 'C(SCSCSCSC)NCOCOCOCOC', iupac => 'N-(2,4,6,8-tetrathianonan-1-yl)-2,4,6,8-tetraoxanonan-1-amine', AUTHOR => 1 },
+    { smiles => 'C([SiH2]C[SiH2]C[SiH2]C[SiH2]C)C1CC(COC1)COCOCOCOC', iupac => '1-[5-(2,4,6,8-tetrasilanonan-1-yl)oxan-3-yl]-2,4,6,8-tetraoxanonane', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
