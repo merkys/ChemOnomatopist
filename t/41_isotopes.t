@@ -17,12 +17,12 @@ my @cases = (
     { smiles => 'C1(CCCC1)[2H]', iupac => '(2H1)cyclopentane' },
 
     # From BBv3 P-44.4.1.11.3
-    { smiles => 'C1(=CC=CC=C1)[3H]', iupac => '(3H1)benzene' },
-    { smiles => 'C1(=CC=CC=C1)[2H]', iupac => '(2H1)benzene' },
+    { smiles => 'C1(=CC=CC=C1)[3H]', iupac => '(3H1)benzene', AUTHOR => 1 },
+    { smiles => 'C1(=CC=CC=C1)[2H]', iupac => '(2H1)benzene', AUTHOR => 1 },
 
     # From BBv3 P-44.4.1.11.4
-    { smiles => 'N1=C(C=CC=C1)[2H]', iupac => '(2-2H)pyridine', AUTHOR => 1 },
-    { smiles => 'N1=CC(=CC=C1)[2H]', iupac => '(3-2H)pyridine', AUTHOR => 1 },
+    { smiles => 'N1=C(C=CC=C1)[2H]', iupac => '(2-2H)pyridine' },
+    { smiles => 'N1=CC(=CC=C1)[2H]', iupac => '(3-2H)pyridine' },
 
     # From BBv3 P-82.2.1
     { smiles => '[14CH4]', iupac => '(14C)methane' },
@@ -55,7 +55,7 @@ my @cases = (
     { smiles => 'C[14CH2]CC', iupac => '(2-14C)butane' },
     { smiles => 'CC([14CH2]C)([2H])[2H]', iupac => '(3-14C,2,2-2H2)butane' },
     { smiles => 'C[14CH2]C(C)[2H]', iupac => '(2-14C,3-2H1)butane' },
-    { smiles => 'C1(=CC(=CC=C1)[3H])O', iupac => '(3-3H)phenol', AUTHOR => 1 },
+    { smiles => 'C1(=CC(=CC=C1)[3H])O', iupac => '(3-3H)phenol' },
     { smiles => 'C([C@@H](C)O)[2H]', iupac => '(2R)-(1-2H1)propan-2-ol', AUTHOR => 1 },
     { smiles => 'C[C@@H](C[C@@H](C)[2H])[3H]', iupac => '(2S,4R)-(4-2H1,2-3H1)pentane', AUTHOR => 1 },
 

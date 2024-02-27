@@ -565,13 +565,18 @@ sub isotope_part()
         }
         push @{$freq{$key}}, $isotope;
     }
+
+    my @vertices = $self->vertices;
     my $isotopes = '';
     for my $key (@order) {
         $isotopes .= ',' if $isotopes;
         $isotopes .= join ',', map { $_->locant } @{$freq{$key}} if $self->needs_isotope_locants;
         $isotopes .= '-' if $self->needs_isotope_locants;
         $isotopes .= $key;
-        $isotopes .= scalar @{$freq{$key}} if @{$freq{$key}} > 1 || $key =~ /H$/;
+        if( @{$freq{$key}} > 1 ||
+            ( $key =~ /H$/ && $vertices[$freq{$key}->[0]{index}]->{hcount} > 1 ) ) {
+            $isotopes .= scalar @{$freq{$key}};
+        }
     }
 
     return "($isotopes)";
