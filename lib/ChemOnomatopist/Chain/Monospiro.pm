@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Monospiro;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Monospiro compound
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Chain::Circular::;
 
@@ -105,12 +105,12 @@ sub prefix()
     return $name;
 }
 
-sub suffix(@)
+sub suffix()
 {
     my( $self ) = @_;
     my $name = ChemOnomatopist::Name->new( 'spiro' );
     $name .= ChemOnomatopist::Name::Part::Fusion->new( '[' . join( '.', map { scalar @$_ } $self->components ) . ']' );
-    $name .= ChemOnomatopist::unbranched_chain_name( $self );
+    $name .= $self->SUPER::suffix;
     return $name;
 }
 
