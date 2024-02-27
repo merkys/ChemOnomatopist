@@ -32,15 +32,17 @@ sub halves()
     return @{$self->{halves}};
 }
 
+sub shares_start() { !defined $_[0]->{halves}[0]{other_center} }
+
 sub branch_positions()
 {
     my( $self ) = @_;
     my @half0_positions = $self->{halves}[0]->branch_positions;
     my @half1_positions = $self->{halves}[1]->branch_positions;
     # If path parts start at the same atom, its attachments get duplicated
-    @half1_positions = grep { $_ } @half1_positions unless $self->{halves}[0]{other_center};
-    return ( map { $self->{halves}[0]->length - $_ - 1 }                                 reverse @half0_positions ),
-           ( map { $self->{halves}[1]->length + $_ - !defined $self->{halves}[0]{other_center} } @half1_positions );
+    @half1_positions = grep { $_ } @half1_positions if $self->shares_start;
+    return ( map { $self->{halves}[0]->length - $_ - 1 }           reverse @half0_positions ),
+           ( map { $self->{halves}[1]->length + $_ - $self->shares_start } @half1_positions );
 }
 
 sub most_senior_group_positions()
@@ -49,9 +51,9 @@ sub most_senior_group_positions()
     my @half0_positions = $self->{halves}[0]->most_senior_group_positions;
     my @half1_positions = $self->{halves}[1]->most_senior_group_positions;
     # If path parts start at the same atom, its attachments get duplicated
-    @half1_positions = grep { $_ } @half1_positions unless $self->{halves}[0]{other_center};
-    return ( map { $self->{halves}[0]->length - $_ - 1 }                                 reverse @half0_positions ),
-           ( map { $self->{halves}[1]->length + $_ - !defined $self->{halves}[0]{other_center} } @half1_positions );
+    @half1_positions = grep { $_ } @half1_positions if $self->shares_start;
+    return ( map { $self->{halves}[0]->length - $_ - 1 }           reverse @half0_positions ),
+           ( map { $self->{halves}[1]->length + $_ - $self->shares_start } @half1_positions );
 }
 
 sub bonds()
@@ -59,7 +61,7 @@ sub bonds()
     my( $self ) = @_;
     my @bonds = reverse $self->{halves}[0]->bonds;
 
-    if( $self->{halves}[0]->{other_center} ) {
+    if( !$self->shares_start ) {
         my @centers = map { $_->{other_center} } $self->halves;
         if( $self->graph->has_edge_attribute( @centers, 'bond' ) ) {
             push @bonds, $self->graph->get_edge_attribute( @centers, 'bond' );
@@ -76,7 +78,7 @@ sub locant_names()
 {
     my( $self ) = @_;
     return reverse( $self->{halves}[0]->locant_names ),
-           $self->{halves}[1]->locant_names;
+                    $self->{halves}[1]->locant_names;
 }
 
 sub isotopes()
@@ -85,13 +87,13 @@ sub isotopes()
     # Cloning is needed in order not to affect the original arrays
     my @half0_isotopes = map { clone $_ } $self->{halves}[0]->isotopes;
     my @half1_isotopes = map { clone $_ } $self->{halves}[1]->isotopes;
-    @half1_isotopes = grep { $_->{index} } @half1_isotopes unless $self->{halves}[0]{other_center};
+    @half1_isotopes = grep { $_->{index} } @half1_isotopes if $self->shares_start;
     for (@half0_isotopes) {
         $_->{index} = $self->{halves}[0]->length - $_->{index} - 1;
         ( $_->{locant} ) = $self->locants( $_->{index} );
     }
     for (@half1_isotopes) {
-        $_->{index} = $self->{halves}[1]->length + $_ - !defined $self->{halves}[0]{other_center};
+        $_->{index} = $self->{halves}[1]->length + $_ - $self->shares_start;
         ( $_->{locant} ) = $self->locants( $_->{index} );
     }
     return reverse( @half0_isotopes ), @half1_isotopes;
@@ -110,7 +112,7 @@ sub vertices()
     my @A = $self->{halves}[0]->vertices;
     my @B = $self->{halves}[1]->vertices;
     # If there is only one center atom, it appears in both chains
-    shift @B unless $self->{halves}[0]->{other_center};
+    shift @B if $self->shares_start;
     my @vertices = ( reverse( @A ), @B ); # Otherwise scalar is returned sometimes
     return @vertices;
 }
