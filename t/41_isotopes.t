@@ -51,8 +51,15 @@ my @cases = (
     { smiles => 'ClC1=C(C(=CC=C1)F)[2H]', iupac => '1-chloro-3-fluoro(2-2H)benzene', AUTHOR => 1 },
     { smiles => 'COC1=C(C(=C(C(=C1[3H])[3H])[3H])[3H])O', iupac => '2-methoxy(3,4,5,6-3H4)phenol', AUTHOR => 1 },
 
+    # From BBv3 P-82.5.2
+    { smiles => 'C[14CH2]CC', iupac => '(2-14C)butane' },
+    { smiles => 'CC([14CH2]C)([2H])[2H]', iupac => '(3-14C,2,2-2H2)butane' },
+    { smiles => 'C[14CH2]C(C)[2H]', iupac => '(2-14C,3-2H1)butane' },
+    { smiles => 'C1(=CC(=CC=C1)[3H])O', iupac => '(3-3H)phenol', AUTHOR => 1 },
+    { smiles => 'C([C@@H](C)O)[2H]', iupac => '(2R)-(1-2H1)propan-2-ol', AUTHOR => 1 },
+    { smiles => 'C[C@@H](C[C@@H](C)[2H])[3H]', iupac => '(2S,4R)-(4-2H1,2-3H1)pentane', AUTHOR => 1 },
+
     { smiles => '[14C](CCCC)(=O)[O][3H]', iupac => '(1-14C)pentan(3H)oic acid', AUTHOR => 1 }, # From BBv3 P-82.2.4
-    { smiles => 'C[14CH2]C(C)[2H]', iupac => '(2-14C,3-2H1)butane' }, # From BBv3 P-82.5.2
     { smiles => 'CCO[2H]', iupac => 'ethan(2H)ol', AUTHOR => 1 }, # From BBv3 P-82.6.1.1
 );
 
