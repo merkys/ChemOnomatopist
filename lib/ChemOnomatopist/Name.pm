@@ -1,10 +1,10 @@
 package ChemOnomatopist::Name;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Chemical name
 # VERSION
+
+use strict;
+use warnings;
 
 use overload '.'   => \&concatenate;
 use overload '.='  => \&append;
@@ -155,10 +155,12 @@ sub bracket_numeric_locants()
     }
 }
 
-sub concatenate()
+sub concatenate($$@)
 {
-    my( $A, $B ) = @_;
-    return clone( $A )->append( $B );
+    my( $A, $B, $reverse ) = @_;
+    ( $A, $B ) = ( $B, $A ) if $reverse;
+    $A = blessed $A ? clone( $A ) : ChemOnomatopist::Name->new( $A );
+    return $A->append( $B );
 }
 
 sub has_locant()
