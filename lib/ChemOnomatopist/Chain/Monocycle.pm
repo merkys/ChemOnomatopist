@@ -32,6 +32,8 @@ our %names = (
     # 5-membered aromatic (monoheteroatoms are handled elsewhere)
 
     'C=CN=CN'  => '1H-imidazole', # FIXME: Adjust for isomerism
+    'C=NCCN'   => '1H-imidazole', # 4,5-dihydro-1H-imidazole
+
     'C=CN=CO'  => '1,3-oxazole',
     'C=CC=NO'  => '1,2-oxazole',
     'C=CC=NN'  => 'pyrazole', # FIXME: Adjust for isomerism
