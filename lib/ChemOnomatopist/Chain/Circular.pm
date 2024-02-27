@@ -236,6 +236,7 @@ sub needs_isotope_locants()
 {
     my( $self ) = @_;
     return 1 if $self->number_of_isotopes > 1;
+    return 1 if $self->number_of_branches;
     return !&is_homogeneous;
 }
 
