@@ -795,6 +795,10 @@ sub select_mainchain
             }
         } elsif( @parents ) {
             my $copy = $graph->copy;
+            $copy->delete_vertices( grep { !blessed $_ &&
+                                           $copy->degree( $_ ) == 1 &&
+                                           element( $_ ) =~ /^(F|Cl|Br|I)$/ }
+                                         $copy->vertices );
             $copy->delete_vertices( map { $_->vertices } $copy->groups );
             $copy->delete_vertices( grep { blessed $_ && !$_->is_part_of_chain } $copy->vertices );
             my @paths;
@@ -822,6 +826,10 @@ sub select_mainchain
             for my $path (@paths) {
                 my $copy = copy $graph;
                 $copy->delete_path( @$path );
+                $copy->delete_vertices( grep { !blessed $_ &&
+                                               $copy->degree( $_ ) == 1 &&
+                                               element( $_ ) =~ /^(F|Cl|Br|I)$/ }
+                                             $copy->vertices );
                 $copy->delete_vertices( grep { !is_element( $_, 'C' ) && !$_->is_part_of_chain }
                                         grep { blessed $_ }
                                              $copy->vertices );
