@@ -188,12 +188,7 @@ sub prefix()
     }
 
     $name = ChemOnomatopist::Name->new( $name ) unless blessed $name;
-    if( blessed $name->{name}[-1] ) {
-        $name->{name}[-1]{value} =~ s/e$//;
-    } else {
-        $name->{name}[-1] =~ s/e$//;
-    }
-    pop @$name if $name->{name}[-1] eq '';
+    $name->pop_e;
     pop @$name if $name->ends_with_alkane_an_suffix;
 
     if( $parent && !$self->is_homogeneous ) {

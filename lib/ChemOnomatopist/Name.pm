@@ -163,6 +163,21 @@ sub concatenate($$@)
     return $A->append( $B );
 }
 
+sub pop_e()
+{
+    my( $self ) = @_;
+    return $self unless @$self;
+
+    if( blessed $self->[-1] ) {
+        $self->[-1]{value} =~ s/e$//;
+        pop @$self if $self->[-1]{value} eq '';
+    } else {
+        $self->[-1] =~ s/e$//;
+        pop @$self if $self->[-1] eq '';
+    }
+    return $self;
+}
+
 sub has_locant()
 {
     my( $self ) = @_;

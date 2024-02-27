@@ -253,7 +253,7 @@ sub get_sidechain_name
         }
         $chain->parent( $parent ) if $chain->can( 'parent' );
         $name .= $chain->prefix;
-        pop @$name if $name->[-1] eq 'e'; # FIXME: Dirty
+        $name->pop_e;
         pop @$name if $name->[-1] eq 'an';
 
         if( $branches_at_start > 1 ) {
