@@ -592,40 +592,40 @@ sub prefix()
 
 sub suffix()
 {
-    my( $chain ) = @_;
+    my( $self ) = @_;
 
-    my @chain = $chain->vertices;
+    my @chain = $self->vertices;
 
     my $name = ChemOnomatopist::Name->new;
-    if( $chain->length == 1 && !blessed $chain[0] && !ChemOnomatopist::is_element( @chain, 'C' ) ) {
+    if( $self->length == 1 && !blessed $chain[0] && !ChemOnomatopist::is_element( @chain, 'C' ) ) {
         $name .= 'ne'; # Leaving element prefix appending to the caller
         return $name;
     }
 
-    my @bonds = $chain->bonds;
+    my @bonds = $self->bonds;
     my @double = grep { $bonds[$_] eq '=' } 0..$#bonds;
     my @triple = grep { $bonds[$_] eq '#' } 0..$#bonds;
 
     # BBv2 P-63.2.2.2
-    if( $chain->parent && (all { !blessed $_ } @chain) && ChemOnomatopist::is_element( $chain[0], 'O' ) &&
+    if( $self->parent && (all { !blessed $_ } @chain) && ChemOnomatopist::is_element( $chain[0], 'O' ) &&
         !@double && !@triple && all { ChemOnomatopist::is_element( $_, 'C' ) } @chain[1..$#chain] ) {
-        $name->append_stem( ChemOnomatopist::alkane_chain_name( $chain->length - 1 ) );
+        $name->append_stem( ChemOnomatopist::alkane_chain_name( $self->length - 1 ) );
         $name .= 'oxy';
         return $name;
     }
 
-    if( $chain->isa( ChemOnomatopist::Chain::Amide:: ) ||
-        $chain->isa( ChemOnomatopist::Chain::Amine:: ) ) {
-        $name->append_stem( ChemOnomatopist::alkane_chain_name( scalar grep { !blessed $_ } $chain->vertices ) );
+    if( $self->isa( ChemOnomatopist::Chain::Amide:: ) ||
+        $self->isa( ChemOnomatopist::Chain::Amine:: ) ) {
+        $name->append_stem( ChemOnomatopist::alkane_chain_name( scalar grep { !blessed $_ } $self->vertices ) );
     } elsif( (any { ChemOnomatopist::is_element( $_, 'C' ) } @chain) ||
         scalar( uniq map { ChemOnomatopist::element( $_ ) } @chain ) > 1 ) {
-        $name->append_stem( ChemOnomatopist::alkane_chain_name( $chain->length ) );
+        $name->append_stem( ChemOnomatopist::alkane_chain_name( $self->length ) );
     }
 
     if( @double ) {
         $name .= 'a' if @double >= 2; # BBv2 P-16.8.2
-        if( $chain->needs_multiple_bond_locants ) {
-            $name->append_locants( $chain->bond_locants( @double ) );
+        if( $self->needs_multiple_bond_locants ) {
+            $name->append_locants( $self->bond_locants( @double ) );
         }
         if( @double > 1 ) {
             my $multiplier = ChemOnomatopist::IUPAC_numerical_multiplier( scalar @double );
@@ -636,8 +636,8 @@ sub suffix()
     }
     if( @triple ) {
         $name .= 'a' if @triple >= 2 && !@double; # BBv2 P-16.8.2
-        if( $chain->needs_multiple_bond_locants ) {
-            $name->append_locants( $chain->bond_locants( @triple ) );
+        if( $self->needs_multiple_bond_locants ) {
+            $name->append_locants( $self->bond_locants( @triple ) );
         }
         if( @triple > 1 ) {
             my $multiplier = ChemOnomatopist::IUPAC_numerical_multiplier( scalar @triple );
