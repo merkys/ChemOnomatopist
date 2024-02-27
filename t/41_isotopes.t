@@ -46,6 +46,7 @@ my @cases = (
     { smiles => '[13CH3]C1=NC=CC=C1C', iupac => '2-(13C)methyl-3-methylpyridine' },
     { smiles => 'C(C([2H])[2H])C(CO)C(CCC)CC', iupac => '2-(2,2-2H2)ethyl-3-ethylhexan-1-ol' },
 
+    { smiles => '[14C](CCCC)(=O)[O][3H]', iupac => '(1-14C)pentan(3H)oic acid', AUTHOR => 1 }, # From BBv3 P-82.2.4
     { smiles => 'C[14CH2]C(C)[2H]', iupac => '(2-14C,3-2H1)butane' }, # From BBv3 P-82.5.2
 );
 
