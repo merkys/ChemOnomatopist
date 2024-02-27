@@ -88,7 +88,7 @@ sub new
     return bless { element => $element }, $class;
 }
 
-sub element() { return $_[0]->{element} }
+sub element() { $_[0]->{element} }
 
 sub is_carbon()
 {
@@ -108,22 +108,22 @@ sub is_oxygen()
     return $self->element && $self->element eq 'O';
 }
 
-sub is_part_of_chain() { return '' }
+sub is_part_of_chain() { '' }
 
 # Certain groups can only be expressed as prefixes
-sub is_prefix_only() { return '' }
+sub is_prefix_only() { '' }
 
 # Certain groups can only be terminal in chains
-sub is_terminal() { return '' }
+sub is_terminal() { '' }
 
-sub needs_heteroatom_locants { return 1 }
-sub needs_heteroatom_names { return 1 }
-sub needs_multiple_bond_suffix { return 1 }
+sub needs_heteroatom_locants   { 1 }
+sub needs_heteroatom_names     { 1 }
+sub needs_multiple_bond_suffix { 1 }
 
-sub prefix() { return '' }
-sub suffix() { return $_[0]->is_prefix_only ? undef : '' }
-sub multisuffix() { return $_[0]->suffix }
-sub suffix_if_cycle_substituent() { return $_[0]->suffix }
+sub prefix() { '' }
+sub suffix() { $_[0]->is_prefix_only ? undef : '' }
+sub multisuffix() { $_[0]->suffix }
+sub suffix_if_cycle_substituent() { $_[0]->suffix }
 
 sub candidate_for()
 {
