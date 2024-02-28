@@ -107,9 +107,9 @@ sub name()
     my $SMILES = $self->backbone_SMILES;
     my %names = %ChemOnomatopist::Chain::Monocycle::names;
 
+    my @hydro_sites;
     if( !$self->is_aromatic ) {
         my @vertices = $self->vertices;
-        my @hydro_sites;
         for my $i (0..$#vertices) {
             next if any { is_double_bond( $graph, $vertices[$i], $vertices[$_] ) }
                         ($i-1) % $self->length,
@@ -117,7 +117,6 @@ sub name()
             # FIXME: Exclude nitrogens with indicated hydrogens
             push @hydro_sites, $i;
         }
-        # print ">>> @hydro_sites";
     }
 
     # Check the preserved names
@@ -155,6 +154,7 @@ sub name()
         return $name;
     }
 
+    # Check for aromatic double bonds converted to single
     if( !$self->is_aromatic ) {
         $SMILES =~ s/=//g;
         my %nonaromatic_names;
@@ -165,7 +165,15 @@ sub name()
             $key =~ s/([a-z]):/"" . uc( $1 )/eg;
             $key =~ s/\[([a-z])/"[" . uc( $1 )/eg;
             next unless $SMILES eq $key;
-            return $name if $SMILES eq $key;
+
+            my $n = ChemOnomatopist::Name->new;
+            if( @hydro_sites < $self->length ) {
+                $n->append_locants( $self->locants( @hydro_sites ) );
+            }
+            $n->append_multiplier( ChemOnomatopist::IUPAC_numerical_multiplier( scalar @hydro_sites, 1 ) ) unless @hydro_sites == 1;
+            $n .= 'hydro-';
+            $n->append_stem( $name );
+            return $n;
         }
     }
 
