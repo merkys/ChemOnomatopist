@@ -12,7 +12,7 @@ use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name::Part::NondetachablePrefix;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
-use Chemistry::OpenSMILES qw( is_single_bond );
+use Chemistry::OpenSMILES qw( is_double_bond is_single_bond );
 use List::Util qw( all any uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
@@ -107,6 +107,19 @@ sub name()
     my $SMILES = $self->backbone_SMILES;
     my %names = %ChemOnomatopist::Chain::Monocycle::names;
 
+    if( !$self->is_aromatic ) {
+        my @vertices = $self->vertices;
+        my @hydro_sites;
+        for my $i (0..$#vertices) {
+            next if any { is_double_bond( $graph, $vertices[$i], $vertices[$_] ) }
+                        ($i-1) % $self->length,
+                        ($i+1) % $self->length;
+            # FIXME: Exclude nitrogens with indicated hydrogens
+            push @hydro_sites, $i;
+        }
+        # print ">>> @hydro_sites";
+    }
+
     # Check the preserved names
     if( $self->length == 5 && $self->is_aromatic &&
         exists $five_membered_aromatic_single_heteroatom{join( '', $self->heteroatoms )} ) {
@@ -140,6 +153,20 @@ sub name()
         my $name = ChemOnomatopist::Name::Part::NondetachablePrefix->new( 'cyclo' )->to_name;
         $name .= $self->SUPER::suffix;
         return $name;
+    }
+
+    if( !$self->is_aromatic ) {
+        $SMILES =~ s/=//g;
+        my %nonaromatic_names;
+        for my $key (keys %names) {
+            next unless $key =~ /[:=]/;
+            my $name = $names{$key};
+            $key =~ s/=//g;
+            $key =~ s/([a-z]):/"" . uc( $1 )/eg;
+            $key =~ s/\[([a-z])/"[" . uc( $1 )/eg;
+            next unless $SMILES eq $key;
+            return $name if $SMILES eq $key;
+        }
     }
 
     if( $self->length >= 3 && $self->length <= 10 &&
