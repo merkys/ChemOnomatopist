@@ -533,14 +533,17 @@ sub find_groups
             $valences{$edge->[1]} += $order;
         }
 
+        # Check if an elementary cycle could be regarded as aromatic
         my %uniq = map { join( '', sort @$_ ) => $_ } SSSR( $core, 8 );
         my @aromatic;
         for my $cycle (values %uniq) {
+            # All atoms in a cyclic compound must not have more than 3 neighbours
             next if any { $core->degree( $_ ) > 3 } @$cycle;
 
             my @v2 = grep { $core->degree( $_ ) == 2 } @$cycle;
             my @v3 = grep { $core->degree( $_ ) == 3 } @$cycle;
 
+            # There can be only one nonaromatic atom in a cycle
             my @nonaromatic_atoms = grep { $valences{$_} < 3 } @v2;
             if( @nonaromatic_atoms ) {
                 next if @nonaromatic_atoms > 1;
@@ -549,6 +552,8 @@ sub find_groups
 
             push @aromatic, [ Graph::Traversal::DFS->new( subgraph( $core, @$cycle ) )->dfs ];
         }
+
+        # Mark selected cycles as aromatic
         for my $cycle (@aromatic) {
             my @vertices = @$cycle;
             for (0..$#vertices) {
