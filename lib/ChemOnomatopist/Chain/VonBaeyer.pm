@@ -9,6 +9,8 @@ use warnings;
 use Graph::Traversal::DFS;
 use List::Util qw( first );
 
+use parent ChemOnomatopist::Chain::Circular::;
+
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
@@ -54,6 +56,12 @@ sub has_form($$)
 
     $graph = $graph->copy->delete_vertices( @d3 );
     return scalar( $graph->connected_components ) == 3;
+}
+
+sub suffix()
+{
+    my( $self ) = @_;
+    return 'bicyclo' . $self->length;
 }
 
 1;
