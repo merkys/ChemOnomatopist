@@ -23,6 +23,7 @@ use ChemOnomatopist::Chain::Polyacene;
 use ChemOnomatopist::Chain::Polyaphene;
 use ChemOnomatopist::Chain::Polyhelicene;
 use ChemOnomatopist::Chain::Porphyrin;
+use ChemOnomatopist::Chain::VonBaeyer;
 use ChemOnomatopist::Chain::Xanthene;
 use ChemOnomatopist::ChainHalf;
 use ChemOnomatopist::Elements qw( %elements );
@@ -626,7 +627,7 @@ sub find_groups
                 $compound = ChemOnomatopist::Chain::Polyaphene->new( $graph, @cycles );
             } elsif( ChemOnomatopist::Chain::Polyhelicene->has_form( $core ) ) {
                 $compound = ChemOnomatopist::Chain::Polyhelicene->new( $graph, @cycles );
-            } elsif( @cycles == 3 && @{$vertices_by_degree{3}} == 2 ) {
+            } elsif( ChemOnomatopist::Chain::VonBaeyer->has_form( $core ) ) {
                 die "extended von Baeyer system is not implemented yet\n"
             } else {
                 die "cannot handle complicated cyclic compounds\n";
