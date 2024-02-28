@@ -176,7 +176,9 @@ sub name()
             if( @{$heteroatoms{$element}} > 1 ) {
                 $name->append_multiplier( ChemOnomatopist::IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} ) );
             }
-            $name->append_element( exists $elements{$element}->{HantzschWidman} ? $elements{$element}->{HantzschWidman} : $elements{$element}->{prefix} );
+            $name->append_element( exists $elements{$element}->{HantzschWidman}
+                                        ? $elements{$element}->{HantzschWidman}
+                                        : $elements{$element}->{prefix} );
         }
         $name->[-1] =~ s/a$//;
 
