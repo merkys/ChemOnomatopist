@@ -47,6 +47,14 @@ sub new
 sub candidates()
 {
     my( $self ) = @_;
+    my @candidates = ( $self, $self->flipped );
+    $candidates[-1]->{candidate_for} = $self;
+    return @candidates;
+}
+
+sub flipped()
+{
+    my( $self ) = @_;
 
     my $graph = $self->graph;
     my @vertices = $self->vertices;
@@ -64,14 +72,9 @@ sub candidates()
     push @vertices_now, reverse splice @vertices, 0, $sizes[1];
     push @vertices_now, reverse splice @vertices, 0, $sizes[2];
 
-    my @candidates = ( $self );
-    push @candidates,
-         bless { graph => $graph,
-                 vertices => \@vertices_now,
-                 sizes => \@sizes,
-                 candidate_for => $self };
-
-    return @candidates;
+    return bless { graph => $graph,
+                   vertices => \@vertices_now,
+                   sizes => \@sizes };
 }
 
 sub has_form($$)
