@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 use Graph::Traversal::DFS;
-use List::Util qw( first sum );
+use List::Util qw( first sum0 );
 
 use parent ChemOnomatopist::Chain::Circular::;
 
@@ -54,11 +54,11 @@ sub candidates()
     if( $sizes[0] == $sizes[1] && $sizes[0] == $sizes[2] ) {
         # TODO
     } elsif( $sizes[0] == $sizes[1] ) {
-        #~ push @candidates, $self->cycles_swapped( 0, 1 );
-        #~ push @candidates, $self->cycles_swapped( 0, 1 )->flipped;
+        push @candidates, $self->cycles_swapped( 0, 1 );
+        push @candidates, $self->cycles_swapped( 0, 1 )->flipped;
     } elsif( $sizes[1] == $sizes[2] ) {
-        #~ push @candidates, $self->cycles_swapped( 1, 2 );
-        #~ push @candidates, $self->cycles_swapped( 1, 2 )->flipped;
+        push @candidates, $self->cycles_swapped( 1, 2 );
+        push @candidates, $self->cycles_swapped( 1, 2 )->flipped;
     }
 
     for (1..$#candidates) {
@@ -106,15 +106,15 @@ sub cycles_swapped($$)
     my @d3 = grep { $subgraph->degree( $_ ) == 3 } @vertices;
     @d3 = reverse @d3 unless $d3[0] == $vertices[0]; # CHECKME: Is this needed?
 
-    my @A = map { $d2[$_] } (sum @sizes[0..$A-1])..(sum @sizes[0..$A])-1;
-    my @B = map { $d2[$_] } (sum @sizes[0..$B-1])..(sum @sizes[0..$B])-1;
+    my @A = map { $d2[$_] } (sum0 @sizes[0..$A-1])..(sum0 @sizes[0..$A])-1;
+    my @B = map { $d2[$_] } (sum0 @sizes[0..$B-1])..(sum0 @sizes[0..$B])-1;
 
     @vertices = @d2;
 
-    splice @vertices, sum @sizes[0..$A-1], $sizes[$A], @B;
-    splice @vertices, sum @sizes[0..$B-1], $sizes[$B], @A;
+    splice @vertices, sum0( @sizes[0..$A-1] ), $sizes[$A], @B;
+    splice @vertices, sum0( @sizes[0..$B-1] ), $sizes[$B], @A;
 
-    splice  @vertices, $sizes[0], $d3[1];
+    splice  @vertices, $sizes[0], 0, $d3[1];
     unshift @vertices, $d3[0];
 
     return bless { graph => $graph,

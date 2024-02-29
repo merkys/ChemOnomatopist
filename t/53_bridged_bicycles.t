@@ -13,7 +13,7 @@ my @cases = (
 
     # From BBv3 P-23.3.1
     { smiles => 'C12COCC(CC1)C2', iupac => '3-oxabicyclo[3.2.1]octane' },
-    { smiles => 'C12[Se]CC(CC1)C2', iupac => '2-selenabicyclo[2.2.1]heptane', AUTHOR => 'flaky' },
+    { smiles => 'C12[Se]CC(CC1)C2', iupac => '2-selenabicyclo[2.2.1]heptane' },
 
     { smiles => 'C12COCC(OC1)CO2', iupac => '3,6,8-trioxabicyclo[3.2.2]nonane' }, # From BBv3 P-23.3.2.1
     { smiles => 'C12OCSC(CC1)C2', iupac => '2-oxa-4-thiabicyclo[3.2.1]octane' }, # From BBv3 P-23.3.2.2
