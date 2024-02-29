@@ -54,6 +54,8 @@ sub has_form($$)
     return '' unless @d3 == 2;
     return '' unless @d2 + @d3 == scalar $graph->vertices;
 
+    return '' unless $graph->is_edge_connected; # Must not have bridges
+
     $graph = $graph->copy->delete_vertices( @d3 );
     return scalar( $graph->connected_components ) == 3;
 }
