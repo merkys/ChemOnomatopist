@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 use Graph::Traversal::DFS;
-use List::Util qw( first );
+use List::Util qw( first sum );
 
 use parent ChemOnomatopist::Chain::Circular::;
 
@@ -47,8 +47,24 @@ sub new
 sub candidates()
 {
     my( $self ) = @_;
+
     my @candidates = ( $self, $self->flipped );
-    $candidates[-1]->{candidate_for} = $self;
+
+    my @sizes = @{$self->{sizes}};
+    if( $sizes[0] == $sizes[1] && $sizes[0] == $sizes[2] ) {
+        # TODO
+    } elsif( $sizes[0] == $sizes[1] ) {
+        #~ push @candidates, $self->cycles_swapped( 0, 1 );
+        #~ push @candidates, $self->cycles_swapped( 0, 1 )->flipped;
+    } elsif( $sizes[1] == $sizes[2] ) {
+        #~ push @candidates, $self->cycles_swapped( 1, 2 );
+        #~ push @candidates, $self->cycles_swapped( 1, 2 )->flipped;
+    }
+
+    for (1..$#candidates) {
+        $candidates[$_]->{candidate_for} = $self;
+    }
+
     return @candidates;
 }
 
@@ -62,7 +78,7 @@ sub flipped()
     my @sizes = @{$self->{sizes}};
 
     my @d3 = grep { $subgraph->degree( $_ ) == 3 } @vertices;
-    @d3 = reverse @d3 unless $d3[0] == $vertices[0];
+    @d3 = reverse @d3 unless $d3[0] == $vertices[0]; # CHECKME: Is this needed?
 
     my @vertices_now = ( $d3[1] );
     shift @vertices;
@@ -77,7 +93,7 @@ sub flipped()
                    sizes => \@sizes };
 }
 
-sub cycles_swapped($$) # FIXME: To be continued
+sub cycles_swapped($$)
 {
     my( $self, $A, $B ) = @_;
 
@@ -85,6 +101,25 @@ sub cycles_swapped($$) # FIXME: To be continued
     my @vertices = $self->vertices;
     my $subgraph = $graph->subgraph( \@vertices );
     my @sizes = @{$self->{sizes}};
+
+    my @d2 = grep { $subgraph->degree( $_ ) == 2 } @vertices;
+    my @d3 = grep { $subgraph->degree( $_ ) == 3 } @vertices;
+    @d3 = reverse @d3 unless $d3[0] == $vertices[0]; # CHECKME: Is this needed?
+
+    my @A = map { $d2[$_] } (sum @sizes[0..$A-1])..(sum @sizes[0..$A])-1;
+    my @B = map { $d2[$_] } (sum @sizes[0..$B-1])..(sum @sizes[0..$B])-1;
+
+    @vertices = @d2;
+
+    splice @vertices, sum @sizes[0..$A-1], $sizes[$A], @B;
+    splice @vertices, sum @sizes[0..$B-1], $sizes[$B], @A;
+
+    splice  @vertices, $sizes[0], $d3[1];
+    unshift @vertices, $d3[0];
+
+    return bless { graph => $graph,
+                   vertices => \@vertices,
+                   sizes => \@sizes };
 }
 
 sub has_form($$)
