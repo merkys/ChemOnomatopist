@@ -44,6 +44,36 @@ sub new
                    sizes => [ map { scalar @$_ } @components ] }, $class;
 }
 
+sub candidates()
+{
+    my( $self ) = @_;
+
+    my $graph = $self->graph;
+    my @vertices = $self->vertices;
+    my $subgraph = $graph->subgraph( \@vertices );
+    my @sizes = @{$self->{sizes}};
+
+    my @d3 = grep { $subgraph->degree( $_ ) == 3 } @vertices;
+    @d3 = reverse @d3 unless $d3[0] == $vertices[0];
+
+    my @vertices_now = ( $d3[1] );
+    shift @vertices;
+    push @vertices_now, reverse splice @vertices, 0, $sizes[0];
+    shift @vertices;
+    push @vertices_now, $d3[0];
+    push @vertices_now, reverse splice @vertices, 0, $sizes[1];
+    push @vertices_now, reverse splice @vertices, 0, $sizes[2];
+
+    my @candidates = ( $self );
+    push @candidates,
+         bless { graph => $graph,
+                 vertices => \@vertices_now,
+                 sizes => \@sizes,
+                 candidate_for => $self };
+
+    return @candidates;
+}
+
 sub has_form($$)
 {
     my( $class, $graph ) = @_;
