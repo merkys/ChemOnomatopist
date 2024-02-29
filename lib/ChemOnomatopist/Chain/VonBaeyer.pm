@@ -77,6 +77,16 @@ sub flipped()
                    sizes => \@sizes };
 }
 
+sub cycles_swapped($$) # FIXME: To be continued
+{
+    my( $self, $A, $B ) = @_;
+
+    my $graph = $self->graph;
+    my @vertices = $self->vertices;
+    my $subgraph = $graph->subgraph( \@vertices );
+    my @sizes = @{$self->{sizes}};
+}
+
 sub has_form($$)
 {
     my( $class, $graph ) = @_;
