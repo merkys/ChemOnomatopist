@@ -37,7 +37,7 @@ sub new
     # Connect in order to get the correct numbering
     $subgraph->add_edge( $last_of_the_main, $first_of_bridge );
 
-    @vertices = Graph::Traversal::DFS->new( $subgraph, start => $d3[0] )->dfs;
+    @vertices = reverse Graph::Traversal::DFS->new( $subgraph, start => $d3[0] )->dfs;
 
     return bless { graph => $graph,
                    vertices => \@vertices,
@@ -59,6 +59,12 @@ sub has_form($$)
 
     $graph = $graph->copy->delete_vertices( @d3 );
     return scalar( $graph->connected_components ) == 3;
+}
+
+sub locants(@)
+{
+    my $self = shift;
+    return map { $_ + 1 } @_;
 }
 
 sub prefix() { &suffix }
