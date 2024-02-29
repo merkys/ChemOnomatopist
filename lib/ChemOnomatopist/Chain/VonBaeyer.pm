@@ -19,7 +19,7 @@ sub new
     my @d3 = grep { $subgraph->degree( $_ ) == 3 } @vertices;
 
     $subgraph->delete_vertices( @d3 );
-    my @components = sort { @$b <=> @$a } $graph->connected_components;
+    my @components = sort { @$b <=> @$a } $subgraph->connected_components;
 
     $subgraph = $graph->subgraph( \@vertices );
     my $first_of_bridge = first { $subgraph->has_edge( $d3[0], $_ ) }
@@ -58,10 +58,13 @@ sub has_form($$)
     return scalar( $graph->connected_components ) == 3;
 }
 
+sub prefix() { &suffix }
 sub suffix()
 {
     my( $self ) = @_;
-    return 'bicyclo' . $self->length;
+    return 'bicyclo[' . join( '.', @{$self->{sizes}} ) . ']' .
+           ChemOnomatopist::alkane_chain_name( $self->length ) .
+           'ane';
 }
 
 1;

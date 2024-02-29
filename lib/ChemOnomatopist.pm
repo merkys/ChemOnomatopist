@@ -628,7 +628,7 @@ sub find_groups
             } elsif( ChemOnomatopist::Chain::Polyhelicene->has_form( $core ) ) {
                 $compound = ChemOnomatopist::Chain::Polyhelicene->new( $graph, @cycles );
             } elsif( ChemOnomatopist::Chain::VonBaeyer->has_form( $core ) ) {
-                die "extended von Baeyer system is not implemented yet\n"
+                $compound = ChemOnomatopist::Chain::VonBaeyer->new( $graph, $core->vertices );
             } else {
                 die "cannot handle complicated cyclic compounds\n";
             }
