@@ -42,7 +42,7 @@ my @cases = (
     { smiles => 'C12C#CC=CC=CCCC(=CCC1)C2', iupac => 'bicyclo[8.3.1]tetradeca-4,6,10-trien-2-yne' },
 
     # From BBv3 P-31.1.4.4
-    { smiles => 'C12SCC(C=C1)CC2', iupac => '2-thiabicyclo[2.2.2]oct-5-ene', AUTHOR => 'flaky' },
+    { smiles => 'C12SCC(C=C1)CC2', iupac => '2-thiabicyclo[2.2.2]oct-5-ene' },
     { smiles => 'C12OCC(C=C1)C2', iupac => '2-oxabicyclo[2.2.1]hept-5-ene' },
     { smiles => 'C12CNCC(C=C1)CC2', iupac => '3-azabicyclo[3.2.2]non-6-ene' },
 );

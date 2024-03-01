@@ -54,7 +54,9 @@ sub candidates()
     if( $sizes[0] == $sizes[1] && $sizes[0] == $sizes[2] ) {
         push @candidates, $self->cycles_swapped( 0, 1 );
         push @candidates, $self->cycles_swapped( 0, 2 );
-        push @candidates, $self->cycles_swapped( 1, 2 ); # FIXME: Seems incomplete
+        push @candidates, $self->cycles_swapped( 1, 2 );
+        push @candidates, $self->cycles_swapped( 0, 2 )->cycles_swapped( 0, 1 );
+        push @candidates, $self->cycles_swapped( 1, 2 )->cycles_swapped( 0, 1 );
     } elsif( $sizes[0] == $sizes[1] ) {
         push @candidates, $self->cycles_swapped( 0, 1 );
     } elsif( $sizes[1] == $sizes[2] ) {
