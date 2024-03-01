@@ -116,6 +116,17 @@ sub ideal_graph($$)
     return $graph;
 }
 
+sub locants(@)
+{
+    my $self = shift;
+    if( $self->length == 14 ) {
+        my @locant_map = ( 1..4, '4a', 10, '10a', 5..8, '8a',  9,  '9a' );
+        return map { $locant_map[$_] } @_;
+    } else {
+        return map { $_ + 1 } @_;
+    }
+}
+
 sub suffix
 {
     my( $self ) = @_;
