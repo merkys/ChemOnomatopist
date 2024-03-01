@@ -39,7 +39,7 @@ sub new
                              grep { $subgraph->degree( $_->[0] ) == 3 &&
                                     $subgraph->degree( $_->[1] ) == 3 }
                                   $subgraph->edges );
-    @vertices = reverse( Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs );
+    @vertices = reverse Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs;
 
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
