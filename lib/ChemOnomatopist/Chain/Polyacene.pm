@@ -14,6 +14,7 @@ use ChemOnomatopist::Util::Graph qw(
 );
 use Graph::Nauty qw( are_isomorphic );
 use Graph::Undirected;
+use List::Util qw( first );
 use Set::Object qw( set );
 
 sub new
@@ -22,20 +23,17 @@ sub new
 
     my @vertices = map { $_->vertices } @cycles;
     my $subgraph = subgraph( $graph, @vertices );
-    # Identify the triple-connected vertices
-    my $d3 = set( grep { $subgraph->degree( $_ ) == 3 } $subgraph->vertices );
-    # Remove them and intermediate atoms
-    $subgraph->delete_vertices( @$d3,
-                                grep { set( $subgraph->neighbours( $_ ) ) <= $d3 }
+    $subgraph->delete_vertices( grep { $subgraph->degree( $_ ) == 3 }
                                      $subgraph->vertices );
-    # Find the first vertex
-    my( $start ) = grep { $subgraph->degree( $_ ) == 1 }
-                        $subgraph->vertices;
+    $subgraph->delete_vertices( grep { !$subgraph->degree( $_ ) }
+                                     $subgraph->vertices );
+    my $start = first { $subgraph->degree( $_ ) == 1 } $subgraph->vertices;
+
     $subgraph = subgraph( $graph, @vertices ); # Restore the subgraph
-    # Delete the edge which closes the all-encompassing cycle
-    $subgraph->delete_edge( $start, grep { $subgraph->degree( $_ ) == 3 }
-                                         $subgraph->neighbours( $start ) );
-    $subgraph->delete_edges( map  { @$_ }
+    my $last = first { $subgraph->degree( $_ ) == 3 }
+                      $subgraph->neighbours( $start );
+    $subgraph->delete_edges( $start, $last,
+                             map  { @$_ }
                              grep { $subgraph->degree( $_->[0] ) == 3 &&
                                     $subgraph->degree( $_->[1] ) == 3 }
                                   $subgraph->edges );

@@ -11,7 +11,7 @@ my @cases = (
     { smiles => 'C1=CC=CC2=CC3=CC4=CC=CC=C4C=C3C=C12', iupac => 'tetracene' },
     { smiles => 'C1=CC=CC2=CC3=CC4=CC5=CC=CC=C5C=C4C=C3C=C12', iupac => 'pentacene' },
 
-    { smiles => 'CC1=C2C=C3C=CC=CC3=CC2=CC2=CC3=CC=CC=C3C=C12', iupac => '6-methylpentacene' }, # From Wikipedia Pentacene
+    { smiles => 'CC1=C2C=C3C=CC=CC3=CC2=CC2=CC3=CC=CC=C3C=C12', iupac => '6-methylpentacene', AUTHOR => 1 }, # From Wikipedia Pentacene
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
