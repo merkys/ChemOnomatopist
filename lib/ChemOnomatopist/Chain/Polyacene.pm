@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Polyacene;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Polyacenes, including anthracene
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Chain::Circular::;
 
@@ -64,7 +64,7 @@ sub candidates()
     return @candidates;
 }
 
-sub needs_substituent_locants() { return 1 }
+sub needs_substituent_locants() { 1 }
 
 sub has_form($$)
 {
