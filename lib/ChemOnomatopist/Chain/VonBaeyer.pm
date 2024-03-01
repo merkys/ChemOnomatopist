@@ -149,7 +149,20 @@ sub has_form($$)
     return scalar( $graph->connected_components ) == 3;
 }
 
-sub prefix() { &suffix }
+sub prefix()
+{
+    my( $self ) = @_;
+    my $name = $self->suffix;
+    if( $self->parent ) { # FIXME: Not stable for naphthalene
+        my @vertices = $self->vertices;
+        my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
+        die "unknown locant in multicyclic compound\n" unless defined $position;
+        $name->pop_e;
+        $name->append_substituent_locant( $self->locants( $position ) );
+    }
+    return $name;
+}
+
 sub suffix()
 {
     my( $self ) = @_;
