@@ -48,19 +48,25 @@ sub candidates()
 {
     my( $self ) = @_;
 
-    my @candidates = ( $self, $self->flipped );
+    my @candidates = ( $self );
 
     my @sizes = @{$self->{sizes}};
     if( $sizes[0] == $sizes[1] && $sizes[0] == $sizes[2] ) {
-        # TODO
+        push @candidates, $self->cycles_swapped( 0, 1 );
+        push @candidates, $self->cycles_swapped( 0, 2 );
+        push @candidates, $self->cycles_swapped( 1, 2 ); # FIXME: Seems incomplete
     } elsif( $sizes[0] == $sizes[1] ) {
         push @candidates, $self->cycles_swapped( 0, 1 );
-        push @candidates, $self->cycles_swapped( 0, 1 )->flipped;
     } elsif( $sizes[1] == $sizes[2] ) {
         push @candidates, $self->cycles_swapped( 1, 2 );
-        push @candidates, $self->cycles_swapped( 1, 2 )->flipped;
     }
 
+    # Flip all the candidates
+    for (0..$#candidates) {
+        push @candidates, $candidates[$_]->flipped;
+    }
+
+    # Record the original chain
     for (1..$#candidates) {
         $candidates[$_]->{candidate_for} = $self;
     }
