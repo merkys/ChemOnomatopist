@@ -47,9 +47,28 @@ sub new
 sub candidates()
 {
     my( $self ) = @_;
-    my @candidates = ( $self, $self->flipped_vertically );
-    $candidates[1]->{candidate_for} = $self;
+    my @candidates = ( $self,
+                       $self->flipped_vertically,
+                       $self->flipped_horizontally,
+                       $self->flipped_vertically->flipped_horizontally );
+    for (1..$#candidates) {
+        $candidates[$_]->{candidate_for} = $self;
+    }
     return @candidates;
+}
+
+sub flipped_horizontally()
+{
+    my( $self ) = @_;
+
+    my $subgraph = subgraph( $self->graph, $self->vertices );
+    my @chords = grep { $subgraph->degree( $_->[0] ) == 3 &&
+                        $subgraph->degree( $_->[1] ) == 3 } $subgraph->edges;
+    $subgraph->delete_edges( $self->{vertices}[$self->length / 2 + 3],
+                             $self->{vertices}[$self->length / 2 + 4],
+                             map { @$_ } @chords );
+    return bless { graph => $self->graph,
+                   vertices => [ reverse Graph::Traversal::DFS->new( $subgraph, start => $self->{vertices}[3] )->dfs ] };
 }
 
 sub flipped_vertically()
