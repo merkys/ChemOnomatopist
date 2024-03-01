@@ -95,6 +95,10 @@ sub new
     # Each component is represented as an array of vertices in the order of traverse.
     my @components = sort { @$a <=> @$b } $subgraph->connected_components;
     for (0..1) {
+        if( @{$components[$_]} == 1 ) {
+            die "bicycles with three-membered cycles are not supported yet\n"
+        }
+
         my $subgraph = $graph->subgraph( [ @{$components[$_]}, @bridge ] );
         $subgraph->delete_edge( @bridge );
         my @path = Graph::Traversal::DFS->new( $subgraph, start => $bridge[$_] )->dfs;
