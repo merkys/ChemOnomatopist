@@ -47,7 +47,14 @@ sub new
 sub candidates()
 {
     my( $self ) = @_;
-    my @candidates = ( $self );
+    my @candidates = ( $self, $self->flipped_vertically );
+    $candidates[1]->{candidate_for} = $self;
+    return @candidates;
+}
+
+sub flipped_vertically()
+{
+    my( $self ) = @_;
 
     my $subgraph = subgraph( $self->graph, $self->vertices );
     my @chords = grep { $subgraph->degree( $_->[0] ) == 3 &&
@@ -55,13 +62,8 @@ sub candidates()
     $subgraph->delete_edges( $self->{vertices}[3],
                              $self->{vertices}[4],
                              map { @$_ } @chords );
-
-    push @candidates,
-         bless { graph => $self->graph,
-                 vertices => [ reverse Graph::Traversal::DFS->new( $subgraph, start => $self->{vertices}[3] )->dfs ],
-                 candidate_for => $self };
-
-    return @candidates;
+    return bless { graph => $self->graph,
+                   vertices => [ reverse Graph::Traversal::DFS->new( $subgraph, start => $self->{vertices}[3] )->dfs ] };
 }
 
 sub needs_substituent_locants() { 1 }
