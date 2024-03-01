@@ -9,7 +9,7 @@ use warnings;
 use Graph::Traversal::DFS;
 use List::Util qw( first sum0 );
 
-use parent ChemOnomatopist::Chain::Circular::;
+use parent ChemOnomatopist::Chain::;
 
 sub new
 {
@@ -139,19 +139,12 @@ sub has_form($$)
     return scalar( $graph->connected_components ) == 3;
 }
 
-sub locants(@)
-{
-    my $self = shift;
-    return map { $_ + 1 } @_;
-}
-
 sub prefix() { &suffix }
 sub suffix()
 {
     my( $self ) = @_;
     return 'bicyclo[' . join( '.', @{$self->{sizes}} ) . ']' .
-           ChemOnomatopist::alkane_chain_name( $self->length ) .
-           'ane';
+            $self->SUPER::suffix;
 }
 
 1;
