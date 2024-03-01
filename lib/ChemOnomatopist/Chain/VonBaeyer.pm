@@ -6,6 +6,8 @@ package ChemOnomatopist::Chain::VonBaeyer;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Name;
+use ChemOnomatopist::Name::Part::Fusion;
 use Graph::Traversal::DFS;
 use List::Util qw( first sum0 );
 
@@ -151,8 +153,9 @@ sub prefix() { &suffix }
 sub suffix()
 {
     my( $self ) = @_;
-    return 'bicyclo[' . join( '.', @{$self->{sizes}} ) . ']' .
-            $self->SUPER::suffix;
+    return ChemOnomatopist::Name->new( 'bicyclo' ) .
+           ChemOnomatopist::Name::Part::Fusion->new( '[' . join( '.', @{$self->{sizes}} ) . ']' ) .
+           $self->SUPER::suffix;
 }
 
 1;
