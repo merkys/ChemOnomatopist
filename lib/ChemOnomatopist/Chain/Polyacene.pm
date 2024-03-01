@@ -68,7 +68,7 @@ sub flipped_horizontally()
                              $self->{vertices}[$self->length / 2 + 4],
                              map { @$_ } @chords );
     return bless { graph => $self->graph,
-                   vertices => [ reverse Graph::Traversal::DFS->new( $subgraph, start => $self->{vertices}[3] )->dfs ] };
+                   vertices => [ reverse Graph::Traversal::DFS->new( $subgraph, start => $self->{vertices}[$self->length / 2 + 3] )->dfs ] };
 }
 
 sub flipped_vertically()
