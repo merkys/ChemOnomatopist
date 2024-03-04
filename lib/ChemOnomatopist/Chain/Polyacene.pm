@@ -121,7 +121,12 @@ sub locants(@)
         my @locant_map = ( 1..4, '4a', 10, '10a', 5..8, '8a',  9,  '9a' );
         return map { $locant_map[$_] } @_;
     } else {
-        return map { $_ + 1 } @_;
+        my $N = ($self->length - 2) / 4;
+        my @locant_map = ( 1..3,
+                           ( map { ($_ + 2, ($_ + 2) . 'a') } 2..$N ),
+                           ($N+3)..($N+5),
+                           ( map { ($_ + 9, ($_ + 9) . 'a') } 2..$N ) );
+        return map { $locant_map[$_] } @_;
     }
 }
 
