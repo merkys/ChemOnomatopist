@@ -432,13 +432,13 @@ sub get_mainchain_name
             my @senior_group_positions =
                 grep { blessed $chain[$_] && $chain[$_]->isa( $most_senior_group ) }
                      0..$#chain;
-            @senior_group_attachments = sort { $a <=> $b } @senior_group_attachments,
-                                                           @senior_group_positions;
+            @senior_group_attachments = ( @senior_group_attachments,
+                                          @senior_group_positions );
         }
 
         # Terminal locants are not cited for 1 or 2 senior group attachments according to BBv2 P-14.3.4.1
         if( $chain->needs_suffix_locant ) {
-            $name->append_locants( $chain->locants( @senior_group_attachments ) );
+            $name->append_locants( sort { $a <=> $b } $chain->locants( @senior_group_attachments ) );
         }
 
         my $suffix;
