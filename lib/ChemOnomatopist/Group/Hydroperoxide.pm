@@ -53,19 +53,22 @@ sub suffix()
 
     my @elements = map { ChemOnomatopist::element( $_ ) } @{$self->{atoms}};
 
-    return 'peroxol' if all { $_ eq 'O' } @elements;
-
     my $name = ChemOnomatopist::Name->new;
-    if( $elements[0] eq $elements[1] ) {
-        $name->append_multiplier( 'di' );
-        my $element_prefix = $elements{$elements[0]}->{prefix};
-        $element_prefix =~ s/a$/o/;
-        $name .= $element_prefix;
+    if( all { $_ eq 'O' } @elements ) {
+        $name .= 'peroxol';
     } else {
-        $name = '-' . join( '', @elements ) . '-' .
-                join '', sort map { s/a$/o/; $_ } map { $elements{$_}->{prefix} } grep { $_ ne 'O' } @elements;
+        if( $elements[0] eq $elements[1] ) {
+            $name->append_multiplier( 'di' );
+            my $element_prefix = $elements{$elements[0]}->{prefix};
+            $element_prefix =~ s/a$/o/;
+            $name .= $element_prefix;
+        } else {
+            $name = '-' . join( '', @elements ) . '-' .
+                    join '', sort map { s/a$/o/; $_ } map { $elements{$_}->{prefix} } grep { $_ ne 'O' } @elements;
+        }
+        $name .= 'peroxol';
     }
-    return $name . 'peroxol';
+    return $name;
 }
 
 1;
