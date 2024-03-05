@@ -291,8 +291,8 @@ sub needs_heteroatom_locants()
     return $self->suffix =~ /^benzo/;
 }
 
-sub needs_heteroatom_names() { return '' } # FIXME: This is not always correct
-sub needs_substituent_locants() { return 1 }
+sub needs_heteroatom_names() { '' } # FIXME: This is not always correct
+sub needs_substituent_locants() { 1 }
 
 sub prefix()
 {
