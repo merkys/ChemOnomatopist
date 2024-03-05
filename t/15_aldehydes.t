@@ -7,6 +7,8 @@ use ChemOnomatopist;
 use Test::More;
 
 my @cases = (
+    { smiles => 'O=CCCCCCCC1CC(CCC1)C=O', iupac => '3-(7-oxoheptyl)cyclohexane-1-carbaldehyde', AUTHOR => 1 }, # From BBv3 P-59.2.1.7
+
     # From BBv2 P-66.6.1.1.1
     { smiles => 'CCCCC=O', iupac => 'pentanal' },
     { smiles => 'O=CCCCC=O', iupac => 'pentanedial' },
