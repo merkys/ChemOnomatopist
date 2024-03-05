@@ -8,6 +8,9 @@ use warnings;
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
+use Chemistry::OpenSMILES qw( is_double_bond );
+use List::Util qw( any );
+
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
@@ -29,6 +32,12 @@ sub needs_heteroatom_names() { '' }
 sub needs_substituent_locants()
 {
     my( $self ) = @_;
+
+    for my $vertex ($self->vertices) {
+        return '' if any { is_double_bond( $self->graph, $vertex, $_ ) }
+                         $self->graph->neighbours( $vertex );
+    }
+
     return $self->number_of_branches > 1 && $self->number_of_branches < $self->max_valence;
 }
 
