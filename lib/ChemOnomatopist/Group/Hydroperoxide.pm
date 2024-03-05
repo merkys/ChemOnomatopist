@@ -10,7 +10,7 @@ use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name;
-use List::Util qw( all );
+use List::Util qw( all any );
 
 sub new
 {
@@ -68,6 +68,11 @@ sub suffix()
         }
         $name .= 'peroxol';
     }
+
+    if( any { exists $_->{charge} && $_->{charge} == -1 } @{$self->{atoms}} ) {
+        $name .= 'ate';
+    }
+
     return $name;
 }
 

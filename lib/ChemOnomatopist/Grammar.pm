@@ -246,6 +246,8 @@ my @rules = (
     # Hydroperoxide
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, \&is_hydroxy, \&is_C,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroperoxide->new( $_[1], $_[2] ), @_[1..2] ) } ],
+    [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&is_C,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroperoxide->new( $_[1], $_[2] ), @_[1..2] ) } ],
 
     # Detecting amides attached to cyclic chains
     [ sub { &is_nongroup_atom && &is_C && 1 == grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) && $_->{parent} == $_[1] } $_[0]->neighbours( $_[1] ) }, \&is_amide, \&is_monocycle, NO_MORE_VERTICES,
