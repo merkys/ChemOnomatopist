@@ -438,7 +438,8 @@ sub get_mainchain_name
 
         # Terminal locants are not cited for 1 or 2 senior group attachments according to BBv2 P-14.3.4.1
         if( $chain->needs_suffix_locant ) {
-            $name->append_locants( sort { $a <=> $b } $chain->locants( @senior_group_attachments ) );
+            $name->append_locants( sort { cmp_locants( $a, $b ) }
+                                        $chain->locants( @senior_group_attachments ) );
         }
 
         my $suffix;
@@ -1415,6 +1416,14 @@ sub cmp_heteroatom_seniority
     }
 
     return 0;
+}
+
+sub cmp_locants($$)
+{
+    my( $A, $B ) = @_;
+    return $A <=> $B if $A =~ /^[0-9]+$/ && $B =~ /^[0-9]+$/;
+    return $A cmp $B if $A !~ /^[0-9]+$/ && $B !~ /^[0-9]+$/;
+    return ($A =~ /^[0-9]+$/) <=> ($B =~ /^[0-9]+$/); # Letters go first
 }
 
 # Sorts given names only based on alphabetical part of the name.
