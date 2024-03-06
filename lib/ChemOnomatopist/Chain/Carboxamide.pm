@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Carboxamide;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Carboxamide chain
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Chain::;
 
@@ -19,8 +19,8 @@ sub new
                    vertices => [ $amide, $C, $chain->vertices ] }, $class;
 }
 
-sub needs_heteroatom_locants() { return '' }
-sub needs_heteroatom_names() { return '' }
+sub needs_heteroatom_locants() { '' }
+sub needs_heteroatom_names() { '' }
 
 sub locants(@)
 {
