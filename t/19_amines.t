@@ -11,7 +11,7 @@ my @cases = (
     { smiles => 'C(CC(=O)N)C(=O)C(=O)O', iupac => '5-amino-2,5-dioxopentanoic acid', AUTHOR => 1 }, # PubChem 48: seems a bit strange
     { smiles => 'CC(CC(C(=O)O)N)N', iupac => '2,4-diaminopentanoic acid' },
     { smiles => 'C(CN)C=O', iupac => '3-aminopropanal' },
-    { smiles => 'C(CCN)CCN', iupac => 'pentane-1,5-diamine', AUTHOR => 1 },
+    { smiles => 'C(CCN)CCN', iupac => 'pentane-1,5-diamine' },
 
     { smiles => 'CC(CC1=CC=C(NCCC(C)C)C=C1)CC', iupac => '4-(2-methylbutyl)-N-(3-methylbutyl)aniline' }, # BBv2 P-14.5.4
     { smiles => 'NC1=CC=CC=C1', iupac => 'aniline' }, # BBv2 P-34.1.1.5
@@ -36,7 +36,7 @@ my @cases = (
 
     # From BBv2 P-62.2.2.1
     { smiles => 'C(C)N(CC)CC', iupac => 'N,N-diethylethanamine' },
-    { smiles => 'ClCCNCCC', iupac => 'N-(2-chloroethyl)propan-1-amine', AUTHOR => 1 }, # FIXME: This is strange
+    { smiles => 'ClCCNCCC', iupac => 'N-(2-chloroethyl)propan-1-amine' },
     { smiles => 'C(C)N(CCCC)CCC', iupac => 'N-ethyl-N-propylbutan-1-amine' },
     { smiles => 'C1(=CC=CC=C1)NC=1C=NC=CC1', iupac => 'N-phenylpyridin-3-amine' },
     { smiles => 'C1(=CC=CC=C1)NC1=CC=CC=C1', iupac => 'N-phenylaniline' },
