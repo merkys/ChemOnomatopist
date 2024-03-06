@@ -941,7 +941,7 @@ sub select_mainchain
 
     # Recognising amide chains
     if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Amide:: &&
-        !$chain->isa( ChemOnomatopist::Chain::Carboxamide:: ) ) {
+        @groups == 1 && !$chain->isa( ChemOnomatopist::Chain::Carboxamide:: ) ) {
         $chain = ChemOnomatopist::Chain::Amide->new( $graph, $chain, @groups );
     }
     # Recognising amine chains
