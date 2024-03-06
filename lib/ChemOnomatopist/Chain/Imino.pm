@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Imino;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Imino chain
 # VERSION
+
+use strict;
+use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Name;
@@ -39,7 +39,7 @@ sub locants(@)
     return map { $_ ? $_ : 'N' } @_;
 }
 
-sub needs_substituent_locants() { return 1 }
+sub needs_substituent_locants() { 1 }
 
 sub suffix()
 {
