@@ -17,7 +17,7 @@ use ChemOnomatopist::Isotope;
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Graph::Traversal::DFS;
-use List::Util qw( all any sum0 uniq );
+use List::Util qw( all any none sum0 uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
@@ -33,7 +33,8 @@ sub new
     my $self;
     if( (grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Ether:: ) } @vertices) == 1 ) {
         $self = ChemOnomatopist::Chain::Ether->new( $graph, $parent, @vertices );
-    } elsif( blessed $vertices[0] && $vertices[0]->isa( ChemOnomatopist::Group::Amine:: ) ) {
+    } elsif( blessed $vertices[0] && $vertices[0]->isa( ChemOnomatopist::Group::Amine:: ) &&
+        none { blessed $_ && $_->isa( ChemOnomatopist::Group::Amine:: ) } @vertices[1..$#vertices] ) {
         my $amine = shift @vertices;
         my $chain = bless { vertices => \@vertices, graph => $graph }, $class;
         $self = ChemOnomatopist::Chain::Amine->new( $graph, $chain, $amine );
