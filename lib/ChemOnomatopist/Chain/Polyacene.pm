@@ -8,6 +8,7 @@ use warnings;
 
 use parent ChemOnomatopist::Chain::Circular::;
 
+use ChemOnomatopist::Name;
 use ChemOnomatopist::Util::Graph qw(
     graph_without_edge_attributes
     subgraph
@@ -133,8 +134,8 @@ sub locants(@)
 sub suffix
 {
     my( $self ) = @_;
-    return 'anthracene' if $self->length == 14;
-    return ChemOnomatopist::IUPAC_numerical_multiplier( ($self->length - 2) / 4 ) . 'acene';
+    return ChemOnomatopist::Name->new( 'anthracene' ) if $self->length == 14;
+    return ChemOnomatopist::Name->new( ChemOnomatopist::IUPAC_numerical_multiplier( ($self->length - 2) / 4 ) . 'acene' );
 }
 
 1;
