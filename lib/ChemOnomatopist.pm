@@ -950,7 +950,8 @@ sub select_mainchain
         $chain = ChemOnomatopist::Chain::Amine->new( $graph, $chain, @groups );
     }
     # Recognising imino chains
-    if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Imino:: ) {
+    if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Imino:: &&
+        @groups == 1 ) {
         $chain = ChemOnomatopist::Chain::Imino->new( $graph, $chain, @groups );
     }
 
