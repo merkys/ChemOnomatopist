@@ -1125,6 +1125,7 @@ sub filter_chains
                    # TODO: P-44.4.1.3: Nonstandard bonding numbers
                    # TODO: P-44.4.1.4: Concerns rings with indicated hydrogen
                    \&rule_most_indicated_hydrogens, # There is no such rule, but before comparing lists they have to be of the same size?
+                   \&rule_lowest_numbered_indicated_hydrogens,
                    # P-44.4.1.5: Lowest locants for heteroatoms in skeletal chain
                    \&rule_lowest_numbered_heteroatoms,
                    # P-44.4.1.6: Lowest locants for heteroatoms in skeletal chain according to heteroatom seniority
@@ -1320,10 +1321,24 @@ sub rule_isotopes
 sub rule_most_indicated_hydrogens
 {
     my( @chains ) = @_;
+    return @chains unless all { $_->isa( ChemOnomatopist::Chain::Bicycle:: ) } @chains;
 
     my( $max_value ) = sort { $b <=> $a }
                        map  { $_->number_of_indicated_hydrogens } @chains;
     return grep { $_->number_of_indicated_hydrogens == $max_value } @chains;
+}
+
+sub rule_lowest_numbered_indicated_hydrogens
+{
+    my( @chains ) = @_;
+    return @chains unless all { $_->isa( ChemOnomatopist::Chain::Bicycle:: ) } @chains;
+
+    my( $max_value ) = sort { cmp_arrays( [ $a->indicated_hydrogens ],
+                                          [ $b->indicated_hydrogens ] ) }
+                            @chains;
+    return grep { !cmp_arrays( [ $_->indicated_hydrogens ],
+                               [ $max_value->indicated_hydrogens ] ) }
+                @chains;
 }
 
 sub rule_lowest_numbered_heteroatoms
