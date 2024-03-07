@@ -47,7 +47,7 @@ sub append($)
 
     # If names are combined and the second one starts with a number, a separator is added.
     if( @$self && !$self->ends_with_locant && blessed $name && $name->isa( ChemOnomatopist::Name:: ) && $name =~ /^\d/ ) {
-        push @$self, '-';
+        $name->[0]->{value} = '-' . $name->[0]->{value};
     }
     # FIXME: The following needlessly converts $name into string
     $name =~ s/^-// if @$self && $self->[-1] =~ /-$/ && $name =~ /^-/;
