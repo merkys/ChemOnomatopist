@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Xanthene;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Xanthene or its close derivative
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Chain::Circular::;
 
@@ -43,8 +43,8 @@ sub new
 
     my @other_vertices = $other->vertices;
     $subgraph->delete_vertex( $other_vertices[($heteroatom_positions[0] + 2) % 6] );
-    my( $start ) = grep { $subgraph->has_vertex( $_ ) && $subgraph->degree( $_ ) == 1 }
-                   map  { $_->vertices } @benzenes;
+    my $start = first  { $subgraph->has_vertex( $_ ) && $subgraph->degree( $_ ) == 1 }
+                   map { $_->vertices } @benzenes;
     my @vertices = ( reverse( Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs ),
                      $other_vertices[($heteroatom_positions[0] + 2) % 6] );
 
