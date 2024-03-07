@@ -155,7 +155,7 @@ sub suffix()
         return ChemOnomatopist::Name::Part::Stem->new( 'phenothiarsinine' )->to_name;
     }
 
-    die "cannot name xanthene derivative\n";
+    die "cannot name xanthene derivatives\n";
 }
 
 1;
