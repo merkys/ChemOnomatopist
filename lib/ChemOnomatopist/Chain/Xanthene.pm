@@ -82,14 +82,11 @@ sub locants(@)
     return map { $locant_map[$_] } @_;
 }
 
-sub ideal_graph()
-{
-    return ChemOnomatopist::Chain::Polyacene->ideal_graph( 14 );
-}
+sub ideal_graph() { ChemOnomatopist::Chain::Polyacene->ideal_graph( 14 ) }
 
-sub needs_heteroatom_locants() { return '' }
-sub needs_heteroatom_names() { return '' }
-sub needs_substituent_locants() { return 1 }
+sub needs_heteroatom_locants() { '' }
+sub needs_heteroatom_names() { '' }
+sub needs_substituent_locants() { 1 }
 
 sub prefix()
 {
