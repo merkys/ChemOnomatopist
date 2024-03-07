@@ -46,7 +46,7 @@ sub append($)
     $self->[-1] =~ s/o$// if $name =~ /^o/ && @$self && $self->[-1] ne 'cyclo';
 
     # If names are combined and the second one starts with a number, a separator is added.
-    if( @$self && blessed $name && $name->isa( ChemOnomatopist::Name:: ) && $name =~ /^\d/ ) {
+    if( @$self && !$self->ends_with_locant && blessed $name && $name->isa( ChemOnomatopist::Name:: ) && $name =~ /^\d/ ) {
         push @$self, '-';
     }
     # FIXME: The following needlessly converts $name into string
@@ -68,7 +68,7 @@ sub append_locants
     my( $self, @locants ) = @_;
     return $self unless @locants;
 
-    if( @$self ) {
+    if( @$self && !$self->ends_with_locant ) {
         $self->append( ChemOnomatopist::Name::Part::Locants->new( '-' . join( ',', @locants ) . '-' ) );
     } else {
         $self->append( ChemOnomatopist::Name::Part::Locants->new( join( ',', @locants ) . '-' ) );
@@ -150,8 +150,9 @@ sub bracket_numeric_locants()
     for my $i (1..$#$self) {
         next unless blessed $self->[$i];
         next unless $self->[$i]->isa( ChemOnomatopist::Name::Part::Locants:: );
-        $self->[$i-1] = '[';
-        $self->[$i]->{value} =~ s/-$/]/;
+        $self->[$i]->{value} =~ s/^-//;
+        $self->[$i]->{value} =~ s/-$//;
+        $self->[$i]->{value} = '[' . $self->[$i]->{value} . ']';
     }
 }
 
@@ -241,6 +242,14 @@ sub starts_with_multiplier()
     return @$self &&
            blessed $self->[0] &&
            $self->[0]->isa( ChemOnomatopist::Name::Part::Multiplier:: );
+}
+
+sub ends_with_locant()
+{
+    my( $self ) = @_;
+    return @$self &&
+           blessed $self->[-1] &&
+           $self->[-1]->isa( ChemOnomatopist::Name::Part::Locants:: );
 }
 
 sub ends_with_multiplier()
