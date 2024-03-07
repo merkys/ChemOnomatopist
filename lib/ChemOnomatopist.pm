@@ -1124,7 +1124,7 @@ sub filter_chains
                    \&rule_most_double_bonds,
                    # TODO: P-44.4.1.3: Nonstandard bonding numbers
                    # TODO: P-44.4.1.4: Concerns rings with indicated hydrogen
-                   # \&rule_most_indicated_hydrogens, # There is no such rule, but before comparing lists they have to be of the same size?
+                   \&rule_most_indicated_hydrogens, # There is no such rule, but before comparing lists they have to be of the same size?
                    # P-44.4.1.5: Lowest locants for heteroatoms in skeletal chain
                    \&rule_lowest_numbered_heteroatoms,
                    # P-44.4.1.6: Lowest locants for heteroatoms in skeletal chain according to heteroatom seniority
