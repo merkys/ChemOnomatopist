@@ -1123,6 +1123,8 @@ sub filter_chains
                    # P-44.4.1.2: Maximum number of double bonds
                    \&rule_most_double_bonds,
                    # TODO: P-44.4.1.3: Nonstandard bonding numbers
+                   \&rule_most_nonstandard_valence_positions, # There is no such rule, but before comparing lists they have to be of the same size?
+                   ### \&rule_lowest_numbered_nonstandard_valence_positions,
                    # TODO: P-44.4.1.4: Concerns rings with indicated hydrogen
                    \&rule_most_indicated_hydrogens, # There is no such rule, but before comparing lists they have to be of the same size?
                    \&rule_lowest_numbered_indicated_hydrogens,
@@ -1315,6 +1317,27 @@ sub rule_isotopes
                             @chains;
     return grep { !ChemOnomatopist::Isotope::cmp_isotope_lists( [ $_->isotopes ],
                                                                 $max_value ) }
+                @chains;
+}
+
+sub rule_most_nonstandard_valence_positions
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { $b <=> $a }
+                       map  { $_->number_of_nonstandard_valence_positions } @chains;
+    return grep { $_->number_of_nonstandard_valence_positions == $max_value } @chains;
+}
+
+sub rule_lowest_numbered_nonstandard_valence_positions
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { cmp_arrays( [ $a->nonstandard_valence_positions ],
+                                          [ $b->nonstandard_valence_positions ] ) }
+                            @chains;
+    return grep { !cmp_arrays( [ $_->nonstandard_valence_positions ],
+                               [ $max_value->nonstandard_valence_positions ] ) }
                 @chains;
 }
 

@@ -547,6 +547,12 @@ sub number_of_multiple_bonds()
     return scalar grep { $_ =~ /^[=#\$]$/ } $self->bonds;
 }
 
+sub number_of_nonstandard_valence_positions()
+{
+    my( $self ) = @_;
+    return scalar $self->nonstandard_valence_positions;
+}
+
 sub isotope_part()
 {
     my( $self ) = @_;
