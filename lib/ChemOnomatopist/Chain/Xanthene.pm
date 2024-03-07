@@ -10,14 +10,20 @@ use parent ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Util::Graph qw( subgraph );
-use List::Util qw( any uniq );
+use List::Util qw( any first uniq );
+use Set::Object qw( set );
 
 sub new
 {
     my( $class, $graph, @cycles ) = @_;
 
-    my @benzenes = grep {  $_->is_benzene } @cycles;
-    my( $other ) = grep { !$_->is_benzene } @cycles;
+    my @benzenes =  grep {  $_->is_benzene } @cycles;
+    my $other    = first { !$_->is_benzene } @cycles;
+
+    # Safeguard against the other cycle not being in the middle of benzenes
+    if( any { set( $_->vertices )->is_disjoint( set( $other->vertices ) ) } @benzenes ) {
+        die "cannot name xanthene derivatives\n";
+    }
 
     # Find the correct vertex order
     my $subgraph = subgraph( $graph, map { $_->vertices } @cycles );
