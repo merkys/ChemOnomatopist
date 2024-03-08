@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Chain::Polyaphene;
+use ChemOnomatopist::Name;
 use ChemOnomatopist::Util::Graph qw( merge_graphs );
 use Graph::Undirected;
 use List::Util qw( first all any );
@@ -109,18 +110,18 @@ sub prefix()
     my( $self ) = @_;
 
     if( all { $_ eq 'N' } $self->heteroatoms ) {
-        return 'phenanthridine' if $self->number_of_heteroatoms == 1;
-        return 'phenanthroline' if $self->number_of_heteroatoms == 2;
+        return ChemOnomatopist::Name->new( 'phenanthridine' ) if $self->number_of_heteroatoms == 1;
+        return ChemOnomatopist::Name->new( 'phenanthroline' ) if $self->number_of_heteroatoms == 2;
     }
 
     if( $self->number_of_heteroatoms == 1 ) {
-        return 'arsanthridine'    if all { $_ eq 'As' } $self->heteroatoms;
-        return 'phosphanthridine' if all { $_ eq 'P' } $self->heteroatoms;
+        return ChemOnomatopist::Name->new( 'arsanthridine' )    if all { $_ eq 'As' } $self->heteroatoms;
+        return ChemOnomatopist::Name->new( 'phosphanthridine' ) if all { $_ eq 'P'  } $self->heteroatoms;
     }
 
-    return 'phenanthrene';
+    return ChemOnomatopist::Name->new( 'phenanthrene' );
 }
 
-sub suffix() { return $_[0]->prefix }
+sub suffix() { $_[0]->prefix }
 
 1;
