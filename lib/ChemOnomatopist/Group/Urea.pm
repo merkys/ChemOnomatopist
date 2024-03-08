@@ -23,7 +23,7 @@ sub new
                  $class;
 }
 
-sub heteroatom_positions() { () }
+sub heteroatom_positions() { my @not_applicable }
 
 sub needs_substituent_locants() { $_[0]->number_of_branches > 1 && $_[0]->number_of_branches < 4 }
 
