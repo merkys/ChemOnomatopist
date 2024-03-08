@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Name;
 use ChemOnomatopist::Group::Amide;
 use List::Util qw( first );
 use Scalar::Util qw( blessed );
@@ -33,7 +34,7 @@ sub locants(@)
     return map { $_ ? 'N' . '\'' x ($_ - 2) : 1 } @_;
 }
 
-sub prefix() { 'carbamoylamino' }
+sub prefix() { ChemOnomatopist::Name->new( 'carbamoylamino' ) }
 
 sub suffix()
 {
