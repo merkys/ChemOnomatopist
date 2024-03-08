@@ -39,10 +39,10 @@ sub prefix() { ChemOnomatopist::Name->new( 'carbamoylamino' ) }
 sub suffix()
 {
     my( $self ) = @_;
-    my $name = '';
+    my $name = ChemOnomatopist::Name->new;
     if( $self->{ketone_element} ne 'O' ) {
-        $name = $elements{$self->{ketone_element}}->{prefix};
-        $name =~ s/a$/o/;
+        $name->append_element( $elements{$self->{ketone_element}}->{prefix} );
+        $name->[-1]->{value} =~ s/a$/o/;
     }
     return $name . 'urea';
 }
