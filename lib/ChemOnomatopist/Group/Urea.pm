@@ -7,8 +7,8 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Elements qw( %elements );
-use ChemOnomatopist::Name;
 use ChemOnomatopist::Group::Amide;
+use ChemOnomatopist::Name;
 use List::Util qw( first );
 use Scalar::Util qw( blessed );
 
