@@ -160,6 +160,8 @@ my @cases = (
     { smiles => 'CCC1CN1Cl(=O)(=O)=O', iupac => '2-ethyl-1-perchlorylaziridine' }, # PubChem 24973518
     { smiles => 'CC(=CC(=C(C)C)C(=C)C1=CC=CC=C1)C', iupac => '(5-methyl-3-propan-2-ylidenehexa-1,4-dien-2-yl)benzene' }, # PubChem 141889885
 
+    { smiles => 'Cc1c(I)c(C)c(c(c1C)I)C', iupac => '1,4-diiodo-2,3,5,6-tetramethylbenzene' }, # COD 2013412
+
     # From BBv2 P-59.2.1.6
     { smiles => 'OC1CCC(CC1)C(CCCCCO)O', iupac => '1-(4-hydroxycyclohexyl)hexane-1,6-diol', AUTHOR => 1 },
     { smiles => 'O=C(CC1CC(C(C1)=O)=O)CC', iupac => '4-(2-oxobutyl)cyclopentane-1,2-dione' },
