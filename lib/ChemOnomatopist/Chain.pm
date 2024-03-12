@@ -186,6 +186,7 @@ sub nonstandard_valence_positions()
     for (0..$#vertices) {
         next if blessed $vertices[$_];
         next if ChemOnomatopist::is_element( $vertices[$_], 'C' );
+        next if ChemOnomatopist::is_element( $vertices[$_], 'N' );
         next unless exists $vertices[$_]->{valence};
         push @nonstandard_valence_positions, $_;
     }
