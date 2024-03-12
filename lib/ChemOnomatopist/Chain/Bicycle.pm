@@ -291,7 +291,13 @@ sub needs_heteroatom_locants()
     return $self->suffix =~ /^benzo/;
 }
 
-sub needs_heteroatom_names() { '' } # FIXME: This is not always correct
+sub needs_heteroatom_names()
+{
+    my( $self ) = @_;
+    return $self->needs_heteroatom_locants &&
+           all { !$_->is_Hantzsch_Widman } $self->cycles;
+}
+
 sub needs_substituent_locants() { 1 }
 
 sub prefix()

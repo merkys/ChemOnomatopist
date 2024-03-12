@@ -46,6 +46,14 @@ sub backbone_SMILES()
     return $SMILES;
 }
 
+sub is_Hantzsch_Widman()
+{
+    my( $self ) = @_;
+    return $self->length >= 3 && $self->length <= 10 && # "no more than ten ring members"
+           $self->number_of_heteroatoms &&              # "containing one or more heteroatoms"
+           any { $_->{symbol} =~ /^[cC]$/ } $self->vertices;
+}
+
 # FIXME: What to do with furan and others?
 sub is_aromatic()
 {
@@ -142,8 +150,7 @@ sub name()
         return $name;
     }
 
-    if( $self->length >= 3 && $self->length <= 10 &&
-        any { $_->{symbol} =~ /^[cC]$/ } $self->vertices ) {
+    if( $self->is_Hantzsch_Widman ) {
         # Hantzsch-Widman names (BBv2 P-22.2.2.1)
 
         # Collect the types of heteroatoms and their attachment positions
