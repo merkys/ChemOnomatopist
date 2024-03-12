@@ -18,7 +18,7 @@ use ChemOnomatopist::Name::Part::Stem;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_double_bond );
 use Graph::Traversal::DFS;
-use List::Util qw( all any min uniq );
+use List::Util qw( all any first min uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
@@ -303,7 +303,7 @@ sub prefix()
     $name->pop_e;
     if( $self->parent ) { # FIXME: Not stable for naphthalene
         my @vertices = $self->vertices;
-        my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
+        my $position = first { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
         die "unknown locant in multicyclic compound\n" unless defined $position;
         $name->append_substituent_locant( $self->locants( $position ) );
     }
@@ -331,12 +331,12 @@ sub suffix()
 
     my @SMILES = map { $_->backbone_SMILES } $self->cycles;
     print STDERR "bicycle SMILES: @SMILES\n" if $ChemOnomatopist::DEBUG;
-    my( $retained ) = grep { ($_->[0] eq $SMILES[0] && $_->[1] eq $SMILES[1]) ||
-                             ($_->[0] eq $SMILES[1] && $_->[1] eq $SMILES[0]) } @names;
+    my $retained = first { ($_->[0] eq $SMILES[0] && $_->[1] eq $SMILES[1]) ||
+                           ($_->[0] eq $SMILES[1] && $_->[1] eq $SMILES[0]) } @names;
     return ChemOnomatopist::Name::Part::Stem->new( $retained->[2] )->to_name if $retained;
 
     if( any { $_->is_benzene } $self->cycles ) {
-        my( $other ) = grep { !$_->is_benzene } $self->cycles;
+        my $other = first { !$_->is_benzene } $self->cycles;
 
         my $SMILES = ChemOnomatopist::Chain::Monocycle->new( $other->graph, $other->vertices )->backbone_SMILES;
         if( $SMILES =~ /^C=C((?<el>O|S|\[Se\]|\[Te\])C|C(?<el>O|S|\[Se\]|\[Te\]))c:c$/ ) {
