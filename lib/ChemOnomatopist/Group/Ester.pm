@@ -38,4 +38,7 @@ sub name
     return "$hydroxylic_part $acid_part";
 }
 
+sub prefix() { die "cannot use esters as prefixes yet\n" }
+sub suffix() { die "cannot use esters as suffixes yet\n" }
+
 1;
