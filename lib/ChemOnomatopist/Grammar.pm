@@ -151,14 +151,6 @@ my @rules = (
     [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_ketone,
       sub { $_[0]->delete_vertices( $_[3] ); graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1], $_[3] ), $_[2] ) } ],
 
-    # Ester
-    [ sub { &is_nongroup_atom && &is_C }, \&is_ketone, sub { &is_nongroup_atom && &is_O && &no_charge }, \&is_C, NO_MORE_VERTICES,
-      sub {
-            my $hydroxylic = first { $_ != $_[1] } $_[0]->neighbours( $_[3] );
-            my $ester = ChemOnomatopist::Group::Ester->new( $hydroxylic, $_[4] );
-            graph_replace( $_[0], $ester, @_[1..3] );
-          } ],
-
     # Acyl halide
     [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_B_Cl_F_I }, sub { &is_ketone && &is_O }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
@@ -170,6 +162,16 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_O && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
+
+    # Ester
+    [ sub { &is_nongroup_atom && &is_C }, \&is_ketone, sub { &is_nongroup_atom && &is_O && &no_charge }, \&is_C, NO_MORE_VERTICES,
+      sub {
+            my $hydroxylic = first { $_ != $_[1] } $_[0]->neighbours( $_[3] );
+            my $ester = ChemOnomatopist::Group::Ester->new( $hydroxylic, $_[4] );
+            graph_replace( $_[0], $ester, @_[1..3] );
+          } ],
+
+    # Ether
     [ sub { &is_nongroup_atom && &is_O }, ( \&is_C ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ether->new, $_[1] ) } ],
 
