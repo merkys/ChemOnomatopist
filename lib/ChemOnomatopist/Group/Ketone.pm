@@ -1,10 +1,10 @@
 package ChemOnomatopist::Group::Ketone;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Ketone group
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Group::;
 
@@ -12,7 +12,7 @@ use parent ChemOnomatopist::Group::;
 my %prefixes = ( O => 'oxo', S => 'sulfanylidene', Se => 'selanylidene', Te => 'tellanylidene' );
 my %suffixes = ( O => 'one', S => 'thione', Se => 'selone', Te => 'tellone' );
 
-sub needs_multiple_bond_suffix { return '' }
+sub needs_multiple_bond_suffix { '' }
 
 sub prefix
 {
