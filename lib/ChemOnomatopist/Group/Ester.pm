@@ -8,9 +8,12 @@ use warnings;
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
+use ChemOnomatopist;
+
 sub new
 {
     my( $class, $graph, $C, $ketone, $O ) = @_;
+    die "cannot name esters yet\n" if $ChemOnomatopist::CAUTIOUS;
     return bless { graph => $graph, vertices => [ $C, $O ] }, $class;
 }
 
