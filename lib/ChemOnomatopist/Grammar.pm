@@ -165,11 +165,8 @@ my @rules = (
 
     # Ester
     [ sub { &is_nongroup_atom && &is_C }, \&is_ketone, sub { &is_nongroup_atom && &is_O && &no_charge }, \&is_C, NO_MORE_VERTICES,
-      sub {
-            my $hydroxylic = first { $_ != $_[1] } $_[0]->neighbours( $_[3] );
-            my $ester = ChemOnomatopist::Group::Ester->new( $hydroxylic, $_[4] );
-            graph_replace( $_[0], $ester, @_[1..3] );
-          } ],
+      sub { $_[0]->delete_vertex( $_[2] );
+            $_[0]->add_group( ChemOnomatopist::Group::Ester->new( @_[0..3] ) ) } ],
 
     # Ether
     [ sub { &is_nongroup_atom && &is_O }, ( \&is_C ) x 2, NO_MORE_VERTICES,
