@@ -17,7 +17,7 @@ my @cases = (
     { smiles => 'COCCOCCOCCOC', iupac => '2,5,8,11-tetraoxadodecane' },
     { smiles => 'O(CC(=O)O)CC(=O)O', iupac => '2,2\'-oxydiacetic acid', AUTHOR => 1 },
 
-    { smiles => 'CC1CC2(CCC1)CCCCC2', iupac => '2-methylspiro[5.5]undecane', AUTHOR => 1 }, # Figure 4
+    { smiles => 'CC1CC2(CCC1)CCCCC2', iupac => '2-methylspiro[5.5]undecane' }, # Figure 4
 
     # Table 4
     { smiles => 'BrCC(CCC)CCl', iupac => '1-bromo-2-(chloromethyl)pentane' },

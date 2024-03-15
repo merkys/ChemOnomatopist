@@ -84,6 +84,7 @@ sub has_form($$)
 }
 
 sub needs_multiple_bond_locants() { 1 }
+sub needs_substituent_locants() { 1 }
 
 sub locants() { shift; return map { $_ + 1 } @_ }
 
