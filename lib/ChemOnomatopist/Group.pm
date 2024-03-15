@@ -31,7 +31,6 @@ use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Group::Urea;
-
 use List::Util qw( any );
 use Scalar::Util qw( blessed );
 
