@@ -395,20 +395,7 @@ sub get_mainchain_name
         $name .= $attachment;
     }
 
-    if( $chain->can( 'indicated_hydrogens_part' ) ) {
-        $name .= $chain->indicated_hydrogens_part;
-    } elsif( $chain->needs_indicated_hydrogen_count ||
-             $chain->needs_indicated_hydrogen_locants ) {
-        my @indicated_hydrogens = $chain->indicated_hydrogens;
-        if( $chain->needs_indicated_hydrogen_locants ) {
-            $name->append_locants( $chain->locants( @indicated_hydrogens ) );
-        }
-        if( $chain->needs_indicated_hydrogen_count ) {
-            $name .= IUPAC_numerical_multiplier( scalar @indicated_hydrogens );
-            $name->[-1] .= 'a' unless $name =~ /[ai]$/;
-        }
-        $name .= 'hydro';
-    }
+    $name .= $chain->indicated_hydrogens_part;
 
     # Collecting names of all heteroatoms
     for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
