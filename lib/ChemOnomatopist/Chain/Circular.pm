@@ -286,7 +286,8 @@ sub indicated_hydrogens()
         next unless $vertices[$i]->{symbol} =~ /^[CN]$/i;
         next unless $graph->degree( $vertices[$i] ) == 2 ||
                     $graph->degree( $vertices[$i] ) == 3;
-        next unless all { is_single_bond( $graph, $vertices[$i], $_ ) } @vertices;
+        next unless all { is_single_bond( $graph, $vertices[$i], $_ ) }
+                        $graph->neighbours( $vertices[$i] );
         push @positions, $i;
     }
 
