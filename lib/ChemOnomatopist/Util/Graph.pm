@@ -1,10 +1,10 @@
 package ChemOnomatopist::Util::Graph;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Generic graph utilities
 # VERSION
+
+use strict;
+use warnings;
 
 use ChemOnomatopist::Util qw( copy );
 use Exporter;
