@@ -85,6 +85,7 @@ sub flipped_vertically()
 }
 
 sub needs_indicated_hydrogen_count() { $_[0]->number_of_indicated_hydrogens }
+sub needs_indicated_hydrogen_locants() { $_[0]->number_of_indicated_hydrogens }
 sub needs_substituent_locants() { 1 }
 
 sub has_form($$)
