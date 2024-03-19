@@ -399,7 +399,7 @@ sub get_mainchain_name
         $chain->needs_indicated_hydrogen_locants ) {
         my @indicated_hydrogens = $chain->indicated_hydrogens;
         if( $chain->needs_indicated_hydrogen_count ) {
-            $name .= IUPAC_numerical_multiplier( scalar @indicated_hydrogens, 1 );
+            $name .= IUPAC_numerical_multiplier( scalar @indicated_hydrogens );
         }
         $name .= 'hydro';
     }
