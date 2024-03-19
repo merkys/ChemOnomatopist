@@ -297,6 +297,8 @@ sub needs_indicated_hydrogen_locants()
 sub indicated_hydrogens_part()
 {
     my( $self ) = @_;
+    return $self->SUPER::indicated_hydrogens_part if $self->is_naphthalene;
+
     my $part = ChemOnomatopist::Name->new;
 
     if( $self->number_of_indicated_hydrogens &&

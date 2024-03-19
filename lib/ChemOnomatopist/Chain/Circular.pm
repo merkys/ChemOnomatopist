@@ -336,6 +336,27 @@ sub number_of_multiple_bonds()
     return $self->number_of_double_bonds;
 }
 
+sub indicated_hydrogens_part()
+{
+    my( $self ) = @_;
+    my $part = ChemOnomatopist::Name->new;
+
+    if( $self->needs_indicated_hydrogen_count ||
+        $self->needs_indicated_hydrogen_locants ) {
+        my @indicated_hydrogens = $self->indicated_hydrogens;
+        if( $self->needs_indicated_hydrogen_locants ) {
+            $part->append_locants( $self->locants( @indicated_hydrogens ) );
+        }
+        if( $self->needs_indicated_hydrogen_count ) {
+            $part .= ChemOnomatopist::IUPAC_numerical_multiplier( scalar @indicated_hydrogens );
+            $part->[-1] .= 'a' unless $part =~ /[ai]$/;
+        }
+        $part .= 'hydro';
+    }
+
+    return $part;
+}
+
 sub _cmp_instances
 {
     my( $A, $B ) = @_;

@@ -557,6 +557,8 @@ sub number_of_nonstandard_valence_positions()
     return scalar $self->nonstandard_valence_positions;
 }
 
+sub indicated_hydrogens_part() { ChemOnomatopist::Name->new }
+
 sub isotope_part()
 {
     my( $self ) = @_;
