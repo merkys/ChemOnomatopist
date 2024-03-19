@@ -11,6 +11,7 @@ my @cases = (
     { smiles => 'C1=CC=CC2=CC3=CC4=CC=CC=C4C=C3C=C12', iupac => 'tetracene' },
     { smiles => 'C1=CC=CC2=CC3=CC4=CC5=CC=CC=C5C=C4C=C3C=C12', iupac => 'pentacene' },
 
+    { smiles => 'C12CC(CC(CC1)C2)C2=CC=CC1=CC3=CC=CC(=C3C=C21)C2CC1CCC(C2)C1', iupac => '1,8-di(bicyclo[3.2.1]octan-3-yl)anthracene' }, # From BBv3 P-44.2.1.1
     { smiles => 'C1=CC=CC=2C(C3=CC=CC=C3C(C12)=O)=O', iupac => 'anthracene-9,10-dione' }, # From BBv3 P-58.2.2.3
     { smiles => 'C1=C(C=CC2=CC=CC=C12)C1=CC2=CC3=CC(=C(C=C3C=C2C=C1C1=CC2=CC=CC=C2C=C1)C1=CC2=CC=CC=C2C=C1)C1=CC2=CC=CC=C2C=C1', iupac => '2,3,6,7-tetra(naphthalen-2-yl)anthracene' }, # From BBv3 P-61.2.3
     { smiles => 'OC1=CC(=CC=2C(C3=CC=CC(=C3C(C12)=O)O)=O)C', iupac => '1,8-dihydroxy-3-methylanthracene-9,10-dione' }, # From BBv3 P-64.7.1

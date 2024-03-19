@@ -349,13 +349,14 @@ sub get_mainchain_name
 
         if( @{$attachments{$attachment_name}} > 1 ) {
             my $number;
-            if( !$attachment->is_simple ||
-                 $attachment->starts_with_multiplier ||
-                 $attachment =~ /^sulfanyl/ ) { # BBv3 P-16.3.6 (b)
-                $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
-            } else {
+            if( $attachment =~ /^bi/ || (
+                    $attachment->is_simple &&
+                    !$attachment->starts_with_multiplier &&
+                    $attachment !~ /^sulfanyl/ ) ) { # BBv3 P-16.3.6 (b)
                 $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
                 $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
+            } else {
+                $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
             }
             $name .= $number;
 
