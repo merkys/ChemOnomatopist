@@ -84,15 +84,7 @@ sub flipped_vertically()
                    vertices => [ reverse Graph::Traversal::DFS->new( $subgraph, start => $self->{vertices}[3] )->dfs ] };
 }
 
-sub needs_indicated_hydrogen_count() { $_[0]->number_of_indicated_hydrogens }
-
-sub needs_indicated_hydrogen_locants()
-{
-    my( $self ) = @_;
-    return $self->number_of_indicated_hydrogens &&
-           $self->number_of_indicated_hydrogens < $self->length;
-}
-
+sub needs_indicated_hydrogens() { 1 }
 sub needs_substituent_locants() { 1 }
 
 sub has_form($$)

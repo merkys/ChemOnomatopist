@@ -224,6 +224,8 @@ sub name()
     return $name;
 }
 
+sub needs_indicated_hydrogens() { '' }
+
 sub needs_multiple_bond_locants()
 {
     my( $self ) = @_;
@@ -340,17 +342,15 @@ sub indicated_hydrogens_part()
 {
     my( $self ) = @_;
     my $part = ChemOnomatopist::Name->new;
+    return $part unless $self->number_of_indicated_hydrogens;
 
-    if( $self->needs_indicated_hydrogen_count ||
-        $self->needs_indicated_hydrogen_locants ) {
+    if( $self->needs_indicated_hydrogens ) {
         my @indicated_hydrogens = $self->indicated_hydrogens;
-        if( $self->needs_indicated_hydrogen_locants ) {
+        if( $self->number_of_indicated_hydrogens < $self->length ) {
             $part->append_locants( $self->locants( @indicated_hydrogens ) );
         }
-        if( $self->needs_indicated_hydrogen_count ) {
-            $part .= ChemOnomatopist::IUPAC_numerical_multiplier( scalar @indicated_hydrogens );
-            $part->[-1] .= 'a' unless $part =~ /[ai]$/;
-        }
+        $part .= ChemOnomatopist::IUPAC_numerical_multiplier( scalar @indicated_hydrogens );
+        $part->[-1] .= 'a' unless $part =~ /[ai]$/;
         $part .= 'hydro';
     }
 

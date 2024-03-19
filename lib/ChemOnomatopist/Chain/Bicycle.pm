@@ -285,14 +285,7 @@ sub is_naphthalene()
     return $self->is_hydrocarbon && all { $_->length == 6 } $self->cycles;
 }
 
-sub needs_indicated_hydrogen_count() { $_[0]->number_of_indicated_hydrogens }
-
-sub needs_indicated_hydrogen_locants()
-{
-    my( $self ) = @_;
-    return $self->number_of_indicated_hydrogens &&
-           $self->number_of_indicated_hydrogens < $self->length;
-}
+sub needs_indicated_hydrogens() { 1 }
 
 sub needs_heteroatom_locants()
 {

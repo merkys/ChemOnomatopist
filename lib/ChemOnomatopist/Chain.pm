@@ -285,9 +285,6 @@ sub double_bond_positions()
     return grep { $bonds[$_] eq '=' } 0..$#bonds;
 }
 
-sub needs_indicated_hydrogen_count() { '' } # TODO: For now, later: { $_[0]->indicated_hydrogens > 0 }
-sub needs_indicated_hydrogen_locants() { '' } # TODO: For now, later: { $_[0]->indicated_hydrogens > 0 }
-
 sub needs_multiple_bond_locants()
 {
     my( $self ) = @_;
