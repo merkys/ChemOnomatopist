@@ -284,7 +284,8 @@ sub indicated_hydrogens()
     for my $i (0..$#vertices) {
         # Rough interpretation of BBv2 P-14.7.1 and P-22.2.2.1.4
         next unless $vertices[$i]->{symbol} =~ /^[CN]$/i;
-        next unless $graph->degree( $vertices[$i] ) == 2;
+        next unless $graph->degree( $vertices[$i] ) == 2 ||
+                    $graph->degree( $vertices[$i] ) == 3;
         next unless all { is_single_bond( $graph, $vertices[$i], $_ ) } @vertices;
         push @positions, $i;
     }
