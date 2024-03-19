@@ -294,6 +294,19 @@ sub needs_indicated_hydrogen_locants()
            $self->number_of_indicated_hydrogens < $self->length;
 }
 
+sub indicated_hydrogens_part()
+{
+    my( $self ) = @_;
+    my $part = ChemOnomatopist::Name->new;
+
+    if( $self->number_of_indicated_hydrogens &&
+        $self->number_of_indicated_hydrogens < $self->length ) {
+        $part->append_locants( map { $_ . 'H' } $self->locants( $self->indicated_hydrogens ) );
+    }
+
+    return $part;
+}
+
 sub needs_heteroatom_locants()
 {
     my( $self ) = @_;
@@ -357,7 +370,7 @@ sub suffix()
         if( $SMILES =~ /^C=C((?<el>O|S|\[Se\]|\[Te\])C|C(?<el>O|S|\[Se\]|\[Te\]))c:c$/ ) {
             # Names according to BBv2 P-25.2.1, Table 2.8, (23) and (24)
             my $element = $+{el};
-            my $name = ($1 =~ /^C/ ? '2H-1-' : '1H-2-') . 'benzo';
+            my $name = 'benzo';
             $element =~ s/[\[\]]//g;
             if( $element ne 'O' ) {
                 $name .= $elements{$element}->{prefix};
@@ -412,8 +425,6 @@ sub suffix()
 
     my $name = ChemOnomatopist::Name->new;
     my $graph = $self->graph;
-
-    $name->append_locants( map { $_ . 'H' } $self->locants( $self->indicated_hydrogens ) );
 
     my @ideal = map { ChemOnomatopist::Chain::Monocycle->new( $_->graph, $_->vertices ) }
                     $self->cycles;

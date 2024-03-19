@@ -395,8 +395,10 @@ sub get_mainchain_name
         $name .= $attachment;
     }
 
-    if( $chain->needs_indicated_hydrogen_count ||
-        $chain->needs_indicated_hydrogen_locants ) {
+    if( $chain->can( 'indicated_hydrogens_part' ) ) {
+        $name .= $chain->indicated_hydrogens_part;
+    } elsif( $chain->needs_indicated_hydrogen_count ||
+             $chain->needs_indicated_hydrogen_locants ) {
         my @indicated_hydrogens = $chain->indicated_hydrogens;
         if( $chain->needs_indicated_hydrogen_locants ) {
             $name->append_locants( $chain->locants( @indicated_hydrogens ) );
