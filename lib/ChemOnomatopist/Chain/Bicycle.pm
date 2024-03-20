@@ -294,10 +294,11 @@ sub is_purine()
     my $imidazole  = first { $_->length == 5 } @cycles;
 
     return '' unless $pyrimidine && $imidazole;
+    return '' unless join( ',', $imidazole->heteroatom_positions ) eq '0,2';
+    return '' unless join( ',', $pyrimidine->heteroatom_positions ) eq '0,2' ||
+                     join( ',', $pyrimidine->heteroatom_positions ) eq '1,3';
 
-    return join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^c:n:c:n:c:c:,n:c:n:c:c:$/ ||
-           join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^CNC=Nc:c,n:c:n:c:c:$/ ||
-           join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^N=CNCc:c,n:c:n:c:c:$/;
+    return 1;
 }
 
 sub needs_indicated_hydrogens() { 1 }
