@@ -292,8 +292,8 @@ sub is_purine()
     my @cycles = $self->cycles;
     my $pyrimidine = first { $_->length == 6 } @cycles;
     my $imidazole  = first { $_->length == 5 } @cycles;
-
     return '' unless $pyrimidine && $imidazole;
+
     return '' unless join( ',', $imidazole->heteroatom_positions ) eq '0,2';
     return '' unless join( ',', $pyrimidine->heteroatom_positions ) eq '0,2' ||
                      join( ',', $pyrimidine->heteroatom_positions ) eq '1,3';
