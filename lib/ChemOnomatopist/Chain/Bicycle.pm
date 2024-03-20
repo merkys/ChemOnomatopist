@@ -189,10 +189,11 @@ sub new
 sub candidates()
 {
     my( $self ) = @_;
+    my @chains = ( $self );
 
     if( $self->is_naphthalene ) {
         # Generates all variants
-        my @chains = ( $self, $self->copy, $self->copy, $self->copy );
+        push @chains, $self->copy, $self->copy, $self->copy;
 
         $chains[1]->{cycles} = [ map { $_->flipped } $chains[1]->cycles ];
         $chains[3]->{cycles} = [ map { $_->flipped } $chains[3]->cycles ];
@@ -204,11 +205,9 @@ sub candidates()
             $_->_adjust_vertices_to_cycles;
             $_->{candidate_for} = $self unless $_ == $self;
         }
-
-        return @chains;
     }
 
-    return $self;
+    return @chains;
 }
 
 sub copy()
