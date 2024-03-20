@@ -8,10 +8,10 @@ use warnings;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Chain::Circular;
-use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Chain::Bicycle::Purine;
 use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Chain::Monocycle::Fused;
+use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::Fusion;
 use ChemOnomatopist::Name::Part::Stem;
