@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Bicycle::Purine;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Purine chain
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Chain::Bicycle::;
 
@@ -20,12 +20,14 @@ sub new
                    vertices => \@vertices };
 }
 
+sub is_purine() { 1 }
+
 sub locants(@)
 {
     my $self = shift;
     return map { $_ + 1 } @_;
 }
 
-sub suffix() { return ChemOnomatopist::Name->new( 'purine' ) }
+sub suffix() { ChemOnomatopist::Name->new( 'purine' ) }
 
 1;

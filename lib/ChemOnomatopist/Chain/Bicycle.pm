@@ -163,11 +163,12 @@ sub new
         $self->{cycles} = \@cycles;
         $self->_adjust_vertices_to_cycles;
 
-        if(      join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^c:n:c:n:c:c:,n:c:n:c:c:$/ ||
-                 join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^CNC=Nc:c,n:c:n:c:c:$/ ) {
-            return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, @cycles );
-        } elsif( join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^N=CNCc:c,n:c:n:c:c:$/ ) {
-            return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, map { $_->flipped } @cycles );
+        if( $self->is_purine ) {
+            if( join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^N=CNCc:c,n:c:n:c:c:$/ ) {
+                return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, map { $_->flipped } @cycles );
+            } else {
+                return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, @cycles );
+            }
         }
     } elsif( $nbenzene == 1 ) {
         # Numbering has to start from cycle other than benzene
@@ -283,6 +284,15 @@ sub is_naphthalene()
 {
     my( $self ) = @_;
     return $self->is_hydrocarbon && all { $_->length == 6 } $self->cycles;
+}
+
+sub is_purine()
+{
+    my( $self ) = @_;
+    my @cycles = $self->cycles;
+    return join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^c:n:c:n:c:c:,n:c:n:c:c:$/ ||
+           join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^CNC=Nc:c,n:c:n:c:c:$/ ||
+           join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^N=CNCc:c,n:c:n:c:c:$/;
 }
 
 sub needs_indicated_hydrogens() { 1 }
