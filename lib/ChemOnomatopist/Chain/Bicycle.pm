@@ -285,7 +285,16 @@ sub is_naphthalene()
 sub is_purine()
 {
     my( $self ) = @_;
+
+    return '' unless $self->number_of_heteroatoms == 4;
+    return '' unless join( ',', uniq $self->heteroatoms ) eq 'N';
+
     my @cycles = $self->cycles;
+    my $pyrimidine = first { $_->length == 6 } @cycles;
+    my $imidazole  = first { $_->length == 5 } @cycles;
+
+    return '' unless $pyrimidine && $imidazole;
+
     return join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^c:n:c:n:c:c:,n:c:n:c:c:$/ ||
            join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^CNC=Nc:c,n:c:n:c:c:$/ ||
            join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^N=CNCc:c,n:c:n:c:c:$/;
