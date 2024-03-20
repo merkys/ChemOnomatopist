@@ -164,11 +164,7 @@ sub new
         $self->_adjust_vertices_to_cycles;
 
         if( $self->is_purine ) {
-            if( join( ',', map { $_->backbone_SMILES } @cycles ) =~ /^N=CNCc:c,n:c:n:c:c:$/ ) {
-                return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, map { $_->flipped } @cycles );
-            } else {
-                return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, @cycles );
-            }
+            return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, @cycles );
         }
     } elsif( $nbenzene == 1 ) {
         # Numbering has to start from cycle other than benzene
