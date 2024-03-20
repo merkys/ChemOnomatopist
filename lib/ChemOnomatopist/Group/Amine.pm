@@ -1,18 +1,18 @@
 package ChemOnomatopist::Group::Amine;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Amino group
 # VERSION
 
+use strict;
+use warnings;
+
 use parent ChemOnomatopist::Group::;
 
-sub element() { return 'N' }
+sub element() { 'N' }
 
-sub is_terminal() { return 1 }
+sub is_terminal() { 1 }
 
-sub prefix { return 'amino' }
-sub suffix { return 'amine' }
+sub prefix() { 'amino' }
+sub suffix() { 'amine' }
 
 1;
