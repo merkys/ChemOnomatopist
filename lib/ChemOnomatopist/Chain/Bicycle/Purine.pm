@@ -10,12 +10,11 @@ use parent ChemOnomatopist::Chain::Bicycle::;
 
 sub new
 {
-    my( $class, $graph, @cycles ) = @_;
+    my( $class, $graph, $pyrimidine, $imidazole ) = @_;
 
-    # Checking if the order of cycles is correct
-    my( $pyrimidine, $imidazole ) = @cycles;
-    if( $pyrimidine->length == 5 ) {
-        ( $pyrimidine, $imidazole ) = map { $_->flipped } @cycles
+    if( ChemOnomatopist::element( $pyrimidine->{vertices}[0] ) eq 'N' ) {
+        ( $pyrimidine, $imidazole ) = map { $_->flipped }
+                                          ( $pyrimidine, $imidazole );
     }
 
     my @vertices = ( @{$pyrimidine->{vertices}}[1..5],
