@@ -949,7 +949,7 @@ sub select_mainchain
     }
     # Recognising amine chains
     if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Amine:: &&
-        @groups == 1 ) {
+        @groups == 1 && !$chain->isa( ChemOnomatopist::Chain::Bicycle::Purine:: ) ) {
         $chain = ChemOnomatopist::Chain::Amine->new( $graph, $chain, @groups );
     }
     # Recognising imino chains
