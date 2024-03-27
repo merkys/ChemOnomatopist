@@ -47,7 +47,7 @@ my @cases = (
     { smiles => 'CN(C(C)C=CC1CC=C(CC1)C)C', iupac => 'N,N-dimethyl-4-(4-methylcyclohex-3-en-1-yl)but-3-en-2-amine', AUTHOR => 1 },
     { smiles => 'CN(C(C#C)CC)C', iupac => 'N,N-dimethylpent-1-yn-3-amine', AUTHOR => 1 },
     { smiles => 'C(=C)NCCCC', iupac => 'N-ethenylbutan-1-amine' },
-    { smiles => 'CC(CN(CC(=C)C)CC(=C)C)(C)C', iupac => 'N-(2,2-dimethylpropyl)-2-methyl-N-(2-methylprop-2-en-1-yl)prop-2-en-1-amine', AUTHOR => 1 },
+    { smiles => 'CC(CN(CC(=C)C)CC(=C)C)(C)C', iupac => 'N-(2,2-dimethylpropyl)-2-methyl-N-(2-methylprop-2-en-1-yl)prop-2-en-1-amine' },
     { smiles => 'C1(CCCCC1)NC1=CC=CC=C1', iupac => 'N-cyclohexylaniline' },
     { smiles => 'O1C(=CC=C1)NC=1NC=CC1', iupac => 'N-(furan-2-yl)-1H-pyrrol-2-amine', AUTHOR => 1 },
     { smiles => 'C(CCC)NC1CC1', iupac => 'N-butylcyclopropanamine' },

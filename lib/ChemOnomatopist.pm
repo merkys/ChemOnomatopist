@@ -264,6 +264,10 @@ sub get_sidechain_name
                 $name .= 'an' unless $name =~ /-(di|tri)?en$/; # FIXME: Dirty
                 $name->append_substituent_locant( $branch_point + 1 );
             }
+        } elsif( $chain->is_hydrocarbon &&
+                 $chain->number_of_multiple_bonds &&
+                 $chain->needs_multiple_bond_locants ) {
+            $name->append_substituent_locant( 1 );
         }
 
         $name .= 'yl' unless $name =~ /[oy]$/;

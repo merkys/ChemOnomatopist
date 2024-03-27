@@ -27,7 +27,7 @@ my @cases = (
     { smiles => 'NC(C(CC=1C=CC(=C(C1)CCC(=O)NC)C)C)=O', iupac => '3-[5-(3-amino-2-methyl-3-oxopropyl)-2-methylphenyl]-N-methylpropanamide', AUTHOR => 1 },
     { smiles => 'BrC(C(CCC(=O)O)C(CC[N+](=O)[O-])Cl)C(C)Br', iupac => '5,6-dibromo-4-(1-chloro-3-nitropropyl)heptanoic acid' },
     { smiles => 'NC(CO)CCC(C(CCCO)C)CC(CCO)Cl', iupac => '2-amino-5-(2-chloro-4-hydroxybutyl)-6-methylnonane-1,9-diol' },
-    { smiles => 'CC(C(CC=C)C=C(C)C)=CC', iupac => '5-methyl-4-(2-methylprop-1-en-1-yl)hepta-1,5-diene', AUTHOR => 1 },
+    { smiles => 'CC(C(CC=C)C=C(C)C)=CC', iupac => '5-methyl-4-(2-methylprop-1-en-1-yl)hepta-1,5-diene' },
     { smiles => 'BrC(C(C(CC(=O)O)C(CC[N+](=O)[O-])[PH4])[PH4])C', iupac => '5-bromo-3-[3-nitro-1-(λ5-phosphanyl)propyl]-4-(λ5-phosphanyl)hexanoic acid', AUTHOR => 1 },
     { smiles => 'C(=O)(O)C1=CC(=C(OC2=CC(=C(C(=O)O)C=C2)[PH4])C=C1)P', iupac => '4-(4-carboxy-2-phosphanylphenoxy)-2-(λ5-phosphanyl)benzoic acid', AUTHOR => 1 },
     { smiles => 'C(=O)(O)C1=CC(=C(OC2=CC(=C(C(=O)O)C=C2)[SH5])C=C1)[SH3]', iupac => '4-[4-carboxy-2-(λ4-sulfanyl)phenoxy]-2-(λ6-sulfanyl)benzoic acid', AUTHOR => 1 },
