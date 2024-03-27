@@ -18,7 +18,7 @@ my @cases = (
     { smiles => 'BrC(C(C(C(=O)O)C(=C)C(CC)CBr)=C)(CC)C', iupac => '4-bromo-2-[3-(bromomethyl)pent-1-en-2-yl]-4-methyl-3-methylidenehexanoic acid', AUTHOR => 1 },
     { smiles => '[SiH2]([SiH3])SS[SiH2][Si](C)(C)C', iupac => '2-(disilanyldisulfanyl)-1,1,1-trimethyldisilane', AUTHOR => 1 },
     { smiles => 'C(=O)(O)C1=C(C=C(OC2=C(C(=C(C(=O)O)C=C2)P)[SH5])C=C1)[SH5]', iupac => '4-[4-carboxy-3-(λ6-sulfanyl)phenoxy]-2-phosphanyl-3-(λ6-sulfanyl)benzoic acid', AUTHOR => 1 },
-    { smiles => '[81Br]C(C(C(CC(=O)O)C(CC)[81Br])C)C', iupac => '5-(81Br)bromo-3-[1-(81Br)bromopropyl]-4-methylhexanoic acid', AUTHOR => 1 },
+    { smiles => '[81Br]C(C(C(CC(=O)O)C(CC)[81Br])C)C', iupac => '5-(81Br)bromo-3-[1-(81Br)bromopropyl]-4-methylhexanoic acid' },
 
     # From BBv3 P-45.2.2
     { smiles => 'NC1=C(OC2=C(NC)C=CC=C2)C=CC(=C1)C', iupac => '2-(2-amino-4-methylphenoxy)-N-methylaniline', AUTHOR => 1 },
