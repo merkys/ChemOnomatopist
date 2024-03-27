@@ -258,7 +258,7 @@ sub get_sidechain_name
         pop @$name if $name->[-1] eq 'an';
 
         if( $branches_at_start > 1 ) {
-            my( $branch_point ) = grep { $chain[$_] == $start } 0..$#chain;
+            my $branch_point = first { $chain[$_] == $start } 0..$#chain;
             if( $branch_point || !$chain->is_saturated ) {
                 # According to BBv2 P-29.2 (1)
                 $name .= 'an' unless $name =~ /-(di|tri)?en$/; # FIXME: Dirty
