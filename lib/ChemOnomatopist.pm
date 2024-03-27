@@ -1412,6 +1412,30 @@ sub pick_chain_with_lowest_attachments_alphabetically
     return $chains[$sorted[0]];
 }
 
+# TODO: Here we need to order the attachments by their names and compare the resulting sets of locants
+sub pick_chain_with_lowest_attachments_alphabetically_new
+{
+    my( @chains ) = @_;
+
+    my @chain_locants;
+    for my $chain (@chains) {
+        my @locant_names = $chain->locant_names;
+        my @locants;
+        for (0..$#locant_names) {
+            next unless @{$locant_names[$_]}; # Skip empty positions
+            push @locants, ( $_ ) x @{$locant_names[$_]};
+        }
+        @locant_names = map { @$_ } @locant_names;
+        my @order = sort { cmp_only_aphabetical( $locant_names[$a], $locant_names[$b] ) || $locant_names[$a] cmp $locant_names[$b] }
+                         0..$#locant_names;
+        push @chain_locants, [ map { $locants[$_] } @order ];
+    }
+
+    my @sorted = sort { cmp_arrays( $chain_locants[$a], $chain_locants[$b] ) }
+                      0..$#chain_locants;
+    return $chains[$sorted[0]];
+}
+
 sub most_senior_groups
 {
     my( @vertices ) = @_;
