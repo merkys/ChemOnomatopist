@@ -485,7 +485,7 @@ sub get_mainchain_name
     $name =~ s/ethanamide$/acetamide/;
     $name =~ s/ethan(-1-)?o(ate|ic acid)$/acet$2/; # BBv2 P-65.1.1.1
     $name =~ s/benzen(-1-)?amine$/aniline/;
-    $name =~ s/benzene-1-carbaldehyde$/benzaldehyde/;
+    $name =~ s/(benz)(ene-1-carb)(aldehyde|onitrile)$/$1$3/;
     $name =~ s/benzene-1-carboxylic acid$/benzoic acid/;
 
     return $name;
