@@ -39,6 +39,8 @@ sub locants(@)
     return map { $_ ? $self->{chain}->locants( $_ - 1 ) : 'N' } @_;
 }
 
+sub is_hydrocarbon() { '' }
+
 sub needs_substituent_locants()
 {
     my( $self ) = @_;
