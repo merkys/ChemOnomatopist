@@ -23,7 +23,7 @@ sub AUTOLOAD {
 sub new
 {
     my( $class, $graph, $chain, $amine ) = @_;
-    return bless { graph => $graph, chain => $chain, amine => $amine };
+    return bless { graph => $graph, chain => $chain, amine => $amine }, $class;
 }
 
 sub vertices()
@@ -41,11 +41,7 @@ sub locants(@)
 
 sub is_hydrocarbon() { '' }
 
-sub needs_substituent_locants()
-{
-    my( $self ) = @_;
-    return $self->{chain}->length > 0;
-}
+sub needs_substituent_locants() { $_[0]->{chain}->length > 0 }
 
 sub prefix()
 {
