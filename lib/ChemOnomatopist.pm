@@ -1426,7 +1426,8 @@ sub pick_chain_with_lowest_attachments_alphabetically_new
             push @locants, ( $_ ) x @{$locant_names[$_]};
         }
         @locant_names = map { @$_ } @locant_names;
-        my @order = sort { cmp_only_aphabetical( $locant_names[$a], $locant_names[$b] ) || $locant_names[$a] cmp $locant_names[$b] }
+        my @order = sort { cmp_only_aphabetical( $locant_names[$a], $locant_names[$b] ) ||
+                           $locant_names[$a] cmp $locant_names[$b] }
                          0..$#locant_names;
         push @chain_locants, [ map { $locants[$_] } @order ];
     }
