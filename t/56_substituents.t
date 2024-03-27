@@ -35,6 +35,22 @@ my @cases = (
     { smiles => 'N(C1C=C(C=C(C1)C)SC1=C(C(CC=C1)N([2H])[2H])C)([2H])[2H]', iupac => '3-{[3-(2H2)amino-5-methylcyclohexa-1,5-dien-1-yl]sulfanyl}-2-methylcyclohexa-2,4-dien-1-(2H2)amine', AUTHOR => 1 },
     { smiles => '[81Br]C(C(CC(=O)O)CC(C)[81Br])CC', iupac => '4-(81Br)bromo-3-[2-(81Br)bromopropyl]hexanoic acid', AUTHOR => 1 },
     { smiles => 'ClC(C(C)O)C(C(C(CC(C)O)C)CCC(C)O)C', iupac => '3-chloro-5-(3-hydroxybutyl)-4,6-dimethylnonane-2,8-diol' },
+
+    # From BBv3 P-45.2.3
+    { smiles => 'ClC=1C=NC2=CC(=CC=C2C1[N+](=O)[O-])SC1=CC=C2C(=C(C=NC2=C1)[N+](=O)[O-])Cl', iupac => '3-chloro-7-[(4-chloro-3-nitroquinolin-7-yl)sulfanyl]-4-nitroquinoline' },
+    { smiles => 'BrC1=C(NC2=C(C=C(C=C2)Br)Cl)C=CC(=C1)Cl', iupac => '2-bromo-N-(4-bromo-2-chlorophenyl)-4-chloroaniline' },
+    { smiles => 'C(C)C1=C(C=CC2=CC=C(C=C12)OC1=CC2=C(C(=CC=C2C=C1)CC)CCC)CCC', iupac => '1-ethyl-7-[(7-ethyl-8-propylnaphthalen-2-yl)oxy]-2-propylnaphthalene', AUTHOR => 1 },
+    { smiles => 'BrC(C(CCC(=O)O)C(C(C)Br)F)C(C)F', iupac => '5-bromo-4-(2-bromo-1-fluoropropyl)-6-fluoroheptanoic acid' },
+    { smiles => 'BrC(C(C(=O)O)C(CBr)O)CO', iupac => '3-bromo-2-(2-bromo-1-hydroxyethyl)-4-hydroxybutanoic acid', AUTHOR => 1 },
+    { smiles => 'BrCCC(CO)CCCl', iupac => '2-(2-bromoethyl)-4-chlorobutan-1-ol' },
+    { smiles => 'BrC(CCCC(CCl)CBr)Cl', iupac => '1-bromo-5-(bromomethyl)-1,6-dichlorohexane' },
+    { smiles => 'C(C)C(C(CC=CC=C)C(C)C(C=C)CC)C(C=C)C', iupac => '7-ethyl-6-(3-ethylpent-4-en-2-yl)-8-methyldeca-1,3,9-triene' },
+    { smiles => 'CNC(CCC1=CC(=C(C=C1)C)CCC(NCCC)=O)=O', iupac => 'N-methyl-3-{4-methyl-3-[3-oxo-3-(propylamino)propyl]phenyl}propanamide', AUTHOR => 1 },
+    { smiles => 'BrC(C([PH4])C(CC(=O)O)C(C(C)Cl)[PH4])C', iupac => '3-[2-bromo-1-(λ5-phosphanyl)propyl]-5-chloro-4-(λ5-phosphanyl)hexanoic acid', AUTHOR => 1 },
+    { smiles => '[81Br]C(C(CC(=O)O)C(C(C)Br)[81Br])C(C)Cl', iupac => '4-(81Br)bromo-3-[1-(81Br)bromo-2-bromopropyl]-5-chlorohexanoic acid', AUTHOR => 1 },
+    { smiles => 'C(CCC)C(CC(CC)C)C(CC(CC)CC)CCC', iupac => '5-butyl-8-ethyl-3-methyl-6-propyldecane', AUTHOR => 1 },
+    { smiles => 'C(C)C1=CC=C(C2=CC(=CC=C12)[Se]C1=CC2=C(C=CC(=C2C=C1)CCC)CC)CCC', iupac => '1-ethyl-6-[(8-ethyl-5-propylnaphthalen-2-yl)selanyl]-4-propylnaphthalene', AUTHOR => 1 },
+    { smiles => 'BrC(CCC(C(CCl)Br)C(CBr)I)Cl', iupac => '1,5-dibromo-4-(2-bromo-1-iodoethyl)-1,6-dichlorohexane', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
