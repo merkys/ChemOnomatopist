@@ -151,7 +151,11 @@ sub get_sidechain_name
         !is_element( $chain[0], 'C' ) && exists $elements{$chain[0]->{symbol}} ) {
         my $element = $elements{$chain[0]->{symbol}}->{prefix};
         $element =~ s/a$/o/; # TODO: Is this a general rule? BBv2 seems silent.
-        return ChemOnomatopist::Name::Part::Element->new( $element )->to_name;
+        my $name = ChemOnomatopist::Name->new;
+        if( exists $chain[0]->{isotope} ) {
+            $name .= '(' . $chain[0]->{isotope} . $chain[0]->{symbol} . ')';
+        }
+        return $name->append_element( $element );
     }
 
     # Collect heteroatoms

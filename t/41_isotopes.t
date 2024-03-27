@@ -40,7 +40,7 @@ my @cases = (
     { smiles => '[131I]C1=CC=C2C=3C=CC(=CC3CC2=C1)NC(C)=O', iupac => 'N-[7-(131I)iodo-9H-fluoren-2-yl]acetamide', AUTHOR => 1 },
     { smiles => 'C(C)OC([14CH2][14CH2]C(=O)[O-])=O.[Na+]', iupac => 'sodium 4-ethoxy-4-oxo(2,3-14C2)butanoate', AUTHOR => 1 },
     { smiles => 'S1C([14CH2]CC1)C1=CC=NC=C1', iupac => '4-[(3-14C)thiolan-2-yl]pyridine' },
-    { smiles => '[35Cl]C(C[2H])C(CC)C([2H])([2H])[2H]', iupac => '2-(35Cl)chloro-3-(2H3)methyl(1-2H1)pentane', AUTHOR => 1 },
+    { smiles => '[35Cl]C(C[2H])C(CC)C([2H])([2H])[2H]', iupac => '2-(35Cl)chloro-3-(2H3)methyl(1-2H1)pentane' },
 
     # From BBv2 P-82.2.2.1
     { smiles => '[13CH3]C1=NC=CC=C1C', iupac => '2-(13C)methyl-3-methylpyridine' },
