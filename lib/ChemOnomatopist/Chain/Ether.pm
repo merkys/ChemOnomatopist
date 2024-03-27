@@ -53,6 +53,7 @@ sub heteroatom_positions()
 
 sub needs_heteroatom_locants() { 1 }
 sub needs_heteroatom_names() { 1 }
+sub needs_substituent_locants() { '' }
 
 sub prefix()
 {
