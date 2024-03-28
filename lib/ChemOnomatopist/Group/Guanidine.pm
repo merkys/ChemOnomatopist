@@ -1,10 +1,10 @@
 package ChemOnomatopist::Group::Guanidine;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Guanidine group
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
@@ -46,9 +46,9 @@ sub copy() {
     return bless { %$self };
 }
 
-sub needs_heteroatom_locants() { return '' }
-sub needs_heteroatom_names() { return '' }
-sub needs_substituent_locants() { return 1 } # FIXME: There may be identical substituents, what to do then?
+sub needs_heteroatom_locants() { '' }
+sub needs_heteroatom_names() { '' }
+sub needs_substituent_locants() { 1 } # FIXME: There may be identical substituents, what to do then?
 
 sub locants(@) {
     my $self = shift;
@@ -65,6 +65,6 @@ sub prefix {
     }
 }
 
-sub suffix { return 'guanidine' }
+sub suffix { 'guanidine' }
 
 1;
