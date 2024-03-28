@@ -34,15 +34,15 @@ sub prefix()
         return $name;
     }
 
-    my $name = '';
+    my $name = ChemOnomatopist::Name->new;
     for my $element (reverse @elements) { # FIXME: Incomplete
         if( $element eq 'O' ) {
             $name .= 'hydr' unless $name;
-            $name .= 'oxy';
+            $name->append_stem( 'oxy' );
         }
-        $name .= 'sulfanyl' if $element eq 'S';
-        $name .= 'selanyl'  if $element eq 'Se';
-        $name .= 'tellanyl' if $element eq 'Te';
+        $name->append_stem( 'sulfanyl' ) if $element eq 'S';
+        $name->append_stem( 'selanyl'  ) if $element eq 'Se';
+        $name->append_stem( 'tellanyl' ) if $element eq 'Te';
     }
     return $name;
 }

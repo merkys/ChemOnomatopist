@@ -13,6 +13,8 @@ my @cases = (
     { smiles => 'C(O)OO', iupac => 'hydroperoxymethanol' },
     { smiles => 'OOCC(=O)C', iupac => '1-hydroperoxypropan-2-one' }, # Unchecked
 
+    { smiles => 'CC(CS)(C)OS', iupac => '2-methyl-2-(sulfanyloxy)propane-1-thiol' }, # From BBv3 P-63.7
+
     # From BBv2 P-65.1.2.4
     { smiles => 'CC(=O)CCCC(=O)O', iupac => '5-oxohexanoic acid' },
     { smiles => 'C(=O)(O)C(O)C(C(=O)O)C(=O)C(=O)O', iupac => '1-hydroxy-3-oxopropane-1,2,3-tricarboxylic acid' },
