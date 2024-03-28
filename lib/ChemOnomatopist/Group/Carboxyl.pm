@@ -41,6 +41,7 @@ sub suffix()
     my $hydroxy = $self->{hydroxy};
     my $ketone = $self->{ketone};
     if( $ketone->element eq 'O' ) {
+        # FIXME: Element of hydroxy group is not checked here
         return ChemOnomatopist::Name->new( 'oic acid' ) if blessed $hydroxy;
         return ChemOnomatopist::Name->new( 'oate' );
     }
@@ -61,6 +62,7 @@ sub multisuffix()
     my $hydroxy = $self->{hydroxy};
     my $ketone = $self->{ketone};
     if( $ketone->element eq 'O' ) {
+        # FIXME: Element of hydroxy group is not checked here
         return ChemOnomatopist::Name->new( 'carboxylic acid' ) if blessed $hydroxy;
         return ChemOnomatopist::Name->new( 'carboxylate' );
     }
