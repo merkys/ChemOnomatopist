@@ -84,7 +84,8 @@ sub prefix()
     } else {
         my $chain = ChemOnomatopist::Chain->new( $self->graph, @vertices );
         my $name = $chain->prefix;
-        $name =~ s/ane$//;
+        $name->pop_e;
+        pop @$name if $name->ends_with_alkane_an_suffix;
         return $name . 'oxy';
     }
 }
