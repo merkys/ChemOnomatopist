@@ -254,9 +254,12 @@ sub get_sidechain_name
         }
         $name .= $prefix;
     } else {
-        if( $chain->isa( ChemOnomatopist::Chain::Ether:: ) &&
-            $name->has_substituent_locant && !$name->is_enclosed ) {
-            $name->bracket;
+        if( $chain->isa( ChemOnomatopist::Chain::Ether:: ) ) {
+            if( $name->has_substituent_locant && !$name->is_enclosed ) {
+                $name->bracket;
+            } elsif( @$name ) {
+                $name->[-1] =~ s/yl$//;
+            }
         }
         $chain->parent( $parent ) if $chain->can( 'parent' );
         $name .= $chain->prefix;
