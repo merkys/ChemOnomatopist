@@ -203,7 +203,8 @@ sub get_sidechain_name
                 $attachment->bracket;
             }
         } else {
-            if( !$attachment->is_enclosed &&
+            if( !$chain->isa( ChemOnomatopist::Chain::Ether:: ) &&
+                !$attachment->is_enclosed &&
                 (!$attachment->is_simple || $attachment->starts_with_locant) ) {
                 $attachment->bracket;
             }
@@ -254,7 +255,7 @@ sub get_sidechain_name
         $name .= $prefix;
     } else {
         if( $chain->isa( ChemOnomatopist::Chain::Ether:: ) &&
-            $name->has_locant && !$name->is_enclosed ) {
+            $name->has_substituent_locant && !$name->is_enclosed ) {
             $name->bracket;
         }
         $chain->parent( $parent ) if $chain->can( 'parent' );
