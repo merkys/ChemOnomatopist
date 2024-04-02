@@ -16,7 +16,7 @@ my @cases = (
     { smiles => 'C(C(=O)O)(C(=O)O)C(C(=O)O)(C(=O)O)', iupac => 'ethane-1,1,2,2-tetracarboxylic acid' },
 
     # From BBv2 P-65.1.5.2
-    { smiles => 'C(C)(O)=S', iupac => 'ethanethioic O-acid', AUTHOR => 1 },
+    { smiles => 'C(C)(O)=S', iupac => 'ethanethioic O-acid' },
     { smiles => 'C(S)=O', iupac => 'methanethioic S-acid', AUTHOR => 1 },
     { smiles => 'O=C(CCC(=O)O)S', iupac => '4-oxo-4-sulfanylbutanoic acid', AUTHOR => 1 },
     { smiles => 'OC(C(=O)O)=S', iupac => 'hydroxy(sulfanylidene)acetic acid', AUTHOR => 1 },

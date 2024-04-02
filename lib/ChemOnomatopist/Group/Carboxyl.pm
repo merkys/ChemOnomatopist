@@ -11,6 +11,7 @@ use parent ChemOnomatopist::Group::;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Name;
+use List::Util qw( all uniq );
 use Scalar::Util qw( blessed );
 
 sub new()
@@ -40,20 +41,28 @@ sub suffix()
     my( $self ) = @_;
     my $hydroxy = $self->{hydroxy};
     my $ketone = $self->{ketone};
-    if( $ketone->element eq 'O' ) {
-        # FIXME: Element of hydroxy group is not checked here
+    my @elements = ( ChemOnomatopist::element( $hydroxy ), $ketone->element );
+    if( all { $_ eq 'O' } @elements ) {
         return ChemOnomatopist::Name->new( 'oic acid' ) if blessed $hydroxy;
         return ChemOnomatopist::Name->new( 'oate' );
     }
 
-    my $element_prefix = $elements{$ketone->element}->{prefix};
-    $element_prefix =~ s/a$/o/;
+    my @prefixes = sort map  { s/a$/o/; $_ }
+                        map  { $elements{$_}->{prefix} }
+                        grep { $_ ne 'O' }
+                             @elements;
 
     my $name = ChemOnomatopist::Name->new;
-    $name->append_multiplier( 'di' ) if ChemOnomatopist::element( $hydroxy ) eq $ketone->element;
-    $name .= $element_prefix;
-    $name .= blessed $hydroxy ? 'ic acid' : 'ate';
-    return $name;
+    if( @prefixes == 2 && uniq( @elements ) == 1 ) {
+        $name->append_multiplier( 'di' );
+        shift @prefixes;
+    }
+    for (@prefixes) {
+        $name .= $_;
+    }
+    return $name . 'ate' unless blessed $hydroxy;
+    return $name . 'ic acid' if uniq( @elements ) == 1;
+    return $name . ('ic ' . $elements[0] . '-acid');
 }
 
 sub multisuffix()
