@@ -37,7 +37,7 @@ sub element_suffix(@)
         shift @prefixes;
     }
     for (@prefixes) {
-        $name .= $_;
+        $name->append_stem( $_ );
     }
 
     return $name;
@@ -46,11 +46,15 @@ sub element_suffix(@)
 sub prefix()
 {
     my( $self ) = @_;
+    my $hydroxy = $self->{hydroxy};
     my $ketone = $self->{ketone};
 
-    my $name = ChemOnomatopist::Name->new;
-    $name .= element_suffix( $ketone->element );
-    return $name->append_stem( 'carboxy' );
+    my $name = element_suffix( ChemOnomatopist::element( $hydroxy ), $ketone->element );
+    for (@$name) {
+        $_->{value} =~ s/o$/yl/;
+        $_->{value} =~ s/^selenyl$/selanyl/;
+    }
+    return $name->append_stem( 'carbonyl' );
 }
 
 sub suffix()

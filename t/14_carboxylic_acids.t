@@ -20,7 +20,7 @@ my @cases = (
     { smiles => 'C(S)=O', iupac => 'methanethioic S-acid', AUTHOR => 1 },
     { smiles => 'O=C(CCC(=O)O)S', iupac => '4-oxo-4-sulfanylbutanoic acid', AUTHOR => 1 },
     { smiles => 'OC(C(=O)O)=S', iupac => 'hydroxy(sulfanylidene)acetic acid', AUTHOR => 1 },
-    { smiles => '[SeH]C(=O)C1=CC=C(C(=O)O)C=C1', iupac => '4-(selanylcarbonyl)benzoic acid', AUTHOR => 1 },
+    { smiles => '[SeH]C(=O)C1=CC=C(C(=O)O)C=C1', iupac => '4-(selanylcarbonyl)benzoic acid' },
     { smiles => 'C=1(C(=CC=CC1)C(=S)S)C(=S)S', iupac => 'benzene-1,2-dicarbodithioic acid' },
     { smiles => 'C(C(=S)S)(=S)S', iupac => 'ethanebis(dithioic acid)' },
 
