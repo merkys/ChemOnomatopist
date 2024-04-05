@@ -310,8 +310,7 @@ sub get_mainchain_name
     my $most_senior_group = blessed $groups[0] if @groups;
 
     # The following condition adjusts the seniority order by moving ethers below cycles
-    if( $most_senior_group &&
-        $most_senior_group eq ChemOnomatopist::Group::Ether:: &&
+    if( @groups && (all { $_->isa( ChemOnomatopist::Group::Ether:: ) } @groups) &&
         $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
         @groups = ( $chain );
         $most_senior_group = blessed $chain;
