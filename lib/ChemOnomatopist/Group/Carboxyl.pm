@@ -58,7 +58,7 @@ sub prefix()
     } else {
         $name->append_stem( 'carbono' );
     }
-    $name->[-1] =~ s/(ne|o)$/yl/;
+    $name->[-1]{value} =~ s/(ne|o)$/yl/;
 
     return $name;
 }

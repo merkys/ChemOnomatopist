@@ -25,7 +25,7 @@ my @cases = (
     { smiles => 'O=C(CCC(=O)O)S', iupac => '4-oxo-4-sulfanylbutanoic acid', AUTHOR => 1 },
     { smiles => 'OC(CCC(=O)O)=S', iupac => '4-hydroxy-4-sulfanylidenebutanoic acid', AUTHOR => 1 },
     { smiles => 'O=C(C(=O)O)S', iupac => 'oxo(sulfanyl)acetic acid', AUTHOR => 1 },
-    { smiles => 'OC(=S)C1=CC(=NC=C1)C(=O)O', iupac => '4-(hydroxycarbonothioyl)pyridine-2-carboxylic acid', AUTHOR => 1 },
+    { smiles => 'OC(=S)C1=CC(=NC=C1)C(=O)O', iupac => '4-(hydroxycarbonothioyl)pyridine-2-carboxylic acid' },
     { smiles => 'SC(=O)C1=CC(=NC=C1)C(=O)O', iupac => '4-(sulfanylcarbonyl)pyridine-2-carboxylic acid' },
     { smiles => 'C(CC)(=N)S', iupac => 'propanimidothioic acid', AUTHOR => 1 },
     { smiles => 'C(CCC)(=NN)[SeH]', iupac => 'butanehydrazonoselenoic acid', AUTHOR => 1 },
