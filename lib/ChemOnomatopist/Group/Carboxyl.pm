@@ -70,23 +70,38 @@ sub multisuffix()
     my( $self ) = @_;
     my $hydroxy = $self->{hydroxy};
     my $ketone = $self->{ketone};
-    if( $ketone->element eq 'O' ) {
-        # FIXME: Element of hydroxy group is not checked here
-        return ChemOnomatopist::Name->new( 'carboxylic acid' ) if blessed $hydroxy;
-        return ChemOnomatopist::Name->new( 'carboxylate' );
-    }
-
-    my $element_prefix = $elements{$ketone->element}->{prefix};
-    $element_prefix =~ s/a$/o/;
 
     my $name = ChemOnomatopist::Name->new( 'carbo' );
-    if( $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: ) ) {
+    if( blessed $hydroxy &&
+        $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: ) ) {
         $name .= 'peroxo';
+        my $element_prefix = $elements{$ketone->element}->{prefix};
+        $element_prefix =~ s/a$/o/;
+        $name .= $element_prefix;
+        return $name . 'ic acid';
+    } else {
+        my @elements = ( ChemOnomatopist::element( $hydroxy ), $ketone->element );
+        if( all { $_ eq 'O' } @elements ) {
+            return ChemOnomatopist::Name->new( 'carboxylic acid' ) if blessed $hydroxy;
+            return ChemOnomatopist::Name->new( 'carboxylate' );
+        }
+
+        my @prefixes = sort map  { s/a$/o/; $_ }
+                            map  { $elements{$_}->{prefix} }
+                            grep { $_ ne 'O' }
+                                 @elements;
+
+        if( @prefixes == 2 && uniq( @elements ) == 1 ) {
+            $name->append_multiplier( 'di' );
+            shift @prefixes;
+        }
+        for (@prefixes) {
+            $name .= $_;
+        }
+        return $name . 'ate' unless blessed $hydroxy;
+        return $name . 'ic acid' if uniq( @elements ) == 1;
+        return $name . ('ic ' . $elements[0] . '-acid');
     }
-    $name->append_multiplier( 'di' ) if $hydroxy->element eq $ketone->element;
-    $name .= $element_prefix;
-    $name .= blessed $hydroxy ? 'ic acid' : 'ate';
-    return $name;
 }
 
 sub suffix_if_cycle_substituent() { $_[0]->multisuffix }
