@@ -444,9 +444,9 @@ sub get_mainchain_name
     if( @groups && all { !$_->isa( ChemOnomatopist::Chain:: ) } @groups ) {
         if( $groups[0]->is_carbon ) {
             # Most senior group is carbon, thus it is in the chain as well
+            my $groups = set( @groups );
             my @senior_group_positions =
-                grep { blessed $chain[$_] && $chain[$_]->isa( $most_senior_group ) }
-                     0..$#chain;
+                grep { $groups->has( $chain[$_] ) } 0..$#chain;
             @senior_group_attachments = ( @senior_group_attachments,
                                           @senior_group_positions );
         }
