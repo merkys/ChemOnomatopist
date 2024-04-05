@@ -6,6 +6,8 @@ package ChemOnomatopist::Group::Ketone;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Name;
+
 use parent ChemOnomatopist::Group::;
 
 # From BBv2 P-64.6.1
@@ -17,13 +19,13 @@ sub needs_multiple_bond_suffix { '' }
 sub prefix
 {
     my( $self ) = @_;
-    return $prefixes{$self->element};
+    return ChemOnomatopist::Name->new( $prefixes{$self->element} );
 }
 
 sub suffix
 {
     my( $self ) = @_;
-    return $suffixes{$self->element};
+    return ChemOnomatopist::Name->new( $suffixes{$self->element} );
 }
 
 sub _cmp_instances
