@@ -49,11 +49,7 @@ sub prefix()
     my $ketone = $self->{ketone};
 
     my $name = ChemOnomatopist::Name->new;
-    if( $ketone->element ne 'O' ) {
-        my $element_prefix = $elements{$ketone->element}->{prefix};
-        $element_prefix =~ s/a$/o/;
-        $name->append_element( $element_prefix );
-    }
+    $name .= element_suffix( $ketone->element );
     return $name->append_stem( 'carboxy' );
 }
 
