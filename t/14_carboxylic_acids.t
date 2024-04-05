@@ -15,12 +15,12 @@ my @cases = (
     { smiles => 'OC(=O)CCC(C(=O)O)CCC(=O)O', iupac => 'pentane-1,3,5-tricarboxylic acid' },
     { smiles => 'C(C(=O)O)(C(=O)O)C(C(=O)O)(C(=O)O)', iupac => 'ethane-1,1,2,2-tetracarboxylic acid' },
 
-    # From BBv2 P-65.1.5.1
+    # From BBv3 P-65.1.5.1
     { smiles => 'C(CCCCC)(O)=S', iupac => 'hexanethioic O-acid' },
     { smiles => 'C(CCCCC)(=[Se])S', iupac => 'hexaneselenothioic S-acid' },
     { smiles => 'C(CCCCC(=S)S)(=S)S', iupac => 'hexanebis(dithioic acid)', AUTHOR => 1 },
     { smiles => 'N1(CCCCC1)C(=S)S', iupac => 'piperidine-1-carbodithioic acid' },
-    # { smiles => '', iupac => 'cyclohexanecarboselenothioic Se-acid' }, # FIXME
+    { smiles => 'C1CCCCC1C(=S)[SeH]', iupac => 'cyclohexanecarboselenothioic Se-acid' },
     { smiles => 'C(C)(=S)C1=CC=C(C(=O)O)C=C1', iupac => '4-(ethanethioyl)benzoic acid', AUTHOR => 1 },
     { smiles => 'O=C(CCC(=O)O)S', iupac => '4-oxo-4-sulfanylbutanoic acid', AUTHOR => 1 },
     { smiles => 'OC(CCC(=O)O)=S', iupac => '4-hydroxy-4-sulfanylidenebutanoic acid', AUTHOR => 1 },
