@@ -41,7 +41,7 @@ sub suffix
         $suffix = '(' . $self->{atom}{h_isotope}[0] . 'H)';
     }
 
-    return $suffix . $suffixes{$self->element};
+    return ChemOnomatopist::Name->new( $suffix . $suffixes{$self->element} );
 }
 
 sub _cmp_instances
