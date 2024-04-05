@@ -52,7 +52,8 @@ sub prefix()
     my $name = ChemOnomatopist::Name->new;
     if( ChemOnomatopist::element( $hydroxy ) ne 'O' ||
         $ketone->element ne 'O' ) {
-        $name->append_stem( $hydroxy->prefix );
+        $name .= $hydroxy->prefix;
+        $name->bracket unless $name->is_simple;
         $name->append_stem( 'carbono' );
         $name .= $ketone->suffix if $ketone->element ne 'O';
     } else {

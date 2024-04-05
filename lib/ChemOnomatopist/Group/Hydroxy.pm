@@ -6,6 +6,8 @@ package ChemOnomatopist::Group::Hydroxy;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Name;
+
 use parent ChemOnomatopist::Group::;
 
 sub new
@@ -23,7 +25,7 @@ my %suffixes = ( O => 'ol', S => 'thiol', Se => 'selenol', Te => 'tellurol' );
 sub prefix
 {
     my( $self ) = @_;
-    return $prefixes{$self->element};
+    return ChemOnomatopist::Name->new( $prefixes{$self->element} );
 }
 
 sub suffix
