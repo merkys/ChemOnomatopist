@@ -307,13 +307,11 @@ sub get_mainchain_name
     my @vertices = $graph->vertices;
     my @chain = $chain->vertices;
     my @groups = most_senior_groups( $graph );
-    my $most_senior_group = blessed $groups[0] if @groups;
 
     # The following condition adjusts the seniority order by moving ethers below cycles
     if( @groups && (all { $_->isa( ChemOnomatopist::Group::Ether:: ) } @groups) &&
         $chain->isa( ChemOnomatopist::Chain::Circular:: ) ) {
         @groups = ( $chain );
-        $most_senior_group = blessed $chain;
     }
 
     # Collect heteroatoms and nonstandard bonding numbers from the chain
