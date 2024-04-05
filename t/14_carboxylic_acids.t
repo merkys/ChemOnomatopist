@@ -46,6 +46,11 @@ my @cases = (
     { smiles => 'CC(=O)OS', iupac => 'ethane(thioperoxoic) OS-acid', AUTHOR => 1 },
     { smiles => 'c1ccccc1C(=O)SO', iupac => 'benzenecarbo(thioperoxoic) SO-acid' },
     { smiles => 'C1=C(C=CC2=CC=CC=C12)C(OO)=S', iupac => 'naphthalene-2-carboperoxothioic acid' },
+    { smiles => 'S=C(CCC(=O)O)OS', iupac => '4-sulfanylidene-4-(sulfanyloxy)butanoic acid', AUTHOR => 1 },
+    { smiles => 'C(=S)(OS)CCC(=O)O', iupac => '3-(dithiocarbonoperoxoyl)propanoic acid', AUTHOR => 1 },
+    { smiles => 'C(=S)(OS)C(=O)O', iupac => '(dithiocarbonoperoxoyl)formic acid', AUTHOR => 1 },
+    { smiles => 'OSC(C(=O)O)=O', iupac => '(hydroxysulfanyl)oxoacetic acid', AUTHOR => 1 },
+    { smiles => 'OSC(=O)C1CCC(CC1)C(=O)O', iupac => '4-[(hydroxysulfanyl)carbonyl]cyclohexanecarboxylic acid', AUTHOR => 1 },
 
     { smiles => 'C(=O)O', iupac => 'formic acid', AUTHOR => 1 },
 
