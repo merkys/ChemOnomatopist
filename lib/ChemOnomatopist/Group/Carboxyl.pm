@@ -78,16 +78,24 @@ sub multisuffix()
     my $name = ChemOnomatopist::Name->new( 'carbo' );
     if( blessed $hydroxy &&
         $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: ) ) {
-        $name .= 'peroxo';
-        my @elements = map { ChemOnomatopist::element( $_ ) }
-                           @{$hydroxy->{atoms}};
-        my $element_prefix = $elements{$ketone->element}->{prefix};
-        $element_prefix =~ s/a$/o/;
-        $name .= $element_prefix unless $ketone->element eq 'O';
+
+        my @hydroxy_elements = map { ChemOnomatopist::element( $_ ) }
+                                   @{$hydroxy->{atoms}};
+        my $hydroxy_part = element_suffix( @hydroxy_elements );
+        my $ketone_part  = element_suffix( $ketone->element );
+
+        $hydroxy_part .= $ketone->element eq 'O' ? 'peroxoic' : 'peroxo';
+        if( any { $_ ne 'O' } @hydroxy_elements ) {
+            $hydroxy_part->bracket;
+        }
+        $ketone_part .= 'ic' if $ketone->element ne 'O';
+
+        $name .= $hydroxy_part;
+        $name .= $ketone_part;
 
         local $" = '';
-        return $name . "ic @elements-acid" if any { $_ ne 'O' } @elements;
-        return $name . 'ic acid';
+        return $name . " @hydroxy_elements-acid" if any { $_ ne 'O' } @hydroxy_elements;
+        return $name . ' acid';
     } else {
         my @elements = ( ChemOnomatopist::element( $hydroxy ), $ketone->element );
         if( all { $_ eq 'O' } @elements ) {

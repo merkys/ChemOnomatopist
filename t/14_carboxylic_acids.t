@@ -26,7 +26,7 @@ my @cases = (
 
     # From BBv3 P-65.1.5.3
     { smiles => 'CC(=O)OS', iupac => 'ethane(thioperoxoic) OS-acid', AUTHOR => 1 },
-    { smiles => 'c1ccccc1C(=O)SO', iupac => 'benzenecarbo(thioperoxoic) SO-acid', AUTHOR => 1 },
+    { smiles => 'c1ccccc1C(=O)SO', iupac => 'benzenecarbo(thioperoxoic) SO-acid' },
     { smiles => 'C1=C(C=CC2=CC=CC=C12)C(OO)=S', iupac => 'naphthalene-2-carboperoxothioic acid' },
 
     { smiles => 'C(=O)O', iupac => 'formic acid', AUTHOR => 1 },
