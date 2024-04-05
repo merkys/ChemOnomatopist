@@ -11,7 +11,7 @@ use parent ChemOnomatopist::Group::;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Name;
-use List::Util qw( all uniq );
+use List::Util qw( all any uniq );
 use Scalar::Util qw( blessed );
 
 sub new()
@@ -75,9 +75,14 @@ sub multisuffix()
     if( blessed $hydroxy &&
         $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: ) ) {
         $name .= 'peroxo';
+        my @elements = map { ChemOnomatopist::element( $_ ) }
+                           @{$hydroxy->{atoms}};
         my $element_prefix = $elements{$ketone->element}->{prefix};
         $element_prefix =~ s/a$/o/;
-        $name .= $element_prefix;
+        $name .= $element_prefix unless $ketone->element eq 'O';
+
+        local $" = '';
+        return $name . "ic @elements-acid" if any { $_ ne 'O' } @elements;
         return $name . 'ic acid';
     } else {
         my @elements = ( ChemOnomatopist::element( $hydroxy ), $ketone->element );
