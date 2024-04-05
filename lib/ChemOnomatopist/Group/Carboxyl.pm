@@ -49,13 +49,18 @@ sub prefix()
     my $hydroxy = $self->{hydroxy};
     my $ketone = $self->{ketone};
 
-    my $name = element_suffix( ChemOnomatopist::element( $hydroxy ), $ketone->element );
-    for (@$name) {
-        $_->{value} =~ s/o$/yl/;
-        $_->{value} =~ s/^selenyl$/selanyl/;
-        $_->{value} =~ s/^thiyl$/sulfanyl/;
+    my $name = ChemOnomatopist::Name->new;
+    if( ChemOnomatopist::element( $hydroxy ) ne 'O' ||
+        $ketone->element ne 'O' ) {
+        $name->append_stem( $hydroxy->prefix );
+        $name->append_stem( 'carbono' );
+        $name .= $ketone->suffix if $ketone->element ne 'O';
+    } else {
+        $name->append_stem( 'carbono' );
     }
-    return $name->append_stem( 'carbonyl' );
+    $name->[-1] =~ s/(ne|o)$/yl/;
+
+    return $name;
 }
 
 sub suffix()
