@@ -440,13 +440,10 @@ sub get_mainchain_name
     $name .= $chain->suffix;
 
     if( @groups && all { !$_->isa( ChemOnomatopist::Chain:: ) } @groups ) {
-        if( $groups[0]->is_carbon ) {
-            # Most senior group is carbon, thus it is in the chain as well
-            my $groups = set( @groups );
-            my @senior_group_positions =
-                grep { $groups->has( $chain[$_] ) } 0..$#chain;
-            @senior_group_attachments = ( @senior_group_attachments,
-                                          @senior_group_positions );
+        # If the most senior group is carbon, thus it is in the chain as well
+        my $groups = set( grep { $_->is_carbon } @groups );
+        for (0..$#chain) {
+            push @senior_group_attachments, $_ if $groups->has( $chain[$_] );
         }
 
         # Terminal locants are not cited for 1 or 2 senior group attachments according to BBv2 P-14.3.4.1
