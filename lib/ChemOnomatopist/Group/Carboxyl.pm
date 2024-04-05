@@ -53,6 +53,7 @@ sub prefix()
     for (@$name) {
         $_->{value} =~ s/o$/yl/;
         $_->{value} =~ s/^selenyl$/selanyl/;
+        $_->{value} =~ s/^thiyl$/sulfanyl/;
     }
     return $name->append_stem( 'carbonyl' );
 }

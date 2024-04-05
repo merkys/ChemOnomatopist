@@ -18,7 +18,7 @@ my @cases = (
     # From BBv3 P-65.1.5.1
     { smiles => 'C(CCCCC)(O)=S', iupac => 'hexanethioic O-acid' },
     { smiles => 'C(CCCCC)(=[Se])S', iupac => 'hexaneselenothioic S-acid' },
-    { smiles => 'C(CCCCC(=S)S)(=S)S', iupac => 'hexanebis(dithioic acid)', AUTHOR => 1 },
+    { smiles => 'C(CCCCC(=S)S)(=S)S', iupac => 'hexanebis(dithioic acid)' },
     { smiles => 'N1(CCCCC1)C(=S)S', iupac => 'piperidine-1-carbodithioic acid' },
     { smiles => 'C1CCCCC1C(=S)[SeH]', iupac => 'cyclohexanecarboselenothioic Se-acid' },
     { smiles => 'C(C)(=S)C1=CC=C(C(=O)O)C=C1', iupac => '4-(ethanethioyl)benzoic acid', AUTHOR => 1 },
@@ -26,7 +26,7 @@ my @cases = (
     { smiles => 'OC(CCC(=O)O)=S', iupac => '4-hydroxy-4-sulfanylidenebutanoic acid', AUTHOR => 1 },
     { smiles => 'O=C(C(=O)O)S', iupac => 'oxo(sulfanyl)acetic acid', AUTHOR => 1 },
     { smiles => 'OC(=S)C1=CC(=NC=C1)C(=O)O', iupac => '4-(hydroxycarbonothioyl)pyridine-2-carboxylic acid', AUTHOR => 1 },
-    { smiles => 'SC(=O)C1=CC(=NC=C1)C(=O)O', iupac => '4-(sulfanylcarbonyl)pyridine-2-carboxylic acid', AUTHOR => 1 },
+    { smiles => 'SC(=O)C1=CC(=NC=C1)C(=O)O', iupac => '4-(sulfanylcarbonyl)pyridine-2-carboxylic acid' },
     { smiles => 'C(CC)(=N)S', iupac => 'propanimidothioic acid', AUTHOR => 1 },
     { smiles => 'C(CCC)(=NN)[SeH]', iupac => 'butanehydrazonoselenoic acid', AUTHOR => 1 },
     { smiles => 'SN=C(O)C1CCCC1', iupac => 'N-sulfanylcyclopentanecarboximidic acid', AUTHOR => 1 },
