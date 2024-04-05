@@ -22,6 +22,27 @@ sub new()
 
 sub element() { 'C' }
 
+sub element_suffix(@)
+{
+    my @elements = @_;
+
+    my @prefixes = sort map  { s/a$/o/; $_ }
+                        map  { $elements{$_}->{prefix} }
+                        grep { $_ ne 'O' }
+                             @elements;
+
+    my $name = ChemOnomatopist::Name->new;
+    if( @prefixes == 2 && uniq( @elements ) == 1 ) {
+        $name->append_multiplier( 'di' );
+        shift @prefixes;
+    }
+    for (@prefixes) {
+        $name .= $_;
+    }
+
+    return $name;
+}
+
 sub prefix()
 {
     my( $self ) = @_;
@@ -47,22 +68,9 @@ sub suffix()
         return ChemOnomatopist::Name->new( 'oate' );
     }
 
-    my @prefixes = sort map  { s/a$/o/; $_ }
-                        map  { $elements{$_}->{prefix} }
-                        grep { $_ ne 'O' }
-                             @elements;
-
-    my $name = ChemOnomatopist::Name->new;
-    if( @prefixes == 2 && uniq( @elements ) == 1 ) {
-        $name->append_multiplier( 'di' );
-        shift @prefixes;
-    }
-    for (@prefixes) {
-        $name .= $_;
-    }
-    return $name . 'ate' unless blessed $hydroxy;
-    return $name . 'ic acid' if uniq( @elements ) == 1;
-    return $name . ('ic ' . $elements[0] . '-acid');
+    return element_suffix( @elements ) . 'ate' unless blessed $hydroxy;
+    return element_suffix( @elements ) . 'ic acid' if uniq( @elements ) == 1;
+    return element_suffix( @elements ) . ('ic ' . $elements[0] . '-acid');
 }
 
 sub multisuffix()
@@ -91,18 +99,7 @@ sub multisuffix()
             return ChemOnomatopist::Name->new( 'carboxylate' );
         }
 
-        my @prefixes = sort map  { s/a$/o/; $_ }
-                            map  { $elements{$_}->{prefix} }
-                            grep { $_ ne 'O' }
-                                 @elements;
-
-        if( @prefixes == 2 && uniq( @elements ) == 1 ) {
-            $name->append_multiplier( 'di' );
-            shift @prefixes;
-        }
-        for (@prefixes) {
-            $name .= $_;
-        }
+        $name .= element_suffix( @elements );
         return $name . 'ate' unless blessed $hydroxy;
         return $name . 'ic acid' if uniq( @elements ) == 1;
         return $name . ('ic ' . $elements[0] . '-acid');
