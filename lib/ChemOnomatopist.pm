@@ -258,7 +258,8 @@ sub get_sidechain_name
             if( $name->has_substituent_locant && !$name->is_enclosed ) {
                 $name->bracket;
             } elsif( @$name ) {
-                $name->[-1] =~ s/yl$//;
+                pop @$name if $name->[-1] eq 'yl';
+                $name->[-1]{value} =~ s/yl$//;
             }
         }
         $chain->parent( $parent ) if $chain->can( 'parent' );
@@ -345,6 +346,7 @@ sub get_mainchain_name
             }
         }
     }
+
 
     # Collecting names of all the attachments
     my @order = sort { cmp_only_aphabetical( $a, $b ) || $a cmp $b } keys %attachments;

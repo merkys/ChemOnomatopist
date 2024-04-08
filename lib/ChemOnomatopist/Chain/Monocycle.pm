@@ -184,7 +184,7 @@ sub prefix()
             # Rule derived from examples in BBv2 P-63.6
             return $name;
         }
-        return 'phenyl';
+        return ChemOnomatopist::Name->new( 'phenyl' );
     }
 
     $name = ChemOnomatopist::Name->new( $name ) unless blessed $name;

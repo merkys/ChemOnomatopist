@@ -10,7 +10,7 @@ my @cases = (
     # From BBv3 P-45.2.1
     { smiles => 'COC1=CC=C(NC2=CC=CC=C2)C=C1', iupac => '4-methoxy-N-phenylaniline' },
     { smiles => 'ClC1=CC(=C(C#N)C=C1)CC1=CC(=CC=C1)C#N', iupac => '4-chloro-2-[(3-cyanophenyl)methyl]benzonitrile' },
-    { smiles => 'CC1=CC=C(C=C1)COC1=CC=CC=C1', iupac => '1-methyl-4-(phenoxymethyl)benzene', AUTHOR => 1 },
+    { smiles => 'CC1=CC=C(C=C1)COC1=CC=CC=C1', iupac => '1-methyl-4-(phenoxymethyl)benzene' },
     { smiles => 'CN(C(C(CC1=CC(=C(C=C1)C)CC(C(=O)NC)C)C)=O)C', iupac => 'N,N,2-trimethyl-3-{4-methyl-3-[2-methyl-3-(methylamino)-3-oxopropyl]phenyl}propanamide', AUTHOR => 1 },
     { smiles => 'CS1(CC(CCC1)CSC1C[SH2]CCC1)C', iupac => '1,1-dimethyl-3-{[(1λ4-thian-3-yl)sulfanyl]methyl}-1λ4-thiane', AUTHOR => 1 },
     { smiles => 'C(C)C(C(C)C)CCC', iupac => '3-ethyl-2-methylhexane' },
