@@ -76,4 +76,12 @@ sub suffix()
     return $name;
 }
 
+# CHECKME: Not sure if this is right, but at least some tests pass now.
+sub _cmp_instances
+{
+    my( $A, $B ) = @_;
+    return scalar( grep { ChemOnomatopist::element( $_ ) eq 'O' } @{$B->{atoms}}) <=>
+           scalar( grep { ChemOnomatopist::element( $_ ) eq 'O' } @{$A->{atoms}});
+}
+
 1;
