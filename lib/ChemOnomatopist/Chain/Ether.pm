@@ -71,15 +71,15 @@ sub prefix()
                                                     $self->parent,
                                                     @vertices[$cut_position+1..$#vertices] ) );
         my @prefixes = map { $_->prefix } @chains;
-        if( $prefixes[0] =~ /ane$/ ) {
-            pop @{$prefixes[0]};
-            pop @{$prefixes[0]};
+        if( $prefixes[1] =~ /ane$/ ) {
+            pop @{$prefixes[1]};
+            pop @{$prefixes[1]};
         }
         my $name = ChemOnomatopist::Name->new;
-        $name->append_locants( $cut_position ) if $chains[1]->needs_substituent_locants;
-        $name->append( $prefixes[0] );
-        $name->append( 'oxy' );
+        $name->append_locants( $cut_position ) if $chains[0]->needs_substituent_locants;
         $name->append( $prefixes[1] );
+        $name->append( 'oxy' );
+        $name->append( $prefixes[0] );
         return $name;
     } else {
         my $chain = ChemOnomatopist::Chain->new( $self->graph, @vertices );
