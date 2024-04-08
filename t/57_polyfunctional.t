@@ -14,7 +14,7 @@ my @cases = (
     { smiles => '[SeH]OCCOO', iupac => '2-(selanyloxy)ethane-1-peroxol', AUTHOR => 1 },
     { smiles => 'NCC(C)(OO)C', iupac => '1-amino-2-methylpropane-2-peroxol' },
     { smiles => 'CS(=O)(=O)CCO', iupac => '2-(methanesulfonyl)ethan-1-ol', AUTHOR => 1 },
-    { smiles => 'O(O)C1C(CCCC1)(O)OOC1C(CCCC1)=O', iupac => '2-[(2-hydroperoxy-1-hydroxycyclohexyl)peroxy]cyclohexan-1-one', AUTHOR => 1 },
+    { smiles => 'O(O)C1C(CCCC1)(O)OOC1C(CCCC1)=O', iupac => '2-[(2-hydroperoxy-1-hydroxycyclohexyl)peroxy]cyclohexan-1-one' },
     { smiles => 'NCCO', iupac => '2-aminoethan-1-ol' },
     { smiles => 'C(C)OOCCOC', iupac => '1-(ethylperoxy)-2-methoxyethane', AUTHOR => 1 },
     { smiles => 'COCCCSC', iupac => '1-methoxy-3-(methylsulfanyl)propane', AUTHOR => 1 },

@@ -29,6 +29,7 @@ use ChemOnomatopist::Group::Isocyanide;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
+use ChemOnomatopist::Group::Peroxide;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::SulfonicAcid;
@@ -241,6 +242,10 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfinyl->new( ChemOnomatopist::element( $_[1] ) ), @_[1..2] ) } ],
     [ sub { &is_nongroup_atom && &is_S_Se_Te }, ( \&is_ketone ) x 2, ( \&anything ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfonyl->new( ChemOnomatopist::element( $_[1] ) ), @_[1..3] ) } ],
+
+    # Peroxide
+    [ sub { &is_nongroup_atom && &is_O }, sub { &is_nongroup_atom && &is_O }, sub { &is_C }, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Peroxide->new( @_[1..2] ), @_[1..2] ) } ],
 
     # Hydroperoxide
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, \&is_hydroxy, \&is_C,
