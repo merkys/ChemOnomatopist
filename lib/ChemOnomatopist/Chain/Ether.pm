@@ -76,7 +76,7 @@ sub prefix()
             pop @{$prefixes[0]};
         }
         my $name = ChemOnomatopist::Name->new;
-        $name->append_locants( $cut_position );
+        $name->append_locants( $cut_position ) if $chains[1]->needs_substituent_locants;
         $name->append( $prefixes[0] );
         $name->append( 'oxy' );
         $name->append( $prefixes[1] );
