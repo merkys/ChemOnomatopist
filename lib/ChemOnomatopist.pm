@@ -169,29 +169,28 @@ sub get_sidechain_name
     # connecting them to the main chain, at the same time giving them
     # names according to their lengths via calls to get_sidechain_name()
     my %attachments;
-    my %attachment_objects;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
         for my $neighbour ($graph->neighbours( $atom )) {
             next if any { $neighbour == $_ } @chain; # Skip atoms from this chain
             next if $parent && $neighbour == $parent;
-            my $attachment_name = get_sidechain_name( $graph, $atom, $neighbour );
-            push @{$attachments{$attachment_name}}, $i;
-            $attachment_objects{$attachment_name} = $attachment_name;
+            my $attachment = get_sidechain_name( $graph, $atom, $neighbour );
+            $attachments{$attachment} = [ $attachment ] unless $attachments{$attachment};
+            push @{$attachments{$attachment}}, $i;
         }
     }
 
     # Collecting names of all the attachments
     my $name = ChemOnomatopist::Name->new;
     for my $attachment_name (sort { $a cmp $b } keys %attachments) {
-        my $attachment = $attachment_objects{$attachment_name};
+        my( $attachment, @positions ) = @{$attachments{$attachment_name}};
 
         if( $chain->needs_substituent_locants ) {
-            $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
+            $name->append_locants( $chain->locants( @positions ) );
         }
 
-        if( @{$attachments{$attachment_name}} > 1 ) {
-            my $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
+        if( @positions > 1 ) {
+            my $number = IUPAC_numerical_multiplier( scalar @positions );
             $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
             $name->append_multiplier( $number );
 
@@ -330,7 +329,6 @@ sub get_mainchain_name
 
     # Collect the substituents
     my %attachments;
-    my %attachment_objects;
     my @senior_group_attachments;
     for my $i (0..$#chain) {
         my $atom = $chain[$i];
@@ -340,9 +338,9 @@ sub get_mainchain_name
             if( grep { $_ == $neighbour } @groups ) {
                 push @senior_group_attachments, $i;
             } else {
-                my $attachment_name = get_sidechain_name( $graph, $atom, $group ? $group : $neighbour );
-                push @{$attachments{$attachment_name}}, $i;
-                $attachment_objects{$attachment_name} = $attachment_name;
+                my $attachment = get_sidechain_name( $graph, $atom, $group ? $group : $neighbour );
+                $attachments{$attachment} = [ $attachment ] unless $attachments{$attachment};
+                push @{$attachments{$attachment}}, $i;
             }
         }
     }
@@ -353,22 +351,22 @@ sub get_mainchain_name
     my $name = ChemOnomatopist::Name->new;
     for my $i (0..$#order) {
         my $attachment_name = $order[$i];
-        my $attachment = $attachment_objects{$attachment_name};
+        my( $attachment, @positions ) = @{$attachments{$attachment_name}};
 
         if( $chain->needs_substituent_locants ) {
-            $name->append_locants( $chain->locants( @{$attachments{$attachment_name}} ) );
+            $name->append_locants( $chain->locants( @positions ) );
         }
 
-        if( @{$attachments{$attachment_name}} > 1 ) {
+        if( @positions > 1 ) {
             my $number;
             if( $attachment =~ /^bi/ ||
                 ( $attachment->is_simple &&
                   !$attachment->starts_with_multiplier &&
                   $attachment !~ /^sulfanyl/ ) ) { # BBv3 P-16.3.6 (b)
-                $number = IUPAC_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
+                $number = IUPAC_numerical_multiplier( scalar @positions );
                 $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
             } else {
-                $number = IUPAC_complex_numerical_multiplier( scalar @{$attachments{$attachment_name}} );
+                $number = IUPAC_complex_numerical_multiplier( scalar @positions );
             }
             $name .= $number;
 
