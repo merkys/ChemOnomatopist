@@ -8,6 +8,7 @@ use warnings;
 
 use Algorithm::Combinatorics qw( combinations );
 use ChemOnomatopist::Chain;
+use ChemOnomatopist::Chain::ABA;
 use ChemOnomatopist::Group::Amidine;
 use ChemOnomatopist::Group::Carbaldehyde;
 use ChemOnomatopist::Group::Carbonitrile;
@@ -94,6 +95,17 @@ sub is_monocycle { any { $_->isa( ChemOnomatopist::Chain::Monocycle:: ) } $_[0]-
 
 sub is_hydrazine { any { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) } $_[0]->groups( $_[1] ) }
 
+sub is_ABA_chain { any { $_->isa( ChemOnomatopist::Chain::ABA:: ) } $_[0]->groups( $_[1] ) }
+
+sub looks_like_ABA_chain
+{
+    my( $graph, $atom ) = @_;
+    return '' unless $graph->degree( $atom ) == 2;
+
+    my @neighbours = $graph->neighbours( $atom );
+    return ChemOnomatopist::element( $neighbours[0] ) eq ChemOnomatopist::element( $neighbours[1] );
+}
+
 sub anything { 1 }
 
 my @rules = (
@@ -157,6 +169,12 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
     [ sub { &is_nongroup_atom && &is_C }, sub { &is_cyanide || &is_isocyanide || &is_isocyanate }, sub { &is_ketone && &is_O }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
+
+    # a(ba)n chain
+    [ sub { &is_nongroup_atom && &is_heteroatom && &looks_like_ABA_chain }, ( sub { &is_nongroup_atom && &is_heteroatom } ) x 2, NO_MORE_VERTICES,
+      sub { $_[0]->add_group( ChemOnomatopist::Chain::ABA->new( @_ ) ) } ],
+    [ sub { &is_ABA_chain }, ( sub { &is_nongroup_atom && &is_heteroatom } ) x 2, NO_MORE_VERTICES,
+      sub { $_[0]->add_group( ChemOnomatopist::Chain::ABA->new( @_ ) ) } ],
 
     # O-based groups
     [ sub { &is_nongroup_atom && &is_O && &has_H1 }, \&anything, NO_MORE_VERTICES,
