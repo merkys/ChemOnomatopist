@@ -1417,17 +1417,19 @@ sub pick_chain_with_lowest_attachments_alphabetically_new
     my @chain_locants;
     for my $chain (@chains) {
         my @locant_names = $chain->locant_names;
-        my @locants;
+        my @names;
+        my @positions;
         for (0..$#locant_names) {
             next unless @{$locant_names[$_]}; # Skip empty positions
-            push @locants, ( $_ ) x @{$locant_names[$_]};
+            push @names, @{$locant_names[$_]};
+            push @positions, ( $_ ) x @{$locant_names[$_]};
         }
-        @locant_names = map { @$_ } @locant_names;
-        # At this point we have two parallel arrays, @locants contains positions, and @locant_names contains names.
-        my @order = sort { cmp_only_aphabetical( $locant_names[$a], $locant_names[$b] ) ||
-                           $locant_names[$a] cmp $locant_names[$b] }
-                         0..$#locant_names;
-        push @chain_locants, [ map { $locants[$_] } @order ];
+
+        # At this point parallel arrays @names contains names, and @positions contains positions.
+        my @order = sort { cmp_only_aphabetical( $names[$a], $names[$b] ) ||
+                           $names[$a] cmp $names[$b] }
+                         0..$#names;
+        push @chain_locants, [ map { $positions[$_] } @order ];
     }
 
     my @sorted = sort { cmp_arrays( $chain_locants[$a], $chain_locants[$b] ) }
