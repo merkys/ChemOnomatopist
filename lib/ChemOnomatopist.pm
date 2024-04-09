@@ -1094,7 +1094,7 @@ sub select_sidechain
                    \&rule_most_carbon_in_side_chains,
                    \&rule_least_branched_side_chains,
                    \&pick_chain_with_lowest_attachments_alphabetically,
-                   \&pick_chain_with_lowest_attachments_alphabetically_more ) {
+                   \&pick_alphabetically_earliest ) {
         my @chains_now = $rule->( @chains );
 
         # CHECK: Can a rule cause disappearance of all chains?
@@ -1163,17 +1163,20 @@ sub filter_chains
                    # P-45.2.2: Lowest locants for prefix substituents
                    #           FIXME: This includes suffix substituents now
                    \&rule_lowest_numbered_locants,
-                   # TODO: P-45.2.3: Lowest locants for prefix substituents in their order of citation in the name
-                   # TODO: P-45.3: Nonstandard bond numbers
-                   # TODO: P-45.4: Concerns isotopes
-                   # TODO: P-45.5: Alphanumerical order of names (maybe covered by P-45.2.3 already?)
-                   # TODO: P-45.6: Concerns stereochemistry
 
                    # TODO: Put these in correct order:
                    \&rule_most_carbon_in_side_chains,
                    \&rule_least_branched_side_chains,
+
+                   # P-45.2.3: Lowest locants for prefix substituents in their order of citation in the name
                    \&pick_chain_with_lowest_attachments_alphabetically,
-                   \&pick_chain_with_lowest_attachments_alphabetically_more ) {
+                   # TODO: P-45.3: Nonstandard bond numbers
+                   # TODO: P-45.4: Concerns isotopes
+                   # P-45.5: Alphanumerical order of names
+                   # TODO: This is not implemented fully
+                   \&pick_alphabetically_earliest,
+                   # TODO: P-45.6: Concerns stereochemistry
+                  ) {
         my @chains_now = $rule->( @chains );
 
         if( $DEBUG ) {
@@ -1431,7 +1434,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
                 0..$#chain_locants;
 }
 
-sub pick_chain_with_lowest_attachments_alphabetically_more
+sub pick_alphabetically_earliest
 {
     my( @chains ) = @_;
 
