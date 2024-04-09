@@ -1440,7 +1440,6 @@ sub pick_alphabetically_earliest
 
     my( $max_value ) = sort { cmp_only_aphabetical( [ $a->locant_names ],
                                                     [ $b->locant_names ] ) } @chains;
-
     return $max_value;
 }
 
