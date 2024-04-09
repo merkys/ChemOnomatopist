@@ -1,3 +1,14 @@
+0.8.0 2024-04-09
+
+    - 30% correctness rate for all PINs from the Blue Book (2013).
+    - Implement von Baeyer names.
+    - Implement support for peroxide.
+    - Implement parent chain selection rules based on indicated hydrogens
+      and isotopes.
+    - Better purine detection.
+    - Better carboxyl naming.
+    - Better ester naming.
+
 0.7.0 2024-02-23
 
     - 27.7% correctness rate for all PINs from the Blue Book (2013).
