@@ -1093,6 +1093,7 @@ sub select_sidechain
                    \&rule_lowest_numbered_locants,
                    \&rule_most_carbon_in_side_chains,
                    \&rule_least_branched_side_chains,
+                   # FIXME: Cannot replace with pick_chain_with_lowest_attachments_alphabetically_new() here, will fail
                    \&pick_chain_with_lowest_attachments_alphabetically ) {
         my @chains_now = $rule->( @chains );
 
