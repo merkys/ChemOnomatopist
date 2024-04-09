@@ -1514,38 +1514,6 @@ sub cmp_only_aphabetical
     return $a cmp $b;
 }
 
-# Sorts given names only based on alphabetical part of the name
-sub cmp_attachments
-{
-    my( $a, $b ) = @_;
-    my @a = @{$a};
-    my @b = @{$b};
-
-    for (0..$#a) {
-        my $a_alpha = $a[$_];
-        my $b_alpha = $b[$_];
-
-        my @A = ref $a_alpha eq 'ARRAY' ? sort @$a_alpha : ( $a_alpha );
-        my @B = ref $b_alpha eq 'ARRAY' ? sort @$b_alpha : ( $b_alpha );
-
-        for (0..min( scalar( @A ), scalar( @B ) )-1) {
-            my $a_alpha = $A[$_];
-            my $b_alpha = $B[$_];
-
-            $a_alpha =~ s/[^a-zA-Z]+//g;
-            $b_alpha =~ s/[^a-zA-Z]+//g;
-
-            my $a_has_tert = $a_alpha =~ s/^tert(butyl)$/$1/;
-            my $b_has_tert = $b_alpha =~ s/^tert(butyl)$/$1/;
-
-            return $a_has_tert <=> $b_has_tert if $a_has_tert <=> $b_has_tert;
-            return $a_alpha cmp $b_alpha if $a_alpha cmp $b_alpha;
-        }
-    }
-
-    return 0;
-}
-
 # According to https://en.wikipedia.org/wiki/IUPAC_numerical_multiplier
 sub IUPAC_numerical_multiplier
 {
