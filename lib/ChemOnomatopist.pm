@@ -1093,7 +1093,8 @@ sub select_sidechain
                    \&rule_lowest_numbered_locants,
                    \&rule_most_carbon_in_side_chains,
                    \&rule_least_branched_side_chains,
-                   \&pick_chain_with_lowest_attachments_alphabetically ) {
+                   \&pick_chain_with_lowest_attachments_alphabetically,
+                   \&pick_chain_with_lowest_attachments_alphabetically_more ) {
         my @chains_now = $rule->( @chains );
 
         # CHECK: Can a rule cause disappearance of all chains?
@@ -1171,7 +1172,8 @@ sub filter_chains
                    # TODO: Put these in correct order:
                    \&rule_most_carbon_in_side_chains,
                    \&rule_least_branched_side_chains,
-                   \&pick_chain_with_lowest_attachments_alphabetically ) {
+                   \&pick_chain_with_lowest_attachments_alphabetically,
+                   \&pick_chain_with_lowest_attachments_alphabetically_more ) {
         my @chains_now = $rule->( @chains );
 
         if( $DEBUG ) {
@@ -1424,7 +1426,19 @@ sub pick_chain_with_lowest_attachments_alphabetically
 
     my @sorted = sort { cmp_arrays( $chain_locants[$a], $chain_locants[$b] ) }
                       0..$#chain_locants;
-    return $chains[$sorted[0]];
+    return map  { $chains[$_] }
+           grep { !cmp_arrays( $chain_locants[$sorted[0]], $chain_locants[$_] ) }
+                0..$#chain_locants;
+}
+
+sub pick_chain_with_lowest_attachments_alphabetically_more
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { cmp_only_aphabetical( [ $a->locant_names ],
+                                                    [ $b->locant_names ] ) } @chains;
+
+    return $max_value;
 }
 
 sub most_senior_groups
@@ -1499,6 +1513,16 @@ sub cmp_locants($$)
 sub cmp_only_aphabetical
 {
     my( $a, $b ) = @_;
+
+    if( ref $a eq 'ARRAY' || ref $b eq 'ARRAY' ) {
+        my @A = ref $a eq 'ARRAY' ? @$a : ( $a );
+        my @B = ref $b eq 'ARRAY' ? @$b : ( $b );
+        for (0..min( scalar( @A ), scalar( @B ) )-1) {
+            my $cmp = cmp_only_aphabetical( $A[$_], $B[$_] );
+            return $cmp if $cmp;
+        }
+        return @A <=> @B;
+    }
 
     # Letters in isotopes are not compared (see BBv3 P-45.5)
     $a = $a->remove_isotopes if blessed $a;

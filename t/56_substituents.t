@@ -47,7 +47,7 @@ my @cases = (
     { smiles => 'C(C)C(C(CC=CC=C)C(C)C(C=C)CC)C(C=C)C', iupac => '7-ethyl-6-(3-ethylpent-4-en-2-yl)-8-methyldeca-1,3,9-triene' },
     { smiles => 'CNC(CCC1=CC(=C(C=C1)C)CCC(NCCC)=O)=O', iupac => 'N-methyl-3-{4-methyl-3-[3-oxo-3-(propylamino)propyl]phenyl}propanamide', AUTHOR => 1 },
     { smiles => 'BrC(C([PH4])C(CC(=O)O)C(C(C)Cl)[PH4])C', iupac => '3-[2-bromo-1-(λ5-phosphanyl)propyl]-5-chloro-4-(λ5-phosphanyl)hexanoic acid', AUTHOR => 1 },
-    { smiles => '[81Br]C(C(CC(=O)O)C(C(C)Br)[81Br])C(C)Cl', iupac => '4-(81Br)bromo-3-[1-(81Br)bromo-2-bromopropyl]-5-chlorohexanoic acid', AUTHOR => 1 },
+    { smiles => '[81Br]C(C(CC(=O)O)C(C(C)Br)[81Br])C(C)Cl', iupac => '4-(81Br)bromo-3-[1-(81Br)bromo-2-bromopropyl]-5-chlorohexanoic acid' },
     { smiles => 'C(CCC)C(CC(CC)C)C(CC(CC)CC)CCC', iupac => '5-butyl-8-ethyl-3-methyl-6-propyldecane' },
     { smiles => 'C(C)C1=CC=C(C2=CC(=CC=C12)[Se]C1=CC2=C(C=CC(=C2C=C1)CCC)CC)CCC', iupac => '1-ethyl-6-[(8-ethyl-5-propylnaphthalen-2-yl)selanyl]-4-propylnaphthalene', AUTHOR => 1 },
     { smiles => 'BrC(CCC(C(CCl)Br)C(CBr)I)Cl', iupac => '1,5-dibromo-4-(2-bromo-1-iodoethyl)-1,6-dichlorohexane' },
