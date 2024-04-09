@@ -1400,16 +1400,6 @@ sub rule_lowest_numbered_most_senior_heteroatoms
                 @chains;
 }
 
-sub pick_chain_with_lowest_attachments_alphabetically
-{
-    my( @chains ) = @_;
-
-    my @locant_names = map { [ $_->locant_names ] } @chains;
-    my @sorted = sort { cmp_attachments( $locant_names[$a], $locant_names[$b] ) }
-                      0..$#locant_names;
-    return $chains[$sorted[0]];
-}
-
 sub pick_chain_with_lowest_attachments_alphabetically_new
 {
     my( @chains ) = @_;
