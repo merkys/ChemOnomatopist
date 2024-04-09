@@ -1171,7 +1171,7 @@ sub filter_chains
                    # TODO: Put these in correct order:
                    \&rule_most_carbon_in_side_chains,
                    \&rule_least_branched_side_chains,
-                   \&pick_chain_with_lowest_attachments_alphabetically ) {
+                   \&pick_chain_with_lowest_attachments_alphabetically_new ) {
         my @chains_now = $rule->( @chains );
 
         if( $DEBUG ) {
@@ -1410,7 +1410,6 @@ sub pick_chain_with_lowest_attachments_alphabetically
     return $chains[$sorted[0]];
 }
 
-# TODO: Here we need to order the attachments by their names and compare the resulting sets of locants
 sub pick_chain_with_lowest_attachments_alphabetically_new
 {
     my( @chains ) = @_;
@@ -1424,6 +1423,7 @@ sub pick_chain_with_lowest_attachments_alphabetically_new
             push @locants, ( $_ ) x @{$locant_names[$_]};
         }
         @locant_names = map { @$_ } @locant_names;
+        # At this point we have two parallel arrays, @locants contains positions, and @locant_names contains names.
         my @order = sort { cmp_only_aphabetical( $locant_names[$a], $locant_names[$b] ) ||
                            $locant_names[$a] cmp $locant_names[$b] }
                          0..$#locant_names;
