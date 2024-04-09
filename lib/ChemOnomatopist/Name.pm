@@ -179,6 +179,21 @@ sub pop_e()
     return $self;
 }
 
+sub pop_yl()
+{
+    my( $self ) = @_;
+    return $self unless @$self;
+
+    if( blessed $self->[-1] ) {
+        $self->[-1]{value} =~ s/yl$//;
+        pop @$self if $self->[-1]{value} eq '';
+    } else {
+        $self->[-1] =~ s/yl$//;
+        pop @$self if $self->[-1] eq '';
+    }
+    return $self;
+}
+
 sub has_locant()
 {
     my( $self ) = @_;

@@ -249,17 +249,17 @@ sub get_sidechain_name
         my $prefix = $chain[0]->prefix;
         # All group-containing chains are most likely stems
         $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
-        if( $chain[0]->isa( ChemOnomatopist::Group::Sulfinyl:: ) ) { # BBv2 P-63.6
-            $name->[-1] =~ s/yl$/ane/;
+        if( $chain[0]->isa( ChemOnomatopist::Group::Sulfinyl:: ) && $name =~ /yl$/ ) { # BBv2 P-63.6
+            $name->pop_yl;
+            $name .= 'ane';
         }
         $name .= $prefix;
     } else {
         if( $chain->isa( ChemOnomatopist::Chain::Ether:: ) ) {
             if( $name->has_substituent_locant && !$name->is_enclosed ) {
                 $name->bracket;
-            } elsif( @$name ) {
-                pop @$name if $name->[-1] eq 'yl';
-                $name->[-1]{value} =~ s/yl$//;
+            } else {
+                $name->pop_yl;
             }
         }
         $chain->parent( $parent ) if $chain->can( 'parent' );
