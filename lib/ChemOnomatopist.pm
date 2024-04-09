@@ -347,7 +347,7 @@ sub get_mainchain_name
 
 
     # Collecting names of all the attachments
-    my @order = sort { cmp_only_aphabetical( $a, $b ) || $a cmp $b } keys %attachments;
+    my @order = sort { cmp_only_alphabetical( $a, $b ) || $a cmp $b } keys %attachments;
     my $name = ChemOnomatopist::Name->new;
     for my $i (0..$#order) {
         my $attachment_name = $order[$i];
@@ -1421,7 +1421,7 @@ sub pick_chain_with_lowest_attachments_alphabetically
         }
 
         # At this point parallel arrays @names contains names, and @positions contains positions.
-        my @order = sort { cmp_only_aphabetical( $names[$a], $names[$b] ) ||
+        my @order = sort { cmp_only_alphabetical( $names[$a], $names[$b] ) ||
                            $names[$a] cmp $names[$b] }
                          0..$#names;
         push @chain_locants, [ map { $positions[$_] } @order ];
@@ -1438,7 +1438,7 @@ sub pick_alphabetically_earliest
 {
     my( @chains ) = @_;
 
-    my( $max_value ) = sort { cmp_only_aphabetical( [ $a->locant_names ],
+    my( $max_value ) = sort { cmp_only_alphabetical( [ $a->locant_names ],
                                                     [ $b->locant_names ] ) } @chains;
     return $max_value;
 }
@@ -1512,7 +1512,7 @@ sub cmp_locants($$)
 # Sorts given names only based on alphabetical part of the name.
 # tert compounds are ordered according to BBv2 P-14.5 which says:
 # "[t]he preferred order for alphanumerical order is: nonitalic Roman letters > italic letters > Greek letters."
-sub cmp_only_aphabetical
+sub cmp_only_alphabetical
 {
     my( $a, $b ) = @_;
 
@@ -1520,7 +1520,7 @@ sub cmp_only_aphabetical
         my @A = ref $a eq 'ARRAY' ? @$a : ( $a );
         my @B = ref $b eq 'ARRAY' ? @$b : ( $b );
         for (0..min( scalar( @A ), scalar( @B ) )-1) {
-            my $cmp = cmp_only_aphabetical( $A[$_], $B[$_] );
+            my $cmp = cmp_only_alphabetical( $A[$_], $B[$_] );
             return $cmp if $cmp;
         }
         return @A <=> @B;
