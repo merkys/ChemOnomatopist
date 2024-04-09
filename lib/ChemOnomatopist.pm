@@ -1500,6 +1500,10 @@ sub cmp_only_aphabetical
 {
     my( $a, $b ) = @_;
 
+    # Letters in isotopes are not compared (see BBv3 P-45.5)
+    $a = $a->remove_isotopes if blessed $a;
+    $b = $b->remove_isotopes if blessed $b;
+
     # Dropping hydrogen indicators
     $a =~ s/^\d+H-//;
     $b =~ s/^\d+H-//;

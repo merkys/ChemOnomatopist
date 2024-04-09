@@ -15,6 +15,7 @@ use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Ether;
 use ChemOnomatopist::Isotope;
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
+use ChemOnomatopist::Name::Part::Isotope;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Graph::Traversal::DFS;
 use List::Util qw( all any none sum0 uniq );
@@ -589,7 +590,7 @@ sub isotope_part()
         }
     }
 
-    return "($isotopes)";
+    return ChemOnomatopist::Name::Part::Isotope->new( "($isotopes)" );
 }
 
 sub prefix()

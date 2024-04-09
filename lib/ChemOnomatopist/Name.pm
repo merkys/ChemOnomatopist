@@ -16,6 +16,7 @@ use overload '@{}' => sub { $_[0]->{name} };
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Element;
 use ChemOnomatopist::Name::Part::Fusion;
+use ChemOnomatopist::Name::Part::Isotope;
 use ChemOnomatopist::Name::Part::Locants;
 use ChemOnomatopist::Name::Part::Locants::Substituent;
 use ChemOnomatopist::Name::Part::Multiplier;
@@ -192,6 +193,13 @@ sub pop_yl()
         pop @$self if $self->[-1] eq '';
     }
     return $self;
+}
+
+sub remove_isotopes()
+{
+    my( $self ) = @_;
+    my @parts = grep { !blessed $_ || !$_->isa( ChemOnomatopist::Name::Part::Isotope:: ) } @$self;
+    return bless { name => \@parts };
 }
 
 sub has_locant()
