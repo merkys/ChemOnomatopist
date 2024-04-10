@@ -100,9 +100,8 @@ sub is_ABA_chain { any { $_->isa( ChemOnomatopist::Chain::ABA:: ) } $_[0]->group
 sub looks_like_ABA_chain
 {
     my( $graph, $atom ) = @_;
-    return '' unless $graph->degree( $atom ) == 2;
-
-    my @neighbours = $graph->neighbours( $atom );
+    my @neighbours = blessed $atom ? $atom->substituents : $graph->neighbours( $atom );
+    return '' unless @neighbours == 2;
     return ChemOnomatopist::element( $neighbours[0] ) eq ChemOnomatopist::element( $neighbours[1] );
 }
 
