@@ -172,7 +172,7 @@ my @rules = (
     # a(ba)n chain
     [ sub { &is_nongroup_atom && &is_heteroatom && &looks_like_ABA_chain }, ( sub { &is_nongroup_atom && &is_heteroatom } ) x 2, NO_MORE_VERTICES,
       sub { $_[0]->add_group( ChemOnomatopist::Chain::ABA->new( @_ ) ) } ],
-    [ sub { &is_ABA_chain }, ( sub { &is_nongroup_atom && &is_heteroatom } ) x 2, NO_MORE_VERTICES,
+    [ sub { &is_ABA_chain && &looks_like_ABA_chain }, ( sub { &is_nongroup_atom && &is_heteroatom } ) x 2, NO_MORE_VERTICES,
       sub { $_[0]->add_group( ChemOnomatopist::Chain::ABA->new( @_ ) ) } ],
 
     # O-based groups
