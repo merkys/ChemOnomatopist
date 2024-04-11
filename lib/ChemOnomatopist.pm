@@ -638,6 +638,8 @@ sub find_groups
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
                      ChemOnomatopist::Chain::Polyaphene->has_form( $core ) ) {
                 $compound = ChemOnomatopist::Chain::Polyaphene->new( $graph, @cycles );
+            } elsif( ChemOnomatopist::Chain::Picene->has_form( $core ) ) {
+                $compound = ChemOnomatopist::Chain::Picene->new( $graph, @cycles );
             } elsif( ChemOnomatopist::Chain::Polyhelicene->has_form( $core ) ) {
                 $compound = ChemOnomatopist::Chain::Polyhelicene->new( $graph, @cycles );
             } elsif( ChemOnomatopist::Chain::VonBaeyer->has_form( $core ) ) {

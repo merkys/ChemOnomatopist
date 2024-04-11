@@ -8,9 +8,14 @@ use warnings;
 
 use parent ChemOnomatopist::Chain::Circular::;
 
+use ChemOnomatopist::Util::Graph qw(
+    graph_without_edge_attributes
+);
+use Graph::Nauty qw( are_isomorphic );
 use Graph::Traversal::DFS;
 use Graph::Undirected;
 use List::Util qw( first );
+use Set::Object qw( set );
 
 sub new
 {
@@ -44,6 +49,17 @@ sub candidates()
     # TODO: Add one more candidate (there are two)
 
     return @candidates;
+}
+
+sub has_form($$)
+{
+    my( $class, $graph ) = @_;
+    my @vertices = $graph->vertices;
+
+    return '' unless @vertices == 22;
+    return are_isomorphic( graph_without_edge_attributes( $graph ),
+                           $class->ideal_graph,
+                           sub { ChemOnomatopist::element( $_[0] ) } );
 }
 
 sub ideal_graph($)
