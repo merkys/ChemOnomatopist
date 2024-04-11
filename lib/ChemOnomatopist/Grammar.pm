@@ -112,6 +112,11 @@ sub looks_like_ABA_chain
         @elements = ( ChemOnomatopist::element( $neighbours[0] ),
                       $atom->{vertices}[1],
                       ChemOnomatopist::element( $neighbours[1] ) );
+    } elsif( all { blessed $_ && $_->isa( ChemOnomatopist::Chain::ABA:: ) } @neighbours ) {
+        # ABA chains on both sides
+        @elements = ( $neighbours[0]->{vertices}[1],
+                      ChemOnomatopist::element( $atom ),
+                      $neighbours[1]->{vertices}[1] );
     } elsif( any { blessed $_ && $_->isa( ChemOnomatopist::Chain::ABA:: ) } @neighbours ) {
         # ABA chain on one side
         @neighbours = reverse @neighbours if blessed $neighbours[1] &&
@@ -202,6 +207,13 @@ my @rules = (
       sub { for ($_[0]->groups( $_[1] )) { $_->add( $_[2], $_[3] ) } } ],
     [ sub { &is_nongroup_atom && &is_heteroatom && &looks_like_ABA_chain }, \&is_ABA_chain, sub { &is_nongroup_atom && &is_heteroatom }, NO_MORE_VERTICES,
       sub { for ($_[0]->groups( $_[2] )) { $_->add( $_[1], $_[3] ) } } ],
+    [ sub { &is_nongroup_atom && &is_heteroatom && &looks_like_ABA_chain }, ( \&is_ABA_chain ) x 2, NO_MORE_VERTICES,
+      sub {
+            my( $target ) = $_[0]->groups( $_[2] );
+            my( $source ) = $_[0]->groups( $_[3] );
+            $target->add( $source, $_[1] );
+            $_[0]->delete_group( $source );
+          } ],
 
     # O-based groups
     [ sub { &is_nongroup_atom && &is_O && &has_H1 }, \&anything, NO_MORE_VERTICES,
