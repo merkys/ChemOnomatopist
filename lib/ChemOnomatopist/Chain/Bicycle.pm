@@ -95,8 +95,8 @@ sub new
     # Each component is represented as an array of vertices in the order of traverse.
     my @components = sort { @$a <=> @$b } $subgraph->connected_components;
     for (0..1) {
-        if( @{$components[$_]} == 1 ) {
-            die "bicycles with three-membered cycles are not supported yet\n"
+        if( @{$components[$_]} < 3 ) {
+            die "bicycles with three and four-membered cycles are not supported yet\n"
         }
 
         my $subgraph = $graph->subgraph( [ @{$components[$_]}, @bridge ] );
