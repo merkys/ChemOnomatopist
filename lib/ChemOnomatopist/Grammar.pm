@@ -110,19 +110,19 @@ sub looks_like_ABA_chain
         # ABA chain in the middle
         return '' if any { blessed $_ } @neighbours;
         @elements = ( ChemOnomatopist::element( $neighbours[0] ),
-                      $atom->{vertices}[1],
+                      $atom->inner_element,
                       ChemOnomatopist::element( $neighbours[1] ) );
     } elsif( all { blessed $_ && $_->isa( ChemOnomatopist::Chain::ABA:: ) } @neighbours ) {
         # ABA chains on both sides
         # FIXME: Check that both ABA chains contain the same atom types
-        @elements = ( $neighbours[0]->{vertices}[1],
+        @elements = ( $neighbours[0]->inner_element,
                       ChemOnomatopist::element( $atom ),
-                      $neighbours[1]->{vertices}[1] );
+                      $neighbours[1]->inner_element );
     } elsif( any { blessed $_ && $_->isa( ChemOnomatopist::Chain::ABA:: ) } @neighbours ) {
         # ABA chain on one side
         @neighbours = reverse @neighbours if blessed $neighbours[1] &&
                                              $neighbours[1]->isa( ChemOnomatopist::Chain::ABA:: );
-        @elements = ( $atom->{vertices}[1],
+        @elements = ( $atom->inner_element,
                       ChemOnomatopist::element( $neighbours[0] ),
                       ChemOnomatopist::element( $neighbours[1] ) );
     } else {
