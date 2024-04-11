@@ -114,6 +114,7 @@ sub looks_like_ABA_chain
                       ChemOnomatopist::element( $neighbours[1] ) );
     } elsif( all { blessed $_ && $_->isa( ChemOnomatopist::Chain::ABA:: ) } @neighbours ) {
         # ABA chains on both sides
+        # FIXME: Check that both ABA chains contain the same atom types
         @elements = ( $neighbours[0]->{vertices}[1],
                       ChemOnomatopist::element( $atom ),
                       $neighbours[1]->{vertices}[1] );
