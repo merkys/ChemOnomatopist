@@ -105,36 +105,33 @@ sub looks_like_ABA_chain
     my @neighbours = blessed $atom ? $atom->substituents : $graph->neighbours( $atom );
     return '' unless @neighbours == 2;
 
-    my @elements;
-    if( blessed $atom ) {
-        # ABA chain in the middle
-        return '' if any { blessed $_ } @neighbours;
-        @elements = ( ChemOnomatopist::element( $neighbours[0] ),
-                      $atom->inner_element,
-                      ChemOnomatopist::element( $neighbours[1] ) );
-    } elsif( all { blessed $_ && $_->isa( ChemOnomatopist::Chain::ABA:: ) } @neighbours ) {
+    my $outer;
+    my $inner;
+    if( all { blessed $_ && $_->isa( ChemOnomatopist::Chain::ABA:: ) } @neighbours ) {
         # ABA chains on both sides
-        # FIXME: Check that both ABA chains contain the same atom types
-        @elements = ( $neighbours[0]->inner_element,
-                      ChemOnomatopist::element( $atom ),
-                      $neighbours[1]->inner_element );
+        return '' unless $neighbours[0]->outer_element eq $neighbours[1]->outer_element;
+        return '' unless $neighbours[0]->inner_element eq $neighbours[1]->inner_element;
+        return '' unless $neighbours[0]->inner_element eq ChemOnomatopist::element( $atom );
+        $outer = $neighbours[0]->outer_element;
+        $inner = $neighbours[0]->inner_element;
     } elsif( any { blessed $_ && $_->isa( ChemOnomatopist::Chain::ABA:: ) } @neighbours ) {
         # ABA chain on one side
         @neighbours = reverse @neighbours if blessed $neighbours[1] &&
                                              $neighbours[1]->isa( ChemOnomatopist::Chain::ABA:: );
-        @elements = ( $atom->inner_element,
-                      ChemOnomatopist::element( $neighbours[0] ),
-                      ChemOnomatopist::element( $neighbours[1] ) );
+        return '' if any { blessed $_ } ( $atom, $neighbours[1] );
+        return '' if $neighbours[0]->inner_element eq ChemOnomatopist::element( $atom );
+        return '' if $neighbours[0]->inner_element eq ChemOnomatopist::element( $neighbours[1] );
+        $outer = $neighbours[0]->outer_element;
+        $inner = $neighbours[1]->inner_element;
     } else {
         # No ABA chain yet
         return '' if any { blessed $_ } @neighbours;
-        @elements = ( ChemOnomatopist::element( $neighbours[0] ),
-                      ChemOnomatopist::element( $atom ),
-                      ChemOnomatopist::element( $neighbours[1] ) );
+        return '' unless ChemOnomatopist::element( $neighbours[0] ) eq ChemOnomatopist::element( $neighbours[1] );
+        $outer = ChemOnomatopist::element( $neighbours[0] );
+        $inner = ChemOnomatopist::element( $atom );
     }
 
-    return '' unless $elements[0] eq $elements[2];
-    return $elements{$elements[0]}->{seniority} > $elements{$elements[1]}->{seniority};
+    return $elements{$outer}->{seniority} > $elements{$inner}->{seniority};
 }
 
 sub anything { 1 }
@@ -204,8 +201,6 @@ my @rules = (
     # a(ba)n chain
     [ sub { &is_nongroup_atom && &is_heteroatom && &looks_like_ABA_chain }, ( sub { &is_nongroup_atom && &is_heteroatom } ) x 2, NO_MORE_VERTICES,
       sub { $_[0]->add_group( ChemOnomatopist::Chain::ABA->new( $_[0], $_[2], $_[1], $_[3] ) ) } ],
-    [ sub { &is_ABA_chain && &looks_like_ABA_chain }, ( sub { &is_nongroup_atom && &is_heteroatom } ) x 2, NO_MORE_VERTICES,
-      sub { for ($_[0]->groups( $_[1] )) { $_->add( $_[2], $_[3] ) } } ],
     [ sub { &is_nongroup_atom && &is_heteroatom && &looks_like_ABA_chain }, \&is_ABA_chain, sub { &is_nongroup_atom && &is_heteroatom }, NO_MORE_VERTICES,
       sub { for ($_[0]->groups( $_[2] )) { $_->add( $_[1] ); $_->add( $_[3] ) } } ],
     [ sub { &is_nongroup_atom && &is_heteroatom && &looks_like_ABA_chain }, ( \&is_ABA_chain ) x 2, NO_MORE_VERTICES,
