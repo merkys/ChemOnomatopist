@@ -14,6 +14,7 @@ use ChemOnomatopist::Group::Carbaldehyde;
 use ChemOnomatopist::Group::Carbonitrile;
 use ChemOnomatopist::Chain::Carboxamide;
 use ChemOnomatopist::Chain::Circular;
+use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Ether;
 use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
@@ -102,7 +103,13 @@ sub looks_like_ABA_chain
     my( $graph, $atom ) = @_;
     my @neighbours = blessed $atom ? $atom->substituents : $graph->neighbours( $atom );
     return '' unless @neighbours == 2;
-    return ChemOnomatopist::element( $neighbours[0] ) eq ChemOnomatopist::element( $neighbours[1] );
+    return '' if any { blessed $_ } @neighbours;
+    return '' unless ChemOnomatopist::element( $neighbours[0] ) eq ChemOnomatopist::element( $neighbours[1] );
+
+    my $outer_el = $neighbours[0]->{symbol};
+    my $inner_el = blessed $atom ? $atom->{vertices}[1]->{symbol}
+                                 : $atom->{symbol};
+    return $elements{$outer_el}->{seniority} > $elements{$inner_el}->{seniority};
 }
 
 sub anything { 1 }
