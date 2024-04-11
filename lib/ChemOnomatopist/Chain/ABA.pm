@@ -32,16 +32,13 @@ sub add
     for (\@chain1, \@chain2) {
         next unless @$_;
 
-        if( $graph->has_edge( $self->{vertices}[ 0], $_->[ 0] ) ) {
+        if(      $graph->has_edge( $self->{vertices}[ 0], $_->[ 0] ) ) {
             unshift @vertices, reverse @$_;
-        }
-        if( $graph->has_edge( $self->{vertices}[-1], $_->[ 0] ) ) {
-            push @vertices, @$_;
-        }
-        if( $graph->has_edge( $self->{vertices}[ 0], $_->[-1] ) ) {
+        } elsif( $graph->has_edge( $self->{vertices}[ 0], $_->[-1] ) ) {
             unshift @vertices, @$_;
-        }
-        if( $graph->has_edge( $self->{vertices}[-1], $_->[-1] ) ) {
+        } elsif( $graph->has_edge( $self->{vertices}[-1], $_->[ 0] ) ) {
+            push @vertices, @$_;
+        } elsif( $graph->has_edge( $self->{vertices}[-1], $_->[-1] ) ) {
             push @vertices, reverse @$_;
         }
     }
