@@ -6,6 +6,7 @@ package ChemOnomatopist::Chain::ABA;
 use parent ChemOnomatopist::Chain::;
 
 use ChemOnomatopist::Elements qw( %elements );
+use Scalar::Util qw( blessed );
 
 sub new
 {
@@ -15,17 +16,37 @@ sub new
 
 sub add
 {
-    my $self = shift;
-    die "cannot extend ABA chain with more than two atoms\n" if @_ > 2;
-    my( $first, $last ) = ( $self->{vertices}[0], $self->{vertices}[-1] );
-    for (@_) {
-        if( $self->graph->has_edge( $first, $_ ) ) {
-            unshift @{$self->{vertices}}, $_;
+    my( $self, @atoms ) = @_;
+    die "cannot extend ABA chain into more than two sides\n" if @atoms > 2;
+
+    my @chain1 = ( $atoms[0] );
+    my @chain2 = ( $atoms[1] );
+
+    # Unpack the atoms in chains
+    @chain1 = map { blessed $_ ? $_->vertices : $_ } @chain1;
+    @chain2 = map { blessed $_ ? $_->vertices : $_ } @chain2;
+
+    my $graph = $self->graph;
+    my @vertices = $self->vertices;
+
+    for (\@chain1, \@chain2) {
+        next unless @$_;
+
+        if( $graph->has_edge( $self->{vertices}[ 0], $_->[ 0] ) ) {
+            unshift @vertices, reverse @$_;
         }
-        if( $self->graph->has_edge( $last, $_ ) ) {
-            push @{$self->{vertices}}, $_;
+        if( $graph->has_edge( $self->{vertices}[-1], $_->[ 0] ) ) {
+            push @vertices, @$_;
+        }
+        if( $graph->has_edge( $self->{vertices}[ 0], $_->[-1] ) ) {
+            unshift @vertices, @$_;
+        }
+        if( $graph->has_edge( $self->{vertices}[-1], $_->[-1] ) ) {
+            push @vertices, reverse @$_;
         }
     }
+
+    $self->{vertices} = \@vertices;
 }
 
 sub needs_heteroatom_locants() { '' }
