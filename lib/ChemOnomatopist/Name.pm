@@ -50,6 +50,7 @@ sub append($)
     if( @$self && !$self->ends_with_locant && blessed $name && $name->isa( ChemOnomatopist::Name:: ) && $name =~ /^\d/ ) {
         $name->[0]->{value} = '-' . $name->[0]->{value};
     }
+    # CHECKME: Not sure this is a broad rule, or just confined to P-16.7.1 (d)
     if( blessed $name && $name->isa( ChemOnomatopist::Name:: ) &&
         $self->ends_with_element && $name->starts_with_element &&
         $self =~ /a$/ && $name =~ /^o/ ) {
