@@ -6,10 +6,11 @@ package ChemOnomatopist::Chain::Picene;
 use strict;
 use warnings;
 
+use parent ChemOnomatopist::Chain::Circular::;
+
 use Graph::Traversal::DFS;
 use Graph::Undirected;
-
-use parent ChemOnomatopist::Chain::Circular::;
+use List::Util qw( first );
 
 sub new
 {
@@ -22,9 +23,18 @@ sub new
     my $d3_start = first { $subgraph_d3->degree( $_ ) == 1 } $subgraph_d3->vertices;
     my @d3_path = reverse Graph::Traversal::DFS->new( $subgraph_d3, start => $d3_start )->dfs;
 
+    my $first = first { !set( @d3_path )->has( $_ ) }
+                      $subgraph->neighbours( $d3_path[1] );
+    $subgraph->delete_edge( $first, $d3_path[1] );
+
+    # Taking pairs of vertices along the path, deleting edges between them
     while( @d3_path ) {
         $subgraph->delete_edge( shift @d3_path, shift @d3_path );
     }
+
+    my @vertices = reverse Graph::Traversal::DFS->new( $subgraph, start => $first )->dfs;
+    return bless { graph => $graph,
+                   vertices => \@vertices }, $class;
 }
 
 sub candidates()
