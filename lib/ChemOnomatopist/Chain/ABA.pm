@@ -5,7 +5,7 @@ package ChemOnomatopist::Chain::ABA;
 
 use parent ChemOnomatopist::Chain::;
 
-use ChemOnomatopist::Name::Part::Stem;
+use ChemOnomatopist::Name::Part::Element;
 use ChemOnomatopist::Elements qw( %elements );
 use Scalar::Util qw( blessed );
 
@@ -65,7 +65,7 @@ sub heteroatom_positions()
 
 sub needs_heteroatom_locants() { '' }
 
-sub prefix() { ChemOnomatopist::Name::Part::Stem->new( $elements{$_[0]->inner_element}->{prefix} . 'ne' )->to_name }
+sub prefix() { ChemOnomatopist::Name::Part::Element->new( $elements{$_[0]->inner_element}->{prefix} . 'ne' )->to_name }
 sub suffix() { &prefix }
 
 1;

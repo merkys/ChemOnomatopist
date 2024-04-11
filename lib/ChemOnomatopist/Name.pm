@@ -50,6 +50,11 @@ sub append($)
     if( @$self && !$self->ends_with_locant && blessed $name && $name->isa( ChemOnomatopist::Name:: ) && $name =~ /^\d/ ) {
         $name->[0]->{value} = '-' . $name->[0]->{value};
     }
+    if( blessed $name && $name->isa( ChemOnomatopist::Name:: ) &&
+        $self->ends_with_element && $name->starts_with_element &&
+        $self =~ /a$/ && $name =~ /^o/ ) {
+        $self->[-1]{value} =~ s/a$//;
+    }
     # FIXME: The following needlessly converts $name into string
     $name =~ s/^-// if @$self && $self->[-1] =~ /-$/ && $name =~ /^-/;
 
@@ -249,6 +254,22 @@ sub ends_with_alkane_an_suffix()
     return @$self &&
            blessed $self->[-1] &&
            $self->[-1]->isa( ChemOnomatopist::Name::Part::AlkaneANSuffix:: );
+}
+
+sub ends_with_element()
+{
+    my( $self ) = @_;
+    return @$self &&
+           blessed $self->[-1] &&
+           $self->[-1]->isa( ChemOnomatopist::Name::Part::Element:: );
+}
+
+sub starts_with_element()
+{
+    my( $self ) = @_;
+    return @$self &&
+           blessed $self->[0] &&
+           $self->[0]->isa( ChemOnomatopist::Name::Part::Element:: );
 }
 
 sub starts_with_locant()
