@@ -19,6 +19,7 @@ use ChemOnomatopist::Chain::Imino;
 use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Chain::Monospiro;
 use ChemOnomatopist::Chain::Phenanthrene;
+use ChemOnomatopist::Chain::Picene;
 use ChemOnomatopist::Chain::Polyacene;
 use ChemOnomatopist::Chain::Polyaphene;
 use ChemOnomatopist::Chain::Polyhelicene;

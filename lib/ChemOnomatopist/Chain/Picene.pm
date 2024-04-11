@@ -53,8 +53,8 @@ sub ideal_graph($)
     my $graph = Graph::Undirected->new( refvertexed => 1 );
     my @vertices = map { { symbol => 'C' } } 1..8;
     $graph->add_path( @vertices );
-    $graph->add_cycle( @vertices[0..1], map { { symbol => 'C' } } 1..4;
-    $graph->add_cycle( @vertices[6..7], map { { symbol => 'C' } } 1..4;
+    $graph->add_cycle( @vertices[0..1], map { { symbol => 'C' } } 1..4 );
+    $graph->add_cycle( @vertices[6..7], map { { symbol => 'C' } } 1..4 );
     for (0..2) {
         $graph->add_cycle( @vertices[0+(2*$_)..3+(2*$_)], map { { symbol => 'C' } } 1..2 );
     }
