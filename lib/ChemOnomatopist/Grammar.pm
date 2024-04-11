@@ -101,15 +101,34 @@ sub is_ABA_chain { any { $_->isa( ChemOnomatopist::Chain::ABA:: ) } $_[0]->group
 sub looks_like_ABA_chain
 {
     my( $graph, $atom ) = @_;
+    # Require two neighbours
     my @neighbours = blessed $atom ? $atom->substituents : $graph->neighbours( $atom );
     return '' unless @neighbours == 2;
-    return '' if any { blessed $_ } @neighbours;
-    return '' unless ChemOnomatopist::element( $neighbours[0] ) eq ChemOnomatopist::element( $neighbours[1] );
 
-    my $outer_el = $neighbours[0]->{symbol};
-    my $inner_el = blessed $atom ? $atom->{vertices}[1]->{symbol}
-                                 : $atom->{symbol};
-    return $elements{$outer_el}->{seniority} > $elements{$inner_el}->{seniority};
+    my @elements;
+    if( blessed $atom ) {
+        # ABA chain in the middle
+        return '' if any { blessed $_ } @neighbours;
+        @elements = ( ChemOnomatopist::element( $neighbours[0] ),
+                      $atom->{vertices}[1],
+                      ChemOnomatopist::element( $neighbours[1] ) );
+    } elsif( any { blessed $_ && $_->isa( ChemOnomatopist::Chain::ABA:: ) } @neighbours ) {
+        # ABA chain on one side
+        @neighbours = reverse @neighbours if blessed $neighbours[1] &&
+                                             $neighbours[1]->isa( ChemOnomatopist::Chain::ABA:: );
+        @elements = ( $atom->{vertices}[1],
+                      ChemOnomatopist::element( $neighbours[0] ),
+                      ChemOnomatopist::element( $neighbours[1] ) );
+    } else {
+        # No ABA chain yet
+        return '' if any { blessed $_ } @neighbours;
+        @elements = ( ChemOnomatopist::element( $neighbours[0] ),
+                      ChemOnomatopist::element( $atom ),
+                      ChemOnomatopist::element( $neighbours[1] ) );
+    }
+
+    return '' unless $elements[0] eq $elements[2];
+    return $elements{$elements[0]}->{seniority} > $elements{$elements[1]}->{seniority};
 }
 
 sub anything { 1 }
