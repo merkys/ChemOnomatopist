@@ -16,7 +16,16 @@ sub new
 sub add
 {
     my $self = shift;
-    push @{$self->{vertices}}, @_; # FIXME: Very primitive, need to see which side to push
+    die "cannot extend ABA chain with more than two atoms\n" if @_ > 2;
+    my( $first, $last ) = ( $self->{vertices}[0], $self->{vertices}[-1] );
+    for (@_) {
+        if( $self->graph->has_edge( $first, $_ ) ) {
+            unshift @{$self->{vertices}}, $_;
+        }
+        if( $self->graph->has_edge( $last, $_ ) ) {
+            push @{$self->{vertices}}, $_;
+        }
+    }
 }
 
 sub needs_heteroatom_locants() { '' }
