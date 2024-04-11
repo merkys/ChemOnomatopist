@@ -6,6 +6,7 @@ package ChemOnomatopist::Chain::Picene;
 use strict;
 use warnings;
 
+use Graph::Traversal::DFS;
 use Graph::Undirected;
 
 use parent ChemOnomatopist::Chain::Circular::;
@@ -15,6 +16,15 @@ sub new
     my( $class, $graph, @cycles ) = @_;
 
     my $subgraph = $graph->subgraph( map { $_->vertices } @cycles );
+    # Isolating a path of vertices with degree of 3
+    my $subgraph_d3 = $subgraph->subgraph( grep { $subgraph->degree( $_ ) == 3 }
+                                                $subgraph->vertices );
+    my $d3_start = first { $subgraph_d3->degree( $_ ) == 1 } $subgraph_d3->vertices;
+    my @d3_path = reverse Graph::Traversal::DFS->new( $subgraph_d3, start => $d3_start )->dfs;
+
+    while( @d3_path ) {
+        $subgraph->delete_edge( shift @d3_path, shift @d3_path );
+    }
 }
 
 sub candidates()
