@@ -105,33 +105,28 @@ sub looks_like_ABA_chain
     my @neighbours = blessed $center ? $center->substituents : $graph->neighbours( $center );
     return '' unless @neighbours == 2;
 
-    my $outer;
-    my $inner;
     if( all { blessed $_ && $_->isa( ChemOnomatopist::Chain::ABA:: ) } @neighbours ) {
         # ABA chains on both sides
         return '' unless $neighbours[0]->outer_element eq $neighbours[1]->outer_element;
         return '' unless $neighbours[0]->inner_element eq $neighbours[1]->inner_element;
         return '' unless $neighbours[0]->inner_element eq ChemOnomatopist::element( $center );
-        $outer = $neighbours[0]->outer_element;
-        $inner = $neighbours[0]->inner_element;
     } elsif( any { blessed $_ && $_->isa( ChemOnomatopist::Chain::ABA:: ) } @neighbours ) {
         # ABA chain on one side
         @neighbours = reverse @neighbours if blessed $neighbours[1] &&
                                              $neighbours[1]->isa( ChemOnomatopist::Chain::ABA:: );
         return '' if any { blessed $_ } ( $center, $neighbours[1] );
         return '' if $neighbours[0]->inner_element eq ChemOnomatopist::element( $center );
-        return '' if $neighbours[0]->inner_element eq ChemOnomatopist::element( $neighbours[1] );
-        $outer = $neighbours[0]->outer_element;
-        $inner = $neighbours[1]->inner_element;
+        return '' if $neighbours[0]->outer_element eq ChemOnomatopist::element( $neighbours[1] );
     } else {
         # No ABA chain yet
         return '' if any { blessed $_ } @neighbours;
         return '' unless ChemOnomatopist::element( $neighbours[0] ) eq ChemOnomatopist::element( $neighbours[1] );
-        $outer = ChemOnomatopist::element( $neighbours[0] );
-        $inner = ChemOnomatopist::element( $center );
+        my $outer = ChemOnomatopist::element( $neighbours[0] );
+        my $inner = ChemOnomatopist::element( $center );
+        return '' unless $elements{$outer}->{seniority} > $elements{$inner}->{seniority};
     }
 
-    return $elements{$outer}->{seniority} > $elements{$inner}->{seniority};
+    return 1;
 }
 
 sub anything { 1 }
