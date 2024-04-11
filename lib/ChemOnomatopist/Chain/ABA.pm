@@ -44,9 +44,27 @@ sub add
 sub inner_element { ChemOnomatopist::element( $_[0]->{vertices}[1] ) }
 sub outer_element { ChemOnomatopist::element( $_[0]->{vertices}[0] ) }
 
+sub heteroatom_positions()
+{
+    my( $self ) = @_;
+
+    return @{$self->{heteroatom_positions}} if $self->{heteroatom_positions};
+
+    my @vertices = $self->vertices;
+    my @heteroatom_positions;
+    for (0..$#vertices) {
+        next if ChemOnomatopist::element( $vertices[$_] ) eq 'C';
+        next if ChemOnomatopist::element( $vertices[$_] ) eq $self->inner_element;
+        push @heteroatom_positions, $_;
+    }
+
+    $self->{heteroatom_positions} = \@heteroatom_positions;
+    return @heteroatom_positions;
+}
+
 sub needs_heteroatom_locants() { '' }
 
-sub prefix() { $elements{$_[0]->outer_element}->{prefix} . 'ne' }
-sub suffix() { $elements{$_[0]->outer_element}->{prefix} . 'ne' }
+sub prefix() { $elements{$_[0]->inner_element}->{prefix} . 'ne' }
+sub suffix() { $elements{$_[0]->inner_element}->{prefix} . 'ne' }
 
 1;
