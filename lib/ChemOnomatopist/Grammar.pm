@@ -100,9 +100,9 @@ sub is_ABA_chain { any { $_->isa( ChemOnomatopist::Chain::ABA:: ) } $_[0]->group
 
 sub looks_like_ABA_chain
 {
-    my( $graph, $atom ) = @_;
+    my( $graph, $center ) = @_;
     # Require two neighbours
-    my @neighbours = blessed $atom ? $atom->substituents : $graph->neighbours( $atom );
+    my @neighbours = blessed $center ? $center->substituents : $graph->neighbours( $center );
     return '' unless @neighbours == 2;
 
     my $outer;
@@ -111,15 +111,15 @@ sub looks_like_ABA_chain
         # ABA chains on both sides
         return '' unless $neighbours[0]->outer_element eq $neighbours[1]->outer_element;
         return '' unless $neighbours[0]->inner_element eq $neighbours[1]->inner_element;
-        return '' unless $neighbours[0]->inner_element eq ChemOnomatopist::element( $atom );
+        return '' unless $neighbours[0]->inner_element eq ChemOnomatopist::element( $center );
         $outer = $neighbours[0]->outer_element;
         $inner = $neighbours[0]->inner_element;
     } elsif( any { blessed $_ && $_->isa( ChemOnomatopist::Chain::ABA:: ) } @neighbours ) {
         # ABA chain on one side
         @neighbours = reverse @neighbours if blessed $neighbours[1] &&
                                              $neighbours[1]->isa( ChemOnomatopist::Chain::ABA:: );
-        return '' if any { blessed $_ } ( $atom, $neighbours[1] );
-        return '' if $neighbours[0]->inner_element eq ChemOnomatopist::element( $atom );
+        return '' if any { blessed $_ } ( $center, $neighbours[1] );
+        return '' if $neighbours[0]->inner_element eq ChemOnomatopist::element( $center );
         return '' if $neighbours[0]->inner_element eq ChemOnomatopist::element( $neighbours[1] );
         $outer = $neighbours[0]->outer_element;
         $inner = $neighbours[1]->inner_element;
@@ -128,7 +128,7 @@ sub looks_like_ABA_chain
         return '' if any { blessed $_ } @neighbours;
         return '' unless ChemOnomatopist::element( $neighbours[0] ) eq ChemOnomatopist::element( $neighbours[1] );
         $outer = ChemOnomatopist::element( $neighbours[0] );
-        $inner = ChemOnomatopist::element( $atom );
+        $inner = ChemOnomatopist::element( $center );
     }
 
     return $elements{$outer}->{seniority} > $elements{$inner}->{seniority};
