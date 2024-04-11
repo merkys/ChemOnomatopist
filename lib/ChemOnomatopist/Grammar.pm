@@ -211,7 +211,8 @@ my @rules = (
       sub {
             my( $target ) = $_[0]->groups( $_[2] );
             my( $source ) = $_[0]->groups( $_[3] );
-            $target->add( $source, $_[1] );
+            $target->add( $_[1] );
+            $target->add( $source );
             $_[0]->delete_group( $source );
           } ],
 

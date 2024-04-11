@@ -19,17 +19,12 @@ sub add
     my( $self, @atoms ) = @_;
     die "cannot extend ABA chain into more than two sides\n" if @atoms > 2;
 
-    my @chain1 = ( $atoms[0] );
-    my @chain2 = ( $atoms[1] );
-
-    # Unpack the atoms in chains
-    @chain1 = map { blessed $_ ? $_->vertices : $_ } @chain1;
-    @chain2 = map { blessed $_ ? $_->vertices : $_ } @chain2;
+    my @chains = map { blessed $_ ? [ $_->vertices ] : [ $_ ] } @atoms;
 
     my $graph = $self->graph;
     my @vertices = $self->vertices;
 
-    for (\@chain1, \@chain2) {
+    for (@chains) {
         next unless @$_;
 
         if(      $graph->has_edge( $self->{vertices}[ 0], $_->[ 0] ) ) {
