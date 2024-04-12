@@ -58,6 +58,10 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
+sub is_acenaphthylene()    { $_[0]->length == 12 }
+sub is_aceanthrylene()     { $_[0]->length == 16 && $_[0]->graph->degree( $_[0]->{vertices}[2] ) == 3 }
+sub is_acephenanthrylene() { $_[0]->length == 16 && $_[0]->graph->degree( $_[0]->{vertices}[3] ) == 3 }
+
 sub has_form($$)
 {
     my( $class, $graph ) = @_;
