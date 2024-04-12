@@ -8,9 +8,11 @@ use warnings;
 
 use parent ChemOnomatopist::Chain::Circular::;
 
+use ChemOnomatopist::Chain::Phenanthrene;
 use ChemOnomatopist::Chain::Polyacene;
 use Graph::Undirected;
 use List::Util qw( first );
+use Set::Object qw( set );
 
 sub has_form($$)
 {
@@ -39,6 +41,19 @@ sub ideal_graph_aceanthrylene()
     my $d3 = first { $graph->degree( $_ ) == 3 } $graph->vertices;
     my @d2 = grep  { $graph->degree( $_ ) == 2 } $graph->neighbours( $d3 );
     $graph->add_path( $d2[0], { symbol => 'C' }, { symbol => 'C' }, $d2[1] );
+
+    return $graph;
+}
+
+sub ideal_graph_acephenanthrylene()
+{
+    my( $class ) = @_;
+
+    my $graph = ChemOnomatopist::Chain::Phenanthrene::ideal_graph();
+    my $d3 = set( grep { $graph->degree( $_ ) == 3 } $graph->vertices );
+    $graph->delete_edges( map  { @$_ }
+                          grep { $d3->has( $_->[0] ) && $d3->has( $_->[1] ) }
+                               $graph->edges );
 
     return $graph;
 }
