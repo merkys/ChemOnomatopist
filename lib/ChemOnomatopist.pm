@@ -132,7 +132,7 @@ sub get_sidechain_name
     }
 
     # Groups that cannot be included in the chain do not matter
-    my $branches_at_start = grep { !blessed $_ || $_->is_carbon }
+    my $branches_at_start = grep { !blessed $_ || ( element( $_ ) && element( $_ ) eq 'C' ) }
                             grep { !$parent || $_ != $parent }
                                  $graph->neighbours( $start );
 
@@ -443,7 +443,7 @@ sub get_mainchain_name
 
     if( @groups && all { !$_->isa( ChemOnomatopist::Chain:: ) } @groups ) {
         # If the most senior group is carbon, thus it is in the chain as well
-        my $groups = set( grep { $_->is_carbon } @groups );
+        my $groups = set( grep { element( $_ ) && element( $_ ) eq 'C' } @groups );
         for (0..$#chain) {
             push @senior_group_attachments, $_ if $groups->has( $chain[$_] );
         }
@@ -986,7 +986,8 @@ sub select_mainchain
     # If there is at least one of carbon-based senior group attachment,
     # it means both ends are already senior, prompting to follow the
     # exception of three or more carbon-based groups.
-    if( $most_senior_group && $groups[0]->is_carbon &&
+    if( $most_senior_group &&
+        element( $groups[0] ) && element( $groups[0] ) eq 'C' &&
         !$chain->isa( ChemOnomatopist::Chain::Circular:: ) &&
          $chain->number_of_groups( $most_senior_group ) ) {
 
