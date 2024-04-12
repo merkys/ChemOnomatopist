@@ -17,7 +17,8 @@ use ChemOnomatopist::Util::Graph qw(
 use Graph::Nauty qw( are_isomorphic );
 use Graph::Traversal::DFS;
 use Graph::Undirected;
-use List::Util qw( first );
+use List::Util qw( any first );
+use Scalar::Util qw( blessed );
 
 sub new
 {
@@ -82,6 +83,7 @@ sub has_form($$)
     my( $class, $graph ) = @_;
 
     return '' unless $graph->vertices == 12 || $graph->vertices == 16;
+    return '' if any { blessed $_ || ChemOnomatopist::element( $_ ) ne 'C' } $graph->vertices;
 
     return 1 if are_isomorphic( graph_without_edge_attributes( $graph ),
                                 $class->ideal_graph_acenaphthylene,
