@@ -49,7 +49,7 @@ sub nonstandard_valence_positions()
     my @nonstandard_valence_positions;
     for (1..$#vertices) { # Nonstandard valence of the central atom is not important, hence skipped
         next if blessed $vertices[$_];
-        next if ChemOnomatopist::is_element( $vertices[$_], 'C' );
+        next if ChemOnomatopist::element( $vertices[$_] ) && ChemOnomatopist::element( $vertices[$_] ) eq 'C';
         next unless exists $vertices[$_]->{valence};
         push @nonstandard_valence_positions, $_;
     }
