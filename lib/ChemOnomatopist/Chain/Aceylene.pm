@@ -66,6 +66,8 @@ sub has_form($$)
 {
     my( $class, $graph ) = @_;
 
+    return '' unless $graph->vertices == 12 || $graph->vertices == 16;
+
     return 1 if are_isomorphic( graph_without_edge_attributes( $graph ),
                                 $class->ideal_graph_acenaphthylene,
                                 sub { ChemOnomatopist::element( $_[0] ) } );
@@ -118,5 +120,15 @@ sub ideal_graph_acephenanthrylene()
 }
 
 # TODO: Override locants() to give the internal vertex a number
+
+sub prefix() { &suffix }
+sub suffix()
+{
+    my( $self ) = @_;
+    return 'acenaphthylene'    if $self->is_acenaphthylene;
+    return 'aceanthrylene'     if $self->is_aceanthrylene;
+    return 'acephenanthrylene' if $self->is_acephenanthrylene;
+    die "unknown ace...ylene\n";
+}
 
 1;
