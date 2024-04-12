@@ -441,7 +441,7 @@ sub suffix()
     my $name_A = $ideal[1]->name;
     $name_A =~ s/^\d+H-//;
 
-    # Retained prefixes from BBv2 P-25.3.2.2.3
+    # Retained prefixes from BBv3 P-25.3.2.2.3
     $name_A = 'anthra'    if $name_A eq 'anthracene';
     $name_A = 'naphth'    if $name_A eq 'naphthalene';
     $name_A = 'benz'      if $name_A eq 'benzene';
