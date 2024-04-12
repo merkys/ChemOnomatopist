@@ -89,12 +89,6 @@ sub new
 
 sub element() { $_[0]->{element} }
 
-sub is_nitrogen()
-{
-    my( $self ) = @_;
-    return $self->element && $self->element eq 'N';
-}
-
 sub is_oxygen()
 {
     my( $self ) = @_;
