@@ -441,12 +441,16 @@ sub suffix()
     my $name_A = $ideal[1]->name;
     $name_A =~ s/^\d+H-//;
 
-    # TODO: Complete retained prefixes from BBv2 P-25.3.2.2.3
-    $name_A = 'fur'     if $name_A eq 'furan';
-    $name_A = 'imidaz'  if $name_A eq 'imidazole';
-    $name_A = 'pyrid'   if $name_A eq 'pyridine';
-    $name_A = 'pyrimid' if $name_A eq 'pyrimidine';
-    $name_A = 'thien'   if $name_A eq 'thiophene';
+    # Retained prefixes from BBv2 P-25.3.2.2.3
+    $name_A = 'anthra'    if $name_A eq 'anthracene';
+    $name_A = 'naphth'    if $name_A eq 'naphthalene';
+    $name_A = 'benz'      if $name_A eq 'benzene';
+    $name_A = 'phenanthr' if $name_A eq 'phenanthrene';
+    $name_A = 'fur'       if $name_A eq 'furan';
+    $name_A = 'imidaz'    if $name_A eq 'imidazole';
+    $name_A = 'pyrid'     if $name_A eq 'pyridine';
+    $name_A = 'pyrimid'   if $name_A eq 'pyrimidine';
+    $name_A = 'thien'     if $name_A eq 'thiophene';
 
     $name .= $name_A;
     unless( $name->[-1] =~ s/e$/o/ ) { # BBv2 P-25.3.2.2.2
