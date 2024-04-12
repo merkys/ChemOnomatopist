@@ -54,19 +54,25 @@ sub new
 sub candidates()
 {
     my( $self ) = @_;
-    my @candidates = ( $self );
-    my @vertices = $self->vertices;
-
-    push @candidates,
-         bless { graph => $self->graph,
-                 vertices => [ reverse @vertices[11..13], @vertices[0..10] ],
-                 candidate_for => $self };
+    my @candidates = ( $self, $self->flipped_horizontally );
 
     if( $self->number_of_heteroatoms == 2 &&
         uniq( $self->heteroatoms ) == 1 ) { # TODO: Add two more candidates
     }
 
+    for (1..$#candidates) {
+        $candidates[$_]->{candidate_for} = $self;
+    }
+
     return @candidates;
+}
+
+sub flipped_horizontally()
+{
+    my( $self ) = @_;
+    my @vertices = $self->vertices;
+    return bless { graph => $self->graph,
+                   vertices => [ reverse @vertices[11..13], @vertices[0..10] ] };
 }
 
 sub locants(@)
