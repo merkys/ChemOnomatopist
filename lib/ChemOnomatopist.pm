@@ -691,7 +691,6 @@ sub find_groups
 }
 
 # Derive the chemical element of atom or group representation
-# TODO: Replace object methods is_...
 sub element
 {
     my( $atom_or_group ) = @_;
