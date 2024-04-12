@@ -46,7 +46,14 @@ sub candidates()
 {
     my( $self ) = @_;
     my @candidates = ( $self );
-    # TODO: Add one more candidate (there are two)
+
+    my @vertices = reverse $self->vertices;
+    for (1..6) {
+        push @vertices, shift @vertices;
+    }
+    push @candidates, bless { graph => $self->graph,
+                              vertices => \@vertices,
+                              candidate_for => $self };
 
     return @candidates;
 }
