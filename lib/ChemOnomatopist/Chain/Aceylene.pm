@@ -38,6 +38,7 @@ sub ideal_graph_aceanthrylene()
     my $graph = ChemOnomatopist::Chain::Polyacene::ideal_graph( 14 );
     my $d3 = first { $graph->degree( $_ ) == 3 } $graph->vertices;
     my @d2 = grep  { $graph->degree( $_ ) == 2 } $graph->neighbours( $d3 );
+    $graph->add_path( $d2[0], { symbol => 'C' }, { symbol => 'C' }, $d2[1] );
 
     return $graph;
 }
