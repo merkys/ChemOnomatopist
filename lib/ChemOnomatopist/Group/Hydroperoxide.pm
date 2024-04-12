@@ -65,6 +65,7 @@ sub suffix()
         } else {
             $name = '-' . join( '', @elements ) . '-' .
                     join '', sort map { s/a$/o/; $_ } map { $elements{$_}->{prefix} } grep { $_ ne 'O' } @elements;
+            $name = ChemOnomatopist::Name->new( $name );
         }
         $name .= 'peroxol';
     }

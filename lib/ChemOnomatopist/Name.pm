@@ -57,7 +57,7 @@ sub append($)
         $self->[-1]{value} =~ s/a$//;
     }
     # FIXME: The following needlessly converts $name into string
-    $name =~ s/^-// if @$self && $self->[-1] =~ /-$/ && $name =~ /^-/;
+    $name->[0]{value} =~ s/^-// if @$self && $self->[-1] =~ /-$/ && $name =~ /^-/;
 
     push @$self, blessed $name && $name->isa( ChemOnomatopist::Name:: ) ? @$name : $name;
 
