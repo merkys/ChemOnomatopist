@@ -31,11 +31,18 @@ sub new
     }
     my $center = first { $cycles_per_atom{$_} == 3 } $subgraph->vertices;
 
+    my @vertices;
     if( @cycles == 3 ) {
         my $first = first { $cycles_per_atom{$_} == 1 } $pentane->vertices;
         my $last  = first { $cycles_per_atom{$_} == 2 } $subgraph->neighbours( $first );
+        $subgraph->delete_edge( $first, $last );
+        $subgraph->delete_vertex( $center );
+        @vertices = reverse Graph::Traversal::DFS->new( $subgraph, start => $first )->dfs;
+        @vertices = @vertices[0..1], $center, @vertices[2..$#vertices];
     } else {
     }
+
+    return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
 sub has_form($$)
