@@ -47,8 +47,8 @@ sub prefix()
 {
     my( $self ) = @_;
     my $prefix = $self->{chain}->prefix;
-    pop @$prefix if $prefix->[-1] eq 'e'; # FIXME: Dirty
-    pop @$prefix if $prefix->[-1] eq 'an';
+    $prefix->pop_e;
+    pop @$prefix if $prefix->ends_with_alkane_an_suffix;
     $prefix .= 'yl' unless $prefix =~ /[oy]$/;
     $prefix->append_stem( 'amino' );
     return $prefix;
