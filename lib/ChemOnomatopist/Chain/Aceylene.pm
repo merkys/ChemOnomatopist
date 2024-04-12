@@ -14,6 +14,7 @@ use ChemOnomatopist::Util::Graph qw(
     graph_without_edge_attributes
 );
 use Graph::Nauty qw( are_isomorphic );
+use Graph::Traversal::DFS;
 use Graph::Undirected;
 use List::Util qw( first );
 
@@ -38,7 +39,7 @@ sub new
         $subgraph->delete_edge( $first, $last );
         $subgraph->delete_vertex( $center );
         @vertices = reverse Graph::Traversal::DFS->new( $subgraph, start => $first )->dfs;
-        @vertices = @vertices[0..1], $center, @vertices[2..$#vertices];
+        @vertices = ( @vertices[0..1], $center, @vertices[2..$#vertices] );
     } else {
         my $d3_subgraph = $subgraph->subgraph( grep { $subgraph->degree( $_ ) == 3 } $subgraph->vertices );
         my $last = first { $d3_subgraph->degree( $_ ) == 2 }
@@ -52,7 +53,7 @@ sub new
         $subgraph = $graph->subgraph( map { $_->vertices } @cycles );
         my $first_d3 = first { $subgraph->degree( $vertices[$_] ) == 3 }
                              0..$#vertices;
-        @vertices = @vertices[0..$first_d3-1], $center, @vertices[$first_d3..$#vertices];
+        @vertices = ( @vertices[0..$first_d3-1], $center, @vertices[$first_d3..$#vertices] );
     }
 
     return bless { graph => $graph, vertices => \@vertices }, $class;
@@ -98,7 +99,7 @@ sub ideal_graph_aceanthrylene()
 {
     my( $class ) = @_;
 
-    my $graph = ChemOnomatopist::Chain::Polyacene::ideal_graph( 14 );
+    my $graph = ChemOnomatopist::Chain::Polyacene->ideal_graph( 14 );
     my $d3 = first { $graph->degree( $_ ) == 3 } $graph->vertices;
     my @d2 = grep  { $graph->degree( $_ ) == 2 } $graph->neighbours( $d3 );
     $graph->add_path( $d2[0], { symbol => 'C' }, { symbol => 'C' }, $d2[1] );
@@ -110,9 +111,9 @@ sub ideal_graph_acephenanthrylene()
 {
     my( $class ) = @_;
 
-    my $graph = ChemOnomatopist::Chain::Phenanthrene::ideal_graph();
+    my $graph = ChemOnomatopist::Chain::Phenanthrene->ideal_graph;
     my $d3_subgraph = subgraph( $graph, grep { $graph->degree( $_ ) == 3 } $graph->vertices );
-    my $d3 = first { $subgraph->degree( $_ ) == 1 } $d3_subgraph->vertices;
+    my $d3 = first { $d3_subgraph->degree( $_ ) == 1 } $d3_subgraph->vertices;
     my @d2 = grep { $graph->degree( $_ ) == 2 } $graph->neighbours( $d3 );
     $graph->add_path( $d2[0], { symbol => 'C' }, { symbol => 'C' }, $d2[1] );
 

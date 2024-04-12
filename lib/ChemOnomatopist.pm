@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Chain;
+use ChemOnomatopist::Chain::Aceylene;
 use ChemOnomatopist::Chain::Amide;
 use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Bicycle;
@@ -619,6 +620,8 @@ sub find_groups
                                 ChemOnomatopist::Chain::Xanthene->ideal_graph,
                                 sub { return 'C' } ) ) {
                 $compound = ChemOnomatopist::Chain::Xanthene->new( $graph, @cycles );
+            } elsif( ChemOnomatopist::Chain::Aceylene->has_form( $core ) ) {
+                $compound = ChemOnomatopist::Chain::Aceylene->new( $graph, @cycles );
             } elsif( @cycles == 3 &&
                      (grep { $_->is_benzene } @cycles) == 2 &&
                      (grep { $_->is_hydrocarbon && $_->length == 5 } @cycles) &&
