@@ -40,6 +40,19 @@ sub new
         @vertices = reverse Graph::Traversal::DFS->new( $subgraph, start => $first )->dfs;
         @vertices = @vertices[0..1], $center, @vertices[2..$#vertices];
     } else {
+        my $d3_subgraph = $subgraph->subgraph( grep { $subgraph->degree( $_ ) == 3 } $subgraph->vertices );
+        my $last = first { $d3_subgraph->degree( $_ ) == 2 }
+                         $subgraph->neighbours( $center );
+        my $first = first { $cycles_per_atom{$_} == 1 } $subgraph->neighbours( $last );
+        $subgraph->delete_edge( $first, $last ); # FIXME: Delete the remaining chord
+        $subgraph->delete_vertex( $center );
+        @vertices = reverse Graph::Traversal::DFS->new( $subgraph, start => $first )->dfs;
+
+        # Restore the original subgraph
+        $subgraph = $graph->subgraph( map { $_->vertices } @cycles );
+        my $first_d3 = first { $subgraph->degree( $vertices[$_] ) == 3 }
+                             0..$#vertices;
+        @vertices = @vertices[0..$first_d3-1], $center, @vertices[$first_d3..$#vertices];
     }
 
     return bless { graph => $graph, vertices => \@vertices }, $class;
