@@ -17,6 +17,27 @@ use Graph::Nauty qw( are_isomorphic );
 use Graph::Undirected;
 use List::Util qw( first );
 
+sub new
+{
+    my( $class, $graph, @cycles ) = @_;
+
+    my $pentane = first { $_->length == 5 } @cycles;
+    my $subgraph = $graph->subgraph( map { $_->vertices } @cycles );
+    my %cycles_per_atom;
+    for (@cycles) {
+        for ($_->vertices) {
+            $cycles_per_atom{$_}++;
+        }
+    }
+    my $center = first { $cycles_per_atom{$_} == 3 } $subgraph->vertices;
+
+    if( @cycles == 3 ) {
+        my $first = first { $cycles_per_atom{$_} == 1 } $pentane->vertices;
+        my $last  = first { $cycles_per_atom{$_} == 2 } $subgraph->neighbours( $first );
+    } else {
+    }
+}
+
 sub has_form($$)
 {
     my( $class, $graph ) = @_;
