@@ -57,7 +57,10 @@ sub candidates()
     my @candidates = ( $self, $self->flipped_horizontally );
 
     if( $self->number_of_heteroatoms == 2 &&
-        uniq( $self->heteroatoms ) == 1 ) { # TODO: Add two more candidates
+        uniq( $self->heteroatoms ) == 1 ) {
+        push @candidates,
+             $self->flipped_vertically,
+             $self->flipped_vertically->flipped_horizontally;
     }
 
     for (1..$#candidates) {
@@ -73,6 +76,16 @@ sub flipped_horizontally()
     my @vertices = $self->vertices;
     return bless { graph => $self->graph,
                    vertices => [ reverse @vertices[11..13], @vertices[0..10] ] };
+}
+
+sub flipped_vertically()
+{
+    my( $self ) = @_;
+    my @vertices = reverse $self->vertices;
+    for (1..4) {
+        unshift @vertices, pop @vertices;
+    }
+    return bless { graph => $self->graph, vertices => \@vertices };
 }
 
 sub locants(@)
