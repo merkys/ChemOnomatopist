@@ -65,8 +65,8 @@ sub new
 }
 
 sub is_acenaphthylene()    { $_[0]->length == 12 }
-sub is_aceanthrylene()     { $_[0]->length == 16 && $_[0]->graph->degree( $_[0]->{vertices}[2] ) == 3 }
-sub is_acephenanthrylene() { $_[0]->length == 16 && $_[0]->graph->degree( $_[0]->{vertices}[3] ) == 3 }
+sub is_aceanthrylene()     { $_[0]->length == 16 && $_[0]->graph->degree( $_[0]->{vertices}[2] ) == 3 } # CHECKME: This should probably use subgraph
+sub is_acephenanthrylene() { $_[0]->length == 16 && $_[0]->graph->degree( $_[0]->{vertices}[3] ) == 3 } # CHECKME: This should probably use subgraph
 
 sub has_form($$)
 {
