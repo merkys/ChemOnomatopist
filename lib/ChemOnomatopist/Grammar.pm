@@ -89,6 +89,7 @@ sub is_imine         { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Imin
 sub is_isocyanate    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanate:: ) }
 sub is_isocyanide    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanide:: ) }
 sub is_ketone        { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
+sub is_sulfonyl      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Sulfonyl:: ) }
 
 sub is_benzene   { any { $_->isa( ChemOnomatopist::Chain::Monocycle:: ) && $_->is_benzene } $_[0]->groups( $_[1] ) }
 sub is_circular  { any { $_->isa( ChemOnomatopist::Chain::Circular:: ) } $_[0]->groups( $_[1] ) }
@@ -186,6 +187,8 @@ my @rules = (
     # Amide
     [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_ketone,
       sub { $_[0]->delete_vertices( $_[3] ); graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1], $_[3] ), $_[2] ) } ],
+    [ \&is_sulfonyl, \&is_amine,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1] ), $_[2] ) } ],
 
     # Acyl halide
     [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_B_Cl_F_I }, sub { &is_ketone && &is_O }, \&is_C, NO_MORE_VERTICES,

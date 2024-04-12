@@ -30,7 +30,7 @@ sub suffix
 {
     my( $self ) = @_;
     my $suffix = '';
-    if( exists $infix{$self->{ketone}->element} ) {
+    if( $self->{ketone} && exists $infix{$self->{ketone}->element} ) {
         $suffix .= $infix{$self->{ketone}->element};
     }
     return $suffix . 'amide';
