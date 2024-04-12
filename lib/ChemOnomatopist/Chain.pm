@@ -621,6 +621,9 @@ sub suffix()
         return $name;
     }
 
+    # CHECKME: Not sure if calling prefix() is correct
+    return $chain[0]->prefix if $self->length == 1 && blessed $chain[0];
+
     my @bonds = $self->bonds;
     my @double = grep { $bonds[$_] eq '=' } 0..$#bonds;
     my @triple = grep { $bonds[$_] eq '#' } 0..$#bonds;
