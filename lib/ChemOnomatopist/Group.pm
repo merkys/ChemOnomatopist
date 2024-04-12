@@ -89,12 +89,6 @@ sub new
 
 sub element() { $_[0]->{element} }
 
-sub is_oxygen()
-{
-    my( $self ) = @_;
-    return $self->element && $self->element eq 'O';
-}
-
 sub is_part_of_chain() { '' }
 
 # Certain groups can only be expressed as prefixes
