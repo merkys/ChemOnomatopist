@@ -52,7 +52,13 @@ sub candidates()
     my( $self ) = @_;
     my @candidates = ( $self );
 
-    # TODO: Add the mirror copy
+    my @vertices = reverse $self->vertices;
+    for (1..5) {
+        push @vertices, shift @vertices;
+    }
+    push @candidates, bless { graph => $self->graph,
+                              vertices => \@vertices,
+                              candidate_for => $self };
 
     return @candidates;
 }
