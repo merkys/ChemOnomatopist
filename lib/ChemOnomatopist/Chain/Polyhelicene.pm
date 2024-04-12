@@ -1,10 +1,10 @@
 package ChemOnomatopist::Chain::Polyhelicene;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Polyhelicenes
 # VERSION
+
+use strict;
+use warnings;
 
 use parent ChemOnomatopist::Chain::Circular::;
 
@@ -57,7 +57,7 @@ sub candidates()
     return @candidates;
 }
 
-sub needs_substituent_locants() { return 1 }
+sub needs_substituent_locants() { 1 }
 
 sub has_form($$)
 {
@@ -71,7 +71,7 @@ sub has_form($$)
 
     return are_isomorphic( graph_without_edge_attributes( $graph ),
                            $class->ideal_graph( $N ),
-                           sub { return 'C' } );
+                           sub { 'C' } );
 }
 
 sub ideal_graph($$)
