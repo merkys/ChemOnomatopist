@@ -310,7 +310,8 @@ sub locants(@)
     my $letter = 'a';
     for my $i (0..$#vertices) {
         if( $graph->degree( $vertices[$i] ) == 2 ||
-            !ChemOnomatopist::is_element( $vertices[$i], 'C' ) ) {
+            !ChemOnomatopist::element( $vertices[$i] ) ||
+             ChemOnomatopist::element( $vertices[$i] ) ne 'C' ) {
             $pos++;
             $locant_map{$i} = $pos;
             $letter = 'a';
