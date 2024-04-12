@@ -12,6 +12,7 @@ use ChemOnomatopist::Chain::Phenanthrene;
 use ChemOnomatopist::Chain::Polyacene;
 use ChemOnomatopist::Util::Graph qw(
     graph_without_edge_attributes
+    subgraph
 );
 use Graph::Nauty qw( are_isomorphic );
 use Graph::Traversal::DFS;
