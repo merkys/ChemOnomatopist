@@ -134,7 +134,28 @@ sub ideal_graph_acephenanthrylene()
     return $graph;
 }
 
-# TODO: Override locants() to give the internal vertex a number
+sub locants(@)
+{
+    my $self = shift;
+    my @vertices = $self->vertices;
+    my $graph = $self->graph->subgraph( @vertices );
+
+    my %locant_map;
+    my $pos = 0;
+    for my $i (0..$#vertices) {
+        if( $vertices[$i] == $self->{center} ) {
+            $locant_map{$i} = $pos . 'a1';
+        } elsif( $graph->degree( $vertices[$i] ) == 2 ) {
+            $pos++;
+            $locant_map{$i} = $pos;
+        } else {
+            $locant_map{$i} = $pos . 'a';
+        }
+    }
+
+    return map { $locant_map{$_} } @_;
+}
+
 
 sub prefix() { &suffix }
 sub suffix()
