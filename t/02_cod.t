@@ -8,14 +8,17 @@ use DBI;
 use IPC::Run3;
 use Test::More;
 
+my $OPSIN_JAR = '/usr/share/java/opsin.jar';
+
 if( !$ENV{EXTENDED_TESTING} ) {
     plan skip_all => "Skip \$ENV{EXTENDED_TESTING} is not set\n";
 }
 
-my $dbh = db_connect('mysql', 'www.crystallography.net', 'cod', 3306, 'cod_reader', '');
+plan skip_all => "OPSIN is not installed\n" unless -e $OPSIN_JAR;
+
+my $dbh = db_connect( 'mysql', 'www.crystallography.net', 'cod', 3306, 'cod_reader', '' );
 
 # FIXME: Skip tests if connection is unsuccessful. (A.M.)
-# FIXME: Skip tests if OPSIN is not installed. (A.M.)
 
 my $sth = $dbh->prepare( 'SELECT chemname, value AS smiles FROM data JOIN smiles ON file = cod_id WHERE chemname IS NOT NULL' );
 $sth->execute;
@@ -30,7 +33,7 @@ while (my $item = $sth->fetchrow_hashref) {
 my %opsin_approved;
 for my $compound (keys %tests) {
     my( $smiles, $stderr );
-    run3 'java -jar /usr/share/java/opsin.jar', \"$compound\n", \$smiles, \$stderr;
+    run3 "java -jar $OPSIN_JAR", \"$compound\n", \$smiles, \$stderr;
     chomp $smiles;
     next unless $smiles; # Skipping names that were not understood by OPSIN
     if( $smiles eq $tests{$compound} ) { # Ensuring OPSIN approval
