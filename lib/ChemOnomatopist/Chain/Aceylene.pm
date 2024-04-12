@@ -46,8 +46,12 @@ sub new
         my $last = first { $d3_subgraph->degree( $_ ) == 2 }
                          $subgraph->neighbours( $center );
         my $first = first { $cycles_per_atom{$_} == 1 } $subgraph->neighbours( $last );
-        $subgraph->delete_edge( $first, $last ); # FIXME: Delete the remaining chord
+        $subgraph->delete_edge( $first, $last );
         $subgraph->delete_vertex( $center );
+        $subgraph->delete_edges( map  { @$_ }
+                                 grep { $subgraph->degree( $_->[0] ) == 3 &&
+                                        $subgraph->degree( $_->[1] ) == 3 }
+                                      $subgraph->edges );
         @vertices = reverse Graph::Traversal::DFS->new( $subgraph, start => $first )->dfs;
 
         # Restore the original subgraph
