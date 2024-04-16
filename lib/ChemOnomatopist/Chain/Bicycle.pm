@@ -150,27 +150,14 @@ sub new
         # Here the "winning" ring is selected
         my $chain = shift @candidates;
 
-        # Restore the set of candidates
+        # Making the "winning" ring the first
+        if( set( $chain->vertices ) == set( $self->{cycles}[1]->vertices ) ) {
+            $self->{vertices} = [ reverse @{$self->{vertices}} ];
+        }
+
+        # Construct the candidates to determine the numbering order
         @candidates = map { ChemOnomatopist::Chain::Monocycle->new( $_->graph, $_->vertices ) }
                           ( $self->cycles, map { $_->flipped } $self->cycles );
-
-        # Making the "winning" ring the first
-        if( set( $chain->vertices ) == set( $cycles[1]->vertices ) ) {
-            @cycles = reverse @cycles;
-        }
-
-        # BEGIN code which will be removed soon
-
-        # Now we have to match the direction, I guess
-        my  @bridge_in_chain = grep { set( @bridge )->has( $_ ) } $chain->vertices;
-        if( $bridge_in_chain[-1] != $cycles[0]->{vertices}[-1] ) {
-            @cycles = map { $_->flipped } @cycles;
-        }
-
-        $self->{cycles} = \@cycles;
-        $self->_adjust_vertices_to_cycles;
-
-        # END code which will be removed soon
 
         # Establish the order
         for my $rule (
@@ -194,7 +181,7 @@ sub new
             }
         }
 
-        # $self->{vertices} = [ (shift @candidates)->vertices ];
+        $self->{vertices} = [ (shift @candidates)->vertices ];
 
         if( $self->is_purine ) {
             return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, @cycles );
@@ -241,6 +228,17 @@ sub candidates()
     }
 
     return @chains;
+}
+
+sub flipped_horizontally()
+{
+    my( $self ) = @_;
+    my @vertices = reverse $self->vertices;
+    push @vertices, shift @vertices;
+    return bless { graph    => $self->graph,
+                   cycles   => [ $self->cycles ],
+                   vertices => \@vertices,
+                   parent   => $self->parent };
 }
 
 sub copy()
