@@ -15,7 +15,7 @@ my @cases = (
     # From BBv2 P-25.3.2.4
     { smiles => 'S1CC=CSC=2C1=COC2', iupac => '2H-[1,4]dithiepino[2,3-c]furan', AUTHOR => 1 },
     { smiles => 'O1CC=C2OC=CC=C21', iupac => '2H-furo[3,2-b]pyran', AUTHOR => 1 },
-    { smiles => 'N1=CC=CC2=C1C=NOC2', iupac => '5H-pyrido[2,3-d][1,2]oxazine', AUTHOR => 1 },
+    { smiles => 'N1=CC=CC2=C1C=NOC2', iupac => '5H-pyrido[2,3-d][1,2]oxazine' },
     { smiles => 'O1COC2=C1C=CO2', iupac => '2H-furo[2,3-d][1,3]dioxole' },
     { smiles => 'O1P=CC2=C1OCO2', iupac => '5H-[1,3]dioxolo[4,5-d][1,2]oxaphosphole' },
     { smiles => 'S1C=NC2=C1N=C[Se]2', iupac => '[1,3]selenazolo[5,4-d][1,3]thiazole' },
@@ -34,7 +34,7 @@ my @cases = (
     { smiles => 'O1COC2=C1N=CN2', iupac => '2H,4H-[1,3]dioxolo[4,5-d]imidazole', AUTHOR => 1 },
 
     { smiles => 'CN(C=1C2=C(N=CN1)NC=C2)C', iupac => 'N,N-dimethyl-7H-pyrrolo[2,3-d]pyrimidin-4-amine', AUTHOR => 1 }, # PubChem 1861
-    { smiles => 'C1(=CC=CC=C1)C1=CC2=C(N=CN=C2N)N1C1=CC=CC=C1', iupac => '6,7-diphenylpyrrolo[2,3-d]pyrimidin-4-amine', AUTHOR => 1 }, # PubChem 49845043
+    { smiles => 'C1(=CC=CC=C1)C1=CC2=C(N=CN=C2N)N1C1=CC=CC=C1', iupac => '6,7-diphenylpyrrolo[2,3-d]pyrimidin-4-amine' }, # PubChem 49845043
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
