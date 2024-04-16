@@ -47,7 +47,7 @@ our @names = (
     [ 'n:n:c:c:c:', 'c:c:c:c:c:c:', '1H-indazole' ],
     [ 'n:c:c:c:c:', 'c:c:c:c:c:c:', '1H-indole' ],
     [ 'c:n:c:c:c:', 'c:c:c:c:c:c:', 'isoindole' ],
-    [ 'c:c:c:c:n:', 'c:c:c:c:n:c:', 'indolizine', ],
+    [ 'c:c:c:c:c:n:', 'c:c:c:n:c:', 'indolizine', ],
     [ 'CC=Cn:c',    'c:c:c:c:n:',   '1H-pyrrolizine' ], # TODO: There are isomers
 );
 
