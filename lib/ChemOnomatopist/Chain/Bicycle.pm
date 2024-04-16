@@ -117,7 +117,7 @@ sub new
         # TODO: Maybe all traversals of both rings should be generated here?
         # FIXME: There seem to be two orders for rings: one for numbering, other for fusion naming...
         my @candidates = map { ChemOnomatopist::Chain::Monocycle->new( $_->graph, $_->vertices ) }
-                             ( @cycles, map { $_->flipped } @cycles );
+                             ( $self->cycles, map { $_->flipped } $self->cycles );
         for my $rule ( # P-25.3.2.4 (a): Senior heteroatom according to specific seniority order
                        \&rule_most_senior_heteroatom,
                        # TODO: P-25.3.2.4 (b): Concerns fusions of more than two rings
@@ -152,7 +152,7 @@ sub new
 
         # Restore the set of candidates
         @candidates = map { ChemOnomatopist::Chain::Monocycle->new( $_->graph, $_->vertices ) }
-                          ( @cycles, map { $_->flipped } @cycles );
+                          ( $self->cycles, map { $_->flipped } $self->cycles );
 
         # Making the "winning" ring the first
         if( set( $chain->vertices ) == set( $cycles[1]->vertices ) ) {
