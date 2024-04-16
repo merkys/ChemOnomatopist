@@ -15,6 +15,9 @@ my @cases = (
     { smiles => 'OC(=O)CCC(C(=O)O)CCC(=O)O', iupac => 'pentane-1,3,5-tricarboxylic acid' },
     { smiles => 'C(C(=O)O)(C(=O)O)C(C(=O)O)(C(=O)O)', iupac => 'ethane-1,1,2,2-tetracarboxylic acid' },
 
+    # From BBv3 P-65.1.2.2.3
+    { smiles => 'C(=O)(O)CC(CC(=O)O)CCCC(=O)O', iupac => '3-(carboxymethyl)heptanedioic acid', AUTHOR => 1 },
+
     # From BBv3 P-65.1.5.1
     { smiles => 'C(CCCCC)(O)=S', iupac => 'hexanethioic O-acid' },
     { smiles => 'C(CCCCC)(=[Se])S', iupac => 'hexaneselenothioic S-acid' },
