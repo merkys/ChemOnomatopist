@@ -196,17 +196,17 @@ sub get_sidechain_name
             $number .= 'a' unless $number =~ /^(|\?|.*i)$/;
             $name->append_multiplier( $number );
 
-            # FIXME: More rules from BBv2 P-16.3.4 should be added
-            if( $attachment->has_substituent_locant || # BBv2 P-16.3.4 (a)
-                $attachment->starts_with_multiplier || # BBv2 P-16.3.4 (c)
-                $attachment =~ /^dec/ ||               # BBv2 P-16.3.4 (d)
+            # FIXME: More rules from BBv3 P-16.3.4 should be added
+            if( $attachment->has_substituent_locant || # BBv3 P-16.3.4 (a)
+                $attachment->starts_with_multiplier || # BBv3 P-16.3.4 (c)
+                $attachment =~ /^dec/ ||               # BBv3 P-16.3.4 (d)
                 $attachment =~ /^[0-9]/ ) {
                 $attachment->bracket;
             }
         } else {
             if( !$chain->isa( ChemOnomatopist::Chain::Ether:: ) &&
                 !$attachment->is_enclosed &&
-                (!$attachment->is_simple || $attachment->starts_with_locant) ) {
+                (!$attachment->is_simple || $attachment->starts_with_locant) ) { # BBv3 P-16.5.1.1
                 $attachment->bracket;
             }
         }
