@@ -233,12 +233,25 @@ sub candidates()
 sub flipped_horizontally()
 {
     my( $self ) = @_;
-    my @vertices = reverse $self->vertices;
+    my $copy = $self->copy;
+    my @vertices = reverse $copy->vertices;
     push @vertices, shift @vertices;
-    return bless { graph    => $self->graph,
-                   cycles   => [ $self->cycles ],
-                   vertices => \@vertices,
-                   parent   => $self->parent };
+    $copy->{vertices} = \@vertices;
+    return $copy;
+}
+
+sub flipped_vertically()
+{
+    my( $self ) = @_;
+    my $copy = $self->copy;
+    my $cycle = first { set( $_->vertices )->has( $copy->{vertices}[0] ) }
+                      $copy->cycles;
+    my @vertices = reverse $copy->vertices;
+    for (1..$cycle->length-2) {
+        unshift @vertices, pop @vertices;
+    }
+    $copy->{vertices} = \@vertices;
+    return $copy;
 }
 
 sub copy()
