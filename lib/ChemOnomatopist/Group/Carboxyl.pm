@@ -57,7 +57,7 @@ sub prefix()
         $name->append_stem( 'carbono' );
         $name .= $ketone->suffix if $ketone->element ne 'O';
     } else {
-        $name->append_stem( 'carbono' );
+        $name->append_stem( 'carboxy' );
     }
     $name->[-1]{value} =~ s/(ne|o)$/yl/;
 
