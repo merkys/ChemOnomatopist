@@ -6,23 +6,30 @@ package ChemOnomatopist::Chain::Bicycle::Purine;
 use strict;
 use warnings;
 
+use Graph::Traversal::DFS;
+use List::Util qw( first );
+
 use parent ChemOnomatopist::Chain::Bicycle::;
 
 sub new
 {
-    my( $class, $graph, $pyrimidine, $imidazole ) = @_;
+    my( $class, $graph, @cycles ) = @_;
 
+    my $pyrimidine = first { $_->length == 6 } @cycles;
     if( ChemOnomatopist::element( $pyrimidine->{vertices}[0] ) eq 'N' ) {
-        ( $pyrimidine, $imidazole ) = map { $_->flipped }
-                                          ( $pyrimidine, $imidazole );
+        $pyrimidine = $pyrimidine->flipped;
     }
 
-    my @vertices = ( @{$pyrimidine->{vertices}}[1..5],
-                     $pyrimidine->{vertices}[0],
-                     reverse @{$imidazole->{vertices}}[0..2] );
+    my $subgraph = $graph->subgraph( map { $_->vertices } @cycles );
+    $subgraph->delete_edge( @{$pyrimidine->{vertices}}[0..1] );
+    $subgraph->delete_edge( map  { @$_ }
+                            grep { $subgraph->degree( $_->[0] ) == 3 &&
+                                   $subgraph->degree( $_->[1] ) == 3 }
+                                 $subgraph->edges );
+    my @vertices = Graph::Traversal::DFS->new( $subgraph, start => $pyrimidine->{vertices}[0] )->dfs;
     return bless { graph => $graph,
-                   cycles => [ $pyrimidine, $imidazole ],
-                   vertices => \@vertices };
+                   cycles => \@cycles,
+                   vertices => \@vertices }, $class;
 }
 
 sub is_purine() { 1 }
