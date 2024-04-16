@@ -140,19 +140,26 @@ sub new
             if( @candidates_now == 1 ) {
                 @candidates = @candidates_now;
                 last;
-            } elsif( @candidates ) {
+            } elsif( @candidates ) { # CHECKME: This looks strange
                 @candidates = @candidates_now;
             } else {
                 last;
             }
         }
+
         # Here the "winning" ring is selected
         my $chain = shift @candidates;
+
+        # Restore the set of candidates
+        @candidates = map { ChemOnomatopist::Chain::Monocycle->new( $_->graph, $_->vertices ) }
+                          ( @cycles, map { $_->flipped } @cycles );
 
         # Making the "winning" ring the first
         if( set( $chain->vertices ) == set( $cycles[1]->vertices ) ) {
             @cycles = reverse @cycles;
         }
+
+        # BEGIN code which will be removed soon
 
         # Now we have to match the direction, I guess
         my  @bridge_in_chain = grep { set( @bridge )->has( $_ ) } $chain->vertices;
@@ -162,6 +169,32 @@ sub new
 
         $self->{cycles} = \@cycles;
         $self->_adjust_vertices_to_cycles;
+
+        # END code which will be removed soon
+
+        # Establish the order
+        for my $rule (
+                       # P-25.3.3.1.2 (a): Lower locants for heteroatoms
+                       \&ChemOnomatopist::rule_lowest_numbered_heteroatoms,
+                       # P-25.3.3.1.2 (b): Lower locants for senior heteroatoms
+                       \&ChemOnomatopist::rule_lowest_numbered_most_senior_heteroatoms,
+                       # TODO: P-25.3.3.1.2 (c): Lower locants for fusion carbon atoms
+                       # TODO: P-25.3.3.1.2 (d): Lower locants for fusion heteroatoms (rather than nonfusion)
+                       # TODO: P-25.3.3.1.2 (e): Lower locants for interior heteroatom
+                       # TODO: P-25.3.3.1.2 (f): Lower locants for indicated hydrogen atoms
+                     ) {
+            my @candidates_now = $rule->( @candidates );
+            if( @candidates_now == 1 ) {
+                @candidates = @candidates_now;
+                last;
+            } elsif( @candidates ) { # CHECKME: This looks strange
+                @candidates = @candidates_now;
+            } else {
+                last;
+            }
+        }
+
+        # $self->{vertices} = [ (shift @candidates)->vertices ];
 
         if( $self->is_purine ) {
             return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, @cycles );
