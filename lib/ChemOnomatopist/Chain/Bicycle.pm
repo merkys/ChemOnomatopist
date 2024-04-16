@@ -112,7 +112,9 @@ sub new
     my $nbenzene = scalar grep { $_->is_benzene } @cycles;
 
     # The ordering should not be done if one of the cycles is benzene
-    if( $nbenzene == 0 ) {
+    if( !$nbenzene && $self->is_purine ) {
+        return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, @cycles );
+    } elsif( !$nbenzene ) {
         # The following code is supposed to order the rings _and_ establish the traversal order
         # TODO: Maybe all traversals of both rings should be generated here?
         # FIXME: There seem to be two orders for rings: one for numbering, other for fusion naming...
@@ -184,10 +186,6 @@ sub new
         }
 
         $self->{vertices} = [ (shift @candidates)->vertices ]; # FIXME: Simply return instead of self
-
-        if( $self->is_purine ) {
-            return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, @cycles );
-        }
     } elsif( $nbenzene == 1 ) {
         # Numbering has to start from cycle other than benzene
         if( $cycles[0]->is_benzene ) {
