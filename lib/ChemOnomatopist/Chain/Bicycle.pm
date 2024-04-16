@@ -89,7 +89,6 @@ sub new
     my @bridge = grep { $subgraph->degree( $_ ) == 3 } @vertices;
     $subgraph->delete_edge( @bridge );
     @vertices = Graph::Traversal::DFS->new( $subgraph, start => $bridge[0] )->dfs;
-    push @vertices, shift @vertices;
     $subgraph->delete_vertices( @bridge );
 
     # Graph is broken into components.
@@ -184,7 +183,7 @@ sub new
             }
         }
 
-        $self->{vertices} = [ (shift @candidates)->vertices ];
+        $self->{vertices} = [ (shift @candidates)->vertices ]; # FIXME: Simply return instead of self
 
         if( $self->is_purine ) {
             return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, @cycles );
