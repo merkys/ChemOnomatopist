@@ -156,8 +156,10 @@ sub new
         }
 
         # Construct the candidates to determine the numbering order
-        @candidates = map { ChemOnomatopist::Chain::Monocycle->new( $_->graph, $_->vertices ) }
-                          ( $self->cycles, map { $_->flipped } $self->cycles );
+        @candidates = ( $self,
+                        $self->flipped_horizontally,
+                        $self->flipped_vertically,
+                        $self->flipped_horizontally->flipped_vertically );
 
         # Establish the order
         for my $rule (
