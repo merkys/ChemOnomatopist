@@ -88,7 +88,8 @@ sub new
     my $subgraph = $graph->subgraph( \@vertices );
     my @bridge = grep { $subgraph->degree( $_ ) == 3 } @vertices;
     $subgraph->delete_edge( @bridge );
-    $self->{vertices} = [ Graph::Traversal::DFS->new( $subgraph, start => $bridge[0] )->dfs ];
+    @vertices = Graph::Traversal::DFS->new( $subgraph, start => $bridge[0] )->dfs;
+    push @vertices, shift @vertices;
     $subgraph->delete_vertices( @bridge );
 
     # Graph is broken into components.
@@ -152,7 +153,7 @@ sub new
 
         # Making the "winning" ring the first
         if( set( $chain->vertices ) == set( $self->{cycles}[1]->vertices ) ) {
-            $self->{vertices} = [ reverse @{$self->{vertices}} ];
+            $self->{cycles} = [ reverse $self->cycles ];
         }
 
         # Construct the candidates to determine the numbering order
