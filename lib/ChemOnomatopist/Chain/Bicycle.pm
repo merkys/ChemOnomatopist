@@ -389,7 +389,7 @@ sub suffix()
 
     if( $self->is_hydrocarbon ) {
         # FIXME: Check if aromatic, but with caution, as substitutions will break aromaticity
-        my $cycle_sizes = join ',', map { $_->length } $self->cycles;
+        my $cycle_sizes = join ',', sort map { $_->length } $self->cycles;
         if( exists $hydrocarbons_by_size{$cycle_sizes} ) {
             return ChemOnomatopist::Name::Part::Stem->new( $hydrocarbons_by_size{$cycle_sizes} )->to_name;
         }
