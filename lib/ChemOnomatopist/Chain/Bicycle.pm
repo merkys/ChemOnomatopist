@@ -111,13 +111,10 @@ sub new
 
     my $nbenzene = scalar grep { $_->is_benzene } @cycles;
 
-    # The ordering should not be done if one of the cycles is benzene
     if( !$nbenzene && $self->is_purine ) {
         return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, @cycles );
     } elsif( !$nbenzene ) {
-        # The following code is supposed to order the rings _and_ establish the traversal order
-        # TODO: Maybe all traversals of both rings should be generated here?
-        # FIXME: There seem to be two orders for rings: one for numbering, other for fusion naming...
+        # Find the senior cycle
         my @candidates = map { ChemOnomatopist::Chain::Monocycle->new( $_->graph, $_->vertices ) }
                              ( $self->cycles, map { $_->flipped } $self->cycles );
         for my $rule ( # P-25.3.2.4 (a): Senior heteroatom according to specific seniority order
@@ -200,7 +197,7 @@ sub new
             @cycles = map { $_->flipped } @cycles;
             $self->{cycles} = \@cycles;
         }
-        $self->_adjust_vertices_to_cycles;
+        $self->_adjust_vertices_to_cycles; # CHECKME: Is this needed?
     }
 
     return $self;
