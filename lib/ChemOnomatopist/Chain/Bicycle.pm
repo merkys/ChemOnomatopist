@@ -116,8 +116,7 @@ sub new
         return ChemOnomatopist::Chain::Bicycle::Purine->new( $graph, @cycles );
     } elsif( !$nbenzene ) {
         # Find the senior cycle
-        my @candidates = map { ChemOnomatopist::Chain::Monocycle->new( $_->graph, $_->vertices ) }
-                             ( $self->cycles, map { $_->flipped } $self->cycles );
+        my @candidates = ( $self->cycles, map { $_->flipped } $self->cycles );
         for my $rule ( # P-25.3.2.4 (a): Senior heteroatom according to specific seniority order
                        \&rule_most_senior_heteroatom,
                        # TODO: P-25.3.2.4 (b): Concerns fusions of more than two rings
