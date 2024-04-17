@@ -169,7 +169,8 @@ sub new
                        \&ChemOnomatopist::rule_lowest_numbered_most_senior_heteroatoms,
                        # P-25.3.3.1.2 (c): Lower locants for fusion carbon atoms
                        \&rule_lowest_numbered_fusion_carbons,
-                       # TODO: P-25.3.3.1.2 (d): Lower locants for fusion heteroatoms (rather than nonfusion)
+                       # P-25.3.3.1.2 (d): Lower locants for fusion heteroatoms (rather than nonfusion)
+                       \&rule_lowest_numbered_fusion_heteroatoms,
                        # TODO: P-25.3.3.1.2 (e): Lower locants for interior heteroatom
                        # TODO: P-25.3.3.1.2 (f): Lower locants for indicated hydrogen atoms
                      ) {
@@ -563,6 +564,18 @@ sub rule_lowest_numbered_fusion_carbons
                             @chains;
     return grep { !cmp_arrays( [ $_->fusion_carbon_positions ],
                                [ $max_value->fusion_carbon_positions ] ) }
+                @chains;
+}
+
+sub rule_lowest_numbered_fusion_heteroatoms
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { cmp_arrays( [ $a->fusion_heteroatom_positions ],
+                                          [ $b->fusion_heteroatom_positions ] ) }
+                            @chains;
+    return grep { !cmp_arrays( [ $_->fusion_heteroatom_positions ],
+                               [ $max_value->fusion_heteroatom_positions ] ) }
                 @chains;
 }
 
