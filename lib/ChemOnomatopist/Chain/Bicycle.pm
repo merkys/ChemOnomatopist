@@ -15,6 +15,7 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::Fusion;
 use ChemOnomatopist::Name::Part::Stem;
+use ChemOnomatopist::Util qw( cmp_arrays );
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_double_bond );
 use Graph::Traversal::DFS;
@@ -166,7 +167,8 @@ sub new
                        \&ChemOnomatopist::rule_lowest_numbered_heteroatoms,
                        # P-25.3.3.1.2 (b): Lower locants for senior heteroatoms
                        \&ChemOnomatopist::rule_lowest_numbered_most_senior_heteroatoms,
-                       # TODO: P-25.3.3.1.2 (c): Lower locants for fusion carbon atoms
+                       # P-25.3.3.1.2 (c): Lower locants for fusion carbon atoms
+                       \&rule_lowest_numbered_fusion_carbons,
                        # TODO: P-25.3.3.1.2 (d): Lower locants for fusion heteroatoms (rather than nonfusion)
                        # TODO: P-25.3.3.1.2 (e): Lower locants for interior heteroatom
                        # TODO: P-25.3.3.1.2 (f): Lower locants for indicated hydrogen atoms
@@ -265,6 +267,28 @@ sub cycles()
 {
     my( $self ) = @_;
     return @{$self->{cycles}};
+}
+
+sub fusion_positions()
+{
+    my( $self ) = @_;
+    my $bridge = set( map { @{$_->{vertices}}[-2..-1] } $self->cycles );
+    my @vertices = $self->vertices;
+    return grep { $bridge->has( $vertices[$_] ) } 0..$#vertices;
+}
+
+sub fusion_carbon_positions()
+{
+    my( $self ) = @_;
+    return grep { ChemOnomatopist::element( $self->{vertices}[$_] ) eq 'C' }
+                $self->fusion_positions;
+}
+
+sub fusion_heteroatom_positions()
+{
+    my( $self ) = @_;
+    return grep { ChemOnomatopist::element( $self->{vertices}[$_] ) ne 'C' }
+                $self->fusion_positions;
 }
 
 sub parent(;$)
@@ -528,6 +552,18 @@ sub rule_greatest_variety_of_heteroatoms
     my( $max_value ) = reverse sort map { scalar uniq $_->heteroatoms } @chains;
     return @chains unless $max_value;
     return grep { scalar( uniq $_->heteroatoms ) == $max_value } @chains;
+}
+
+sub rule_lowest_numbered_fusion_carbons
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { cmp_arrays( [ $a->fusion_carbon_positions ],
+                                          [ $b->fusion_carbon_positions ] ) }
+                            @chains;
+    return grep { !cmp_arrays( [ $_->fusion_carbon_positions ],
+                               [ $max_value->fusion_carbon_positions ] ) }
+                @chains;
 }
 
 sub _adjust_vertices_to_cycles()
