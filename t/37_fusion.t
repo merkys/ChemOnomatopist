@@ -26,7 +26,7 @@ my @cases = (
     { smiles => 'S1C=2N(C=C1)C=CN2', iupac => 'imidazo[2,1-b][1,3]thiazole' }, # From BBv2 P-25.3.2.5.1
 
     # From BBv2 P-25.3.3.1.2
-    { smiles => 'O1C=2C(=CC=C1)C=CC2', iupac => 'cyclopenta[b]pyran', AUTHOR => 1 },
+    { smiles => 'O1C=2C(=CC=C1)C=CC2', iupac => 'cyclopenta[b]pyran' },
     { smiles => 'S1COC=2NC=CC21', iupac => '2H,4H-[1,3]oxathiolo[5,4-b]pyrrole', AUTHOR => 1 },
     { smiles => 'O1C2=C(C=C1)C=CS2', iupac => 'thieno[2,3-b]furan' },
     { smiles => 'N1C=NC2=C1C=CS2', iupac => '1H-thieno[2,3-d]imidazole', AUTHOR => 1 },

@@ -522,10 +522,16 @@ sub suffix()
     $name_A = 'pyrimid'   if $name_A eq 'pyrimidine';
     $name_A = 'thien'     if $name_A eq 'thiophene';
 
-    $name .= $name_A;
-    unless( $name->[-1] =~ s/e$/o/ ) { # BBv2 P-25.3.2.2.2
-        $name->[-1] .= 'o';
+    $name_A = ChemOnomatopist::Name->new( $name_A ) unless blessed $name_A;
+    $name_A->pop_e;
+    if( $name_A->ends_with_alkane_an_suffix ) {
+        pop @$name_A;
+        $name_A .= 'a';
+    } else {
+        $name_A .= 'o';
     }
+
+    $name .= $name_A;
     $name .= ChemOnomatopist::Name::Part::Fusion->new( $fusion );
 
     my $name_B = $ideal[0]->name;
