@@ -481,23 +481,26 @@ sub suffix()
     my $min_B = min map {  $_->vertex_ids( @bridge ) } @equiv_B;
     @equiv_B = grep { min( $_->vertex_ids( @bridge ) ) == $min_B } @equiv_B;
 
-    my $fusion = '[';
-    if( @equiv_A > 1 || @equiv_B > 1 ) {
+    my $fusion;
+    if( $self->{cycles}[1]->is_homogeneous &&
+        $self->{cycles}[1]->number_of_branches == 2 ) {
+        $fusion = '[';
+    } elsif( @equiv_A > 1 || @equiv_B > 1 ) {
         # At least one of the rings has mirror symmetry ("flip-symmetric"), thus numeric order is ascending
-        $fusion .= ($min_B+1) . ',' . ($min_B+2);
+        $fusion = '[' . ($min_B+1) . ',' . ($min_B+2) . '-';
     } else {
         # Rings are rigid, thus numeric order has to be derived
         my @order_A = $equiv_A[0]->vertex_ids( @bridge );
         my @order_B = $equiv_B[0]->vertex_ids( @bridge );
         if( ($order_A[0] <=> $order_A[1]) == ($order_B[0] <=> $order_B[1]) ) {
             # Ring atoms are encountered in the same order in both of the rings
-            $fusion .= ($min_B+1) . ',' . ($min_B+2);
+            $fusion = '[' . ($min_B+1) . ',' . ($min_B+2);
         } else {
             # Ring atom orders differ
-            $fusion .= ($min_B+2) . ',' . ($min_B+1);
+            $fusion = '[' . ($min_B+2) . ',' . ($min_B+1);
         }
+        $fusion .= '-';
     }
-    $fusion .= '-' unless $fusion eq '[';
     $fusion .= chr( 97 + $min_A ) . ']';
 
     my $name = ChemOnomatopist::Name->new;
