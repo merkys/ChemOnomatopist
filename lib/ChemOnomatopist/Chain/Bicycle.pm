@@ -503,9 +503,6 @@ sub suffix()
     }
     $fusion .= chr( 97 + $min_A ) . ']';
 
-    my $name = ChemOnomatopist::Name->new;
-    my $graph = $self->graph;
-
     my @ideal = map { ChemOnomatopist::Chain::Monocycle->new( $_->graph, $_->vertices ) }
                     $self->cycles;
     my $name_A = $ideal[1]->name;
@@ -531,6 +528,7 @@ sub suffix()
         $name_A .= 'o';
     }
 
+    my $name = ChemOnomatopist::Name->new;
     $name .= $name_A;
     $name .= ChemOnomatopist::Name::Part::Fusion->new( $fusion );
 
