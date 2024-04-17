@@ -331,7 +331,7 @@ sub needs_heteroatom_names()
     }
 
     # Chalcogen analogues of ethers
-    if( @vertices == 1 && grep { ChemOnomatopist::element( @vertices ) eq $_ } qw( S Se Te ) ) {
+    if( @vertices == 1 && $self->parent && grep { ChemOnomatopist::element( @vertices ) eq $_ } qw( S Se Te ) ) {
         return '';
     }
 

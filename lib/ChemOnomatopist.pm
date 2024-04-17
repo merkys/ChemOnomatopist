@@ -434,7 +434,11 @@ sub get_mainchain_name
                 $name .= $number;
             }
 
-            $name->append_element( $elements{$element}->{prefix} );
+            if( $chain->length == 1 && $element eq 'S' ) {
+                $name->append_element( 'sulfa' );
+            } else {
+                $name->append_element( $elements{$element}->{prefix} );
+            }
         }
     }
 
