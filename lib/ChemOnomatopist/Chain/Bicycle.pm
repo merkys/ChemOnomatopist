@@ -497,7 +497,8 @@ sub suffix()
             $fusion .= ($min_B+2) . ',' . ($min_B+1);
         }
     }
-    $fusion .= '-' . chr( 97 + $min_A ) . ']';
+    $fusion .= '-' unless $fusion eq '[';
+    $fusion .= chr( 97 + $min_A ) . ']';
 
     my $name = ChemOnomatopist::Name->new;
     my $graph = $self->graph;
