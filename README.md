@@ -6,7 +6,7 @@
     C=C1C=CC=C1	5-methylidenecyclopenta-1,3-diene
 
 *ChemOnomatopist* analyses chemical graphs to determine IUPAC names according to the [Nomenclature of Organic Chemistry. IUPAC Recommendations
-and Preferred Names 2013](https://iupac.qmul.ac.uk/BlueBook/PDF/BlueBookV2.pdf), also known as the Blue Book.
+and Preferred Names 2013](https://iupac.qmul.ac.uk/BlueBook/PDF/BlueBookV3.pdf), also known as the Blue Book.
 
 ## Installation
 
