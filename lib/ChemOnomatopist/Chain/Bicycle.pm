@@ -441,26 +441,24 @@ sub suffix()
     if( any { $_->is_benzene } $self->cycles ) {
         my $other = first { !$_->is_benzene } $self->cycles;
 
-        my $SMILES = ChemOnomatopist::Chain::Monocycle->new( $other->graph, $other->vertices )->backbone_SMILES;
-        if( $SMILES =~ /^C=C((?<el>O|S|\[Se\]|\[Te\])C|C(?<el>O|S|\[Se\]|\[Te\]))c:c$/ ) {
+        my $name = ChemOnomatopist::Name->new( 'benzo' );
+        if( $other->length == 6 && $other->is_monoreplaced &&
+            join( '', $other->heteroatoms ) =~ /^(O|S|Se|Te)$/ &&
+            join( '', $other->heteroatom_positions ) < 4 ) {
             # Names according to BBv2 P-25.2.1, Table 2.8, (23) and (24)
-            my $element = $+{el};
-            my $name = 'benzo';
-            $element =~ s/[\[\]]//g;
+            my( $element ) = $other->heteroatoms;
             if( $element ne 'O' ) {
                 $name .= $elements{$element}->{prefix};
-                $name =~ s/a$/o/;
+                $name->[-1] =~ s/a$/o/;
             }
             return $name . 'pyran';
         } else {
-            my $name = ChemOnomatopist::Name->new( 'benzo' );
             my  $other_name = $other->suffix;
             if( $other_name->starts_with_locant ) { # Locants are moved to front
                 unshift @$name, shift @$other_name;
             }
             $name->[-1] =~ s/o$// if $other_name->[0] =~ /^a/;
-            $name .= $other_name;
-            return $name;
+            return $name . $other_name;
         }
     }
 
