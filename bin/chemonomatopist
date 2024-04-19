@@ -34,7 +34,9 @@ DESCRIPTION
 
 END
     [ 'check', 'treat the input as list of SMILES and IUPAC names and check whether given and generated names match' ],
-    [ 'opsin', 'along \'check\', attempt parsing own-generated IUPAC names with OPSIN (requires SmilesScripts::OPSIN module)' ],
+    [ 'opsin', 'along \'check\', attempt parsing own-generated IUPAC names with OPSIN (requires SmilesScripts::OPSIN Perl module)' ],
+    [ 'isomorphism', 'along \'check\' and \'opsin\', perform isomorphism checks for nonmatching chemical names (requires SmilesScripts::Isomorphism Perl module)' ],
+    [],
     [ 'cautious', 'avoid experimental features, refuse processing only partially supported compounds' ],
     [ 'debug', 'turn on the debug mode' ],
     [],
@@ -47,7 +49,7 @@ if( $opt->help ) {
 }
 
 my $opsin;
-if( $opt->opsin ) {
+if( $opt->opsin || $opt->isomorphism ) {
     require  SmilesScripts::OPSIN;
     $opsin = SmilesScripts::OPSIN->new;
 }
@@ -80,6 +82,22 @@ while (<>) {
         } elsif( $given_name eq $derived_name ) {
             print $id, "\t", 'OK', "\t", $derived_name;
             $counts{OK}++;
+        } elsif( $opt->isomorphism ) {
+            require SmilesScripts::Isomorphism;
+            my $SMILES_derived = $opsin->IUPAC_to_SMILES( "$derived_name" );
+            if( !defined $SMILES_derived ) {
+                print $id, "\t", 'MISPARSE', "\t", $derived_name;
+                $counts{MISPARSE}++;
+                next;
+            }
+            my  $reason = SmilesScripts::Isomorphism::smi_compare( $SMILES, $SMILES_derived );
+            if( $reason eq 'isomorphic' ) {
+                print $id, "\t", 'ALT', "\t", $given_name, "\t", $derived_name;
+                $counts{ALT}++;
+            } else {
+                print $id, "\t", 'FAIL', "\t", $given_name, "\t", $derived_name;
+                $counts{FAIL}++;
+            }
         } elsif( $opt->opsin && !defined $opsin->IUPAC_to_SMILES( "$derived_name" ) ) {
             print $id, "\t", 'MISPARSE', "\t", $derived_name;
             $counts{MISPARSE}++;
