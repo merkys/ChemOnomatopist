@@ -130,6 +130,7 @@ sub new
                        \&ChemOnomatopist::rule_greatest_number_of_most_senior_heteroatoms,
                        # TODO: P-25.3.2.4 (g): Concerns fusions of more than two rings
                        # P-25.3.2.4 (h): Lower locants for heteroatoms
+                       # FIXME: It might be that locants in rings are calculated just as in simple nonfused monocycles
                        \&ChemOnomatopist::rule_lowest_numbered_heteroatoms,
                        # P-25.3.2.4 (i): Lower locants for senior heteroatoms
                        \&ChemOnomatopist::rule_lowest_numbered_most_senior_heteroatoms,
