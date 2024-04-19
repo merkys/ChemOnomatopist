@@ -34,6 +34,7 @@ DESCRIPTION
 
 END
     [ 'check', 'treat the input as list of SMILES and IUPAC names and check whether given and generated names match' ],
+    [ 'opsin', 'along \'check\', attempt parsing own-generated IUPAC names with OPSIN (requires SmilesScripts::OPSIN module)' ],
     [ 'cautious', 'avoid experimental features, refuse processing only partially supported compounds' ],
     [ 'debug', 'turn on the debug mode' ],
     [],
@@ -43,6 +44,12 @@ END
 if( $opt->help ) {
     print $usage->text;
     exit;
+}
+
+my $opsin;
+if( $opt->opsin ) {
+    require  SmilesScripts::OPSIN;
+    $opsin = SmilesScripts::OPSIN->new;
 }
 
 $ChemOnomatopist::CAUTIOUS = 1 if $opt->cautious;
@@ -70,6 +77,9 @@ while (<>) {
         if( $@ ) {
             print $id, "\t", 'ERROR', "\t", $@;
             $counts{ERROR}++;
+        } elsif( $opt->opsin && !defined $opsin->IUPAC_to_SMILES( "$derived_name" ) ) {
+            print $id, "\t", 'MISPARSE', "\t", $derived_name;
+            $counts{MISPARSE}++;
         } elsif( $given_name ne $derived_name ) {
             print $id, "\t", 'FAIL', "\t", $given_name, "\t", $derived_name;
             $counts{FAIL}++;
