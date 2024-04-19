@@ -446,7 +446,7 @@ sub suffix()
         if( $other->length == 6 && $other->is_monoreplaced &&
             join( '', $other->heteroatoms ) =~ /^(O|S|Se|Te)$/ &&
             join( '', $other->heteroatom_positions ) < 4 ) {
-            # Names according to BBv2 P-25.2.1, Table 2.8, (23) and (24)
+            # Names according to BBv3 P-25.2.1, Table 2.8, (23) and (24)
             my( $element ) = $other->heteroatoms;
             if( $element ne 'O' ) {
                 $name .= $elements{$element}->{prefix};
