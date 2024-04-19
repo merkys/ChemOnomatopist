@@ -77,15 +77,15 @@ while (<>) {
         if( $@ ) {
             print $id, "\t", 'ERROR', "\t", $@;
             $counts{ERROR}++;
+        } elsif( $given_name eq $derived_name ) {
+            print $id, "\t", 'OK', "\t", $derived_name;
+            $counts{OK}++;
         } elsif( $opt->opsin && !defined $opsin->IUPAC_to_SMILES( "$derived_name" ) ) {
             print $id, "\t", 'MISPARSE', "\t", $derived_name;
             $counts{MISPARSE}++;
-        } elsif( $given_name ne $derived_name ) {
+        } else {
             print $id, "\t", 'FAIL', "\t", $given_name, "\t", $derived_name;
             $counts{FAIL}++;
-        } else {
-            print $id, "\t", 'OK', "\t", $derived_name;
-            $counts{OK}++;
         }
     } else {
         if( $@ ) {
