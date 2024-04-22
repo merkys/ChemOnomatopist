@@ -25,7 +25,7 @@ my @cases = (
     { smiles => 'C1=CC=CC2=NC3=CC=CC=C3C=C12', iupac => 'acridine' },
     { smiles => 'C1=CC=CC2=[As]C3=CC=CC=C3C=C12', iupac => 'acridarsine' },
     { smiles => 'C1=CC=CC2=PC3=CC=CC=C3C=C12', iupac => 'acridophosphine' },
-    { smiles => 'N1C=CC2=CC=CC=C12', iupac => 'indole', AUTHOR => 1 },
+    { smiles => 'N1C=CC2=CC=CC=C12', iupac => '1H-indole' },
     { smiles => '[AsH]1C=CC2=CC=CC=C12', iupac => 'arsindole', AUTHOR => 1 },
     { smiles => 'P1C=CC2=CC=CC=C12', iupac => 'phosphindole' }, # Not sure if H prefix is not needed
     { smiles => 'C=1C=CN2C=CC=CC12', iupac => 'indolizine' },
