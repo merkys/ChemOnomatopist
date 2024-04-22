@@ -83,6 +83,8 @@ sub has_form($$)
     return 1;
 }
 
+sub needs_charge_locants() { 1 }
+sub needs_isotope_locants() { 1 }
 sub needs_multiple_bond_locants() { 1 }
 sub needs_substituent_locants() { 1 }
 

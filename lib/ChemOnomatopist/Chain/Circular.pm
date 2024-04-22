@@ -247,6 +247,14 @@ sub needs_substituent_locants()
     return 1;
 }
 
+sub needs_charge_locants()
+{
+    my( $self ) = @_;
+    return 1 if $self->number_of_charges > 1;
+    return 1 if $self->number_of_branches;
+    return !&is_homogeneous;
+}
+
 sub needs_isotope_locants()
 {
     my( $self ) = @_;

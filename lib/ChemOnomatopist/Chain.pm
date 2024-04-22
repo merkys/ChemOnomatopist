@@ -378,6 +378,7 @@ sub needs_substituent_locants()
     return 1;
 }
 
+sub needs_charge_locants()  { &needs_substituent_locants }
 sub needs_isotope_locants() { &needs_substituent_locants }
 
 sub charges()
@@ -529,6 +530,12 @@ sub number_of_carbons()
     return $C;
 }
 
+sub number_of_charges()
+{
+    my( $self ) = @_;
+    return scalar $self->charges;
+}
+
 sub number_of_branches()
 {
     my( $self ) = @_;
@@ -591,6 +598,8 @@ sub charge_part()
     die "cannot name multiple charged yet\n" if @negative + @positive > 1;
 
     my $name = ChemOnomatopist::Name->new;
+
+    $name->append_locants( map { $_->locant } $self->charges ) if $self->needs_charge_locants;
     if( @negative ) {
         $name .= 'ide'; # BBv3 P-72.2.2.1
     }
