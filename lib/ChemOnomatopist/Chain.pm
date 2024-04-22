@@ -557,6 +557,35 @@ sub number_of_nonstandard_valence_positions()
     return scalar $self->nonstandard_valence_positions;
 }
 
+sub charge_part()
+{
+    my( $self ) = @_;
+
+    my $charged = grep { !blessed $_ && $_->{charge} } $self->vertices;
+    return ChemOnomatopist::Name->new unless $charged;
+
+    my $negative = grep { !blessed $_ && $_->{charge} && $_->{charge} == -1 }
+                        $self->vertices;
+    my $positive = grep { !blessed $_ && $_->{charge} && $_->{charge} ==  1 }
+                        $self->vertices;
+    if( $charged != $negative + $positive ) {
+        die "cannot name charges with absolute value >1 yet\n"
+    }
+    if( $negative > 1 || $positive > 1 ) {
+        die "cannot name multiple charged yet\n";
+    }
+
+    my $name = ChemOnomatopist::Name->new;
+    if( $negative == 1 ) {
+        $name .= 'ide'; # BBv3 P-72.2.2.1
+    }
+    if( $positive == 1 ) {
+        $name .= 'ylium';
+    }
+
+    return $name;
+}
+
 sub indicated_hydrogens_part() { ChemOnomatopist::Name->new }
 
 sub isotope_part()

@@ -482,13 +482,11 @@ sub get_mainchain_name
         $name->append_suffix( $suffix );
     }
 
-    if( (grep { !blessed $_ && $_->{charge} && $_->{charge} == -1 } @chain) == 1 ) {
-        $name =~ s/e$/ide/; # BBv3 P-72.2.2.1
-    }
-    if( (grep { !blessed $_ && $_->{charge} && $_->{charge} ==  1 } @chain) == 1 ) {
+    my $charge_part = $chain->charge_part;
+    if( "$charge_part" ) {
         $name->pop_e;
         pop @$name if $name->ends_with_alkane_an_suffix;
-        $name .= 'ylium';
+        $name .= $charge_part;
     }
 
     $name =~ s/benzen(-1-)?ol$/phenol/;
