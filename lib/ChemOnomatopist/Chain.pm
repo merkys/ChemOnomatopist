@@ -598,18 +598,25 @@ sub charge_part()
 
     my $name = ChemOnomatopist::Name->new;
 
-    $name->append_locants( map { $_->locant } $self->charges ) if $self->needs_charge_locants;
-    if( $self->number_of_charges > 1 ) {
-        $name->append_multiplier( ChemOnomatopist::IUPAC_complex_numerical_multiplier( $self->number_of_charges ) );
-        $name .= '(';
-    }
-    if( @negative ) {
-        $name .= 'ide'; # BBv3 P-72.2.2.1
-    }
     if( @positive ) {
-        $name .= 'ylium';
+        $name->append_locants( map { $_->locant } @positive ) if $self->needs_charge_locants;
+        if( @positive > 1 ) {
+            $name->append_multiplier( ChemOnomatopist::IUPAC_complex_numerical_multiplier( scalar @positive ) );
+            $name .= '(';
+        }
+        $name .= @negative ? 'ium' : 'ylium';
+        $name .= ')' if @positive > 1;
     }
-    $name .= ')' if $self->number_of_charges > 1;
+
+    if( @negative ) {
+        $name->append_locants( map { $_->locant } @negative ) if $self->needs_charge_locants;
+        if( @negative > 1 ) {
+            $name->append_multiplier( ChemOnomatopist::IUPAC_complex_numerical_multiplier( scalar @negative ) );
+            $name .= '(';
+        }
+        $name .= 'ide';
+        $name .= ')' if @negative > 1;
+    }
 
     return $name;
 }
