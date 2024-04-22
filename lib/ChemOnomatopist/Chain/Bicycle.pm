@@ -43,7 +43,8 @@ our @names = (
     [ 'C=NC=CCC',     'c:c:c:c:c:c:', 'isoquinoline' ],
     [ 'c:n:c:c:c:c:', 'c:c:c:c:c:c:', 'isoquinoline' ],
 
-    [ 'CC=CCNC',  'C=CC=CCN',  'quinolizine' ],
+    [ 'CC=CCn:c=', 'c:c:c:c:c:n:', 'quinolizine' ],
+    [ 'CC=CC=c:n', 'c:c:c:c:n:c:', 'quinolizine' ],
 
     [ 'n:n:c:c:c:', 'c:c:c:c:c:c:', 'indazole' ],
     [ 'n:c:c:c:c:', 'c:c:c:c:c:c:', 'indole' ],
@@ -59,7 +60,6 @@ for my $name (qw( indole indolizine isoindole isoquinoline quinoline quinolizine
         my @As_parts = @$_;
         $As_parts[0] =~ s/n/\[as\]/g;
         $As_parts[1] =~ s/n/\[as\]/g;
-        $As_parts[2] =~ s/^1H-//;
         $As_parts[2] =~ s/^qu//;
         $As_parts[2] = 'ars' . $As_parts[2] unless $As_parts[2] =~ s/^iso(qu)?/isoars/;
         push @names, \@As_parts;
@@ -67,7 +67,6 @@ for my $name (qw( indole indolizine isoindole isoquinoline quinoline quinolizine
         my @P_parts = @$_;
         $P_parts[0] =~ s/n/p/g;
         $P_parts[1] =~ s/n/p/g;
-        $P_parts[2] =~ s/^1H-//;
         $P_parts[2] =~ s/^qu//;
         $P_parts[2] = 'phosph' . $P_parts[2] unless $P_parts[2] =~ s/^iso(qu)?/isophosph/;
         push @names, \@P_parts;
