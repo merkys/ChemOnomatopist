@@ -738,6 +738,11 @@ sub select_mainchain
 
     my @POI; # Points of interest
 
+    # "4. Anions"
+    @POI = grep { $_->{charge} && $_->{charge} < 0 } $graph->vertices unless @POI;
+    # "6. Cations"
+    @POI = grep { $_->{charge} && $_->{charge} > 0 } $graph->vertices unless @POI;
+
     # POIs are atoms connected to the most senior groups, if any
     my @groups = most_senior_groups( $graph );
     my $most_senior_group = blessed $groups[0] if @groups;
@@ -746,19 +751,21 @@ sub select_mainchain
         @groups = ();
     }
 
-    for my $group (@groups) {
-        if( $group->is_part_of_chain ) {
-            push @POI, $group;
-        } elsif( $group->isa( ChemOnomatopist::Group::Amide:: ) ) {
-            push @POI, $group->{parent};
-        } elsif( $group->isa( ChemOnomatopist::Group::Imino:: ) ) {
-            push @POI, grep { is_double_bond( $graph, $group, $_ ) }
-                            $graph->neighbours( $group );
-        } else {
-            push @POI, $graph->neighbours( $group );
+    if( !@POI ) {
+        for my $group (@groups) {
+            if( $group->is_part_of_chain ) {
+                push @POI, $group;
+            } elsif( $group->isa( ChemOnomatopist::Group::Amide:: ) ) {
+                push @POI, $group->{parent};
+            } elsif( $group->isa( ChemOnomatopist::Group::Imino:: ) ) {
+                push @POI, grep { is_double_bond( $graph, $group, $_ ) }
+                                $graph->neighbours( $group );
+            } else {
+                push @POI, $graph->neighbours( $group );
+            }
         }
+        @POI = uniq @POI; # FIXME: Actually, more than one group can be attached to the same vertex
     }
-    @POI = uniq @POI; # FIXME: Actually, more than one group can be attached to the same vertex
 
     # "Classes denoted by the senior atom in heterane nomenclature"
     if( !@POI ) {
