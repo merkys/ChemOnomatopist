@@ -484,8 +484,10 @@ sub get_mainchain_name
 
     my $charge_part = $chain->charge_part;
     if( "$charge_part" ) {
-        $name->pop_e;
-        pop @$name if $name->ends_with_alkane_an_suffix;
+        if( !$charge_part->has_multiplier ) {
+            $name->pop_e;
+            pop @$name if $name->ends_with_alkane_an_suffix;
+        }
         $name .= $charge_part;
     }
 

@@ -214,6 +214,12 @@ sub has_locant()
     return any { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Locants:: ) } @$self;
 }
 
+sub has_multiplier()
+{
+    my( $self ) = @_;
+    return any { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Multiplier:: ) } @$self;
+}
+
 sub has_substituent_locant()
 {
     my( $self ) = @_;
