@@ -52,7 +52,7 @@ our @names = (
     [ 'CC=Cn:c',    'c:c:c:c:n:',   '1H-pyrrolizine' ], # TODO: There are isomers
 );
 
-for my $name (qw( 1H-indole indolizine isoindole isoquinoline quinoline quinolizine )) {
+for my $name (qw( indole indolizine isoindole isoquinoline quinoline quinolizine )) {
     for (grep { $_->[2] eq $name } @names) {
         my @As_parts = @$_;
         $As_parts[0] =~ s/n/\[as\]/g;
