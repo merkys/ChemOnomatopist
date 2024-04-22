@@ -10,6 +10,7 @@ use ChemOnomatopist;
 use ChemOnomatopist::Chain::Amide;
 use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Ether;
+use ChemOnomatopist::Charge;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Ether;
@@ -379,6 +380,25 @@ sub needs_substituent_locants()
 
 sub needs_isotope_locants() { &needs_substituent_locants }
 
+sub charges()
+{
+    my( $self ) = @_;
+    return @{$self->{charges}} if $self->{charges};
+
+    my @vertices = $self->vertices;
+    my @charges;
+    for my $i (0..$#vertices) {
+        next if blessed $vertices[$i];
+        next unless $vertices[$i]->{charge};
+        push @charges, ChemOnomatopist::Charge->new( $vertices[$i]->{charge},
+                                                     $i,
+                                                     $self->locants( $i ) );
+    }
+
+    $self->{charges} = \@charges;
+    return @charges;
+}
+
 sub heteroatoms()
 {
     my( $self ) = @_;
@@ -560,26 +580,21 @@ sub number_of_nonstandard_valence_positions()
 sub charge_part()
 {
     my( $self ) = @_;
+    return ChemOnomatopist::Name->new unless $self->charges;
 
-    my $charged = grep { !blessed $_ && $_->{charge} } $self->vertices;
-    return ChemOnomatopist::Name->new unless $charged;
-
-    my $negative = grep { !blessed $_ && $_->{charge} && $_->{charge} == -1 }
-                        $self->vertices;
-    my $positive = grep { !blessed $_ && $_->{charge} && $_->{charge} ==  1 }
-                        $self->vertices;
-    if( $charged != $negative + $positive ) {
+    if( any { abs $_->charge > 1 } $self->charges ) {
         die "cannot name charges with absolute value >1 yet\n"
     }
-    if( $negative > 1 || $positive > 1 ) {
-        die "cannot name multiple charged yet\n";
-    }
+
+    my @negative = grep { $_->charge < 0 } $self->charges;
+    my @positive = grep { $_->charge > 0 } $self->charges;
+    die "cannot name multiple charged yet\n" if @negative + @positive > 1;
 
     my $name = ChemOnomatopist::Name->new;
-    if( $negative == 1 ) {
+    if( @negative ) {
         $name .= 'ide'; # BBv3 P-72.2.2.1
     }
-    if( $positive == 1 ) {
+    if( @positive ) {
         $name .= 'ylium';
     }
 
