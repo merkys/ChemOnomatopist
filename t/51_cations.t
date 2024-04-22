@@ -17,7 +17,7 @@ my @cases = (
     { smiles => 'C1(=CC=CC=C1)[S+]', iupac => 'phenylsulfanylium' },
     { smiles => 'CNN=[N+]', iupac => '3-methyltriaz-1-en-1-ylium', AUTHOR => 1 },
     { smiles => 'C[Si]([Si+]([Si](C)(C)C)C)(C)C', iupac => 'heptamethyltrisilan-2-ylium', AUTHOR => 1 },
-    { smiles => 'O1[C+]=CC=C1', iupac => 'furan-2-ylium' },
+    { smiles => 'O1[C+]=CC=C1', iupac => 'furan-2-ylium', AUTHOR => 'flaky' },
     { smiles => 'C1CCCC12CC[CH+]CC2', iupac => 'spiro[4.5]decan-8-ylium', AUTHOR => 1 },
     { smiles => '[CH2+]C[CH2+]', iupac => 'propane-1,3-bis(ylium)', AUTHOR => 1 },
     { smiles => 'CN([N+2])C', iupac => '2,2-dimethylhydrazine-1,1-bis(ylium)', AUTHOR => 1 },

@@ -589,17 +589,14 @@ sub charge_part()
     my( $self ) = @_;
     return ChemOnomatopist::Name->new unless $self->charges;
 
-    if( any { abs $_->charge > 1 } $self->charges ) {
-        die "cannot name charges with absolute value >1 yet\n"
-    }
-
     my @negative = grep { $_->charge < 0 } $self->charges;
     my @positive = grep { $_->charge > 0 } $self->charges;
 
     my $name = ChemOnomatopist::Name->new;
 
     if( @positive ) {
-        $name->append_locants( map { $_->locant } @positive ) if $self->needs_charge_locants;
+        @positive = map { ( $_->locant ) x abs $_->charge } @positive;
+        $name->append_locants( @positive ) if $self->needs_charge_locants;
         if( @positive > 1 ) {
             $name->append_multiplier( ChemOnomatopist::IUPAC_complex_numerical_multiplier( scalar @positive ) );
             $name .= '(';
@@ -609,7 +606,8 @@ sub charge_part()
     }
 
     if( @negative ) {
-        $name->append_locants( map { $_->locant } @negative ) if $self->needs_charge_locants;
+        @negative = map { ( $_->locant ) x abs $_->charge } @negative;
+        $name->append_locants( @negative ) if $self->needs_charge_locants;
         if( @negative > 1 ) {
             $name->append_multiplier( ChemOnomatopist::IUPAC_complex_numerical_multiplier( scalar @negative ) );
             $name .= '(';
