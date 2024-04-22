@@ -41,8 +41,8 @@ my @cases = (
     { smiles => 'C1=CC=CC2=PC=C3C=CC=CC3=C12', iupac => 'phosphanthridine' },
     { smiles => '[As]1=CC=CC2=CC=CC=C12', iupac => 'arsinoline' },
     { smiles => 'P1=CC=CC2=CC=CC=C12', iupac => 'phosphinoline' },
-    { smiles => 'C=1C=CC[As]2C=CC=CC12', iupac => 'arsinolizine', AUTHOR => 1 },
-    { smiles => 'C=1C=CCP2C=CC=CC12', iupac => 'phosphinolizine', AUTHOR => 1 },
+    { smiles => 'C=1C=CC[As]2C=CC=CC12', iupac => '4H-arsinolizine' },
+    { smiles => 'C=1C=CCP2C=CC=CC12', iupac => '4H-phosphinolizine' },
 
     { smiles => 'C1=CC=C2C(=C1)C(=C(P2(Cl)(Cl)Cl)Cl)Cl', iupac => '1,1,1,2,3-pentachlorophosphindole', AUTHOR => 1 }, # PubChem 2784508, why λ5 is not present?
 
