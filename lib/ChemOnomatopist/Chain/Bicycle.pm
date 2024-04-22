@@ -49,7 +49,9 @@ our @names = (
     [ 'n:c:c:c:c:', 'c:c:c:c:c:c:', 'indole' ],
     [ 'c:n:c:c:c:', 'c:c:c:c:c:c:', 'isoindole' ],
     [ 'c:c:c:c:c:n:', 'c:c:c:n:c:', 'indolizine', ],
-    [ 'CC=Cn:c',    'c:c:c:c:n:',   '1H-pyrrolizine' ], # TODO: There are isomers
+
+    [ 'C=CCc:n', 'c:c:c:n:c:', 'pyrrolizine' ],
+    [ 'CC=Cn:c', 'c:c:c:n:c:', 'pyrrolizine' ],
 );
 
 for my $name (qw( indole indolizine isoindole isoquinoline quinoline quinolizine )) {
