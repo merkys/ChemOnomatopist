@@ -617,8 +617,7 @@ sub suffix()
 
     my $name = ChemOnomatopist::Name->new;
     if( $self->length == 1 && !blessed $chain[0] && !ChemOnomatopist::is_element( @chain, 'C' ) ) {
-        $name .= 'ne'; # Leaving element prefix appending to the caller
-        return $name;
+        return $name . 'ne'; # Leaving element prefix appending to the caller
     }
 
     # CHECKME: Not sure if calling prefix() is correct
