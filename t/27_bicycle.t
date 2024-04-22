@@ -46,7 +46,7 @@ my @cases = (
 
     { smiles => 'C1=CC=C2C(=C1)C(=C(P2(Cl)(Cl)Cl)Cl)Cl', iupac => '1,1,1,2,3-pentachlorophosphindole', AUTHOR => 1 }, # PubChem 2784508, why λ5 is not present?
 
-    { smiles => 'C1=CC=C2C(C(C=CC2=C1)O)O', iupac => '1,2-dihydronaphthalene-1,2-diol', AUTHOR => 1 }, # PubChem 362
+    { smiles => 'C1=CC=C2C(C(C=CC2=C1)O)O', iupac => '1,2-dihydronaphthalene-1,2-diol' }, # PubChem 362
     { smiles => 'C12(C(C(C(C(C1(F)F)(F)F)(F)F)(F)F)(C(C(C(C2(F)F)(F)F)(F)F)(F)F)F)F', iupac => '1,1,2,2,3,3,4,4,4a,5,5,6,6,7,7,8,8,8a-octadecafluoronaphthalene' }, # PubChem 9386
 
     { smiles => 'C1=CC=CC=CC2=CC=CC=CC=C12', iupac => 'octalene' }, # From BBv2 P-25.1.2.3
