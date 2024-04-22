@@ -595,17 +595,21 @@ sub charge_part()
 
     my @negative = grep { $_->charge < 0 } $self->charges;
     my @positive = grep { $_->charge > 0 } $self->charges;
-    die "cannot name multiple charged yet\n" if @negative + @positive > 1;
 
     my $name = ChemOnomatopist::Name->new;
 
     $name->append_locants( map { $_->locant } $self->charges ) if $self->needs_charge_locants;
+    if( $self->number_of_charges > 1 ) {
+        $name->append_multiplier( ChemOnomatopist::IUPAC_complex_numerical_multiplier( $self->number_of_charges ) );
+        $name .= '(';
+    }
     if( @negative ) {
         $name .= 'ide'; # BBv3 P-72.2.2.1
     }
     if( @positive ) {
         $name .= 'ylium';
     }
+    $name .= ')' if $self->number_of_charges > 1;
 
     return $name;
 }
