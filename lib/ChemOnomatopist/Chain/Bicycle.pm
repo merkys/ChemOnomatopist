@@ -173,7 +173,8 @@ sub new
                        # P-25.3.3.1.2 (d): Lower locants for fusion heteroatoms (rather than nonfusion)
                        \&rule_lowest_numbered_fusion_heteroatoms,
                        # TODO: P-25.3.3.1.2 (e): Lower locants for interior heteroatom
-                       # TODO: P-25.3.3.1.2 (f): Lower locants for indicated hydrogen atoms
+                       # P-25.3.3.1.2 (f): Lower locants for indicated hydrogen atoms
+                       \&ChemOnomatopist::rule_lowest_numbered_indicated_hydrogens,
                      ) {
             my @candidates_now = $rule->( @candidates );
             if( @candidates_now == 1 ) {
