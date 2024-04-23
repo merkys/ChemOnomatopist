@@ -109,6 +109,9 @@ sub prefix()
 {
     my( $self ) = @_;
 
+    # TODO: Check the heteroatom sites
+    my $heteroatom_positions = join ',', $self->heteroatom_positions;
+
     if( all { $_ eq 'N' } $self->heteroatoms ) {
         return ChemOnomatopist::Name->new( 'phenanthridine' ) if $self->number_of_heteroatoms == 1;
         return ChemOnomatopist::Name->new( 'phenanthroline' ) if $self->number_of_heteroatoms == 2;
