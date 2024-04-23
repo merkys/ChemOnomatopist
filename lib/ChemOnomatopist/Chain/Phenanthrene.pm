@@ -27,7 +27,7 @@ sub new
                                   $subgraph->edges );
 
     # Find an order
-    my( $start ) = grep { $subgraph->degree( $_ ) == 1 } $subgraph->vertices;
+    my $start = first { $subgraph->degree( $_ ) == 1 } $subgraph->vertices;
     my @vertices = Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs;
 
     # Adjust the order
@@ -119,7 +119,9 @@ sub prefix()
         return ChemOnomatopist::Name->new( 'phosphanthridine' ) if all { $_ eq 'P'  } $self->heteroatoms;
     }
 
-    return ChemOnomatopist::Name->new( 'phenanthrene' );
+    return ChemOnomatopist::Name->new( 'phenanthrene' ) if $self->is_hydrocarbon;
+
+    die "unknown phenanthrene derivative\n";
 }
 
 sub suffix() { $_[0]->prefix }
