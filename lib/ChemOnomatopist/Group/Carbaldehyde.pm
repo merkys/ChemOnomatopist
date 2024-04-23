@@ -9,7 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Elements qw( %elements );
-use ChemOnomatopist::Name::Part::Stem;
+use ChemOnomatopist::Name;
 
 sub new
 {
@@ -22,13 +22,12 @@ sub element() { 'C' }
 sub prefix()
 {
     my( $self ) = @_;
-    return 'formyl' if $self->{ketone}->element eq 'O';
+    return ChemOnomatopist::Name->new( 'formyl' ) if $self->{ketone}->element eq 'O';
 
-    my $name = ChemOnomatopist::Name::Part::Stem->new( 'methane' )->to_name;
+    my $name = ChemOnomatopist::Name->new( 'methane' );
     my $element = $elements{$self->{ketone}->element}->{prefix};
     $element =~ s/a$/oyl/;
-    $name .= ChemOnomatopist::Name::Part::Stem->new( $element );
-    return $name;
+    return $name->append_stem( $element );
 }
 
 my %suffixes = ( O => '', S => 'othi', Se => 'oselen', Te => 'otellan' );

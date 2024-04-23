@@ -8,6 +8,8 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
+use ChemOnomatopist::Name;
+
 sub new
 {
     my( $class, $ketone ) = @_;
@@ -18,7 +20,7 @@ sub element() { 'C' }
 
 sub is_part_of_chain() { 1 }
 
-sub prefix { 'formyl' }
+sub prefix { ChemOnomatopist::Name->new( 'formyl' ) }
 
 sub suffix()
 {
