@@ -243,13 +243,13 @@ sub get_sidechain_name
         $chain->parent( $parent ) if $chain->can( 'parent' );
         my $prefix = $chain->prefix;
         # All groups are most likely stems
-        $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
+        $prefix = ChemOnomatopist::Name->new( $prefix ) unless blessed $prefix;
         $name .= $prefix;
     } elsif( @chain == 1 && blessed $chain[0] && !$chain->isa( ChemOnomatopist::Chain::Ether:: ) ) {
         $chain[0]->parent( $parent ) if $chain[0]->can( 'parent' );
         my $prefix = $chain[0]->prefix;
         # All group-containing chains are most likely stems
-        $prefix = ChemOnomatopist::Name::Part::Stem->new( $prefix )->to_name unless blessed $prefix;
+        $prefix = ChemOnomatopist::Name->new( $prefix ) unless blessed $prefix;
         if( $chain[0]->isa( ChemOnomatopist::Group::Sulfinyl:: ) && $name =~ /yl$/ ) { # BBv2 P-63.6
             $name->pop_yl;
             $name .= 'ane';
