@@ -267,8 +267,8 @@ sub get_sidechain_name
         if( $branches_at_start > 1 ) {
             my $branch_point = first { $chain[$_] == $start } 0..$#chain;
             if( $branch_point || !$chain->is_saturated ) {
-                # According to BBv2 P-29.2 (1)
-                $name .= 'an' unless $name =~ /-(di|tri)?en$/; # FIXME: Dirty
+                # According to BBv3 P-29.2 (1)
+                $name .= 'an' unless $chain->number_of_double_bonds;
                 $name->append_substituent_locant( $chain->locants( $branch_point ) );
             }
         } elsif( $chain->is_hydrocarbon &&
