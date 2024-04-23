@@ -674,7 +674,7 @@ sub prefix()
     my $name = $self->suffix;
     $name->pop_e;
     pop @$name if $name->ends_with_alkane_an_suffix;
-    return $name;
+    return $name . 'yl';
 }
 
 sub suffix()

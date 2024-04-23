@@ -265,6 +265,7 @@ sub get_sidechain_name
             }
         }
         $name .= $chain->prefix;
+        $name->pop_yl;
 
         if( $branches_at_start > 1 ) {
             my $branch_point = first { $chain[$_] == $start } 0..$#chain;

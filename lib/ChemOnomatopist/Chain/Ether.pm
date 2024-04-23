@@ -70,11 +70,7 @@ sub prefix()
                        ChemOnomatopist::Chain->new( $self->graph,
                                                     $self->parent,
                                                     @vertices[$cut_position+1..$#vertices] ) );
-        my @prefixes = map { $_->prefix } @chains;
-        if( $prefixes[1] =~ /ane$/ ) {
-            pop @{$prefixes[1]};
-            pop @{$prefixes[1]};
-        }
+        my @prefixes = map { $_->pop_yl } map { $_->prefix } @chains;
         my $name = ChemOnomatopist::Name->new;
         $name->append_locants( $cut_position ) if $chains[0]->needs_substituent_locants;
         $name->append( $prefixes[1] );
@@ -83,9 +79,7 @@ sub prefix()
         return $name;
     } else {
         my $chain = ChemOnomatopist::Chain->new( $self->graph, @vertices );
-        my $name = $chain->prefix;
-        $name->pop_e;
-        pop @$name if $name->ends_with_alkane_an_suffix;
+        my $name = $chain->prefix->pop_yl;
         return $name . 'oxy';
     }
 }
@@ -104,11 +98,9 @@ sub suffix()
                                                 $self->parent,
                                                 @vertices[$cut_position+1..$#vertices] ) );
     @chains = reverse @chains if $chains[0]->length > $chains[1]->length;
-    my $name = $chains[0]->prefix;
-    $name->pop_e;
-    pop @$name if $name->ends_with_alkane_an_suffix;
+    my $name = $chains[0]->prefix->pop_yl;
     $name .= 'oxy';
-    $name .= $chains[1]->suffix;
+    $name .= $chains[1]->suffix->pop_yl;
     return $name;
 }
 

@@ -47,13 +47,7 @@ sub prefix()
 {
     my( $self ) = @_;
     return $self->{amine}->prefix unless $self->length;
-
-    my $prefix = $self->{chain}->prefix;
-    $prefix->pop_e;
-    pop @$prefix if $prefix->ends_with_alkane_an_suffix;
-    $prefix .= 'yl' unless $prefix =~ /[oy]$/;
-    $prefix->append_stem( 'amino' );
-    return $prefix;
+    return $self->{chain}->prefix->append_stem( 'amino' );
 }
 
 sub suffix()
