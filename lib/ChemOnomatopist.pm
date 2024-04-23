@@ -263,8 +263,6 @@ sub get_sidechain_name
             }
         }
         $name .= $chain->prefix;
-        $name->pop_e;
-        pop @$name if $name->ends_with_alkane_an_suffix;
 
         if( $branches_at_start > 1 ) {
             my $branch_point = first { $chain[$_] == $start } 0..$#chain;

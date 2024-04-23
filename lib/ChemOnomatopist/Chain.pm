@@ -671,7 +671,10 @@ sub prefix()
         return ChemOnomatopist::Name->new( 'tellan' ) if ChemOnomatopist::is_element( $vertex, 'Te' );
     }
 
-    return $self->suffix; # FIXME: Add proper suffix
+    my $name = $self->suffix;
+    $name->pop_e;
+    pop @$name if $name->ends_with_alkane_an_suffix;
+    return $name;
 }
 
 sub suffix()
