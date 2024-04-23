@@ -113,6 +113,8 @@ sub get_name
 
 # get_sidechain_name() receives a graph and a position to start the chain in it.
 # From that position it finds the longest chain and returns the constructed name.
+# $parent is the out-of-chain atom from which this chain has been reached.
+# $start is the in-chain atom having a bond with $parent.
 sub get_sidechain_name
 {
     my( $graph, $parent, $start ) = @_;
