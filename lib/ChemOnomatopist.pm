@@ -242,8 +242,9 @@ sub get_sidechain_name
     # Record the parent
     $chain->parent( $parent ) if $chain->can( 'parent' );
 
-    if( $chain->isa( ChemOnomatopist::Chain::Circular:: ) ||
-        $chain->isa( ChemOnomatopist::Group:: ) ||
+    if(  $chain->isa( ChemOnomatopist::Chain::Circular:: ) ||
+         $chain->isa( ChemOnomatopist::Group:: ) ||
+        ($chain->isa( ChemOnomatopist::Chain::Amine:: ) && @chain == 1) ||
         (blessed $chain eq ChemOnomatopist::Chain:: && @chain == 1 && blessed $chain[0]) ) {
         my $prefix = $chain->prefix;
         # All groups are most likely stems
@@ -253,8 +254,6 @@ sub get_sidechain_name
             $name .= 'ane';
         }
         $name .= $prefix;
-    } elsif( $chain->isa( ChemOnomatopist::Chain::Amine:: ) && @chain == 1 ) {
-        $name .= $chain[0]->prefix;
     } else {
         if( $chain->isa( ChemOnomatopist::Chain::Ether:: ) ) {
             if( $name->has_substituent_locant && !$name->is_enclosed ) {
