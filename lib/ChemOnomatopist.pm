@@ -242,20 +242,19 @@ sub get_sidechain_name
     # Record the parent
     $chain->parent( $parent ) if $chain->can( 'parent' );
 
-    if( $chain->isa( ChemOnomatopist::Chain::Circular:: ) || $chain->isa( ChemOnomatopist::Group:: ) ) {
+    if( $chain->isa( ChemOnomatopist::Chain::Circular:: ) ||
+        $chain->isa( ChemOnomatopist::Group:: ) ||
+        (blessed $chain eq ChemOnomatopist::Chain:: && @chain == 1 && blessed $chain[0]) ) {
         my $prefix = $chain->prefix;
         # All groups are most likely stems
         $prefix = ChemOnomatopist::Name->new( $prefix ) unless blessed $prefix;
-        $name .= $prefix;
-    } elsif( @chain == 1 && blessed $chain[0] && !$chain->isa( ChemOnomatopist::Chain::Ether:: ) ) {
-        my $prefix = $chain[0]->prefix;
-        # All group-containing chains are most likely stems
-        $prefix = ChemOnomatopist::Name->new( $prefix ) unless blessed $prefix;
-        if( $chain[0]->isa( ChemOnomatopist::Group::Sulfinyl:: ) && $name =~ /yl$/ ) { # BBv2 P-63.6
+        if( blessed $chain[0] && $chain[0]->isa( ChemOnomatopist::Group::Sulfinyl:: ) && $name =~ /yl$/ ) { # BBv2 P-63.6
             $name->pop_yl;
             $name .= 'ane';
         }
         $name .= $prefix;
+    } elsif( $chain->isa( ChemOnomatopist::Chain::Amine:: ) && @chain == 1 ) {
+        $name .= $chain[0]->prefix;
     } else {
         if( $chain->isa( ChemOnomatopist::Chain::Ether:: ) ) {
             if( $name->has_substituent_locant && !$name->is_enclosed ) {

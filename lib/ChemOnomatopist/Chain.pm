@@ -661,11 +661,14 @@ sub prefix()
 {
     my( $self ) = @_;
 
-    # Chalcogen analogues of ethers
     if( $self->length == 1 ) {
-        return ChemOnomatopist::Name->new( 'sulfan' ) if ChemOnomatopist::is_element( $self->vertices, 'S' );
-        return ChemOnomatopist::Name->new( 'selan'  ) if ChemOnomatopist::is_element( $self->vertices, 'Se' );
-        return ChemOnomatopist::Name->new( 'tellan' ) if ChemOnomatopist::is_element( $self->vertices, 'Te' );
+        my $vertex = $self->{vertices}[0];
+        return $vertex->prefix if blessed $vertex;
+
+        # Chalcogen analogues of ethers
+        return ChemOnomatopist::Name->new( 'sulfan' ) if ChemOnomatopist::is_element( $vertex, 'S' );
+        return ChemOnomatopist::Name->new( 'selan'  ) if ChemOnomatopist::is_element( $vertex, 'Se' );
+        return ChemOnomatopist::Name->new( 'tellan' ) if ChemOnomatopist::is_element( $vertex, 'Te' );
     }
 
     return $self->suffix; # FIXME: Add proper suffix
