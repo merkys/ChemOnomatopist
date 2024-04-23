@@ -271,12 +271,12 @@ sub get_sidechain_name
             if( $branch_point || !$chain->is_saturated ) {
                 # According to BBv2 P-29.2 (1)
                 $name .= 'an' unless $name =~ /-(di|tri)?en$/; # FIXME: Dirty
-                $name->append_substituent_locant( $branch_point + 1 );
+                $name->append_substituent_locant( $chain->locants( $branch_point ) );
             }
         } elsif( $chain->is_hydrocarbon &&
                  $chain->number_of_multiple_bonds &&
                  $chain->needs_multiple_bond_locants ) {
-            $name->append_substituent_locant( 1 );
+            $name->append_substituent_locant( $chain->locants( 0 ) );
         }
 
         $name .= 'yl' unless $name =~ /[oy]$/;
