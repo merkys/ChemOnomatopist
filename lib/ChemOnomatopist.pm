@@ -239,14 +239,15 @@ sub get_sidechain_name
 
     $name .= $chain->isotope_part;
 
+    # Record the parent
+    $chain->parent( $parent ) if $chain->can( 'parent' );
+
     if( $chain->isa( ChemOnomatopist::Chain::Circular:: ) || $chain->isa( ChemOnomatopist::Group:: ) ) {
-        $chain->parent( $parent ) if $chain->can( 'parent' );
         my $prefix = $chain->prefix;
         # All groups are most likely stems
         $prefix = ChemOnomatopist::Name->new( $prefix ) unless blessed $prefix;
         $name .= $prefix;
     } elsif( @chain == 1 && blessed $chain[0] && !$chain->isa( ChemOnomatopist::Chain::Ether:: ) ) {
-        $chain[0]->parent( $parent ) if $chain[0]->can( 'parent' );
         my $prefix = $chain[0]->prefix;
         # All group-containing chains are most likely stems
         $prefix = ChemOnomatopist::Name->new( $prefix ) unless blessed $prefix;
@@ -263,7 +264,6 @@ sub get_sidechain_name
                 $name->pop_yl;
             }
         }
-        $chain->parent( $parent ) if $chain->can( 'parent' );
         $name .= $chain->prefix;
         $name->pop_e;
         pop @$name if $name->ends_with_alkane_an_suffix;
