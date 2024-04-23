@@ -31,7 +31,7 @@ sub suffix()
     return $name;
 }
 
-sub multisuffix { 'carbaldehyde' }
-sub suffix_if_cycle_substituent { 'carbaldehyde' }
+sub multisuffix { ChemOnomatopist::Name->new( 'carbaldehyde' ) }
+sub suffix_if_cycle_substituent { ChemOnomatopist::Name->new( 'carbaldehyde' ) }
 
 1;
