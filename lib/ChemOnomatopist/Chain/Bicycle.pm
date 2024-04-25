@@ -216,17 +216,11 @@ sub candidates()
 
     if( $self->is_naphthalene ) {
         # Generates all variants
-        push @chains, $self->copy, $self->copy, $self->copy;
-
-        $chains[1]->{cycles} = [ map { $_->flipped } $chains[1]->cycles ];
-        $chains[3]->{cycles} = [ map { $_->flipped } $chains[3]->cycles ];
-
-        $chains[2]->{cycles} = [ reverse $chains[2]->cycles ];
-        $chains[3]->{cycles} = [ reverse $chains[3]->cycles ];
-
-        for (@chains) {
-            $_->_adjust_vertices_to_cycles;
-            $_->{candidate_for} = $self unless $_ == $self;
+        push @chains, $self->flipped_horizontally,
+                      $self->flipped_vertically,
+                      $self->flipped_horizontally->flipped_vertically;
+        for (1..3) {
+            $chains[$_]->{candidate_for} = $self;
         }
     }
 
