@@ -153,7 +153,14 @@ sub get_sidechain_name
     # Handle non-carbon substituents
     if( @chain == 1 && $graph->degree( @chain ) == 0 + defined $parent && !blessed $chain[0] &&
         !is_element( $chain[0], 'C' ) && exists $elements{$chain[0]->{symbol}} ) {
-        my $element = $elements{$chain[0]->{symbol}}->{prefix};
+        my $symbol = $chain[0]->{symbol};
+
+        if( $symbol eq 'P' ) { # TODO: Expand this rule according to BBv3 P-29.3.1
+            my $name = ChemOnomatopist::Name->new;
+            return $name->append_element( 'phosphanyl' );
+        }
+
+        my $element = $elements{$symbol}->{prefix};
         $element =~ s/a$/o/; # TODO: Is this a general rule? BBv2 seems silent.
         my $name = ChemOnomatopist::Name->new;
         if( exists $chain[0]->{isotope} ) {
