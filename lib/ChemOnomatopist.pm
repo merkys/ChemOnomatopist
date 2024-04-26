@@ -150,19 +150,28 @@ sub get_sidechain_name
     }
     my @chain = $chain->vertices;
 
-    # Handle non-carbon substituents
+    # Handle non-carbon substituents, according to BBv3 P-29.3.1
     if( @chain == 1 && $graph->degree( @chain ) == 0 + defined $parent && !blessed $chain[0] &&
         !is_element( $chain[0], 'C' ) && exists $elements{$chain[0]->{symbol}} ) {
         my $symbol = $chain[0]->{symbol};
+        my $name = ChemOnomatopist::Name->new;
 
-        if( $symbol eq 'P' ) { # TODO: Expand this rule according to BBv3 P-29.3.1
-            my $name = ChemOnomatopist::Name->new;
-            return $name->append_element( 'phosphanyl' );
+        if( $symbol eq 'Al' ) {
+            return $name->append_element( 'alumanyl' )      if $parent_bond eq '-';
+            return $name->append_element( 'alumanylidene' ) if $parent_bond eq '=';
         }
+        return $name->append_element( 'arsanylidene' ) if $symbol eq 'As';
+        return $name->append_element( 'boranyl' )      if $symbol eq 'B';
+        return $name->append_element( 'germyl' )       if $symbol eq 'Ge';
+        if( $symbol eq 'P' ) {
+            return $name->append_element( 'phosphanyl' ) if $parent_bond eq '-';
+            return $name->append_element( 'phosphanylidyne' ) if $parent_bond eq '#';
+        }
+        return $name->append_element( 'silylidyne' )   if $symbol eq 'Si';
+        return $name->append_element( 'stannylidene' ) if $symbol eq 'Sn';
 
         my $element = $elements{$symbol}->{prefix};
         $element =~ s/a$/o/; # TODO: Is this a general rule? BBv2 seems silent.
-        my $name = ChemOnomatopist::Name->new;
         if( exists $chain[0]->{isotope} ) {
             $name .= '(' . $chain[0]->{isotope} . $chain[0]->{symbol} . ')';
         }
