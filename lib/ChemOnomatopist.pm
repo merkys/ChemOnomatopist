@@ -150,35 +150,32 @@ sub get_sidechain_name
     }
     my @chain = $chain->vertices;
 
-    # Handle non-carbon substituents, according to BBv3 P-29.3.1
-    # TODO: Complete with elements from P-68.2.2
+    # Handle non-carbon substituents, according to BBv3 P-29.3.1 and P-68.2.2
     if( @chain == 1 && $graph->degree( @chain ) == 0 + defined $parent && !blessed $chain[0] &&
         !is_element( $chain[0], 'C' ) && exists $elements{$chain[0]->{symbol}} ) {
-        my $symbol = $chain[0]->{symbol};
+        my $symbol = element( $chain[0] );
+        my $element = $elements{$symbol}->{prefix};
         my $name = ChemOnomatopist::Name->new;
 
-        if( $symbol eq 'Al' ) {
-            return $name->append_element( 'alumanyl' )      if $parent_bond eq '-';
-            return $name->append_element( 'alumanylidene' ) if $parent_bond eq '=';
+        if(      $symbol eq 'Al' ) {
+            $element = 'aluman';
+        } elsif( $symbol eq 'As' ) {
+            $element = 'arsan';
+        } elsif( $symbol !~ /^(B|P)$/ ) {
+            $element =~ s/a$//;
         }
-        return $name->append_element( 'arsanylidene' ) if $symbol eq 'As';
-        return $name->append_element( 'boranyl' )      if $symbol eq 'B';
-        return $name->append_element( 'germyl' )       if $symbol eq 'Ge';
-        if( $symbol eq 'P' ) {
-            return $name->append_element( 'phosphanyl' ) if $parent_bond eq '-';
-            return $name->append_element( 'phosphanylidyne' ) if $parent_bond eq '#';
+        if( $symbol =~ /^(Cl|Br|F|I)$/ ) {
+            $element .= 'o';
+        } else {
+            $element .= 'yl';
         }
-        if( $symbol eq 'Si' ) {
-            return $name->append_element( 'silyl' ) if $parent_bond eq '-';
-            return $name->append_element( 'silylidyne' ) if $parent_bond eq '#';
-        }
-        return $name->append_element( 'stannylidene' ) if $symbol eq 'Sn';
+        $element .= 'idene' if $parent_bond eq '=';
+        $element .= 'idyne' if $parent_bond eq '#';
 
-        my $element = $elements{$symbol}->{prefix};
-        $element =~ s/a$/o/; # TODO: Is this a general rule? BBv2 seems silent.
         if( exists $chain[0]->{isotope} ) {
-            $name .= '(' . $chain[0]->{isotope} . $chain[0]->{symbol} . ')';
+            $name .= '(' . $chain[0]->{isotope} . $symbol . ')';
         }
+
         return $name->append_element( $element );
     }
 
