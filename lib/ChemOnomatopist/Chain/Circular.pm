@@ -353,6 +353,13 @@ sub number_of_multiple_bonds()
     return $self->number_of_double_bonds;
 }
 
+sub number_of_rings()
+{
+    my( $self ) = @_;
+    return scalar $self->cycles if $self->can( 'cycles' );
+    return 1;
+}
+
 sub indicated_hydrogens_part()
 {
     my( $self ) = @_;

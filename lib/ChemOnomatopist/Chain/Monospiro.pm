@@ -90,6 +90,8 @@ sub needs_substituent_locants() { 1 }
 
 sub locants() { shift; return map { $_ + 1 } @_ }
 
+sub number_of_rings() { 2 }
+
 sub prefix()
 {
     my( $self ) = @_;

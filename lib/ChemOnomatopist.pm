@@ -1161,9 +1161,16 @@ sub filter_chains
                    \&rule_lowest_numbered_charges, # There is no such rule, but this is required as charges are not treated as suffix groups
 
                    # TODO: P-44.1.2: Concerns rings
+
+                   # P-44.2.1 (a): Ring system is a heterosystem
                    \&rule_circular_is_heterocycle,
+                   # P-44.2.1 (b): Ring system has at least one nitrogen atom
+                   # CHECKME: Is not this the same as implemented just below?
                    \&rule_circular_has_nitrogen,
+                   # P-44.2.1 (c): Ring system has the most senior heteroatom
                    \&rule_circular_most_senior_heteroatom,
+                   # P-44.2.1 (d): Ring system has most rings
+                   \&rule_circular_most_rings,
 
                    # P-44.3.1: Maximum number of heteroatoms of any kind
                    \&rule_most_heteroatoms,
@@ -1268,6 +1275,14 @@ sub rule_circular_most_senior_heteroatom
     my( @chains ) = @_;
     return @chains unless all { $_->isa( ChemOnomatopist::Chain::Circular:: ) } @chains;
     return ChemOnomatopist::Chain::Bicycle::rule_most_senior_heteroatom( @chains );
+}
+
+sub rule_circular_most_rings
+{
+    my( @chains ) = @_;
+    return @chains unless all { $_->isa( ChemOnomatopist::Chain::Circular:: ) } @chains;
+    my( $max_value ) = reverse sort map { $_->number_of_rings } @chains;
+    return grep { $_->number_of_rings == $max_value } @chains;
 }
 
 sub rule_lowest_numbered_senior_groups

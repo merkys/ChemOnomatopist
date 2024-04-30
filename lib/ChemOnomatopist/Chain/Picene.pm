@@ -85,6 +85,8 @@ sub ideal_graph($)
     return $graph;
 }
 
+sub number_of_rings() { 5 }
+
 sub prefix() { 'picene' }
 sub suffix() { $_[0]->prefix }
 
