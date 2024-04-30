@@ -321,11 +321,6 @@ sub has_form($$)
 
     $graph->delete_vertices( @d3 );
     return !$graph->is_connected;
-
-    # Apparently there is a bug in Perl Graph 0.9727 which does not treat O1C(=CC2=C1C=CC=C2)P as bicycle.
-    $graph->delete_vertices( grep { $graph->degree( $_ ) == 1 } $graph->vertices );
-    return '' unless scalar( $graph->connected_components ) == 2;
-    return 1;
 }
 
 # Tells whether the outer bonds of the bicycle qualify as aromatic
