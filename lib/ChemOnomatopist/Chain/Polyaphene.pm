@@ -116,7 +116,7 @@ sub candidates()
     return @candidates;
 }
 
-sub needs_substituent_locants() { return 1 }
+sub needs_substituent_locants() { 1 }
 
 sub has_form($$)
 {
@@ -130,7 +130,7 @@ sub has_form($$)
 
     return are_isomorphic( graph_without_edge_attributes( $graph ),
                            $class->ideal_graph( $N ),
-                           sub { return 'C' } );
+                           sub { 'C' } );
 }
 
 sub ideal_graph($$)
@@ -168,12 +168,14 @@ sub ideal_graph($$)
     return $graph;
 }
 
+sub number_of_rings() { ($_[0]->length - 2) / 4 }
+
 sub prefix()
 {
     my( $self ) = @_;
-    return ChemOnomatopist::IUPAC_numerical_multiplier( ($self->length - 2) / 4 ) . 'aphene';
+    return ChemOnomatopist::IUPAC_numerical_multiplier( $self->number_of_rings ) . 'aphene';
 }
 
-sub suffix() { return $_[0]->prefix }
+sub suffix() { $_[0]->prefix }
 
 1;
