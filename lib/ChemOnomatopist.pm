@@ -151,6 +151,7 @@ sub get_sidechain_name
     my @chain = $chain->vertices;
 
     # Handle non-carbon substituents, according to BBv3 P-29.3.1
+    # TODO: Complete with elements from P-68.2.2
     if( @chain == 1 && $graph->degree( @chain ) == 0 + defined $parent && !blessed $chain[0] &&
         !is_element( $chain[0], 'C' ) && exists $elements{$chain[0]->{symbol}} ) {
         my $symbol = $chain[0]->{symbol};
@@ -167,7 +168,10 @@ sub get_sidechain_name
             return $name->append_element( 'phosphanyl' ) if $parent_bond eq '-';
             return $name->append_element( 'phosphanylidyne' ) if $parent_bond eq '#';
         }
-        return $name->append_element( 'silylidyne' )   if $symbol eq 'Si';
+        if( $symbol eq 'Si' ) {
+            return $name->append_element( 'silyl' ) if $parent_bond eq '-';
+            return $name->append_element( 'silylidyne' ) if $parent_bond eq '#';
+        }
         return $name->append_element( 'stannylidene' ) if $symbol eq 'Sn';
 
         my $element = $elements{$symbol}->{prefix};
