@@ -96,10 +96,12 @@ sub ideal_graph($$)
     return $graph;
 }
 
+sub number_of_rings() { ($_[0]->length - 2) / 4 }
+
 sub suffix
 {
     my( $self ) = @_;
-    return ChemOnomatopist::IUPAC_numerical_multiplier( ($self->length - 2) / 4, 1 ) . 'helicene';
+    return ChemOnomatopist::IUPAC_numerical_multiplier( $self->number_of_rings, 1 ) . 'helicene';
 }
 
 1;
