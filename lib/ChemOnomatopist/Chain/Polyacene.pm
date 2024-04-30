@@ -132,11 +132,13 @@ sub locants(@)
     return map { $locant_map[$_] } @_;
 }
 
+sub number_of_rings() { ($_[0]->length - 2) / 4 }
+
 sub suffix
 {
     my( $self ) = @_;
     return ChemOnomatopist::Name->new( 'anthracene' ) if $self->length == 14;
-    return ChemOnomatopist::Name->new( ChemOnomatopist::IUPAC_numerical_multiplier( ($self->length - 2) / 4 ) . 'acene' );
+    return ChemOnomatopist::Name->new( ChemOnomatopist::IUPAC_numerical_multiplier( $self->number_of_rings ) . 'acene' );
 }
 
 1;
