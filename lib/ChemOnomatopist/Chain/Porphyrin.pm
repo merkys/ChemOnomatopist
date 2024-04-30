@@ -21,8 +21,8 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
-sub needs_heteroatom_locants() { return '' }
-sub needs_heteroatom_names() { return '' }
+sub needs_heteroatom_locants() { '' }
+sub needs_heteroatom_names() { '' }
 
 sub has_form($$)
 {
@@ -50,7 +50,9 @@ sub ideal_graph($)
     return $graph;
 }
 
-sub prefix() { return ChemOnomatopist::Name->new( 'porphyrin' ) }
-sub suffix() { return ChemOnomatopist::Name->new( 'porphyrin' ) }
+sub number_of_rings() { 5 }
+
+sub prefix() { ChemOnomatopist::Name->new( 'porphyrin' ) }
+sub suffix() { ChemOnomatopist::Name->new( 'porphyrin' ) }
 
 1;

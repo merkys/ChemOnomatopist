@@ -107,6 +107,8 @@ sub needs_heteroatom_locants() { '' }
 sub needs_heteroatom_names() { '' }
 sub needs_substituent_locants() { 1 }
 
+sub number_of_rings() { 3 }
+
 sub prefix()
 {
     my( $self ) = @_;

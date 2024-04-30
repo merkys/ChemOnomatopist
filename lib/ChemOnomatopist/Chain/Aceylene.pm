@@ -158,6 +158,7 @@ sub locants(@)
     return map { $locant_map{$_} } @_;
 }
 
+sub number_of_rings() { $_[0]->is_acenaphthylene ? 3 : 4 }
 
 sub prefix() { &suffix }
 sub suffix()
