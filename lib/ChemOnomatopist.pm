@@ -795,11 +795,16 @@ sub select_mainchain
         if( $most_senior_element ) {
             @POI = grep { defined element( $_ ) && element( $_ ) eq $most_senior_element }
                         $graph->vertices;
+            # BBv3 P-44.1.2: it seems that if there are multiple (hetero?)cycles they have to compete according to P-44.2
+            my @POI_cycles = grep { $_->isa( ChemOnomatopist::Chain::Circular:: ) }
+                                  uniq map { $graph->groups( $_ ) } @POI;
+            my $ncycles = grep { $_->isa( ChemOnomatopist::Chain::Circular:: ) }
+                               $graph->groups;
+            @POI = () if @POI_cycles == 1 && $ncycles > 1;
         }
     }
 
     # "40. Carbon compounds: rings, chains"
-    # The remaining cycles will be homocycles
     if( !@POI ) {
         @POI = grep { $_->isa( ChemOnomatopist::Chain::Circular:: ) } $graph->groups;
     }
@@ -1156,6 +1161,9 @@ sub filter_chains
                    \&rule_lowest_numbered_charges, # There is no such rule, but this is required as charges are not treated as suffix groups
 
                    # TODO: P-44.1.2: Concerns rings
+                   \&rule_circular_is_heterocycle,
+                   \&rule_circular_has_nitrogen,
+                   \&rule_circular_most_senior_heteroatom,
 
                    # P-44.3.1: Maximum number of heteroatoms of any kind
                    \&rule_most_heteroatoms,
@@ -1219,7 +1227,7 @@ sub filter_chains
             print STDERR '>>> ', Sub::Identify::sub_name( $rule ), "\n";
         }
 
-        # CHECK: Can a rule cause disappearance of all chains?
+        # If a rule causes disappearance of all chains, it is a bad discriminator
         next unless @chains_now;
 
         @chains = @chains_now; # Narrow down the selection
@@ -1239,6 +1247,27 @@ sub rule_most_groups
     my( $max_value ) = sort { $b <=> $a }
                        map { $_->number_of_groups( $class ) } @chains;
     return grep { $_->number_of_groups( $class ) == $max_value } @chains;
+}
+
+sub rule_circular_is_heterocycle
+{
+    my( @chains ) = @_;
+    return @chains unless all { $_->isa( ChemOnomatopist::Chain::Circular:: ) } @chains;
+    return grep { $_->is_heterocycle } @chains;
+}
+
+sub rule_circular_has_nitrogen
+{
+    my( @chains ) = @_;
+    return @chains unless all { $_->isa( ChemOnomatopist::Chain::Circular:: ) } @chains;
+    return grep { any { $_ eq 'N' } $_->heteroatoms } @chains;
+}
+
+sub rule_circular_most_senior_heteroatom
+{
+    my( @chains ) = @_;
+    return @chains unless all { $_->isa( ChemOnomatopist::Chain::Circular:: ) } @chains;
+    return ChemOnomatopist::Chain::Bicycle::rule_most_senior_heteroatom( @chains );
 }
 
 sub rule_lowest_numbered_senior_groups
