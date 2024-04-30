@@ -80,7 +80,7 @@ sub ideal_graph($)
 
 sub number_of_rings() { 3 }
 
-sub prefix() { return ChemOnomatopist::Name->new( 'fluorene' ) }
-sub suffix() { return ChemOnomatopist::Name->new( 'fluorene' ) }
+sub prefix() { ChemOnomatopist::Name->new( 'fluorene' ) }
+sub suffix() { ChemOnomatopist::Name->new( 'fluorene' ) }
 
 1;

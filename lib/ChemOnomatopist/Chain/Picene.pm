@@ -8,6 +8,7 @@ use warnings;
 
 use parent ChemOnomatopist::Chain::Circular::;
 
+use ChemOnomatopist::Name;
 use ChemOnomatopist::Util::Graph qw(
     graph_without_edge_attributes
 );
@@ -87,7 +88,7 @@ sub ideal_graph($)
 
 sub number_of_rings() { 5 }
 
-sub prefix() { 'picene' }
+sub prefix() { ChemOnomatopist::Name->new( 'picene' ) }
 sub suffix() { $_[0]->prefix }
 
 1;
