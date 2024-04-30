@@ -310,11 +310,20 @@ sub has_form($$)
     my %degrees = map { $graph->degree( $_ ) => 1 } $graph->vertices;
     return '' unless join( ',', sort keys %degrees ) eq '2,3';
 
+    # Safeguard against graphs such as bicyclo[3.2.1]octane
     my @d3 = grep { $graph->degree( $_ ) == 3 } $graph->vertices;
     return '' unless @d3 == 2;
     return '' unless $graph->has_edge( @d3 );
 
-    $graph = $graph->copy->delete_vertices( @d3 );
+    # Safeguard against graphs such as 1,1'-biphenyl
+    $graph = $graph->copy->delete_edge( @d3 );
+    return '' unless $graph->is_connected;
+
+    $graph->delete_vertices( @d3 );
+    return !$graph->is_connected;
+
+    # Apparently there is a bug in Perl Graph 0.9727 which does not treat O1C(=CC2=C1C=CC=C2)P as bicycle.
+    $graph->delete_vertices( grep { $graph->degree( $_ ) == 1 } $graph->vertices );
     return '' unless scalar( $graph->connected_components ) == 2;
     return 1;
 }

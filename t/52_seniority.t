@@ -22,7 +22,7 @@ my @cases = (
     { smiles => 'CP[SiH3]', iupac => 'methyl(silyl)phosphane', AUTHOR => 1 },
     { smiles => 'C(C)(C)(C)[Si](OCC1OC1)(C)C', iupac => 'tert-butyldi(methyl)(oxiranylmethoxy)silane', AUTHOR => 1 },
     { smiles => 'C(=O)(O)CC[SiH2][SiH2]C(=O)O', iupac => '2-(2-carboxyethyl)disilane-1-carboxylic acid', AUTHOR => 1 },
-    { smiles => 'O1C(=CC2=C1C=CC=C2)P', iupac => '(1-benzofuran-2-yl)phosphane', AUTHOR => 1 },
+    { smiles => 'O1C(=CC2=C1C=CC=C2)P', iupac => '(1-benzofuran-2-yl)phosphane' },
     { smiles => 'C[Si](N1C=NC=C1)(C)C', iupac => '1-(trimethylsilyl)-1H-imidazole', AUTHOR => 1 },
     { smiles => 'C(#N)C1=PC=CC(=C1)C1CC(OCC1)C#N', iupac => '4-(2-cyanophosphinin-4-yl)oxane-2-carbonitrile' },
     { smiles => 'P1=C(C=CC=C1)PC=1OC=CC1', iupac => '2-[(phosphinin-2-yl)phosphanyl]furan', AUTHOR => 1 },
