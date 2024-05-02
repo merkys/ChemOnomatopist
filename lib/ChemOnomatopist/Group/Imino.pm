@@ -1,20 +1,20 @@
 package ChemOnomatopist::Group::Imino;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Imino group
 # VERSION
 
+use strict;
+use warnings;
+
 use parent ChemOnomatopist::Group::;
 
-sub element() { return 'N' }
+sub element() { 'N' }
 
-sub is_terminal() { return 1 }
+sub is_terminal() { 1 }
 
-sub needs_multiple_bond_suffix { return '' }
+sub needs_multiple_bond_suffix() { '' }
 
-sub prefix { return 'imino' }
-sub suffix { return 'imine' }
+sub prefix() { 'imino' }
+sub suffix() { 'imine' }
 
 1;
