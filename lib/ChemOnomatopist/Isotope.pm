@@ -10,6 +10,7 @@ use ChemOnomatopist::Util qw(
     array_frequencies
     cmp_arrays
 );
+use Chemistry::Isotope qw( isotope_abundance );
 use List::Util qw( uniq );
 
 sub new
@@ -21,11 +22,19 @@ sub new
                    locant => $locant }, $class;
 }
 
+sub atomic_number()
+{
+    my( $self ) = @_;
+    my $abundance = isotope_abundance( $self->element );
+    my( $most_abundant ) = sort { $abundance->{$b} <=> $abundance->{$a} }
+                                keys %$abundance;
+    return $most_abundant + 0;
+}
+
 sub element()       { $_[0]->{element} }
-sub atomic_number() { $_[0]->{mass_number} }
-sub mass_number()   { $_[0]->{mass_number} }
 sub index()         { $_[0]->{index} }
 sub locant()        { $_[0]->{locant} }
+sub mass_number()   { $_[0]->{mass_number} }
 
 sub cmp_isotope_lists($$)
 {
@@ -34,17 +43,28 @@ sub cmp_isotope_lists($$)
     # BBv3 P-44.4.1.11.1: Senior set is larger
     return @$B <=> @$A if @$B <=> @$A;
 
-    my %A_atomic_number_freq = array_frequencies map { $_->atomic_number } @$A;
-    my %B_atomic_number_freq = array_frequencies map { $_->atomic_number } @$B;
+    my @keys;
 
     # BBv3 P-44.4.1.11.2: Senior set has greater number of nuclides of higher atomic number
-    # CHECKME: P-44.4.1.11.3 seems to be covered by this as well?
-    my @keys = (keys %A_atomic_number_freq, keys %B_atomic_number_freq);
+    my %A_atomic_number_freq = array_frequencies map { $_->atomic_number } @$A;
+    my %B_atomic_number_freq = array_frequencies map { $_->atomic_number } @$B;
+    @keys = (keys %A_atomic_number_freq, keys %B_atomic_number_freq);
     for (reverse sort uniq @keys) {
         return  1 if !exists $A_atomic_number_freq{$_};
         return -1 if !exists $B_atomic_number_freq{$_};
         return $A_atomic_number_freq{$_} <=> $B_atomic_number_freq{$_}
             if $A_atomic_number_freq{$_} <=> $B_atomic_number_freq{$_};
+    }
+
+    # BBv3 P-44.4.1.11.3: Senior set has greater number of nuclides of higher mass number
+    my %A_mass_number_freq = array_frequencies map { $_->mass_number } @$A;
+    my %B_mass_number_freq = array_frequencies map { $_->mass_number } @$B;
+    @keys = (keys %A_mass_number_freq, keys %B_mass_number_freq);
+    for (reverse sort uniq @keys) {
+        return  1 if !exists $A_mass_number_freq{$_};
+        return -1 if !exists $B_mass_number_freq{$_};
+        return $A_mass_number_freq{$_} <=> $B_mass_number_freq{$_}
+            if $A_mass_number_freq{$_} <=> $B_mass_number_freq{$_};
     }
 
     my $cmp_result = 0;
@@ -55,8 +75,13 @@ sub cmp_isotope_lists($$)
     return $cmp_result if $cmp_result;
 
     # BBv3 P-44.4.1.11.5: Senior set has lower locants for nuclides of higher atomic number
-    $cmp_result = cmp_arrays( [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } @$A ],
-                              [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } @$B ] );
+    $cmp_result = cmp_arrays( [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number || $a->index <=> $b->index } @$A ],
+                              [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number || $a->index <=> $b->index } @$B ] );
+    return $cmp_result if $cmp_result;
+
+    # BBv3 P-44.4.1.11.6: Senior set has lower locants for nuclides of higher mass number
+    $cmp_result = cmp_arrays( [ map { $_->locant } sort { $b->mass_number <=> $a->mass_number || $a->index <=> $b->index } @$A ],
+                              [ map { $_->locant } sort { $b->mass_number <=> $a->mass_number || $a->index <=> $b->index } @$B ] );
     return $cmp_result if $cmp_result;
 
     return 0;
