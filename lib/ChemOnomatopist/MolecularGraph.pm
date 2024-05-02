@@ -6,11 +6,12 @@ use warnings;
 # ABSTRACT: Graph extension for molecular graphs
 # VERSION
 
-use parent Graph::Undirected::;
-
 use ChemOnomatopist::Util::Graph;
+use Graph::Undirected;
 use List::Util qw( all );
 use Set::Object qw( set );
+
+use parent Graph::Undirected::;
 
 sub new
 {
