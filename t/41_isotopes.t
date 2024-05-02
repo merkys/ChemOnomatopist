@@ -61,7 +61,7 @@ my @cases = (
 
     # From BBv3 P-82.6.3.3
     { smiles => 'C1=C(C=CC2=CC=CC=C12)[15N]=NC1=CC=CC=C1', iupac => '1-(naphthalen-2-yl)-2-phenyl(1-15N)diazene' },
-    { smiles => 'C(CC)=[15N]N', iupac => '1-propylidene(1-15N)hydrazine', AUTHOR => 1 },
+    { smiles => 'C(CC)=[15N]N', iupac => '1-propylidene(1-15N)hydrazine' },
     { smiles => 'C(C)S[34S]SCCC(=O)O', iupac => '3-[ethyl(2-34S)trisulfanyl]propanoic acid', AUTHOR => 1 },
     { smiles => 'ClC1=C(C=CC2=CC=CC=C12)[15N]=[N+](C1=CC=CC=C1)[O-]', iupac => '1-(1-chloronaphthalen-2-yl)-2-phenyl(1-15N)diazene 2-oxide', AUTHOR => 1 },
 

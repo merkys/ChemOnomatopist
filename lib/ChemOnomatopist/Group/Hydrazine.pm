@@ -40,6 +40,7 @@ sub needs_substituent_locants()
         return '' if is_double_bond( $self->graph, $vertex, $parent );
     }
 
+    return 1 if $self->number_of_isotopes;
     return $self->number_of_branches > 1 && $self->number_of_branches < $self->max_valence;
 }
 
