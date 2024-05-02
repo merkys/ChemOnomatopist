@@ -287,10 +287,6 @@ sub subgraph
     my $vertices = set( @vertices );
     $graph = copy $graph;
     $graph->delete_vertices( grep { !$vertices->has( $_ ) } $graph->vertices );
-    # For some reason bridges() have to be called to update the cache.
-    # Otherwise is_edge_connected() may return an incorrect result.
-    # This should be reported upstream, but MWE is difficult to construct.
-    $graph->bridges;
     return $graph;
 }
 

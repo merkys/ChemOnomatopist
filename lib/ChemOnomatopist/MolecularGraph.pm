@@ -37,9 +37,12 @@ sub copy()
         next unless $self->has_edge_attributes( @$edge );
         $copy->set_edge_attributes( @$edge, $self->get_edge_attributes( @$edge ) );
     }
-    $copy->set_graph_attributes( $self->get_graph_attributes );
+    for my $attribute ($self->get_graph_attribute_names) {
+        next if $attribute =~ /^_/; # Skip internal attributes
+        $copy->set_graph_attribute( $attribute, $self->get_graph_attribute( $attribute ) );
+    }
 
-    return bless $copy;
+    return $copy;
 }
 
 sub subgraph()
