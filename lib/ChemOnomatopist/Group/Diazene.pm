@@ -29,11 +29,6 @@ sub candidates()
 
 sub needs_heteroatom_locants() { '' }
 sub needs_heteroatom_names() { '' }
-sub needs_substituent_locants()
-{
-    my( $self ) = @_;
-    return $self->number_of_branches > 1 && $self->number_of_branches < $self->max_valence;
-}
 sub needs_suffix_locant() { $_[0]->number_of_branches != 2 }
 
 sub prefix() { ChemOnomatopist::Name::Part::Multiplier->new( 'di' )->to_name .

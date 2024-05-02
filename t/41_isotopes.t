@@ -59,6 +59,12 @@ my @cases = (
     { smiles => 'C([C@@H](C)O)[2H]', iupac => '(2R)-(1-2H1)propan-2-ol', AUTHOR => 1 },
     { smiles => 'C[C@@H](C[C@@H](C)[2H])[3H]', iupac => '(2S,4R)-(4-2H1,2-3H1)pentane', AUTHOR => 1 },
 
+    # From BBv3 P-82.6.3.3
+    { smiles => 'C1=C(C=CC2=CC=CC=C12)[15N]=NC1=CC=CC=C1', iupac => '1-(naphthalen-2-yl)-2-phenyl(1-15N)diazene' },
+    { smiles => 'C(CC)=[15N]N', iupac => '1-propylidene(1-15N)hydrazine', AUTHOR => 1 },
+    { smiles => 'C(C)S[34S]SCCC(=O)O', iupac => '3-[ethyl(2-34S)trisulfanyl]propanoic acid', AUTHOR => 1 },
+    { smiles => 'ClC1=C(C=CC2=CC=CC=C12)[15N]=[N+](C1=CC=CC=C1)[O-]', iupac => '1-(1-chloronaphthalen-2-yl)-2-phenyl(1-15N)diazene 2-oxide', AUTHOR => 1 },
+
     { smiles => '[14C](CCCC)(=O)[O][3H]', iupac => '(1-14C)pentan(3H)oic acid', AUTHOR => 1 }, # From BBv3 P-82.2.4
     { smiles => 'CCO[2H]', iupac => 'ethan(2H)ol', AUTHOR => 1 }, # From BBv3 P-82.6.1.1
 );

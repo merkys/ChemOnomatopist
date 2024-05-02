@@ -96,7 +96,7 @@ sub isotopes()
         $_->{index} = $self->{halves}[1]->length + $_ - $self->shares_start;
         ( $_->{locant} ) = $self->locants( $_->{index} );
     }
-    return reverse( @half0_isotopes ), @half1_isotopes;
+    return my @isotopes = ( reverse( @half0_isotopes ), @half1_isotopes );
 }
 
 # Not sure why this has to be overriden

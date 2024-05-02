@@ -365,6 +365,8 @@ sub needs_substituent_locants()
     my( $self ) = @_;
     return '' if $self->length == 1;
 
+    return 1 if $self->number_of_isotopes;
+
     # FIXME: Make sure the substituents are of the same kind
     return '' if scalar( $self->substituents ) == $self->max_valence;
 
