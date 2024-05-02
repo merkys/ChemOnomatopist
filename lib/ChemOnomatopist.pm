@@ -1236,6 +1236,8 @@ sub filter_chains
                    # TODO: P-45.4: Concerns isotopes
                    # P-45.4.2: Lowest locants for nuclides of higher atomic number
                    \&rule_lowest_locants_for_nuclides_of_higher_atomic_number,
+                   # P-45.4.3: Lowest locants for nuclides of higher mass number
+                   \&rule_lowest_locants_for_nuclides_of_higher_mass_number,
                    # P-45.5: Alphanumerical order of names
                    # TODO: This is not implemented fully
                    \&pick_alphabetically_earliest,
@@ -1455,6 +1457,17 @@ sub rule_lowest_locants_for_nuclides_of_higher_atomic_number
                        map  {  [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } $_->isotopes ] }
                            @chains;
     return grep { !cmp_arrays( [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } $_->isotopes ],
+                                 $max_value ) }
+                @chains;
+}
+
+sub rule_lowest_locants_for_nuclides_of_higher_mass_number
+{
+    my( @chains ) = @_;
+    my( $max_value ) = sort {  cmp_arrays( $a, $b ) }
+                       map  {  [ map { $_->locant } sort { $b->mass_number <=> $a->mass_number } $_->isotopes ] }
+                           @chains;
+    return grep { !cmp_arrays( [ map { $_->locant } sort { $b->mass_number <=> $a->mass_number } $_->isotopes ],
                                  $max_value ) }
                 @chains;
 }
