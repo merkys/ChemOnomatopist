@@ -837,6 +837,7 @@ sub select_mainchain
         # Select a chain containing most POIs
 
         # Prefer circular structures
+        # FIXME: As per example in BBv3 P-63.7, chain with more principal groups than a ring is prefered.
         if( map { $graph->groups( $_ ) } @parents ) {
             @parents = uniq map { $graph->groups( $_ ) } @parents;
         }
