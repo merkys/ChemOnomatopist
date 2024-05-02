@@ -1217,9 +1217,11 @@ sub filter_chains
                    # P-44.4.1.11: Concerns isotopes
                    # P-44.4.1.11.1: Greater number of isotopically modified atoms or groups
                    \&rule_greater_number_of_isotopically_modified_atoms_or_groups,
-                   \&rule_isotopes,
-                   # TODO: P-44.4.1.12: Concerns stereogenic centers
+                   \&rule_greater_number_of_nuclides_of_higher_atomic_number,
+                   \&rule_greater_number_of_nuclides_of_higher_mass_number,
+                   \&rule_isotopes, # FIXME: This is deprecated and covered by other rules
 
+                   # TODO: P-44.4.1.12: Concerns stereogenic centers
                    # TODO: P-45.1: Multiplication of identical senior parent structures
 
                    # P-45.2.1: Maximum number of prefix substituents
@@ -1468,6 +1470,16 @@ sub rule_greater_number_of_nuclides_of_higher_atomic_number
                        map  { [ $_->isotopes ] } @chains;
     return grep { !ChemOnomatopist::Isotope::cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_atomic_number( [ $_->isotopes ],
                                                                                                                       $max_value ) }
+                @chains;
+}
+
+sub rule_greater_number_of_nuclides_of_higher_mass_number
+{
+    my @chains = @_;
+    my( $max_value ) = sort { ChemOnomatopist::Isotope::cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_mass_number( $a, $b ) }
+                       map  { [ $_->isotopes ] } @chains;
+    return grep { !ChemOnomatopist::Isotope::cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_mass_number( [ $_->isotopes ],
+                                                                                                                    $max_value ) }
                 @chains;
 }
 
