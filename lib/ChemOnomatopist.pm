@@ -1160,6 +1160,7 @@ sub filter_chains
                    # P-44.1.1: Maximum number of substituents of principal characteristic group.
                    #           This is not needed as select_mainchain() returns such chains.
                    \&rule_lowest_numbered_charges, # There is no such rule, but this is required as charges are not treated as suffix groups
+                   \&rule_lowest_numbered_anions,
 
                    # TODO: P-44.1.2: Concerns rings
 
@@ -1401,6 +1402,16 @@ sub rule_lowest_numbered_charges
     my( $max_value ) = sort { cmp_arrays( $a, $b ) }
                        map  {  [ map { $_->index } $_->charges ] } @chains;
     return grep { !cmp_arrays( [ map { $_->index } $_->charges ], $max_value ) }
+                @chains;
+}
+
+sub rule_lowest_numbered_anions
+{
+    my( @chains ) = @_;
+
+    my( $max_value ) = sort { cmp_arrays( $a, $b ) }
+                       map  {  [ map { $_->index } grep { $_->charge < 0 } $_->charges ] } @chains;
+    return grep { !cmp_arrays( [ map { $_->index } grep { $_->charge < 0 } $_->charges ], $max_value ) }
                 @chains;
 }
 
