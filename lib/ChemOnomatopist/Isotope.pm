@@ -14,15 +14,16 @@ use List::Util qw( uniq );
 
 sub new
 {
-    my( $class, $element, $atomic_number, $index, $locant ) = @_;
+    my( $class, $element, $mass_number, $index, $locant ) = @_;
     return bless { element => $element,
-                   atomic_number => $atomic_number,
+                   mass_number => $mass_number,
                    index => $index,
                    locant => $locant }, $class;
 }
 
 sub element()       { $_[0]->{element} }
-sub atomic_number() { $_[0]->{atomic_number} }
+sub atomic_number() { $_[0]->{mass_number} }
+sub mass_number()   { $_[0]->{mass_number} }
 sub index()         { $_[0]->{index} }
 sub locant()        { $_[0]->{locant} }
 

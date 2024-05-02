@@ -628,14 +628,14 @@ sub isotope_part()
     my( $self ) = @_;
 
     my @isotopes = sort { $a->element cmp $b->element ||
-                          $a->atomic_number <=> $b->atomic_number }
+                          $a->mass_number <=> $b->mass_number }
                         $self->isotopes;
     return '' unless @isotopes;
 
     my @order;
     my %freq;
     for my $isotope (@isotopes) {
-        my $key = $isotope->atomic_number . $isotope->element;
+        my $key = $isotope->mass_number . $isotope->element;
         if( !$freq{$key} ) {
             $freq{$key} = [];
             push @order, $key;
