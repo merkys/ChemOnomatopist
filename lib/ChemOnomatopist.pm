@@ -95,6 +95,15 @@ sub get_name
         my $parser = Chemistry::OpenSMILES::Parser->new;
         my @graphs = map { ChemOnomatopist::MolecularGraph->new( $_ ) }
                          $parser->parse( $what );
+
+        # Detecting and naming salts
+        if( !$CAUTIOUS && @graphs == 2 &&
+            (any { $_->is_anion  } @graphs) &&
+            (any { $_->is_cation } @graphs) ) {
+            return join ' ', map  { get_name( $_ ) }
+                             sort { $a->is_anion <=> $b->is_anion } @graphs;
+        }
+
         die "separate molecular entities are not handled yet\n" if @graphs > 1;
         $graph = shift @graphs;
     }

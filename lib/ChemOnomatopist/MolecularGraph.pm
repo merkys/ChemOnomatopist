@@ -8,7 +8,7 @@ use warnings;
 
 use ChemOnomatopist::Util::Graph;
 use Graph::Undirected;
-use List::Util qw( all );
+use List::Util qw( all any );
 use Set::Object qw( set );
 
 use parent Graph::Undirected::;
@@ -85,5 +85,21 @@ sub groups(@)
         return @{$self->get_graph_attribute( 'groups' )};
     }
 }
+
+sub has_negative_charge()
+{
+    my( $self ) = @_;
+    return any { $_->{charge} && $_->{charge} < 0 } $self->vertices;
+}
+
+sub has_positive_charge()
+{
+    my( $self ) = @_;
+    return any { $_->{charge} && $_->{charge} > 0 } $self->vertices;
+}
+
+sub is_anion()      {  $_[0]->has_negative_charge && !$_[0]->has_positive_charge }
+sub is_cation()     { !$_[0]->has_negative_charge &&  $_[0]->has_positive_charge }
+sub is_zwitterion() {  $_[0]->has_negative_charge &&  $_[0]->has_positive_charge }
 
 1;
