@@ -1213,7 +1213,10 @@ sub filter_chains
                    #                    This is not fully implemented now
                    \&rule_lowest_numbered_multiple_bonds,
                    \&rule_lowest_numbered_double_bonds,
+
                    # P-44.4.1.11: Concerns isotopes
+                   # P-44.4.1.11.1: Greater number of isotopically modified atoms or groups
+                   \&rule_greater_number_of_isotopically_modified_atoms_or_groups,
                    \&rule_isotopes,
                    # TODO: P-44.4.1.12: Concerns stereogenic centers
 
@@ -1448,6 +1451,18 @@ sub rule_isotopes
     return grep { !ChemOnomatopist::Isotope::cmp_isotope_lists( [ $_->isotopes ],
                                                                 $max_value ) }
                 @chains;
+}
+
+sub rule_greater_number_of_isotopically_modified_atoms_or_groups
+{
+    my( @chains ) = @_;
+    my( $max_value ) = sort { $b <=> $a }
+                       map  { $_->number_of_isotopes } @chains;
+    return grep { $_->number_of_isotopes == $max_value } @chains;
+}
+
+sub rule_greater_number_of_nuclides_of_higher_atomic_number
+{
 }
 
 sub rule_lowest_locants_for_nuclides_of_higher_atomic_number
