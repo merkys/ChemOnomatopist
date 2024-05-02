@@ -1234,6 +1234,8 @@ sub filter_chains
                    \&pick_chain_with_lowest_attachments_alphabetically,
                    # TODO: P-45.3: Nonstandard bond numbers
                    # TODO: P-45.4: Concerns isotopes
+                   # P-45.4.2: Lowest locants for nuclides of higher atomic number
+                   \&rule_lowest_locants_for_nuclides_of_higher_atomic_number,
                    # P-45.5: Alphanumerical order of names
                    # TODO: This is not implemented fully
                    \&pick_alphabetically_earliest,
@@ -1443,6 +1445,17 @@ sub rule_isotopes
                             @chains;
     return grep { !ChemOnomatopist::Isotope::cmp_isotope_lists( [ $_->isotopes ],
                                                                 $max_value ) }
+                @chains;
+}
+
+sub rule_lowest_locants_for_nuclides_of_higher_atomic_number
+{
+    my( @chains ) = @_;
+    my( $max_value ) = sort {  cmp_arrays( $a, $b ) }
+                       map  {  [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } $_->isotopes ] }
+                           @chains;
+    return grep { !cmp_arrays( [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } $_->isotopes ],
+                                 $max_value ) }
                 @chains;
 }
 
