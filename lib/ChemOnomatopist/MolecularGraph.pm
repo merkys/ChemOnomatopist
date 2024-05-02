@@ -1,10 +1,10 @@
 package ChemOnomatopist::MolecularGraph;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Graph extension for molecular graphs
 # VERSION
+
+use strict;
+use warnings;
 
 use ChemOnomatopist::Util::Graph;
 use Graph::Undirected;
