@@ -1463,6 +1463,12 @@ sub rule_greater_number_of_isotopically_modified_atoms_or_groups
 
 sub rule_greater_number_of_nuclides_of_higher_atomic_number
 {
+    my @chains = @_;
+    my( $max_value ) = sort { ChemOnomatopist::Isotope::cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_atomic_number( $a, $b ) }
+                       map  { [ $_->isotopes ] } @chains;
+    return grep { !ChemOnomatopist::Isotope::cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_atomic_number( [ $_->isotopes ],
+                                                                                                                      $max_value ) }
+                @chains;
 }
 
 sub rule_lowest_locants_for_nuclides_of_higher_atomic_number
