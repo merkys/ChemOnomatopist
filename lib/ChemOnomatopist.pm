@@ -1450,18 +1450,6 @@ sub rule_most_double_bonds
     return grep { $_->number_of_double_bonds == $max_value } @chains;
 }
 
-sub rule_isotopes
-{
-    my( @chains ) = @_;
-
-    my( $max_value ) = sort { ChemOnomatopist::Isotope::cmp_isotope_lists( $a, $b ) }
-                       map  { [ $_->isotopes ] }
-                            @chains;
-    return grep { !ChemOnomatopist::Isotope::cmp_isotope_lists( [ $_->isotopes ],
-                                                                $max_value ) }
-                @chains;
-}
-
 sub rule_greater_number_of_isotopically_modified_atoms_or_groups
 {
     my( @chains ) = @_;

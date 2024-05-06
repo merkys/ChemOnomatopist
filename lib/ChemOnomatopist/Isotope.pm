@@ -36,41 +36,6 @@ sub index()         { $_[0]->{index} }
 sub locant()        { $_[0]->{locant} }
 sub mass_number()   { $_[0]->{mass_number} }
 
-sub cmp_isotope_lists($$)
-{
-    my( $A, $B ) = @_;
-
-    # BBv3 P-44.4.1.11.1: Senior set is larger
-    return @$B <=> @$A if @$B <=> @$A;
-
-    # BBv3 P-44.4.1.11.2: Senior set has greater number of nuclides of higher atomic number
-    return cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_atomic_number( $A, $B )
-        if cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_atomic_number( $A, $B );
-
-    # BBv3 P-44.4.1.11.3: Senior set has greater number of nuclides of higher mass number
-    return cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_mass_number( $A, $B )
-        if cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_mass_number( $A, $B );
-
-    my $cmp_result = 0;
-
-    # BBv3 P-44.4.1.11.4: Senior set has lower overall locants
-    $cmp_result = cmp_arrays( [ sort map { $_->locant } @$A ],
-                              [ sort map { $_->locant } @$B ] );
-    return $cmp_result if $cmp_result;
-
-    # BBv3 P-44.4.1.11.5: Senior set has lower locants for nuclides of higher atomic number
-    $cmp_result = cmp_arrays( [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number || $a->index <=> $b->index } @$A ],
-                              [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number || $a->index <=> $b->index } @$B ] );
-    return $cmp_result if $cmp_result;
-
-    # BBv3 P-44.4.1.11.6: Senior set has lower locants for nuclides of higher mass number
-    $cmp_result = cmp_arrays( [ map { $_->locant } sort { $b->mass_number <=> $a->mass_number || $a->index <=> $b->index } @$A ],
-                              [ map { $_->locant } sort { $b->mass_number <=> $a->mass_number || $a->index <=> $b->index } @$B ] );
-    return $cmp_result if $cmp_result;
-
-    return 0;
-}
-
 sub cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_atomic_number
 {
     my( $A, $B ) = @_;
