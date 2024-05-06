@@ -1221,7 +1221,12 @@ sub filter_chains
                    \&rule_greater_number_of_nuclides_of_higher_atomic_number,
                    # P-44.4.1.11.3: Greater number of nuclides of higher mass number
                    \&rule_greater_number_of_nuclides_of_higher_mass_number,
-                   \&rule_isotopes, # FIXME: This is deprecated and covered by other rules
+                   # P-44.4.1.11.4: Lowest locants for isotopically modified atoms or groups
+                   \&rule_lowest_locants_for_isotopically_modified_atoms_or_groups,
+                   # P-44.4.1.11.5: Lowest locants for nuclides of higher atomic number
+                   \&rule_lowest_locants_for_nuclides_of_higher_atomic_number,
+                   # P-44.4.1.11.6: Lowest locants for nuclides of higher mass number
+                   \&rule_lowest_locants_for_nuclides_of_higher_mass_number,
 
                    # TODO: P-44.4.1.12: Concerns stereogenic centers
                    # TODO: P-45.1: Multiplication of identical senior parent structures
@@ -1485,14 +1490,25 @@ sub rule_greater_number_of_nuclides_of_higher_mass_number
                 @chains;
 }
 
+sub rule_lowest_locants_for_isotopically_modified_atoms_or_groups
+{
+    my( @chains ) = @_;
+    my( $max_value ) = sort {  cmp_arrays( $a, $b ) }
+                       map  {  [ sort map { $_->locant } $_->isotopes ] }
+                            @chains;
+    return grep { !cmp_arrays( [ sort map { $_->locant } $_->isotopes ],
+                               $max_value ) }
+                @chains;
+}
+
 sub rule_lowest_locants_for_nuclides_of_higher_atomic_number
 {
     my( @chains ) = @_;
     my( $max_value ) = sort {  cmp_arrays( $a, $b ) }
                        map  {  [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } $_->isotopes ] }
-                           @chains;
+                            @chains;
     return grep { !cmp_arrays( [ map { $_->locant } sort { $b->atomic_number <=> $a->atomic_number } $_->isotopes ],
-                                 $max_value ) }
+                               $max_value ) }
                 @chains;
 }
 
@@ -1501,9 +1517,9 @@ sub rule_lowest_locants_for_nuclides_of_higher_mass_number
     my( @chains ) = @_;
     my( $max_value ) = sort {  cmp_arrays( $a, $b ) }
                        map  {  [ map { $_->locant } sort { $b->mass_number <=> $a->mass_number } $_->isotopes ] }
-                           @chains;
+                            @chains;
     return grep { !cmp_arrays( [ map { $_->locant } sort { $b->mass_number <=> $a->mass_number } $_->isotopes ],
-                                 $max_value ) }
+                               $max_value ) }
                 @chains;
 }
 
