@@ -1191,12 +1191,14 @@ sub filter_chains
                    # P-44.3.3: Maximum number of the most senior skeletal heteroatom
                    \&rule_greatest_number_of_most_senior_heteroatoms,
 
-                   # P-44.4.1.1: Maximum number of multiple bonds
+                   # P-44.4.1.1: Greater number of multiple bonds
                    \&rule_most_multiple_bonds,
-                   # P-44.4.1.2: Maximum number of double bonds
+                   # P-44.4.1.2: Greater number of double bonds
                    \&rule_most_double_bonds,
                    # TODO: P-44.4.1.3: Nonstandard bonding numbers
-                   \&rule_most_nonstandard_valence_positions, # There is no such rule, but before comparing lists they have to be of the same size?
+                   # P-44.4.1.3.1: Greater number of atoms with nonstandard bonding numbers
+                   \&rule_most_nonstandard_valence_positions,
+                   # P-44.4.1.3.2: Lowest locants for atoms with nonstandard bonding numbers
                    ### \&rule_lowest_numbered_nonstandard_valence_positions,
                    # TODO: P-44.4.1.4: Concerns rings with indicated hydrogen
                    \&rule_most_indicated_hydrogens, # There is no such rule, but before comparing lists they have to be of the same size?
