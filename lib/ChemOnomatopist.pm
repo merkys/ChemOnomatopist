@@ -1199,7 +1199,7 @@ sub filter_chains
                    # P-44.4.1.3.1: Greater number of atoms with nonstandard bonding numbers
                    \&rule_most_nonstandard_valence_positions,
                    # P-44.4.1.3.2: Lowest locants for atoms with nonstandard bonding numbers
-                   ### \&rule_lowest_numbered_nonstandard_valence_positions,
+                   ### \&rule_lowest_numbered_nonstandard_valence_positions, # This fails 2,5,8-trioxa-11λ4-thiadodecane
                    # TODO: P-44.4.1.4: Concerns rings with indicated hydrogen
                    \&rule_most_indicated_hydrogens, # There is no such rule, but before comparing lists they have to be of the same size?
                    \&rule_lowest_numbered_indicated_hydrogens,
@@ -1211,10 +1211,13 @@ sub filter_chains
                    # P-44.4.1.8: Lowest locants for suffix groups
                    \&rule_lowest_numbered_senior_groups,
                    # TODO: P-44.4.1.9: Concerns rings
+
                    # TODO: P-44.4.1.10: Lowest locants for prefixes/suffixes expressing degrees of hydrogenation
                    #                    This is not fully implemented now
+                   # P-44.4.1.10.1: Lowest locants for multiple bonds as a set, then to double bonds
                    \&rule_lowest_numbered_multiple_bonds,
                    \&rule_lowest_numbered_double_bonds,
+                   # TODO: P-44.4.1.10.2: Lower locants for hydro/dehydro prefixes
 
                    # P-44.4.1.11: Concerns isotopes
                    # P-44.4.1.11.1: Greater number of isotopically modified atoms or groups
