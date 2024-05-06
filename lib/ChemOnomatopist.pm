@@ -1217,7 +1217,9 @@ sub filter_chains
                    # P-44.4.1.11: Concerns isotopes
                    # P-44.4.1.11.1: Greater number of isotopically modified atoms or groups
                    \&rule_greater_number_of_isotopically_modified_atoms_or_groups,
+                   # P-44.4.1.11.2: Greater number of nuclides of higher atomic number
                    \&rule_greater_number_of_nuclides_of_higher_atomic_number,
+                   # P-44.4.1.11.3: Greater number of nuclides of higher mass number
                    \&rule_greater_number_of_nuclides_of_higher_mass_number,
                    \&rule_isotopes, # FIXME: This is deprecated and covered by other rules
 
