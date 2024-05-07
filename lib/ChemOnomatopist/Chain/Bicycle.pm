@@ -390,21 +390,6 @@ sub needs_heteroatom_names()
 
 sub needs_substituent_locants() { 1 }
 
-sub indicated_hydrogens_part()
-{
-    my( $self ) = @_;
-    return $self->SUPER::indicated_hydrogens_part if $self->is_naphthalene;
-
-    my $part = ChemOnomatopist::Name->new;
-
-    if( $self->number_of_indicated_hydrogens &&
-        $self->number_of_indicated_hydrogens < $self->length ) {
-        $part->append_locants( map { $_ . 'H' } $self->locants( $self->indicated_hydrogens ) );
-    }
-
-    return $part;
-}
-
 sub prefix()
 {
     my( $self ) = @_;
