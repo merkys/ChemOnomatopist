@@ -668,9 +668,10 @@ sub prefix()
         return $vertex->prefix if blessed $vertex;
 
         # Chalcogen analogues of ethers
-        return ChemOnomatopist::Name->new( 'sulfan' ) if ChemOnomatopist::is_element( $vertex, 'S' );
-        return ChemOnomatopist::Name->new( 'selan'  ) if ChemOnomatopist::is_element( $vertex, 'Se' );
-        return ChemOnomatopist::Name->new( 'tellan' ) if ChemOnomatopist::is_element( $vertex, 'Te' );
+        my $element = ChemOnomatopist::element( $vertex );
+        return ChemOnomatopist::Name->new( 'sulfan' ) if $element eq 'S';
+        return ChemOnomatopist::Name->new( 'selan'  ) if $element eq 'Se';
+        return ChemOnomatopist::Name->new( 'tellan' ) if $element eq 'Te';
     }
 
     my $name = $self->suffix;
@@ -686,7 +687,7 @@ sub suffix()
     my @chain = $self->vertices;
 
     my $name = ChemOnomatopist::Name->new;
-    if( $self->length == 1 && !blessed $chain[0] && !ChemOnomatopist::is_element( @chain, 'C' ) ) {
+    if( $self->length == 1 && !blessed $chain[0] && ChemOnomatopist::element( @chain ) ne 'C' ) {
         return $name . 'ne'; # Leaving element prefix appending to the caller
     }
 
@@ -698,8 +699,8 @@ sub suffix()
     my @triple = grep { $bonds[$_] eq '#' } 0..$#bonds;
 
     # BBv2 P-63.2.2.2
-    if( $self->parent && (all { !blessed $_ } @chain) && ChemOnomatopist::is_element( $chain[0], 'O' ) &&
-        !@double && !@triple && all { ChemOnomatopist::is_element( $_, 'C' ) } @chain[1..$#chain] ) {
+    if( $self->parent && @chain && (all { !blessed $_ } @chain) && ChemOnomatopist::element( @chain ) eq 'O' &&
+        !@double && !@triple && all { ChemOnomatopist::element( $_ ) eq 'C' } @chain[1..$#chain] ) {
         $name->append_stem( ChemOnomatopist::alkane_chain_name( $self->length - 1 ) );
         $name .= 'oxy';
         return $name;

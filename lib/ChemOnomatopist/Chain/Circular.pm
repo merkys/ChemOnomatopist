@@ -157,8 +157,8 @@ sub name()
         my %heteroatoms;
         my @vertices = $self->vertices;
         for my $i (0..$#vertices) {
-            next if ChemOnomatopist::is_element( $vertices[$i], 'C' );
-            my $symbol = ucfirst $vertices[$i]->{symbol};
+            my $symbol = ChemOnomatopist::element( $vertices[$i] );
+            next if $symbol eq 'C';
             $heteroatoms{$symbol} = [] unless $heteroatoms{$symbol};
             push @{$heteroatoms{$symbol}}, $i;
         }
