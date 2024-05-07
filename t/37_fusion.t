@@ -14,7 +14,7 @@ my @cases = (
 
     # From BBv2 P-25.3.2.4
     { smiles => 'S1CC=CSC=2C1=COC2', iupac => '2H-[1,4]dithiepino[2,3-c]furan' },
-    { smiles => 'O1CC=C2OC=CC=C21', iupac => '2H-furo[3,2-b]pyran', AUTHOR => 1 },
+    { smiles => 'O1CC=C2OC=CC=C21', iupac => '2H-furo[3,2-b]pyran' },
     { smiles => 'N1=CC=CC2=C1C=NOC2', iupac => '5H-pyrido[2,3-d][1,2]oxazine' },
     { smiles => 'O1COC2=C1C=CO2', iupac => '2H-furo[2,3-d][1,3]dioxole' },
     { smiles => 'O1P=CC2=C1OCO2', iupac => '5H-[1,3]dioxolo[4,5-d][1,2]oxaphosphole' },

@@ -116,7 +116,7 @@ sub name()
     my %names = %ChemOnomatopist::Chain::Monocycle::names;
 
     # Check the preserved names
-    if( $self->length == 5 && $self->is_aromatic &&
+    if( $self->length == 5 && $self->number_of_double_bonds &&
         exists $five_membered_aromatic_single_heteroatom{join( '', $self->heteroatoms )} ) {
         return ChemOnomatopist::Name->new( $five_membered_aromatic_single_heteroatom{join( '', $self->heteroatoms )} );
     }

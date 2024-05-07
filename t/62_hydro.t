@@ -10,7 +10,7 @@ my @cases = (
     # BBv3 P-31.2.2
     { smiles => 'C1(=CC=CC2=CC=CC=C12)C1CC2=CC=CC=C2CC1', iupac => '1\',2\',3\',4\'-tetrahydro-1,2\'-binaphthalene', AUTHOR => 1 },
     { smiles => 'N1=CCCCC=C1', iupac => '4,5-dihydro-3H-azepine' },
-    { smiles => 'N=1CCCC1', iupac => '3,4-dihydro-2H-pyrrole', AUTHOR => 1 },
+    { smiles => 'N=1CCCC1', iupac => '3,4-dihydro-2H-pyrrole' },
     { smiles => 'C1#CC=CC=C1', iupac => '1,2-didehydrobenzene', AUTHOR => 1 },
 
     # BBv3 P-31.2.3.1
