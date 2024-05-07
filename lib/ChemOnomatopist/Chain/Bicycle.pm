@@ -73,6 +73,12 @@ for my $name (qw( indole indolizine isoindole isoquinoline quinoline quinolizine
     }
 }
 
+for (@names) {
+    $_->[0] =~ s/[=:]//g;
+    $_->[1] =~ s/[=:]//g;
+    ( $_->[0], $_->[1] ) = map { uc } @$_[0..1];
+}
+
 # From BBv2 P-25.1.1, order of decreasing seniority
 our %hydrocarbons_by_size = (
     '5,7' => 'azulene',
@@ -436,8 +442,7 @@ sub suffix()
 
     my @SMILES = map { $_->backbone_SMILES } $self->cycles;
     print STDERR "bicycle SMILES: @SMILES\n" if $ChemOnomatopist::DEBUG;
-    my $retained = first { ($_->[0] eq $SMILES[0] && $_->[1] eq $SMILES[1]) ||
-                           ($_->[0] eq $SMILES[1] && $_->[1] eq $SMILES[0]) } @names;
+    my $retained = find_retained( @SMILES );
     return ChemOnomatopist::Name::Part::Stem->new( $retained->[2] )->to_name if $retained;
 
     if( any { $_->is_benzene } $self->cycles ) {
@@ -599,6 +604,13 @@ sub _adjust_vertices_to_cycles()
     pop  @{$self->{vertices}};
 
     return $self;
+}
+
+sub find_retained
+{
+    my @SMILES = map { s/[=:]//g; uc } @_;
+    return first { ($_->[0] eq $SMILES[0] && $_->[1] eq $SMILES[1]) ||
+                   ($_->[0] eq $SMILES[1] && $_->[1] eq $SMILES[0]) } @names;
 }
 
 1;
