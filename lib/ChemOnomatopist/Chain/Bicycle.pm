@@ -27,14 +27,13 @@ use parent ChemOnomatopist::Chain::Circular::;
 
 # From BBv2 P-25.2.1
 our @names = (
-    [ 'n:c:n:c:c:c:', 'n:c:c:n:c:c:', 'pteridine' ],
-    [ 'c:n:c:n:c:c:', 'n:c:c:n:c:c:', 'pteridine' ],
+    [ qw( NCNCCC NCCNCC pteridine ) ],
+    [ qw( CNCNCC NCCNCC pteridine ) ],
 
-    [ 'n:n:c:c:c:c:', 'c:c:c:c:c:c:', 'cinnoline' ],
-    [ 'N=CN=CCC', 'c:c:c:c:c:c:', 'quinazoline' ],
+    [ qw( NNCCCC CCCCCC cinnoline ) ],
+    [ qw( NCNCCC CCCCCC quinazoline ) ],
 
-    [ 'N=CC=NCC',     'c:c:c:c:c:c:', 'quinoxaline' ],
-    [ 'n:c:c:n:c:c:', 'c:c:c:c:c:c:', 'quinoxaline' ],
+    [ qw( NCCNCC CCCCCC quinoxaline ) ],
 
     [ 'c:c:c:n:c:c:', 'n:c:c:c:c:c:', '1,5-naphthyridine' ], # TODO: There are isomers
     [ 'c:n:n:c:c:c:', 'c:c:c:c:c:c:', 'phthalazine' ],
@@ -51,8 +50,8 @@ our @names = (
     [ 'c:n:c:c:c:', 'c:c:c:c:c:c:', 'isoindole' ],
     [ 'c:c:c:c:c:n:', 'c:c:c:n:c:', 'indolizine', ],
 
-    [ 'C=CCc:n', 'c:c:c:n:c:', 'pyrrolizine' ],
-    [ 'CC=Cn:c', 'c:c:c:n:c:', 'pyrrolizine' ],
+    [ qw( CCCCN CCCNC pyrrolizine ) ],
+    [ qw( CCCNC CCCNC pyrrolizine ) ],
 );
 
 for my $name (qw( indole indolizine isoindole isoquinoline quinoline quinolizine )) {
