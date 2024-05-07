@@ -54,12 +54,22 @@ sub is_Hantzsch_Widman()
            any { $_->{symbol} =~ /^[cC]$/ } $self->vertices;
 }
 
-# FIXME: What to do with furan and others?
 sub is_aromatic()
 {
     my( $self ) = @_;
-    return 1 if all { $_ eq ':' } $self->bonds;
-    return '';
+    return '' if $self->length == 3;
+
+    if( $self->length % 2 ) {
+        return '' unless $self->number_of_double_bonds == ($self->length - 1) / 2;
+        return 1 if join '', $self->bonds =~ /^-(-=)+$/;
+        return 1 if join '', $self->bonds =~ /^(=-)+-$/;
+        return 1 if join '', $self->bonds =~ /^-(=-)+$/;
+        return 1 if join '', $self->bonds =~ /^(=-)+(-=)+-$/;
+        return 1 if join '', $self->bonds =~ /^(-=)+-(-=)+$/;
+        return '';
+    } else {
+        return join '', $self->bonds =~ /^(=-|-=)+$/;
+    }
 }
 
 sub is_benzene()
@@ -336,21 +346,6 @@ sub locants(@)
     }
 
     return map { $locant_map{$_} } @_;
-}
-
-# In aromatic systems Kekule bonds have to be calculated, otherwise seniority rules may fail.
-sub number_of_double_bonds()
-{
-    my( $self ) = @_;
-    return $self->SUPER::number_of_double_bonds unless $self->is_aromatic;
-    return int( $self->length / 2 );
-}
-
-sub number_of_multiple_bonds()
-{
-    my( $self ) = @_;
-    return $self->SUPER::number_of_multiple_bonds unless $self->is_aromatic;
-    return $self->number_of_double_bonds;
 }
 
 sub number_of_rings()

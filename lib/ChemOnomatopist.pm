@@ -569,6 +569,8 @@ sub find_groups
 
     # Aromatising mancudes - experimental
     for my $core (@ring_systems) {
+        next;
+
         my %valences;
         for my $edge ($core->edges) {
             my $order = 1;
