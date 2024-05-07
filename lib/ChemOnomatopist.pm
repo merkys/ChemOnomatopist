@@ -1538,8 +1538,8 @@ sub rule_lowest_numbered_nonstandard_valence_positions
 
 sub rule_most_indicated_hydrogens
 {
-    my( @chains ) = @_;
-    return @chains unless all { $_->isa( ChemOnomatopist::Chain::Bicycle:: ) } @chains;
+    my @chains = grep { $_->isa( ChemOnomatopist::Chain::Circular:: ) &&
+                        $_->needs_indicated_hydrogens } @_;
 
     my( $max_value ) = sort { $b <=> $a }
                        map  { $_->number_of_indicated_hydrogens } @chains;
@@ -1548,8 +1548,8 @@ sub rule_most_indicated_hydrogens
 
 sub rule_lowest_numbered_indicated_hydrogens
 {
-    my( @chains ) = @_;
-    return @chains unless all { $_->isa( ChemOnomatopist::Chain::Bicycle:: ) } @chains;
+    my @chains = grep { $_->isa( ChemOnomatopist::Chain::Circular:: ) &&
+                        $_->needs_indicated_hydrogens } @_;
 
     my( $max_value ) = sort { cmp_arrays( [ $a->indicated_hydrogens ],
                                           [ $b->indicated_hydrogens ] ) }
