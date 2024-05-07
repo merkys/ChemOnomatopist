@@ -55,12 +55,7 @@ sub is_Hantzsch_Widman()
 }
 
 # FIXME: What to do with furan and others?
-sub is_aromatic()
-{
-    my( $self ) = @_;
-    return 1 if all { $_ eq ':' } $self->bonds;
-    return '';
-}
+sub is_aromatic() { all { $_ eq ':' } $_[0]->bonds }
 
 sub is_benzene()
 {
@@ -68,11 +63,7 @@ sub is_benzene()
     return $self->is_aromatic && $self->is_homogeneous && $self->length == 6;
 }
 
-sub is_heterocycle()
-{
-    my( $self ) = @_;
-    return $self->number_of_heteroatoms > 0;
-}
+sub is_heterocycle() { $_[0]->number_of_heteroatoms > 0 }
 
 sub is_homogeneous()
 {
@@ -95,11 +86,7 @@ sub is_homogeneous()
     return  1;
 }
 
-sub is_monoreplaced()
-{
-    my( $self ) = @_;
-    return $self->number_of_heteroatoms == 1;
-}
+sub is_monoreplaced() { $_[0]->number_of_heteroatoms == 1 }
 
 my %five_membered_aromatic_single_heteroatom = (
     N => 'pyrrole',
@@ -264,11 +251,7 @@ sub needs_isotope_locants()
     return !&is_homogeneous;
 }
 
-sub needs_suffix_locant()
-{
-    my( $self ) = @_;
-    return $self->needs_substituent_locants;
-}
+sub needs_suffix_locant() { $_[0]->needs_substituent_locants }
 
 sub bonds()
 {
