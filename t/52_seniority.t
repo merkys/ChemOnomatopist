@@ -36,7 +36,7 @@ my @cases = (
     { smiles => 'C(C1=CC=CC=C1)C1=CC=CC=C1', iupac => '1,1\'-methylenedibenzene', AUTHOR => 1 },
     { smiles => 'C(=CC1CCCCC1)C1CCCCC1', iupac => '1,1\'-(ethene-1,2-diyl)dicyclohexane', AUTHOR => 1 },
     { smiles => 'N(N)C1=NC=CC=C1', iupac => '2-hydrazinylpyridine', AUTHOR => 1 },
-    { smiles => 'N(N)C=1NCCN1', iupac => '2-hydrazinyl-4,5-dihydro-1H-imidazole', AUTHOR => 1 },
+    { smiles => 'N(N)C=1NCCN1', iupac => '2-hydrazinyl-4,5-dihydro-1H-imidazole' },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
