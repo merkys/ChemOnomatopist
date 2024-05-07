@@ -46,7 +46,7 @@ my @cases = (
     { smiles => '[Se]1CC=CC=C1', iupac => '2H-selenopyran' },
     { smiles => '[Te]1CC=CC=C1', iupac => '2H-telluropyran' },
     { smiles => 'N1=CC=NC=C1', iupac => 'pyrazine' },
-    { smiles => 'N1N=CC=C1', iupac => '1H-pyrazole', AUTHOR => 1 },
+    { smiles => 'N1N=CC=C1', iupac => '1H-pyrazole' },
     { smiles => 'N1=NC=CC=C1', iupac => 'pyridazine' },
     { smiles => 'N1=CC=CC=C1', iupac => 'pyridine' },
     { smiles => 'N1=CN=CC=C1', iupac => 'pyrimidine' },

@@ -35,8 +35,8 @@ our %names = (
 
     # 5-membered aromatic (monoheteroatoms are handled elsewhere)
 
-    'C=CN=CN'  => '1H-imidazole', # FIXME: Adjust for isomerism
-    'C=NCCN'   => '1H-imidazole', # 4,5-dihydro-1H-imidazole
+    'C=CN=CN'  => 'imidazole',
+    'C=NCCN'   => 'imidazole', # 4,5-dihydro-1H-imidazole
 
     'C=CN=CO'  => '1,3-oxazole',
     'C=CC=NO'  => '1,2-oxazole',
@@ -48,10 +48,10 @@ our %names = (
     # 6-membered aromatic
     'c:c:c:c:c:c:' => 'benzene',
 
-    'C=CC=CCO'     => '2H-pyran', # FIXME: Adjust for isomerism
-    'C=CC=CCS'     => '2H-thiopyran', # FIXME: Adjust for isomerism
-    'C=CC=CC[Se]'  => '2H-selenopyran', # FIXME: Adjust for isomerism
-    'C=CC=CC[Te]'  => '2H-telluropyran', # FIXME: Adjust for isomerism
+    'C=CC=CCO'     => 'pyran',
+    'C=CC=CCS'     => 'thiopyran',
+    'C=CC=CC[Se]'  => 'selenopyran',
+    'C=CC=CC[Te]'  => 'telluropyran',
 
     'c:c:n:c:c:n:' => 'pyrazine',
     'c:c:c:c:n:n:' => 'pyridazine',
@@ -169,6 +169,15 @@ sub needs_heteroatom_names()
     my( $self ) = @_;
     return '' if $self->is_hydrocarbon;
     return $self->length < 3 || $self->length > 10 || all { $_->{symbol} !~ /^[cC]$/ } $self->vertices;
+}
+
+sub needs_indicated_hydrogens()
+{
+    my( $self ) = @_;
+    return '' if $self->is_hydrocarbon && $self->length == 6; # BBv3 P-31.2.3.1
+    return '' if $self->is_saturated; # BBv3 P-31.2.3.2
+    return '' unless $self->is_Hantzsch_Widman;
+    return  1;
 }
 
 sub prefix()

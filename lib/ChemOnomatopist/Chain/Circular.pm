@@ -102,7 +102,7 @@ sub is_monoreplaced()
 }
 
 my %five_membered_aromatic_single_heteroatom = (
-    N => '1H-pyrrole', # CHECKME: Do we need to adjust for isomerism?
+    N => 'pyrrole',
     O => 'furan',
     S => 'thiophene',
 );
@@ -368,12 +368,16 @@ sub indicated_hydrogens_part()
 
     if( $self->needs_indicated_hydrogens ) {
         my @indicated_hydrogens = $self->indicated_hydrogens;
-        if( $self->number_of_indicated_hydrogens < $self->length ) {
-            $part->append_locants( $self->locants( @indicated_hydrogens ) );
+        if( @indicated_hydrogens == 1 ) {
+            $part->append_locants( map { $_ . 'H' } $self->locants( @indicated_hydrogens ) );
+        } else {
+            if( $self->number_of_indicated_hydrogens < $self->length ) {
+                $part->append_locants( $self->locants( @indicated_hydrogens ) );
+            }
+            $part .= ChemOnomatopist::IUPAC_numerical_multiplier( scalar @indicated_hydrogens );
+            $part->[-1] .= 'a' unless $part =~ /[ai]$/;
+            $part .= 'hydro';
         }
-        $part .= ChemOnomatopist::IUPAC_numerical_multiplier( scalar @indicated_hydrogens );
-        $part->[-1] .= 'a' unless $part =~ /[ai]$/;
-        $part .= 'hydro';
     }
 
     return $part;
