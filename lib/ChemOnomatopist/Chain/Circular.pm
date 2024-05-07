@@ -240,7 +240,7 @@ sub needs_charge_locants()
     my( $self ) = @_;
     return 1 if $self->number_of_charges > 1;
     return 1 if $self->number_of_branches;
-    return !&is_homogeneous;
+    return !$self->is_homogeneous;
 }
 
 sub needs_isotope_locants()
@@ -248,7 +248,7 @@ sub needs_isotope_locants()
     my( $self ) = @_;
     return 1 if $self->number_of_isotopes > 1;
     return 1 if $self->number_of_branches;
-    return !&is_homogeneous;
+    return !$self->is_homogeneous;
 }
 
 sub needs_suffix_locant() { $_[0]->needs_substituent_locants }
