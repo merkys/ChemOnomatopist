@@ -223,6 +223,7 @@ sub suffix()
 }
 
 # FIXME: Pay attention to bond orders
+# Orders the atoms by their seniority and compares the resulting locants
 sub _cmp
 {
     my( $A, $B ) = @_;
