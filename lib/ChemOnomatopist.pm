@@ -161,7 +161,7 @@ sub get_sidechain_name
 
     # Handle non-carbon substituents, according to BBv3 P-29.3.1 and P-68.2.2
     if( @chain == 1 && $graph->degree( @chain ) == 0 + defined $parent && !blessed $chain[0] &&
-        !is_element( $chain[0], 'C' ) && exists $elements{$chain[0]->{symbol}} ) {
+        element( $chain[0] ) ne 'C' && exists $elements{element( $chain[0] )} ) {
         my $symbol = element( $chain[0] );
         my $element = $elements{$symbol}->{prefix};
         my $name = ChemOnomatopist::Name->new;
