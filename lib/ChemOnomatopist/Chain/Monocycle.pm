@@ -71,6 +71,7 @@ sub new
 
 # FIXME: For now we generate all possible traversals of the same cycle.
 #        This is not optimal, some caching could be introduced.
+# FIXME: This should create new objects using bless() as new() readjusts the vertex order.
 sub candidates()
 {
     my( $self ) = @_;

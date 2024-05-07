@@ -1169,6 +1169,7 @@ sub filter_chains
 
     for my $rule ( sub { return @_ },
                    # P-44.1.1: Maximum number of substituents of principal characteristic group.
+                   # P-44.1.2: Senior atom.
                    #           This is not needed as select_mainchain() returns such chains.
                    \&rule_lowest_numbered_charges, # There is no such rule, but this is required as charges are not treated as suffix groups
                    \&rule_lowest_numbered_anions,
@@ -1573,7 +1574,6 @@ sub rule_lowest_numbered_heteroatoms
                 @chains;
 }
 
-# Chains given for this rule have the same number of heteroatoms at the same positions.
 sub rule_lowest_numbered_most_senior_heteroatoms
 {
     my( @chains ) = @_;
