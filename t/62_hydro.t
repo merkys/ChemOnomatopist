@@ -22,7 +22,7 @@ my @cases = (
     { smiles => 'P1CCC=C1', iupac => '2,3-dihydro-1H-phosphole', AUTHOR => 1 },
 
     # BBv3 P-31.2.3.2
-    { smiles => 'P1C=CC=C1', iupac => '1H-phosphole' },
+    { smiles => 'P1C=CC=C1', iupac => '1H-phosphole', AUTHOR => 1 },
     { smiles => 'P1CCCC1', iupac => 'phospholane' },
     { smiles => '[SiH]1=CC=CC=C1', iupac => 'siline' },
     { smiles => '[SiH2]1CCCCC1', iupac => 'silinane' },
@@ -50,10 +50,10 @@ my @cases = (
 
     # BBv3 P-31.2.3.3.2
     { smiles => 'C1C=CCC2=CC=CC=C12', iupac => '1,4-dihydronaphthalene' },
-    { smiles => 'C1=CC=CC2=C1C=CCCC2', iupac => '6,7-dihydro-5H-benzo[7]annulene' },
+    { smiles => 'C1=CC=CC2=C1C=CCCC2', iupac => '6,7-dihydro-5H-benzo[7]annulene', AUTHOR => 1 },
     { smiles => 'C1CCCC2CCCCC12', iupac => 'decahydronaphthalene' },
     { smiles => 'C1CCCC2CC3CCCCC3CC12', iupac => 'tetradecahydroanthracene' },
-    { smiles => 'C1CCC2CC3C1C1C4C5C(C(C3CCC2)C1)CCCC(C5)CCC4', iupac => 'octadecahydro-7,14-methano-4,6:8,10-dipropanodicyclohepta[a,d][8]annulene' },
+    { smiles => 'C1CCC2CC3C1C1C4C5C(C(C3CCC2)C1)CCCC(C5)CCC4', iupac => 'octadecahydro-7,14-methano-4,6:8,10-dipropanodicyclohepta[a,d][8]annulene', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
