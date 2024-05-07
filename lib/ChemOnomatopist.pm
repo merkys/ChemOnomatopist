@@ -372,7 +372,6 @@ sub get_mainchain_name
         }
     }
 
-
     # Collecting names of all the attachments
     my @order = sort { cmp_only_alphabetical( $a, $b ) || $a cmp $b } keys %attachments;
     my $name = ChemOnomatopist::Name->new;
