@@ -14,7 +14,7 @@ use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util qw( cmp_arrays );
-use List::Util qw( all );
+use List::Util qw( all first );
 use Scalar::Util qw( blessed );
 
 # From BBv2 P-22.2.1
@@ -132,7 +132,7 @@ sub parent(;$)
     # TODO: Other autosymmetric monocycles can possibly as well be settled
     if( $self->is_homogeneous ) {
         my @vertices = $self->vertices;
-        my( $position ) = grep { $self->graph->has_edge( $vertices[$_], $parent ) } 0..$#vertices;
+        my $position = first { $self->graph->has_edge( $vertices[$_], $parent ) } 0..$#vertices;
         if( defined $position ) {
             my @chains =
                 ( ChemOnomatopist::Chain::Circular->new( $self->graph,
@@ -161,14 +161,14 @@ sub needs_heteroatom_locants()
     my( $self ) = @_;
     return '' if $self->is_hydrocarbon;
     return '' if $self->is_monoreplaced && !$self->is_substituted;
-    return $self->length < 3 || $self->length > 10 || all { $_->{symbol} !~ /^[cC]$/ } $self->vertices;
+    return $self->length < 3 || $self->length > 10 || all { ChemOnomatopist::element( $_ ) ne 'C' } $self->vertices;
 }
 
 sub needs_heteroatom_names()
 {
     my( $self ) = @_;
     return '' if $self->is_hydrocarbon;
-    return $self->length < 3 || $self->length > 10 || all { $_->{symbol} !~ /^[cC]$/ } $self->vertices;
+    return $self->length < 3 || $self->length > 10 || all { ChemOnomatopist::element( $_ ) ne 'C' } $self->vertices;
 }
 
 sub needs_indicated_hydrogens()
