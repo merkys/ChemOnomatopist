@@ -242,6 +242,8 @@ sub get_sidechain_name
         $name .= $attachment;
     }
 
+    $name .= $chain->indicated_hydrogens_part;
+
     # Collecting names of all heteroatoms
     for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
                           keys %heteroatoms) {
