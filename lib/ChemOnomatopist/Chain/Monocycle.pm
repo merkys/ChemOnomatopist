@@ -158,12 +158,13 @@ sub parent(;$)
     my @candidates = $self->candidates;
     return $old_parent if @candidates == 1;
 
-    my @vertices = $self->vertices;
-    my( $chain ) = sort { $a->parent_locant <=> $b->parent_locant }
-                        @candidates;
-    return $old_parent unless $chain; # CHECKME: Why no edge is found?
+    # CHECKME: Why no edge is found?
+    @candidates = rule_lowest_parent_locant( grep { $_->parent } @candidates );
+    return $old_parent unless @candidates;
 
-    $self->{vertices} = [ $chain->vertices ];
+    @candidates = ChemOnomatopist::filter_chains( @candidates );
+
+    $self->{vertices} = [ $candidates[0]->vertices ];
     return $old_parent;
 }
 
@@ -230,6 +231,15 @@ sub suffix()
     my( $self ) = @_;
     my $name = $self->name;
     return blessed $name ? $name : ChemOnomatopist::Name->new( $name );
+}
+
+sub rule_lowest_parent_locant
+{
+    my @chains = @_;
+
+    my( $max_value ) = sort { $a->parent_locant <=> $b->parent_locant }
+                            @chains;
+    return grep { $_->parent_locant == $max_value->parent_locant } @chains;
 }
 
 # FIXME: Pay attention to bond orders
