@@ -15,11 +15,11 @@ my @cases = (
 
     # From BBv3 P-66.1.6.1.1.2
     { smiles => 'CNC(=O)NC', iupac => 'N,N\'-dimethylurea' },
-    { smiles => 'CC(C)=NC(=O)N', iupac => 'N-(propan-2-ylidene)urea', AUTHOR => 1 },
+    { smiles => 'CC(C)=NC(=O)N', iupac => 'N-(propan-2-ylidene)urea' },
     { smiles => 'C(#N)C(CCSC)NC(=O)NC', iupac => 'N-[1-cyano-3-(methylsulfanyl)propyl]-N\'-methylurea', AUTHOR => 1 },
 
     # From BBv2
-    { smiles => 'CC(CC)NC(=[Se])N', iupac => 'N-(butan-2-yl)selenourea', AUTHOR => 1 }, # From BBv3 P-66.1.6.1.3.1
+    { smiles => 'CC(CC)NC(=[Se])N', iupac => 'N-(butan-2-yl)selenourea' }, # From BBv3 P-66.1.6.1.3.1
     { smiles => 'C(N)(=N)NC(=O)N', iupac => 'N-carbamimidoylurea', AUTHOR => 1 },
 
     # From BBv3 P-66.1.6.1.1.3
