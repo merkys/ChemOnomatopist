@@ -622,11 +622,9 @@ sub charge_part()
         @negative = map { ( $_->locant ) x abs $_->charge } @negative;
         $name->append_locants( @negative ) if $self->needs_charge_locants;
         if( @negative > 1 ) {
-            $name->append_multiplier( ChemOnomatopist::IUPAC_complex_numerical_multiplier( scalar @negative ) );
-            $name .= '(';
+            $name->append_multiplier( ChemOnomatopist::IUPAC_numerical_multiplier( scalar @negative ) );
         }
         $name .= 'ide';
-        $name .= ')' if @negative > 1;
     }
 
     return $name;
