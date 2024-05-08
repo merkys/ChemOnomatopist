@@ -19,7 +19,7 @@ use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Isotope;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Graph::Traversal::DFS;
-use List::Util qw( all any none sum0 uniq );
+use List::Util qw( all any first none sum0 uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
@@ -62,6 +62,17 @@ sub parent(;$)
     my $old_parent = exists $self->{parent} ? $self->{parent} : undef;
     $self->{parent} = $parent if $parent; # TODO: Maybe invalidate the related cache
     return $old_parent;
+}
+
+sub parent_locant()
+{
+    my( $self ) = @_;
+    my $parent = $self->parent;
+    return $parent unless $parent;
+
+    my $graph = $self->graph;
+    my @vertices = $self->vertices;
+    return first { $graph->has_edge( $vertices[$_], $parent ) } 0..$#vertices;
 }
 
 sub substituents()
