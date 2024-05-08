@@ -65,16 +65,27 @@ sub new
     my $self = bless { graph => $graph, vertices => [ @vertices ] }, $class;
     return $self if $self->is_homogeneous;
 
+    # TODO: This code is not optimal, but works
+    my( $senior_heteroatom ) = sort { $elements{$a}->{seniority} <=>
+                                      $elements{$b}->{seniority} }
+                               grep { $_ ne 'C' }
+                               map  { ChemOnomatopist::element( $_ ) }
+                                    @vertices;
+    return $self unless $senior_heteroatom;
+
     my @chains;
     for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @vertices );
+        push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @vertices )
+            if ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
         push @vertices, shift @vertices;
     }
     @vertices = reverse @vertices;
     for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @vertices );
+        push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @vertices )
+            if ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
         push @vertices, shift @vertices;
     }
+
     my( $first ) = sort { _cmp( $a, $b ) } @chains;
     return bless { graph => $graph, vertices => [ $first->vertices ] }, $class;
 }
@@ -88,15 +99,18 @@ sub candidates()
 
     my $graph = $self->graph;
     my @vertices = $self->vertices;
+    my( $senior_heteroatom ) = $self->heteroatoms;
 
     my @chains;
     for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Chain::Monocycle->new( $graph, @vertices );
+        push @chains, ChemOnomatopist::Chain::Monocycle->new( $graph, @vertices )
+            if $senior_heteroatom && ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
         push @vertices, shift @vertices;
     }
     @vertices = reverse @vertices;
     for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Chain::Monocycle->new( $graph, @vertices );
+        push @chains, ChemOnomatopist::Chain::Monocycle->new( $graph, @vertices )
+            if $senior_heteroatom && ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
         push @vertices, shift @vertices;
     }
 
@@ -139,30 +153,15 @@ sub parent(;$)
     return $old_parent unless $parent;
     return $old_parent if $old_parent && $parent == $old_parent;
 
-    # Addition of parent to homogeneous cycles settles the otherwise ambiguous order
-    # TODO: Other autosymmetric monocycles can possibly as well be settled
-    if( $self->is_homogeneous ) {
-        my @vertices = $self->vertices;
-        my $position = first { $self->graph->has_edge( $vertices[$_], $parent ) } 0..$#vertices;
-        if( defined $position ) {
-            my @chains =
-                ( ChemOnomatopist::Chain::Circular->new( $self->graph,
-                                                         @vertices[$position..$#vertices],
-                                                         @vertices[0..$position-1] ) );
-            @vertices = reverse @vertices;
-            $position = $#vertices - $position;
-            push @chains,
-                 ChemOnomatopist::Chain::Circular->new( $self->graph,
-                                                        @vertices[$position..$#vertices],
-                                                        @vertices[0..$position-1] );
-            for (@chains) {
-                $_->{parent} = $parent;
-            }
+    # Addition/change of parent may need resetting the numbering
+    my @candidates = $self->candidates;
+    return $old_parent if @candidates == 1;
 
-            my( $chain ) = ChemOnomatopist::filter_chains( @chains );
-            $self->{vertices} = [ $chain->vertices ];
-        }
-    }
+    my @vertices = $self->vertices;
+    my( $chain ) = sort { (first { $a->graph->has_edge( $a->{vertices}[$_], $parent ) } 0..$#vertices) <=>
+                          (first { $b->graph->has_edge( $b->{vertices}[$_], $parent ) } 0..$#vertices) }
+                        @candidates;
+    $self->{vertices} = [ $chain->vertices ];
 
     return $old_parent;
 }
