@@ -62,11 +62,21 @@ our %names = (
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
-    my $self = bless { graph => $graph, vertices => \@vertices }, $class;
+    my $self = bless { graph => $graph, vertices => [ @vertices ] }, $class;
     return $self if $self->is_homogeneous;
 
-    ( $self ) = $self->autosymmetric_equivalents;
-    return $self;
+    my @chains;
+    for (0..$#vertices) {
+        push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @vertices );
+        push @vertices, shift @vertices;
+    }
+    @vertices = reverse @vertices;
+    for (0..$#vertices) {
+        push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @vertices );
+        push @vertices, shift @vertices;
+    }
+    my( $first ) = sort { _cmp( $a, $b ) } @chains;
+    return bless { graph => $graph, vertices => [ $first->vertices ] }, $class;
 }
 
 # FIXME: For now we generate all possible traversals of the same cycle.
@@ -228,15 +238,18 @@ sub _cmp
 {
     my( $A, $B ) = @_;
 
-    my @A_heteroatoms = $A->heteroatoms;
     my @A_positions = $A->heteroatom_positions;
+    my @B_positions = $B->heteroatom_positions;
+
+    return cmp_arrays( \@A_positions, \@B_positions )
+        if cmp_arrays( \@A_positions, \@B_positions );
+
+    my @A_heteroatoms = $A->heteroatoms;
+    my @B_heteroatoms = $B->heteroatoms;
 
     @A_positions = map { $A_positions[$_] }
                        sort { $elements{$A_heteroatoms[$a]}->{seniority} <=>
                               $elements{$A_heteroatoms[$b]}->{seniority} } 0..$#A_positions;
-
-    my @B_heteroatoms = $B->heteroatoms;
-    my @B_positions = $B->heteroatom_positions;
 
     @B_positions = map { $B_positions[$_] }
                        sort { $elements{$B_heteroatoms[$a]}->{seniority} <=>
