@@ -156,12 +156,7 @@ sub parent(;$)
 
     # Addition/change of parent may need resetting the numbering
     my @candidates = $self->candidates;
-    return $old_parent if @candidates == 1;
-
-    # CHECKME: Why no edge is found?
-    @candidates = rule_lowest_parent_locant( grep { $_->parent } @candidates );
-    return $old_parent unless @candidates;
-
+    @candidates = rule_lowest_parent_locant( @candidates );
     @candidates = ChemOnomatopist::filter_chains( @candidates );
 
     $self->{vertices} = [ $candidates[0]->vertices ];
