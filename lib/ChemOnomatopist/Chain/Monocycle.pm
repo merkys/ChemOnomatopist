@@ -90,9 +90,6 @@ sub new
     return bless { graph => $graph, vertices => [ $first->vertices ] }, $class;
 }
 
-# FIXME: For now we generate all possible traversals of the same cycle.
-#        This is not optimal, some caching could be introduced.
-# FIXME: This should create new objects using bless() as new() readjusts the vertex order.
 sub candidates()
 {
     my( $self ) = @_;
@@ -103,13 +100,13 @@ sub candidates()
 
     my @chains;
     for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Chain::Monocycle->new( $graph, @vertices )
+        push @chains, bless { graph => $graph, vertices => [ @vertices ] }, ChemOnomatopist::Chain::Monocycle::
             if !$senior_heteroatom || ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
         push @vertices, shift @vertices;
     }
     @vertices = reverse @vertices;
     for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Chain::Monocycle->new( $graph, @vertices )
+        push @chains, bless { graph => $graph, vertices => [ @vertices ] }, ChemOnomatopist::Chain::Monocycle::
             if !$senior_heteroatom || ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
         push @vertices, shift @vertices;
     }
