@@ -8,6 +8,7 @@ use warnings;
 
 use parent ChemOnomatopist::Chain::;
 
+use ChemOnomatopist::Name;
 use List::Util qw( first );
 
 sub new
@@ -29,7 +30,7 @@ sub locants(@)
 }
 
 # FIXME: This is a source of possible failures
-sub prefix() { 'benzamido' }
+sub prefix() { ChemOnomatopist::Name->new( 'benzamido' ) }
 
 sub suffix()
 {
@@ -45,9 +46,7 @@ sub suffix()
         $suffix->append_locants( $locant + 1 );
     }
     $suffix .= 'carbo';
-    if( $self->{vertices}[0]{ketone}->element eq 'O' ) {
-        $suffix .= 'x';
-    }
+    $suffix .= 'x' if $self->{vertices}[0]{ketone}->element eq 'O';
     return $suffix;
 }
 
