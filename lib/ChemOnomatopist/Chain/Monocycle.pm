@@ -104,13 +104,13 @@ sub candidates()
     my @chains;
     for (0..$#vertices) {
         push @chains, ChemOnomatopist::Chain::Monocycle->new( $graph, @vertices )
-            if $senior_heteroatom && ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
+            if !$senior_heteroatom || ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
         push @vertices, shift @vertices;
     }
     @vertices = reverse @vertices;
     for (0..$#vertices) {
         push @chains, ChemOnomatopist::Chain::Monocycle->new( $graph, @vertices )
-            if $senior_heteroatom && ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
+            if !$senior_heteroatom || ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
         push @vertices, shift @vertices;
     }
 
