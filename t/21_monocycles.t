@@ -145,6 +145,10 @@ my @cases = (
     # From BBv2 P-14.5.3
     { smiles => 'C(C)(C)(C)C=1C=CC=C(C(C)CC)C=1', iupac => '1-(butan-2-yl)-3-tert-butylbenzene' },
 
+    # From BBv3 P-44.4.1.5
+    { smiles => 'O1CS[SnH2]SCOCCCC1', iupac => '1,7-dioxa-3,5-dithia-4-stannacycloundecane' },
+    { smiles => 'O1CCS[SnH2]SCCOCC1', iupac => '1,9-dioxa-4,6-dithia-5-stannacycloundecane' },
+
     { smiles => 'O=C1NC(=O)NC=C1C', iupac => '5-methylpyrimidine-2,4(1H,3H)-dione', AUTHOR => 1 }, # thymine
     { smiles => 'c1cc(oc1)C=O', iupac => 'furan-2-carbaldehyde', AUTHOR => 1 }, # furfural
 

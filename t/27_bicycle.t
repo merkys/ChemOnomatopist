@@ -59,6 +59,10 @@ my @cases = (
 
     { smiles => 'C1=C(C=CC2=CC=CC=C12)CCCO', iupac => '3-(naphthalen-2-yl)propan-1-ol' }, # From P-15.6.1.2
 
+    # From BBv3 P-44.4.1.5
+    { smiles => '[SiH2]1O[SiH]=CC2=C1C=CC=C2', iupac => '1H-2,1,3-benzoxadisiline', AUTHOR => 1 },
+    { smiles => '[SiH2]1OC=[SiH]C2=C1C=CC=C2', iupac => '1H-2,1,4-benzoxadisiline', AUTHOR => 1 },
+
     { smiles => 'C1=CC2=C(C=C1O)C(=CN2)CCN', iupac => '3-(2-aminoethyl)-1H-indol-5-ol' }, # serotonin
 
     # Guanine

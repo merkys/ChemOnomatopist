@@ -20,6 +20,10 @@ my @cases = (
     { smiles => 'C1=CCCCC12CC=CCC2', iupac => 'spiro[5.5]undeca-1,8-diene' },
     { smiles => 'C1CCCC12C=CCCC2', iupac => 'spiro[4.5]dec-6-ene' },
 
+    # From BBv3 P-44.4.1.5
+    { smiles => 'O1CCOP12OCCCO2', iupac => '1,4,6,10-tetraoxa-5λ5-phosphaspiro[4.5]decane' },
+    { smiles => 'C1OOCP12OCCCO2', iupac => '2,3,6,10-tetraoxa-5λ5-phosphaspiro[4.5]decane' },
+
     { smiles => 'C1C=CCC12CCCCC2', iupac => 'spiro[4.5]dec-2-ene' }, # From BBv2 P-93.5.3.3
 
     { smiles => 'C1CC2(C1)C(C2(C#N)C#N)(C#N)C#N', iupac => 'spiro[2.3]hexane-1,1,2,2-tetracarbonitrile' }, # PubChem 263661

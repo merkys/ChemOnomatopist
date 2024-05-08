@@ -46,6 +46,10 @@ my @cases = (
     { smiles => 'C12OCC(C=C1)C2', iupac => '2-oxabicyclo[2.2.1]hept-5-ene' },
     { smiles => 'C12CNCC(C=C1)CC2', iupac => '3-azabicyclo[3.2.2]non-6-ene' },
 
+    # From BBv3 P-44.4.1.5
+    { smiles => 'C12COCCCCCCC(CC1)O2', iupac => '3,13-dioxabicyclo[8.2.1]tridecane' },
+    { smiles => 'C12CCOCCCCCC(CC1)O2', iupac => '4,13-dioxabicyclo[8.2.1]tridecane' },
+
     { smiles => 'C12CCCC(CCC1)B2C2C[Sn](CC2)(C)C', iupac => '3-(9-borabicyclo[3.3.1]nonan-9-yl)-1,1-dimethylstannolane' }, # From BBv3 P-68.1.5.2.3
 );
 
