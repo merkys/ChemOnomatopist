@@ -111,6 +111,9 @@ sub candidates()
         push @vertices, shift @vertices;
     }
 
+    my( $max_value ) = sort { _cmp( $a, $b ) } @chains;
+    @chains = grep { !_cmp( $_, $max_value ) } @chains;
+
     for (@chains) {
         $_->{candidate_for} = $self;
     }
@@ -252,10 +255,7 @@ sub _cmp
                        sort { $elements{$B_heteroatoms[$a]}->{seniority} <=>
                               $elements{$B_heteroatoms[$b]}->{seniority} } 0..$#B_positions;
 
-    return cmp_arrays( \@A_positions, \@B_positions )
-        if cmp_arrays( \@A_positions, \@B_positions );
-
-    return cmp_arrays( [ $A->multiple_bond_positions ], [ $B->multiple_bond_positions ] );
+    return cmp_arrays( \@A_positions, \@B_positions );
 }
 
 1;
