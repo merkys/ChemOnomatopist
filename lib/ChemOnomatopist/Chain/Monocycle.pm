@@ -96,17 +96,18 @@ sub candidates()
 
     my $graph = $self->graph;
     my @vertices = $self->vertices;
+    my $parent = $self->parent;
     my( $senior_heteroatom ) = $self->heteroatoms;
 
     my @chains;
     for (0..$#vertices) {
-        push @chains, bless { graph => $graph, vertices => [ @vertices ] }, ChemOnomatopist::Chain::Monocycle::
+        push @chains, bless { graph => $graph, vertices => [ @vertices ], parent => $parent }, ChemOnomatopist::Chain::Monocycle::
             if !$senior_heteroatom || ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
         push @vertices, shift @vertices;
     }
     @vertices = reverse @vertices;
     for (0..$#vertices) {
-        push @chains, bless { graph => $graph, vertices => [ @vertices ] }, ChemOnomatopist::Chain::Monocycle::
+        push @chains, bless { graph => $graph, vertices => [ @vertices ], parent => $parent }, ChemOnomatopist::Chain::Monocycle::
             if !$senior_heteroatom || ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
         push @vertices, shift @vertices;
     }
@@ -158,8 +159,7 @@ sub parent(;$)
     return $old_parent if @candidates == 1;
 
     my @vertices = $self->vertices;
-    my( $chain ) = sort { (first { $a->graph->has_edge( $a->{vertices}[$_], $parent ) } 0..$#vertices) <=>
-                          (first { $b->graph->has_edge( $b->{vertices}[$_], $parent ) } 0..$#vertices) }
+    my( $chain ) = sort { $a->parent_locant <=> $b->parent_locant }
                         @candidates;
     return $old_parent unless $chain; # CHECKME: Why no edge is found?
 
