@@ -278,14 +278,16 @@ sub indicated_hydrogens()
     for my $i (0..$#vertices) {
         # Rough interpretation of BBv2 P-14.7.1 and P-22.2.2.1.4
         next unless $vertices[$i]->{hcount};
-        if( ChemOnomatopist::element( $vertices[$i] ) eq 'C' ) {
+        my $element = ChemOnomatopist::element( $vertices[$i] );
+        if( $element eq 'C' ) {
             if(  $vertices[$i]->{hcount} == 2 ||
                 ($graph->degree( $vertices[$i] ) == 3 &&
                  $vertices[$i]->{hcount} == 1 ) ) {
                 push @positions, $i;
             }
-        } elsif( ChemOnomatopist::element( $vertices[$i] ) eq 'N' &&
-            $vertices[$i]->{hcount} && $vertices[$i]->{hcount} == 1 ) {
+        } elsif( $element eq 'N' && $vertices[$i]->{hcount} == 1 ) {
+            push @positions, $i;
+        } elsif( $element eq 'Si' && $vertices[$i]->{hcount} == 2 ) {
             push @positions, $i;
         }
     }
