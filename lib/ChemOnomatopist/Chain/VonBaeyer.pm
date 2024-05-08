@@ -21,6 +21,7 @@ sub new
     my @d3 = grep { $subgraph->degree( $_ ) == 3 } @vertices;
 
     $subgraph->delete_vertices( @d3 );
+    # According to BBv3 P-23.2.1 and P-23.2.3, cycles should be ordered in decreasing size
     my @components = sort { @$b <=> @$a } $subgraph->connected_components;
 
     $subgraph = $graph->subgraph( \@vertices );
