@@ -161,8 +161,9 @@ sub parent(;$)
     my( $chain ) = sort { (first { $a->graph->has_edge( $a->{vertices}[$_], $parent ) } 0..$#vertices) <=>
                           (first { $b->graph->has_edge( $b->{vertices}[$_], $parent ) } 0..$#vertices) }
                         @candidates;
-    $self->{vertices} = [ $chain->vertices ];
+    return $old_parent unless $chain; # CHECKME: Why no edge is found?
 
+    $self->{vertices} = [ $chain->vertices ];
     return $old_parent;
 }
 
