@@ -268,6 +268,8 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, \&is_ketone, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&is_C,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitro->new, @_[1..3] ) } ],
+    [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, \&is_ketone, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&is_O_S_Se_Te,
+      sub { die "cannot handle nitric/nitrous acid esters yet\n" } ],
 
     # Carbonitrile, special case of cyanide
     [ \&is_cyanide, \&is_circular, NO_MORE_VERTICES,
