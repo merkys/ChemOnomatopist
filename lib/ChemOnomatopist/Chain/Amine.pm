@@ -39,6 +39,13 @@ sub locants(@)
     return map { $_ ? $self->{chain}->locants( $_ - 1 ) : 'N' } @_;
 }
 
+# Need to adjust positions by 1 to accommodate the amino group as the first vertex
+sub heteroatom_positions
+{
+    my( $self ) = @_;
+    return map { $_ + 1 } $self->{chain}->heteroatom_positions;
+}
+
 sub is_hydrocarbon() { '' }
 
 sub needs_substituent_locants() { $_[0]->{chain}->length > 0 }

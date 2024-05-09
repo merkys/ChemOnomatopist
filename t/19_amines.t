@@ -30,7 +30,7 @@ my @cases = (
     # From BBv3 P-62.2.1.2
     { smiles => 'CN', iupac => 'methanamine' },
     { smiles => 'CC(CN)C', iupac => '2-methylpropan-1-amine' },
-    { smiles => 'S1CC(CCCCCCCCCC1)N', iupac => '1-thiacyclotridecan-3-amine', AUTHOR => 1 },
+    { smiles => 'S1CC(CCCCCCCCCC1)N', iupac => '1-thiacyclotridecan-3-amine' },
     { smiles => 'CC1C(CCCC1)N', iupac => '2-methylcyclohexan-1-amine' },
     { smiles => 'ClCCN', iupac => '2-chloroethan-1-amine', AUTHOR => 1 },
 
