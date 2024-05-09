@@ -53,7 +53,7 @@ my @cases = (
     { smiles => 'ClC1=NC=CC=C1C(=O)N', iupac => '2-chloropyridine-3-carboxamide' },
     { smiles => 'CC=1C=C(C(=CC1)C(=O)N)C(=O)N', iupac => '4-methylbenzene-1,2-dicarboxamide', AUTHOR => 1 },
     { smiles => 'OC1=C(C(=O)N)C=CC=C1', iupac => '2-hydroxybenzamide' },
-    { smiles => 'NC=1C(=NC(=C(N1)N)Cl)C(=O)N', iupac => '3,5-diamino-6-chloropyrazine-2-carboxamide', AUTHOR => 'flaky' },
+    { smiles => 'NC=1C(=NC(=C(N1)N)Cl)C(=O)N', iupac => '3,5-diamino-6-chloropyrazine-2-carboxamide' },
     { smiles => 'C(CNC1C(CCCC1)C(=O)N)NC1C(CCCC1)C(=O)N', iupac => '2,2\'-[ethane-1,2-diylbis(azanediyl)]di(cyclohexane-1-carboxamide)', AUTHOR => 1 },
 
     { smiles => 'C(C1=CC=CC=C1)(=O)NC1=CC=C(C=C1)S(=O)(=O)O', iupac => '4-benzamidobenzene-1-sulfonic acid' }, # BBv2 P-66.1.1.4.3
