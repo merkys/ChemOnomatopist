@@ -158,6 +158,10 @@ my @rules = (
     [ sub { &is_nongroup_atom && &is_C }, \&is_hydroperoxide, \&is_ketone, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[2], $_[3] ), @_[1..3] ) } ],
 
+    # Nitramide
+    [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, ( sub { &is_nongroup_atom && &is_O } ) x 2, sub { &is_nongroup_atom && &is_N }, NO_MORE_VERTICES,
+      sub { die "cannot handle nitramides yet\n" } ],
+
     # Hydrazine and diazene
     [ ( sub { &is_nongroup_atom && &is_N } ) x 2,
         sub { is_double_bond( @_ )
