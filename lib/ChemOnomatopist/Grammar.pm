@@ -79,6 +79,8 @@ sub has_H1 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
 sub has_H2 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 2 }
 sub has_H3 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 3 }
 
+sub has_1_neighbour { $_[0]->degree( $_[1] ) == 1 }
+
 sub is_aldehyde      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Aldehyde:: ) }
 sub is_amide         { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amide:: ) }
 sub is_amine         { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amine:: ) }
@@ -159,7 +161,7 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[2], $_[3] ), @_[1..3] ) } ],
 
     # Nitramide
-    [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, ( sub { &is_nongroup_atom && &is_O } ) x 2, sub { &is_nongroup_atom && &is_N }, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, ( sub { &is_nongroup_atom && &is_O && &has_1_neighbour } ) x 2, sub { &is_nongroup_atom && &is_N }, NO_MORE_VERTICES,
       sub { die "cannot handle nitramides yet\n" } ],
 
     # Hydrazine and diazene
