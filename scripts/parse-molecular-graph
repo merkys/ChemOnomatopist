@@ -1,0 +1,38 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use ChemOnomatopist;
+use ChemOnomatopist::MolecularGraph;
+use Chemistry::OpenSMILES::Parser;
+use List::Util qw( uniq );
+use Scalar::Util qw( blessed );
+
+local $, = "\t";
+local $\ = "\n";
+while( my $SMILES = <> ) {
+    chomp $SMILES;
+
+    eval {
+        my $parser = Chemistry::OpenSMILES::Parser->new;
+        my @graphs = map { ChemOnomatopist::MolecularGraph->new( $_ ) }
+                           $parser->parse( $SMILES );
+
+        die "separate molecular entities are not handled yet\n" if @graphs > 1;
+
+        my $graph = shift @graphs;
+        ChemOnomatopist::find_groups( $graph );
+
+        my @groups = sort { $a cmp $b }
+                     uniq
+                     map  { blessed $_ }
+                     grep { blessed $_ }
+                          ( $graph->groups, $graph->vertices );
+        print $SMILES, join ' ', @groups;
+    };
+    if( $@ ) {
+        $@ =~ s/\n$//;
+        print $SMILES, $@;
+    }
+}
