@@ -16,7 +16,7 @@ my @cases = (
     # BBv3 P-31.2.3.1
     { smiles => 'C1=CCC=CC1', iupac => 'cyclohexa-1,4-diene' },
     { smiles => 'C1=CCCCC1', iupac => 'cyclohexene' },
-    { smiles => 'N1CC=CC=C1', iupac => '1,2-dihydropyridine', AUTHOR => 1 },
+    { smiles => 'N1CC=CC=C1', iupac => '1,2-dihydropyridine' },
     { smiles => 'S1C=CNCCC1', iupac => '4,5,6,7-tetrahydro-1,4-thiazepine' },
     { smiles => 'N1CC=CC=CC1', iupac => '2,7-dihydro-1H-azepine' },
     { smiles => 'P1CCC=C1', iupac => '2,3-dihydro-1H-phosphole', AUTHOR => 1 },

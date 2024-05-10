@@ -58,7 +58,9 @@ our %names = (
     'c:c:c:c:c:n:' => 'pyridine',
     'c:c:c:n:c:n:' => 'pyrimidine',
 
-    'C=CCC=CN' => 'pyridine', # Strange case of aromatisation
+    # Various cases of aromatisation
+    'C=CCC=CN' => 'pyridine',
+    'C=CC=CCN' => 'pyridine',
 );
 
 sub new

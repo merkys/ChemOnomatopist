@@ -23,7 +23,7 @@ my @cases = (
     { smiles => 'C1=CC2=C(C=CC(=C2)C(C3=NC=NC=C3)N)N=C1', iupac => 'pyrimidin-4-yl(quinolin-6-yl)methanamine', AUTHOR => 1 }, # PubChem 81231965
     { smiles => 'C1OC2=C(O1)C=C(C=C2)C3=C(N=CS3)CN', iupac => '[5-(1,3-benzodioxol-5-yl)-1,3-thiazol-4-yl]methanamine', AUTHOR => 1 }, # PubChem 84144019
     { smiles => 'C1=CC(=C(N=C1)C2=NC(=NS2)N)Br', iupac => '5-(3-bromopyridin-2-yl)-1,2,4-thiadiazol-3-amine' }, # PubChem 107526369
-    { smiles => 'C1=CC(=NC(=C1N)C2=CC(=C(C=C2Cl)Cl)Cl)C(=O)O', iupac => '5-amino-6-(2,4,5-trichlorophenyl)pyridine-2-carboxylic acid', AUTHOR => 1 }, # PubChem 133086582
+    { smiles => 'C1=CC(=NC(=C1N)C2=CC(=C(C=C2Cl)Cl)Cl)C(=O)O', iupac => '5-amino-6-(2,4,5-trichlorophenyl)pyridine-2-carboxylic acid' }, # PubChem 133086582
     { smiles => 'CC1CCC(CC(C1)C)C2CCCCC2', iupac => '1-cyclohexyl-3,5-dimethylcycloheptane' }, # PubChem 149225482
     { smiles => 'CC1=CC(=C(C=C1)C(C)(C)C2=CC(=C(C=C2)C)C)C', iupac => '1-[2-(3,4-dimethylphenyl)propan-2-yl]-2,4-dimethylbenzene' }, # PubChem 54559144
     { smiles => 'CCOC1=C(C(=CC(=C1)CNCC2=NN=C(N2C)C)Cl)OC', iupac => '1-(3-chloro-5-ethoxy-4-methoxyphenyl)-N-[(4,5-dimethyl-1,2,4-triazol-3-yl)methyl]methanamine', AUTHOR => 1 }, # PubChem 56822512 # incorrectly selected parent chain
