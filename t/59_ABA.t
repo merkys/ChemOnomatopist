@@ -13,6 +13,11 @@ my @cases = (
     { smiles => 'SOS', iupac => 'dithioxane' },
     { smiles => 'P[Se]P', iupac => 'diphosphaselenane' },
     { smiles => '[SiH3]N[SiH3]', iupac => 'N-silylsilanamine', AUTHOR => 1 },
+
+    # From BBv3 P-68.1.1.2.2
+    { smiles => 'CB(OB(C)C)C', iupac => 'tetramethyldiboroxane' },
+    { smiles => '[AlH2]O[AlH]O[AlH2]', iupac => 'trialuminoxane' },
+    { smiles => 'CBNBC', iupac => '1-methyl-N-(methylboranyl)boranamine', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
