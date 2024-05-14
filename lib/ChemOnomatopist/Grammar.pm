@@ -236,7 +236,7 @@ my @rules = (
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te && &has_H1 }, \&is_C_N_O_S_Se_Te, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( $_[1] ), $_[1] ) } ],
     # Ketones and their chalcogen analogues
-    [ sub { &is_nongroup_atom && &is_O_S_Se_Te && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&is_C, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_O_S_Se_Te && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
 
     # Urea
@@ -297,9 +297,9 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::XO3->new( ChemOnomatopist::element( $_[1] ) ), @_[1..4] ) } ],
 
     # S-based groups
-    [ sub { &is_nongroup_atom && &is_S }, sub { &is_ketone && &is_O }, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_S }, sub { &is_ketone }, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfinicAcid->new( @_[2..3] ), @_[1..3] ) } ],
-    [ sub { &is_nongroup_atom && &is_S }, ( sub { &is_ketone && &is_O } ) x 2, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_S }, ( sub { &is_ketone } ) x 2, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfonicAcid->new( @_[2..4] ), @_[1..4] ) } ],
     [ sub { &is_nongroup_atom && &is_S }, ( sub { &is_nongroup_atom && &is_N } ) x 2,
       sub { die "cannot handle sulfonodiimides yet\n" } ],
