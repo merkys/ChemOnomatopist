@@ -8,7 +8,9 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-sub prefix { 'nitro' }
+use ChemOnomatopist::Name;
+
+sub prefix { ChemOnomatopist::Name->new( 'nitro' ) }
 
 sub is_prefix_only() { 1 }
 
