@@ -1,15 +1,15 @@
 package ChemOnomatopist::Group::Nitro;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Nitro group
 # VERSION
 
+use strict;
+use warnings;
+
 use parent ChemOnomatopist::Group::;
 
-sub prefix { return 'nitro' }
+sub prefix { 'nitro' }
 
-sub is_prefix_only() { return 1 }
+sub is_prefix_only() { 1 }
 
 1;
