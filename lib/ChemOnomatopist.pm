@@ -853,7 +853,12 @@ sub select_mainchain
             } else {
                 # As the starting position is known, it is enough to take the "sidechain"
                 # containing this particular parent:
-                my $chain = select_sidechain( $graph, (blessed $groups[0] && $groups[0]->is_terminal ? @groups : undef), @parents );
+                my $copy = $graph->copy;
+                if( @groups ) {
+                    # In order not to overrun groups in chain, all non-N groups are removed
+                    $copy->delete_vertices( grep { blessed $_ && (!element( $_ ) || element( $_ ) ne 'N') && $_ != $groups[0] } $copy->vertices );
+                }
+                my $chain = select_sidechain( $copy, (blessed $groups[0] && $groups[0]->is_terminal ? @groups : undef), @parents );
                 my @vertices = $chain->vertices;
                 push @chains, ChemOnomatopist::Chain->new( $graph, undef, @vertices );
                 if( @vertices > 1 && !$chains[-1]->isa( ChemOnomatopist::Chain::Amine:: ) ) {
