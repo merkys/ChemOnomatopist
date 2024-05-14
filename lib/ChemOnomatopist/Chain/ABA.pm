@@ -3,6 +3,9 @@ package ChemOnomatopist::Chain::ABA;
 # ABSTRACT: a(ba)n chain as per BBv3 P-21.2.3.1
 # VERSION
 
+use strict;
+use warnings;
+
 use parent ChemOnomatopist::Chain::;
 
 use ChemOnomatopist::Name::Part::Element;
