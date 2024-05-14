@@ -10,8 +10,10 @@ use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Name;
 
-sub prefix { ChemOnomatopist::Name->new( 'nitro' ) }
+sub element() { 'N' }
 
 sub is_prefix_only() { 1 }
+
+sub prefix { ChemOnomatopist::Name->new( 'nitro' ) }
 
 1;
