@@ -13,7 +13,7 @@ my @cases = (
     { smiles => 'OC1=C(C=CC=C1)C(CO)O', iupac => '1-(2-hydroxyphenyl)ethane-1,2-diol', AUTHOR => 1 },
     { smiles => '[SeH]OCCOO', iupac => '2-(selanyloxy)ethane-1-peroxol' },
     { smiles => 'NCC(C)(OO)C', iupac => '1-amino-2-methylpropane-2-peroxol' },
-    { smiles => 'CS(=O)(=O)CCO', iupac => '2-(methanesulfonyl)ethan-1-ol', AUTHOR => 1 },
+    { smiles => 'CS(=O)(=O)CCO', iupac => '2-(methanesulfonyl)ethan-1-ol' },
     { smiles => 'O(O)C1C(CCCC1)(O)OOC1C(CCCC1)=O', iupac => '2-[(2-hydroperoxy-1-hydroxycyclohexyl)peroxy]cyclohexan-1-one' },
     { smiles => 'NCCO', iupac => '2-aminoethan-1-ol' },
     { smiles => 'C(C)OOCCOC', iupac => '1-(ethylperoxy)-2-methoxyethane', AUTHOR => 1 },
