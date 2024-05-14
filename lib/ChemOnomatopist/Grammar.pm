@@ -301,6 +301,8 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfinicAcid->new( $_[4] ), @_[1..3] ) } ],
     [ sub { &is_nongroup_atom && &is_S }, ( sub { &is_ketone && &is_O } ) x 2, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfonicAcid->new( $_[5] ), @_[1..4] ) } ],
+    [ sub { &is_nongroup_atom && &is_S }, ( sub { &is_nongroup_atom && &is_N } ) x 2,
+      sub { die "cannot handle sulfonodiimides yet\n" } ],
 
     # Sulfoxide group and its analogues
     [ sub { &is_nongroup_atom && &is_S_Se_Te }, \&is_ketone, ( \&anything ) x 2, NO_MORE_VERTICES,
