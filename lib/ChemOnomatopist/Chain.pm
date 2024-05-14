@@ -298,6 +298,13 @@ sub double_bond_positions()
     return grep { $bonds[$_] eq '=' } 0..$#bonds;
 }
 
+# FIXME: Needs proper name
+sub needs_ane_suffix()
+{
+    my( $self ) = @_;
+    return $self->length == 1 && blessed $self->{vertices}[0] && $self->{vertices}[0]->isa( ChemOnomatopist::Group::Sulfonyl:: );
+}
+
 sub needs_multiple_bond_locants()
 {
     my( $self ) = @_;

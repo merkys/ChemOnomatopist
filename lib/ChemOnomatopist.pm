@@ -205,6 +205,11 @@ sub get_sidechain_name
             next if any { $neighbour == $_ } @chain; # Skip atoms from this chain
             next if $parent && $neighbour == $parent;
             my $attachment = get_sidechain_name( $graph, $atom, $neighbour );
+            if( $chain->needs_ane_suffix && $attachment =~ /yl$/ ) {
+                # FIXME: Properly detect the 'yl' suffix and replace it with suffix object
+                $attachment->pop_yl;
+                $attachment .= 'ane';
+            }
             $attachments{$attachment} = [ $attachment ] unless $attachments{$attachment};
             push @{$attachments{$attachment}}, $i;
         }
