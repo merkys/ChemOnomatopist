@@ -856,7 +856,7 @@ sub select_mainchain
                 my $copy = $graph->copy;
                 if( @groups ) {
                     # In order not to overrun groups in chain, all non-N groups are removed
-                    $copy->delete_vertices( grep { blessed $_ && (!element( $_ ) || element( $_ ) ne 'N') && $_ != $groups[0] } $copy->vertices );
+                    $copy->delete_vertices( grep { blessed $_ && (!element( $_ ) || element( $_ ) ne 'N') && $_ != $groups[0] && $_ != $parents[0] } $copy->vertices );
                 }
                 my $chain = select_sidechain( $copy, (blessed $groups[0] && $groups[0]->is_terminal ? @groups : undef), @parents );
                 my @vertices = $chain->vertices;
