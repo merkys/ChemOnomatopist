@@ -10,7 +10,7 @@ use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util qw( array_frequencies );
-use List::Util qw( all any first );
+use List::Util qw( all first );
 use Scalar::Util qw( blessed );
 
 sub new
@@ -21,7 +21,7 @@ sub new
 
 sub element() { 'S' }
 
-my %suffixes = ( O => '', S => 'thio', Se => 'seleno', Te => 'telluro' );
+my %suffixes = ( N => 'imido', O => '', S => 'thio', Se => 'seleno', Te => 'telluro' );
 
 # From BBv2 P-65.3.0 and Table 4.3
 sub prefix() { ChemOnomatopist::Name->new( 'sulfo' ) }
@@ -55,8 +55,9 @@ sub suffix()
                                 : map { ChemOnomatopist::element( $_ ) } @{$hydroxy->{atoms}};
 
     local $" = '';
-    my $name = (any { $_ eq 'N' } @elements) ? 'sulfonimido' : 'sulfono';
+    my $name = 'sulfono';
     $name .= 'peroxo' if $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: );
+    $name =~ s/o$// if @element_names && $element_names[0] =~ /^i/;
     $name .= "@{element_names}ic @nonketone_elements-acid";
     return ChemOnomatopist::Name->new( $name );
 }
