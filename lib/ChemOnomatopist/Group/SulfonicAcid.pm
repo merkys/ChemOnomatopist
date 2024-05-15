@@ -56,7 +56,12 @@ sub suffix()
 
     local $" = '';
     my $name = 'sulfono';
-    $name .= 'peroxo' if $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: );
+    if( $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: ) ) {
+        my $suffix = $hydroxy->suffix;
+        $suffix->[-1] =~ s/l$//;
+        $suffix->bracket unless $suffix eq 'peroxo';
+        $name .= $suffix;
+    }
     $name =~ s/o$// if @element_names && $element_names[0] =~ /^i/;
     $name .= "@{element_names}ic @nonketone_elements-acid";
     return ChemOnomatopist::Name->new( $name );
