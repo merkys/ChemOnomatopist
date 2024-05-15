@@ -48,10 +48,14 @@ sub suffix()
         push @elements, $suffixes{$element};
     }
 
+    my @nonketone_elements = $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: )
+                                ? ( $hydroxy->element )
+                                : map { ChemOnomatopist::element( $_ ) } @{$hydroxy->{atoms}};
+
     local $" = '';
     my $name = 'sulfono';
     $name .= 'peroxo' if $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: );
-    $name .= "@{elements}ic " . $hydroxy->element . '-acid';
+    $name .= "@{elements}ic @nonketone_elements-acid";
     return ChemOnomatopist::Name->new( $name );
 }
 
