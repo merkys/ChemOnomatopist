@@ -297,9 +297,9 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::XO3->new( ChemOnomatopist::element( $_[1] ) ), @_[1..4] ) } ],
 
     # S-based groups
-    [ sub { &is_nongroup_atom && &is_S }, \&is_ketone, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_S }, \&is_ketone, sub { &is_hydroxy || &is_hydroperoxide }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfinicAcid->new( @_[2..3] ), @_[1..3] ) } ],
-    [ sub { &is_nongroup_atom && &is_S }, ( \&is_ketone ) x 2, \&is_hydroxy, \&is_C, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_S }, ( \&is_ketone ) x 2, sub { &is_hydroxy || &is_hydroperoxide }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfonicAcid->new( @_[2..4] ), @_[1..4] ) } ],
     [ sub { &is_nongroup_atom && &is_S }, ( sub { &is_nongroup_atom && &is_N } ) x 2,
       sub { die "cannot handle sulfonodiimides yet\n" } ],
