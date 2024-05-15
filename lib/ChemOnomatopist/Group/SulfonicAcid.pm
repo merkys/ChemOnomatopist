@@ -40,13 +40,14 @@ sub suffix()
         return ChemOnomatopist::Name->new( 'sulfonoperoxoic acid' );
     }
 
-    my %elements = array_frequencies( @elements ); use Data::Dumper; print Dumper \%elements;
-    @elements = ();
+    my %elements = array_frequencies( @elements );
+    my @element_names = ();
     for my $element (sort keys %elements) {
+        next unless exists $suffixes{$element};
         if( $elements{$element} > 1 ) {
-            push @elements, ChemOnomatopist::IUPAC_numerical_multiplier( $elements{$element} );
+            push @element_names, ChemOnomatopist::IUPAC_numerical_multiplier( $elements{$element} );
         }
-        push @elements, $suffixes{$element};
+        push @element_names, $suffixes{$element};
     }
 
     my @nonketone_elements = $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: )
@@ -56,7 +57,7 @@ sub suffix()
     local $" = '';
     my $name = 'sulfono';
     $name .= 'peroxo' if $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: );
-    $name .= "@{elements}ic @nonketone_elements-acid";
+    $name .= "@{element_names}ic @nonketone_elements-acid";
     return ChemOnomatopist::Name->new( $name );
 }
 
