@@ -31,7 +31,7 @@ my @cases = (
     { smiles => 'CS(=S)(=S)S', iupac => 'methanesulfonotrithioic acid', AUTHOR => 1 },
     { smiles => 'CS(=O)(O)=N', iupac => 'methanesulfonimidic acid', AUTHOR => 1 },
     { smiles => 'CS(=O)(=N)OO', iupac => 'methanesulfonimidoperoxoic acid', AUTHOR => 1 },
-    { smiles => 'CS(=S)(=N)OO', iupac => 'methanesulfonimidoperoxothioic OO-acid' },
+    { smiles => 'CS(=S)(=N)OO', iupac => 'methanesulfonimidoperoxothioic OO-acid', AUTHOR => 1 },
     { smiles => 'CS(=O)(=N)SO', iupac => 'methanesulfonimido(thioperoxoic) SO-acid', AUTHOR => 1 },
     { smiles => 'CS(=O)(=N)OS', iupac => 'methanesulfonimido(thioperoxoic) OS-acid', AUTHOR => 1 },
     { smiles => 'CS(O)(=N)=S', iupac => 'methanesulfonimidothioic O-acid' },
