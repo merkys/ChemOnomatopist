@@ -296,6 +296,16 @@ my @rules = (
     [ sub { &is_nongroup_atom && &is_Br_Cl_F_I }, ( \&is_ketone ) x 3,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::XO3->new( ChemOnomatopist::element( $_[1] ) ), @_[1..4] ) } ],
 
+    # Peroxide
+    [ sub { &is_nongroup_atom && &is_O }, sub { &is_nongroup_atom && &is_O }, sub { &is_C }, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Peroxide->new( @_[1..2] ), @_[1..2] ) } ],
+
+    # Hydroperoxide
+    [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, \&is_hydroxy, \&anything, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroperoxide->new( $_[1], $_[2] ), @_[1..2] ) } ],
+    [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&anything, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroperoxide->new( $_[1], $_[2] ), @_[1..2] ) } ],
+
     # S-based groups
     [ sub { &is_nongroup_atom && &is_S }, \&is_ketone, sub { &is_hydroxy || &is_hydroperoxide }, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfinicAcid->new( @_[2..3] ), @_[1..3] ) } ],
@@ -309,16 +319,6 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfinyl->new( ChemOnomatopist::element( $_[1] ) ), @_[1..2] ) } ],
     [ sub { &is_nongroup_atom && &is_S_Se_Te }, ( \&is_ketone ) x 2, ( \&anything ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfonyl->new( ChemOnomatopist::element( $_[1] ) ), @_[1..3] ) } ],
-
-    # Peroxide
-    [ sub { &is_nongroup_atom && &is_O }, sub { &is_nongroup_atom && &is_O }, sub { &is_C }, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Peroxide->new( @_[1..2] ), @_[1..2] ) } ],
-
-    # Hydroperoxide
-    [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, \&is_hydroxy, \&anything, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroperoxide->new( $_[1], $_[2] ), @_[1..2] ) } ],
-    [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&anything, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroperoxide->new( $_[1], $_[2] ), @_[1..2] ) } ],
 
     # Detecting amides attached to cyclic chains
     [ sub { &is_nongroup_atom && &is_C && 1 == grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) && $_->{parent} == $_[1] } $_[0]->neighbours( $_[1] ) }, \&is_amide, \&is_monocycle, NO_MORE_VERTICES,
