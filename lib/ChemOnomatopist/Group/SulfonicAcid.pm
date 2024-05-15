@@ -10,7 +10,7 @@ use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util qw( array_frequencies );
-use List::Util qw( all first );
+use List::Util qw( all any first );
 use Scalar::Util qw( blessed );
 
 sub new
@@ -55,7 +55,7 @@ sub suffix()
                                 : map { ChemOnomatopist::element( $_ ) } @{$hydroxy->{atoms}};
 
     local $" = '';
-    my $name = 'sulfono';
+    my $name = (any { $_ eq 'N' } @elements) ? 'sulfonimido' : 'sulfono';
     $name .= 'peroxo' if $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: );
     $name .= "@{element_names}ic @nonketone_elements-acid";
     return ChemOnomatopist::Name->new( $name );
