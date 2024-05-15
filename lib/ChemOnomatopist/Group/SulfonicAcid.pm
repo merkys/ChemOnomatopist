@@ -11,6 +11,7 @@ use parent ChemOnomatopist::Group::;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util qw( array_frequencies );
 use List::Util qw( all first );
+use Scalar::Util qw( blessed );
 
 sub new
 {
@@ -29,17 +30,17 @@ sub suffix()
     my( $self ) = @_;
 
     my @attachments = @{$self->{attachments}};
-    my $hydroxy = first {  $_->isa( ChemOnomatopist::Group::Hydroxy:: ) ||
-                           $_->isa( ChemOnomatopist::Group::Hydroperoxide:: ) } @attachments;
-    my @ketones = grep  { !$_->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
-                          !$_->isa( ChemOnomatopist::Group::Hydroperoxide:: ) } @attachments;
-    my @elements = sort grep { $_ ne 'O' } map { $_->element } @attachments;
+    my $hydroxy = first { blessed $_ && ( $_->isa( ChemOnomatopist::Group::Hydroxy:: ) ||
+                                          $_->isa( ChemOnomatopist::Group::Hydroperoxide:: ) ) }
+                        @attachments;
+    my @ketones = grep { $_ != $hydroxy } @attachments;
+    my @elements = sort grep { $_ ne 'O' } map { ChemOnomatopist::element( $_ ) } @attachments;
     if( @ketones == 2 && !@elements ) {
         return ChemOnomatopist::Name->new( 'sulfonic acid' ) if $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: );
         return ChemOnomatopist::Name->new( 'sulfonoperoxoic acid' );
     }
 
-    my %elements = array_frequencies( @elements );
+    my %elements = array_frequencies( @elements ); use Data::Dumper; print Dumper \%elements;
     @elements = ();
     for my $element (sort keys %elements) {
         if( $elements{$element} > 1 ) {
