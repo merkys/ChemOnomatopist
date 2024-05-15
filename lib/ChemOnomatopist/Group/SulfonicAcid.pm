@@ -29,11 +29,14 @@ sub suffix()
     my( $self ) = @_;
 
     my @attachments = @{$self->{attachments}};
-    my $hydroxy = first {  $_->isa( ChemOnomatopist::Group::Hydroxy:: ) } @attachments;
-    my @ketones = grep  { !$_->isa( ChemOnomatopist::Group::Hydroxy:: ) } @attachments;
+    my $hydroxy = first {  $_->isa( ChemOnomatopist::Group::Hydroxy:: ) ||
+                           $_->isa( ChemOnomatopist::Group::Hydroperoxide:: ) } @attachments;
+    my @ketones = grep  { !$_->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
+                          !$_->isa( ChemOnomatopist::Group::Hydroperoxide:: ) } @attachments;
     my @elements = sort grep { $_ ne 'O' } map { $_->element } @attachments;
     if( @ketones == 2 && !@elements ) {
-        return ChemOnomatopist::Name->new( 'sulfonic acid' );
+        return ChemOnomatopist::Name->new( 'sulfonic acid' ) if $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: );
+        return ChemOnomatopist::Name->new( 'sulfonoperoxoic acid' );
     }
 
     my %elements = array_frequencies( @elements );
@@ -46,7 +49,9 @@ sub suffix()
     }
 
     local $" = '';
-    my $name = "sulfono@{elements}ic " . $hydroxy->element . '-acid';
+    my $name = 'sulfono';
+    $name .= 'peroxo' if $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: );
+    $name .= "@{elements}ic " . $hydroxy->element . '-acid';
     return ChemOnomatopist::Name->new( $name );
 }
 
