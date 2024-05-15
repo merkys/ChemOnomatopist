@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Name;
+use ChemOnomatopist::Util qw( array_frequencies );
 use List::Util qw( all first );
 
 sub new
@@ -35,8 +36,17 @@ sub suffix()
         return ChemOnomatopist::Name->new( 'sulfonic acid' );
     }
 
-    my $name = 'sulfono' . join( '', map { $suffixes{$_} } @elements ) . 'ic ' .
-               $hydroxy->element . '-acid';
+    my %elements = array_frequencies( @elements );
+    @elements = ();
+    for my $element (sort keys %elements) {
+        if( $elements{$element} > 1 ) {
+            push @elements, ChemOnomatopist::IUPAC_numerical_multiplier( $elements{$element} );
+        }
+        push @elements, $suffixes{$element};
+    }
+
+    local $" = '';
+    my $name = "sulfono@{elements}ic " . $hydroxy->element . '-acid';
     return ChemOnomatopist::Name->new( $name );
 }
 
