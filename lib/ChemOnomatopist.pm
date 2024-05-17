@@ -40,6 +40,8 @@ use ChemOnomatopist::MolecularGraph;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::Stem;
 use ChemOnomatopist::Util qw(
+    all_max
+    all_min
     cmp_arrays
     copy
     zip
@@ -1294,11 +1296,8 @@ sub filter_chains
 
 sub rule_most_groups
 {
-    my( $class, @chains ) = @_;
-
-    my( $max_value ) = sort { $b <=> $a }
-                       map { $_->number_of_groups( $class ) } @chains;
-    return grep { $_->number_of_groups( $class ) == $max_value } @chains;
+    my $class = shift;
+    return all_max { $_->number_of_groups( $class ) } @_;
 }
 
 sub rule_circular_is_heterocycle
@@ -1324,10 +1323,8 @@ sub rule_circular_most_senior_heteroatom
 
 sub rule_circular_most_rings
 {
-    my( @chains ) = @_;
-    return @chains unless all { $_->isa( ChemOnomatopist::Chain::Circular:: ) } @chains;
-    my( $max_value ) = reverse sort map { $_->number_of_rings } @chains;
-    return grep { $_->number_of_rings == $max_value } @chains;
+    return @_ unless all { $_->isa( ChemOnomatopist::Chain::Circular:: ) } @_;
+    return all_max { $_->number_of_rings } @_;
 }
 
 sub rule_lowest_numbered_senior_groups
@@ -1362,24 +1359,9 @@ sub rule_lowest_numbered_double_bonds
 }
 
 # This rule is employed only if longest chains are not already preselected
-sub rule_longest_chains
-{
-    my( @chains ) = @_;
+sub rule_longest_chains { all_max { $_->length } @_ }
 
-    my( $max_value ) = sort { $b <=> $a }
-                       uniq map { $_->length } @chains;
-    return grep { $_->length == $max_value } @chains;
-}
-
-sub rule_greatest_number_of_side_chains
-{
-    my( @chains ) = @_;
-
-    my( $max_value ) = sort { $b <=> $a }
-                       uniq map { $_->number_of_branches }
-                                @chains;
-    return grep { $_->number_of_branches == $max_value } @chains;
-}
+sub rule_greatest_number_of_side_chains { all_max { $_->number_of_branches } @_ }
 
 sub rule_lowest_numbered_locants
 {
@@ -1393,32 +1375,11 @@ sub rule_lowest_numbered_locants
                 @chains;
 }
 
-sub rule_most_carbon_in_side_chains
-{
-    my( @chains ) = @_;
+sub rule_most_carbon_in_side_chains { all_max { $_->number_of_carbons } @_ }
 
-    my( $max_value ) = sort { $b <=> $a }
-                       uniq map { $_->number_of_carbons }
-                                @chains;
-    return grep { $_->number_of_carbons == $max_value } @chains;
-}
+sub rule_least_branched_side_chains { all_min { $_->number_of_branches_in_sidechains } @_ }
 
-sub rule_least_branched_side_chains
-{
-    my( @chains ) = @_;
-
-    my( $min_value ) = sort uniq map { $_->number_of_branches_in_sidechains } @chains;
-    return grep { $_->number_of_branches_in_sidechains == $min_value } @chains;
-}
-
-sub rule_most_heteroatoms
-{
-    my( @chains ) = @_;
-
-    my( $max_value ) = sort { $b <=> $a }
-                       map { $_->number_of_heteroatoms } @chains;
-    return grep { $_->number_of_heteroatoms == $max_value } @chains;
-}
+sub rule_most_heteroatoms { all_max { $_->number_of_heteroatoms } @_ }
 
 sub rule_greatest_number_of_most_senior_heteroatoms
 {

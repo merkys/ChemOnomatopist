@@ -8,17 +8,41 @@ use warnings;
 
 use Exporter;
 use Graph::Undirected;
-use List::Util qw( min pairs );
+use List::Util qw( max min pairs );
 use Scalar::Util qw( blessed );
 
 use parent Exporter::;
 
 our @EXPORT_OK = qw(
+    all_max
+    all_min
     array_frequencies
     cmp_arrays
     copy
     zip
 );
+
+sub all_max(&@)
+{
+    my $code = shift;
+    return () unless @_;
+
+    my @values = map { $code->( $_ ) } @_;
+    my $max = max @values;
+
+    return map { $_[$_] } grep { $values[$_] == $max } 0..$#_;
+}
+
+sub all_min(&@)
+{
+    my $code = shift;
+    return () unless @_;
+
+    my @values = map { $code->( $_ ) } @_;
+    my $min = min @values;
+
+    return map { $_[$_] } grep { $values[$_] == $min } 0..$#_;
+}
 
 sub array_frequencies(@)
 {
