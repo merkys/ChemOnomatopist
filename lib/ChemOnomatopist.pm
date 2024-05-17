@@ -1390,14 +1390,7 @@ sub rule_greatest_number_of_most_senior_heteroatoms
     return grep { !cmp_heteroatom_counts( [ $_->heteroatoms ], $max_value ) } @chains;
 }
 
-sub rule_most_multiple_bonds
-{
-    my( @chains ) = @_;
-
-    my( $max_value ) = sort { $b <=> $a }
-                       map { $_->number_of_multiple_bonds } @chains;
-    return grep { $_->number_of_multiple_bonds == $max_value } @chains;
-}
+sub rule_most_multiple_bonds { all_max { $_->number_of_multiple_bonds } @_ }
 
 sub rule_lowest_numbered_charges
 {
@@ -1419,22 +1412,9 @@ sub rule_lowest_numbered_anions
                 @chains;
 }
 
-sub rule_most_double_bonds
-{
-    my( @chains ) = @_;
+sub rule_most_double_bonds { all_max { $_->number_of_double_bonds } @_ }
 
-    my( $max_value ) = sort { $b <=> $a }
-                       map { $_->number_of_double_bonds } @chains;
-    return grep { $_->number_of_double_bonds == $max_value } @chains;
-}
-
-sub rule_greater_number_of_isotopically_modified_atoms_or_groups
-{
-    my( @chains ) = @_;
-    my( $max_value ) = sort { $b <=> $a }
-                       map  { $_->number_of_isotopes } @chains;
-    return grep { $_->number_of_isotopes == $max_value } @chains;
-}
+sub rule_greater_number_of_isotopically_modified_atoms_or_groups { all_max { $_->number_of_isotopes } @_ }
 
 sub rule_greater_number_of_nuclides_of_higher_atomic_number
 {
@@ -1489,14 +1469,7 @@ sub rule_lowest_locants_for_nuclides_of_higher_mass_number
                 @chains;
 }
 
-sub rule_most_nonstandard_valence_positions
-{
-    my( @chains ) = @_;
-
-    my( $max_value ) = sort { $b <=> $a }
-                       map  { $_->number_of_nonstandard_valence_positions } @chains;
-    return grep { $_->number_of_nonstandard_valence_positions == $max_value } @chains;
-}
+sub rule_most_nonstandard_valence_positions { all_max { $_->number_of_nonstandard_valence_positions } @_ }
 
 sub rule_lowest_numbered_nonstandard_valence_positions
 {
@@ -1592,7 +1565,7 @@ sub pick_alphabetically_earliest
     my( @chains ) = @_;
 
     my( $max_value ) = sort { cmp_only_alphabetical( [ $a->locant_names ],
-                                                    [ $b->locant_names ] ) } @chains;
+                                                     [ $b->locant_names ] ) } @chains;
     return $max_value;
 }
 
