@@ -11,11 +11,12 @@ use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Bicycle::Purine;
 use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Chain::Monocycle::Fused;
+use ChemOnomatopist::Comparable::Array::Numeric;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::Fusion;
 use ChemOnomatopist::Name::Part::Stem;
-use ChemOnomatopist::Util qw( cmp_arrays );
+use ChemOnomatopist::Util qw( all_max all_min );
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_double_bond );
 use Graph::Traversal::DFS;
@@ -561,38 +562,11 @@ sub rule_most_senior_heteroatom
     return grep { any { $_ eq $max_value } $_->heteroatoms } @chains;
 }
 
-sub rule_greatest_variety_of_heteroatoms
-{
-    my( @chains ) = @_;
+sub rule_greatest_variety_of_heteroatoms { all_max { scalar uniq $_->heteroatoms } @_ }
 
-    my( $max_value ) = reverse sort map { scalar uniq $_->heteroatoms } @chains;
-    return @chains unless $max_value;
-    return grep { scalar( uniq $_->heteroatoms ) == $max_value } @chains;
-}
+sub rule_lowest_numbered_fusion_carbons { all_min { ChemOnomatopist::Comparable::Array::Numeric->new( $_->fusion_carbon_positions ) } @_ }
 
-sub rule_lowest_numbered_fusion_carbons
-{
-    my( @chains ) = @_;
-
-    my( $max_value ) = sort { cmp_arrays( [ $a->fusion_carbon_positions ],
-                                          [ $b->fusion_carbon_positions ] ) }
-                            @chains;
-    return grep { !cmp_arrays( [ $_->fusion_carbon_positions ],
-                               [ $max_value->fusion_carbon_positions ] ) }
-                @chains;
-}
-
-sub rule_lowest_numbered_fusion_heteroatoms
-{
-    my( @chains ) = @_;
-
-    my( $max_value ) = sort { cmp_arrays( [ $a->fusion_heteroatom_positions ],
-                                          [ $b->fusion_heteroatom_positions ] ) }
-                            @chains;
-    return grep { !cmp_arrays( [ $_->fusion_heteroatom_positions ],
-                               [ $max_value->fusion_heteroatom_positions ] ) }
-                @chains;
-}
+sub rule_lowest_numbered_fusion_heteroatoms { all_min { ChemOnomatopist::Comparable::Array::Numeric->new( $_->fusion_heteroatom_positions ) } @_ }
 
 sub _adjust_vertices_to_cycles()
 {
