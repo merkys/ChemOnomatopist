@@ -53,6 +53,10 @@ sub suffix()
     my @nonketone_elements = $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: )
                                 ? ( $hydroxy->element )
                                 : map { ChemOnomatopist::element( $_ ) } @{$hydroxy->{atoms}};
+    if( @ketones == 2 && all { $_ eq 'N' } map { ChemOnomatopist::element( $_ ) } @ketones ) {
+        @nonketone_elements = (); # No need to enumerate
+    }
+    push @nonketone_elements, '-' if @nonketone_elements;
 
     local $" = '';
     my $name = 'sulfono';
@@ -63,7 +67,7 @@ sub suffix()
         $name .= $suffix;
     }
     $name =~ s/o$// if @element_names && $element_names[0] =~ /^i/;
-    $name .= "@{element_names}ic @nonketone_elements-acid";
+    $name .= "@{element_names}ic @{nonketone_elements}acid";
     return ChemOnomatopist::Name->new( $name );
 }
 
