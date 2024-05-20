@@ -513,7 +513,7 @@ sub suffix()
 
     my @ideal = map { ChemOnomatopist::Chain::Monocycle->new( $_->graph, $_->vertices ) }
                     $self->cycles;
-    my $name_A = $ideal[1]->name;
+    my $name_A = $ideal[1]->suffix;
     $name_A =~ s/^\d+H-//;
 
     # Retained prefixes from BBv3 P-25.3.2.2.3
@@ -540,7 +540,7 @@ sub suffix()
     $name .= $name_A;
     $name .= ChemOnomatopist::Name::Part::Fusion->new( $fusion );
 
-    my $name_B = $ideal[0]->name;
+    my $name_B = $ideal[0]->suffix;
     $name_B->[0] =~ s/\d+H-//;
     $name .= $name_B;
     $name->bracket_numeric_locants;
