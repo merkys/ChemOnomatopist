@@ -13,7 +13,7 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Name;
-use ChemOnomatopist::Util qw( cmp_arrays );
+use ChemOnomatopist::Util qw( all_min cmp_arrays );
 use List::Util qw( all first );
 use Scalar::Util qw( blessed );
 
@@ -221,7 +221,7 @@ sub prefix()
         # FIXME: Order of vertices seems to be established regardless of the attachments.
         # This causes ambiguity, for example, in 1-(1,4-diazepan-1-ylsulfonyl)-8-methylisoquinoline
         my @vertices = $self->vertices;
-        my( $position ) = grep { $self->graph->has_edge( $parent, $vertices[$_] ) } 0..$#vertices;
+        my $position = first { $self->graph->has_edge( $parent, $vertices[$_] ) } 0..$#vertices;
         die "unknown locant in multicyclic compound\n" unless defined $position;
         $name->append_substituent_locant( $self->locants( $position ) );
     }
@@ -347,14 +347,7 @@ sub suffix()
     return $name;
 }
 
-sub rule_lowest_parent_locant
-{
-    my @chains = @_;
-
-    my( $max_value ) = sort { $a->parent_locant <=> $b->parent_locant }
-                            @chains;
-    return grep { $_->parent_locant == $max_value->parent_locant } @chains;
-}
+sub rule_lowest_parent_locant { all_min { $_->parent_locant } @_ }
 
 # FIXME: Pay attention to bond orders
 # Orders the atoms by their seniority and compares the resulting locants
