@@ -28,6 +28,8 @@ use ChemOnomatopist::Chain::Porphyrin;
 use ChemOnomatopist::Chain::VonBaeyer;
 use ChemOnomatopist::Chain::Xanthene;
 use ChemOnomatopist::ChainHalf;
+use ChemOnomatopist::Comparable::Array::Isotope::By::AtomicNumber;
+use ChemOnomatopist::Comparable::Array::Isotope::By::MassNumber;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Grammar qw( parse_molecular_graph );
 use ChemOnomatopist::Group;
@@ -1416,25 +1418,8 @@ sub rule_most_double_bonds { all_max { $_->number_of_double_bonds } @_ }
 
 sub rule_greater_number_of_isotopically_modified_atoms_or_groups { all_max { $_->number_of_isotopes } @_ }
 
-sub rule_greater_number_of_nuclides_of_higher_atomic_number
-{
-    my @chains = @_;
-    my( $max_value ) = sort { ChemOnomatopist::Isotope::cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_atomic_number( $a, $b ) }
-                       map  { [ $_->isotopes ] } @chains;
-    return grep { !ChemOnomatopist::Isotope::cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_atomic_number( [ $_->isotopes ],
-                                                                                                                      $max_value ) }
-                @chains;
-}
-
-sub rule_greater_number_of_nuclides_of_higher_mass_number
-{
-    my @chains = @_;
-    my( $max_value ) = sort { ChemOnomatopist::Isotope::cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_mass_number( $a, $b ) }
-                       map  { [ $_->isotopes ] } @chains;
-    return grep { !ChemOnomatopist::Isotope::cmp_isotope_lists_by_greater_number_of_nuclides_of_higher_mass_number( [ $_->isotopes ],
-                                                                                                                    $max_value ) }
-                @chains;
-}
+sub rule_greater_number_of_nuclides_of_higher_atomic_number { all_max { ChemOnomatopist::Comparable::Array::Isotope::By::AtomicNumber->new( $_->isotopes ) } @_ }
+sub rule_greater_number_of_nuclides_of_higher_mass_number { all_max { ChemOnomatopist::Comparable::Array::Isotope::By::MassNumber->new( $_->isotopes ) } @_ }
 
 sub rule_lowest_locants_for_isotopically_modified_atoms_or_groups
 {
