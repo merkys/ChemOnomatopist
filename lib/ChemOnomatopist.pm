@@ -1369,25 +1369,9 @@ sub rule_greatest_number_of_most_senior_heteroatoms
 
 sub rule_most_multiple_bonds { all_max { $_->number_of_multiple_bonds } @_ }
 
-sub rule_lowest_numbered_charges
-{
-    my( @chains ) = @_;
-
-    my( $max_value ) = sort { cmp_arrays( $a, $b ) }
-                       map  {  [ map { $_->index } $_->charges ] } @chains;
-    return grep { !cmp_arrays( [ map { $_->index } $_->charges ], $max_value ) }
-                @chains;
-}
-
-sub rule_lowest_numbered_anions
-{
-    my( @chains ) = @_;
-
-    my( $max_value ) = sort { cmp_arrays( $a, $b ) }
-                       map  {  [ map { $_->index } grep { $_->charge < 0 } $_->charges ] } @chains;
-    return grep { !cmp_arrays( [ map { $_->index } grep { $_->charge < 0 } $_->charges ], $max_value ) }
-                @chains;
-}
+sub rule_lowest_numbered_charges { all_min { ChemOnomatopist::Comparable::Array::Numeric->new( map  { $_->index } $_->charges ) } @_ }
+sub rule_lowest_numbered_anions  { all_min { ChemOnomatopist::Comparable::Array::Numeric->new( map  { $_->index }
+                                                                                               grep { $_->charge < 0 } $_->charges ) } @_ }
 
 sub rule_most_double_bonds { all_max { $_->number_of_double_bonds } @_ }
 
