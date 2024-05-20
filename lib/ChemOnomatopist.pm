@@ -1401,25 +1401,16 @@ sub rule_lowest_numbered_nonstandard_valence_positions { all_min { ChemOnomatopi
 
 sub rule_most_indicated_hydrogens
 {
-    my @chains = grep { $_->isa( ChemOnomatopist::Chain::Circular:: ) &&
-                        $_->needs_indicated_hydrogens } @_;
-
-    my( $max_value ) = sort { $b <=> $a }
-                       map  { $_->number_of_indicated_hydrogens } @chains;
-    return grep { $_->number_of_indicated_hydrogens == $max_value } @chains;
+    return all_max { $_->number_of_indicated_hydrogens }
+           grep    { $_->isa( ChemOnomatopist::Chain::Circular:: ) &&
+                     $_->needs_indicated_hydrogens } @_;
 }
 
 sub rule_lowest_numbered_indicated_hydrogens
 {
-    my @chains = grep { $_->isa( ChemOnomatopist::Chain::Circular:: ) &&
-                        $_->needs_indicated_hydrogens } @_;
-
-    my( $max_value ) = sort { cmp_arrays( [ $a->indicated_hydrogens ],
-                                          [ $b->indicated_hydrogens ] ) }
-                            @chains;
-    return grep { !cmp_arrays( [ $_->indicated_hydrogens ],
-                               [ $max_value->indicated_hydrogens ] ) }
-                @chains;
+    return all_min { ChemOnomatopist::Comparable::Array::Numeric->new( $_->indicated_hydrogens ) }
+           grep    { $_->isa( ChemOnomatopist::Chain::Circular:: ) &&
+                     $_->needs_indicated_hydrogens } @_;
 }
 
 sub rule_lowest_numbered_heteroatoms { all_min { ChemOnomatopist::Comparable::Array::Numeric->new( $_->heteroatom_positions ) } @_ }
