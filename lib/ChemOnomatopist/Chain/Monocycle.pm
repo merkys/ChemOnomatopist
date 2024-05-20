@@ -13,7 +13,7 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Name;
-use ChemOnomatopist::Util qw( all_min cmp_arrays );
+use ChemOnomatopist::Util qw( all_min circle_permutations cmp_arrays );
 use List::Util qw( all first );
 use Scalar::Util qw( blessed );
 
@@ -84,16 +84,9 @@ sub new
     return $self unless $senior_heteroatom;
 
     my @chains;
-    for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @vertices )
-            if ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
-        push @vertices, shift @vertices;
-    }
-    @vertices = reverse @vertices;
-    for (0..$#vertices) {
-        push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @vertices )
-            if ChemOnomatopist::element( $vertices[0] ) eq $senior_heteroatom;
-        push @vertices, shift @vertices;
+    for (circle_permutations( @vertices )) {
+        next unless ChemOnomatopist::element( $_->[0] ) eq $senior_heteroatom;
+        push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @$_ );
     }
 
     my( $first ) = sort { _cmp( $a, $b ) } @chains;
@@ -136,20 +129,9 @@ sub autosymmetric_equivalents()
 {
     my( $self ) = @_;
 
-    my @vertices = $self->vertices;
-    my $cycle = $self->graph->subgraph( \@vertices ); # TODO: Add attributes
-    my @chains;
-    for (0..$#vertices) {
-        push @chains,
-             ChemOnomatopist::Chain::Circular->new( $cycle, @vertices );
-        push @vertices, shift @vertices;
-    }
-    @vertices = reverse @vertices;
-    for (0..$#vertices) {
-        push @chains,
-             ChemOnomatopist::Chain::Circular->new( $cycle, @vertices );
-        push @vertices, shift @vertices;
-    }
+    my $cycle = $self->graph->subgraph( [ $self->vertices ] ); # TODO: Add attributes
+    my @chains = map { ChemOnomatopist::Chain::Circular->new( $cycle, @$_ ) }
+                     circle_permutations( $self->vertices );
     # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed
     @chains = sort {  ChemOnomatopist::Chain::Monocycle::_cmp( $a, $b ) } @chains;
     @chains = grep { !ChemOnomatopist::Chain::Monocycle::_cmp( $_, $chains[0] ) } @chains;

@@ -17,6 +17,7 @@ our @EXPORT_OK = qw(
     all_max
     all_min
     array_frequencies
+    circle_permutations
     cmp_arrays
     copy
     zip
@@ -52,6 +53,21 @@ sub array_frequencies(@)
         $frequencies{$_}++;
     }
     return %frequencies;
+}
+
+sub circle_permutations(@)
+{
+    my @permutations;
+    for (0..$#_) {
+        push @permutations, [ @_ ];
+        push @_, shift @_;
+    }
+    @_ = reverse @_;
+    for (0..$#_) {
+        push @permutations, [ @_ ];
+        push @_, shift @_;
+    }
+    return @permutations;
 }
 
 # Takes two arrays and compares them.
