@@ -225,6 +225,129 @@ sub prefix()
     return $name;
 }
 
+my %five_membered_aromatic_single_heteroatom = (
+    N => 'pyrrole',
+    O => 'furan',
+    S => 'thiophene',
+);
+
+sub name()
+{
+    my( $self ) = @_;
+
+    my $graph = $self->graph;
+    my $SMILES = $self->backbone_SMILES;
+    my %names = %ChemOnomatopist::Chain::Monocycle::names;
+
+    # Check the preserved names
+    if( $self->length == 5 && $self->number_of_double_bonds &&
+        exists $five_membered_aromatic_single_heteroatom{join( '', $self->heteroatoms )} ) {
+        return ChemOnomatopist::Name->new( $five_membered_aromatic_single_heteroatom{join( '', $self->heteroatoms )} );
+    }
+    return ChemOnomatopist::Name->new( $names{$SMILES} ) if exists $names{$SMILES};
+
+    # Check for aromatic notation
+    if( $SMILES =~ /:/ ) {
+        $SMILES =~ s/([a-z]):/'' . uc( $1 )/ge;
+        $SMILES =~ s/\[([a-z]{1,2})\]:/'[' . uc( $1 ) . ']'/ge;
+        for my $SMILES_for_name (keys %names) {
+            next unless $SMILES_for_name =~ /=/;
+            my $name = $names{$SMILES_for_name};
+            $SMILES_for_name =~ s/=//g;
+            return ChemOnomatopist::Name->new( $name ) if $SMILES eq $SMILES_for_name;
+        }
+    }
+
+    # Check for annulenes
+    if( $self->is_hydrocarbon && $self->is_aromatic &&
+        $self->length =~ /^(4|6|8|10|12|14|16)$/ ) {
+        return ChemOnomatopist::Name->new(
+                    'cyclo' .
+                    ChemOnomatopist::IUPAC_numerical_multiplier( $self->length, 1 ) .
+                    ChemOnomatopist::IUPAC_numerical_multiplier( $self->length / 2, 1 ) . 'ene' );
+    }
+
+    # Check for cycloalkanes
+    if( $self->is_hydrocarbon ) {
+        my $name = ChemOnomatopist::Name::Part::NondetachablePrefix->new( 'cyclo' )->to_name;
+        $name .= $self->SUPER::suffix;
+        return $name;
+    }
+
+    if( $self->is_Hantzsch_Widman ) {
+        # Hantzsch-Widman names (BBv2 P-22.2.2.1)
+
+        # Collect the types of heteroatoms and their attachment positions
+        my %heteroatoms;
+        my @vertices = $self->vertices;
+        for my $i (0..$#vertices) {
+            my $symbol = ChemOnomatopist::element( $vertices[$i] );
+            next if $symbol eq 'C';
+            $heteroatoms{$symbol} = [] unless $heteroatoms{$symbol};
+            push @{$heteroatoms{$symbol}}, $i;
+        }
+
+        my $least_senior_element;
+        my @heteroatom_locants;
+        for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
+                              keys %heteroatoms) {
+            push @heteroatom_locants, @{$heteroatoms{$element}};
+            $least_senior_element = $element;
+        }
+
+        my $name = ChemOnomatopist::Name->new;
+        unless(  @heteroatom_locants == 1 ||
+                (scalar keys %heteroatoms == 1 && @heteroatom_locants == $self->length - 1) ) {
+            # Locants are omitted according to BBv2 P-22.2.2.1.7
+            $name->append_locants( map { $_ + 1 } @heteroatom_locants );
+        }
+
+        for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
+                              keys %heteroatoms) {
+            if( @{$heteroatoms{$element}} > 1 ) {
+                $name->append_multiplier( ChemOnomatopist::IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} ) );
+            }
+            $name->append_element( exists $elements{$element}->{HantzschWidman}
+                                        ? $elements{$element}->{HantzschWidman}
+                                        : $elements{$element}->{prefix} );
+        }
+        $name->[-1] =~ s/a$//;
+
+        if(      $self->length <= 5 ) {
+            my @stems = ( 'ir', 'et', 'ol' );
+            $name->append_stem( $stems[$self->length - 3] );
+            if( $self->is_saturated ) {
+                $name .= $heteroatoms{N} ? 'idine' : 'ane';
+            } elsif( $self->length == 3 ) {
+                $name .= $heteroatoms{N} ? 'ene' : 'ine';
+            } else {
+                $name .= 'e';
+            }
+            return $name;
+        } elsif( $self->length == 6 ) {
+            if(      ($elements{$least_senior_element}->{seniority} >= 5 &&
+                      $elements{$least_senior_element}->{seniority} <= 8) || $least_senior_element eq 'Bi' ) {
+                $name .= $self->is_saturated ? 'ane' : 'ine';
+            } elsif( ($elements{$least_senior_element}->{seniority} >= 16 &&
+                      $elements{$least_senior_element}->{seniority} <= 19) || $least_senior_element eq 'N' ) {
+                $name .= $self->is_saturated ? 'inane' : 'ine';
+            } else {
+                $name .= $self->is_saturated ? 'inane' : 'inine';
+            }
+            return $name;
+        } elsif( $self->length >= 7 ) {
+            my @stems = ( 'ep', 'oc', 'on', 'ec' );
+            $name->append_stem( $stems[$self->length - 7] );
+            $name .= $self->is_saturated ? 'ane' : 'ine';
+            return $name;
+        }
+    }
+
+    my $name = ChemOnomatopist::Name->new( 'cyclo' );
+    $name .= $self->SUPER::suffix;
+    return $name;
+}
+
 sub suffix()
 {
     my( $self ) = @_;
