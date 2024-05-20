@@ -93,7 +93,7 @@ sub isotopes()
         ( $_->{locant} ) = $self->locants( $_->{index} );
     }
     for (@half1_isotopes) {
-        $_->{index} = $self->{halves}[1]->length + $_ - $self->shares_start;
+        $_->{index} = $self->{halves}[1]->length + $_->{index} - $self->shares_start;
         ( $_->{locant} ) = $self->locants( $_->{index} );
     }
     return my @isotopes = ( reverse( @half0_isotopes ), @half1_isotopes );
