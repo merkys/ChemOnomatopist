@@ -190,19 +190,8 @@ sub locants(@)
 }
 
 # In aromatic systems Kekule bonds have to be calculated, otherwise seniority rules may fail.
-sub number_of_double_bonds()
-{
-    my( $self ) = @_;
-    return $self->SUPER::number_of_double_bonds unless $self->is_aromatic;
-    return int( $self->length / 2 );
-}
-
-sub number_of_multiple_bonds()
-{
-    my( $self ) = @_;
-    return $self->SUPER::number_of_multiple_bonds unless $self->is_aromatic;
-    return $self->number_of_double_bonds;
-}
+sub number_of_double_bonds()   { $_[0]->is_aromatic ? int( $_[0]->length / 2 ) : $_[0]->SUPER::number_of_double_bonds }
+sub number_of_multiple_bonds() { $_[0]->is_aromatic ? $_[0]->number_of_double_bonds : $_[0]->SUPER::number_of_multiple_bonds }
 
 sub number_of_rings()
 {
