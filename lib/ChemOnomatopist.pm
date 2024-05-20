@@ -28,6 +28,7 @@ use ChemOnomatopist::Chain::Porphyrin;
 use ChemOnomatopist::Chain::VonBaeyer;
 use ChemOnomatopist::Chain::Xanthene;
 use ChemOnomatopist::ChainHalf;
+use ChemOnomatopist::Comparable::Array::Numeric;
 use ChemOnomatopist::Comparable::Array::Isotope::By::AtomicNumber;
 use ChemOnomatopist::Comparable::Array::Isotope::By::MassNumber;
 use ChemOnomatopist::Elements qw( %elements );
@@ -1304,21 +1305,21 @@ sub rule_most_groups
 
 sub rule_circular_is_heterocycle
 {
-    my( @chains ) = @_;
+    my @chains = @_;
     return @chains unless all { $_->isa( ChemOnomatopist::Chain::Circular:: ) } @chains;
     return grep { $_->is_heterocycle } @chains;
 }
 
 sub rule_circular_has_nitrogen
 {
-    my( @chains ) = @_;
+    my @chains = @_;
     return @chains unless all { $_->isa( ChemOnomatopist::Chain::Circular:: ) } @chains;
     return grep { any { $_ eq 'N' } $_->heteroatoms } @chains;
 }
 
 sub rule_circular_most_senior_heteroatom
 {
-    my( @chains ) = @_;
+    my @chains = @_;
     return @chains unless all { $_->isa( ChemOnomatopist::Chain::Circular:: ) } @chains;
     return ChemOnomatopist::Chain::Bicycle::rule_most_senior_heteroatom( @chains );
 }
@@ -1340,42 +1341,16 @@ sub rule_lowest_numbered_senior_groups
                 @chains;
 }
 
-sub rule_lowest_numbered_multiple_bonds
-{
-    my @chains = @_;
-    my( $max_value ) = sort { cmp_arrays( $a, $b ) }
-                       map  {  [ $_->multiple_bond_positions ] } @chains;
-    return grep { !cmp_arrays( [ $_->multiple_bond_positions ],
-                               $max_value ) }
-                @chains;
-}
+sub rule_lowest_numbered_multiple_bonds { all_min { ChemOnomatopist::Comparable::Array::Numeric->new( $_->multiple_bond_positions ) } @_ }
 
-sub rule_lowest_numbered_double_bonds
-{
-    my @chains = @_;
-    my( $max_value ) = sort { cmp_arrays( $a, $b ) }
-                       map  {  [ $_->double_bond_positions ] } @chains;
-    return grep { !cmp_arrays( [ $_->double_bond_positions ],
-                               $max_value ) }
-                @chains;
-}
+sub rule_lowest_numbered_double_bonds { all_min { ChemOnomatopist::Comparable::Array::Numeric->new( $_->double_bond_positions ) } @_ }
 
 # This rule is employed only if longest chains are not already preselected
 sub rule_longest_chains { all_max { $_->length } @_ }
 
 sub rule_greatest_number_of_side_chains { all_max { $_->number_of_branches } @_ }
 
-sub rule_lowest_numbered_locants
-{
-    my( @chains ) = @_;
-
-    my( $max_value ) = sort { cmp_arrays( [ $a->branch_positions ],
-                                          [ $b->branch_positions ] ) }
-                            @chains;
-    return grep { !cmp_arrays( [ $_->branch_positions ],
-                               [ $max_value->branch_positions ] ) }
-                @chains;
-}
+sub rule_lowest_numbered_locants { all_min { ChemOnomatopist::Comparable::Array::Numeric->new( $_->branch_positions ) } @_ }
 
 sub rule_most_carbon_in_side_chains { all_max { $_->number_of_carbons } @_ }
 
@@ -1421,16 +1396,7 @@ sub rule_greater_number_of_isotopically_modified_atoms_or_groups { all_max { $_-
 sub rule_greater_number_of_nuclides_of_higher_atomic_number { all_max { ChemOnomatopist::Comparable::Array::Isotope::By::AtomicNumber->new( $_->isotopes ) } @_ }
 sub rule_greater_number_of_nuclides_of_higher_mass_number { all_max { ChemOnomatopist::Comparable::Array::Isotope::By::MassNumber->new( $_->isotopes ) } @_ }
 
-sub rule_lowest_locants_for_isotopically_modified_atoms_or_groups
-{
-    my( @chains ) = @_;
-    my( $max_value ) = sort {  cmp_arrays( $a, $b ) }
-                       map  {  [ sort map { $_->locant } $_->isotopes ] }
-                            @chains;
-    return grep { !cmp_arrays( [ sort map { $_->locant } $_->isotopes ],
-                               $max_value ) }
-                @chains;
-}
+sub rule_lowest_locants_for_isotopically_modified_atoms_or_groups { all_min { ChemOnomatopist::Comparable::Array::Numeric->new( sort map { $_->locant } $_->isotopes ) } @_ }
 
 sub rule_lowest_locants_for_nuclides_of_higher_atomic_number
 {
@@ -1456,17 +1422,7 @@ sub rule_lowest_locants_for_nuclides_of_higher_mass_number
 
 sub rule_most_nonstandard_valence_positions { all_max { $_->number_of_nonstandard_valence_positions } @_ }
 
-sub rule_lowest_numbered_nonstandard_valence_positions
-{
-    my( @chains ) = @_;
-
-    my( $max_value ) = sort { cmp_arrays( [ $a->nonstandard_valence_positions ],
-                                          [ $b->nonstandard_valence_positions ] ) }
-                            @chains;
-    return grep { !cmp_arrays( [ $_->nonstandard_valence_positions ],
-                               [ $max_value->nonstandard_valence_positions ] ) }
-                @chains;
-}
+sub rule_lowest_numbered_nonstandard_valence_positions { all_min { ChemOnomatopist::Comparable::Array::Numeric->new( $_->nonstandard_valence_positions ) } @_ }
 
 sub rule_most_indicated_hydrogens
 {
@@ -1491,17 +1447,7 @@ sub rule_lowest_numbered_indicated_hydrogens
                 @chains;
 }
 
-sub rule_lowest_numbered_heteroatoms
-{
-    my( @chains ) = @_;
-
-    my( $max_value ) = sort { cmp_arrays( [ $a->heteroatom_positions ],
-                                          [ $b->heteroatom_positions ] ) }
-                            @chains;
-    return grep { !cmp_arrays( [ $_->heteroatom_positions ],
-                               [ $max_value->heteroatom_positions ] ) }
-                @chains;
-}
+sub rule_lowest_numbered_heteroatoms { all_min { ChemOnomatopist::Comparable::Array::Numeric->new( $_->heteroatom_positions ) } @_ }
 
 sub rule_lowest_numbered_most_senior_heteroatoms
 {
