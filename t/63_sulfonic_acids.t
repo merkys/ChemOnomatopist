@@ -40,7 +40,7 @@ my @cases = (
     { smiles => 'CS(=N)(=[Se])S', iupac => 'methanesulfonimidoselenothioic S-acid', AUTHOR => 1 },
     { smiles => 'CS(=N)(=S)[SeH]', iupac => 'methanesulfonimidoselenothioic Se-acid', AUTHOR => 1 },
     { smiles => 'CS(=N)(=[Te])[TeH]', iupac => 'methanesulfonimidoditelluroic acid', AUTHOR => 1 },
-    { smiles => 'CS(O)(=N)=N', iupac => 'methanesulfonodiimidic acid', AUTHOR => 1 },
+    { smiles => 'CS(O)(=N)=N', iupac => 'methanesulfonodiimidic acid' },
     { smiles => 'CS(=N)(=N)OO', iupac => 'methanesulfonodiimidoperoxoic acid', AUTHOR => 1 },
     { smiles => 'CS(=N)(=N)SO', iupac => 'methanesulfonodiimido(thioperoxoic) SO-acid', AUTHOR => 1 },
     { smiles => 'CS(=N)(=N)OS', iupac => 'methanesulfonodiimido(thioperoxoic) OS-acid', AUTHOR => 1 },

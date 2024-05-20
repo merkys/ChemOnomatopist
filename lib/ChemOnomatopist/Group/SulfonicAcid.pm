@@ -40,7 +40,7 @@ sub suffix()
         return ChemOnomatopist::Name->new( 'sulfonoperoxoic acid' );
     }
 
-    my %elements = array_frequencies( @elements );
+    my %elements = array_frequencies @elements;
     my @element_names = ();
     for my $element (sort keys %elements) {
         next unless exists $suffixes{$element};
@@ -62,12 +62,14 @@ sub suffix()
     my $name = 'sulfono';
     if( $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: ) ) {
         my $suffix = $hydroxy->suffix;
+        $suffix->[ 0] =~ s/^-[^\-]+-//;
         $suffix->[-1] =~ s/l$//;
         $suffix->bracket unless $suffix eq 'peroxo';
         $name .= $suffix;
     }
     $name =~ s/o$// if @element_names && $element_names[0] =~ /^i/;
     $name .= "@{element_names}ic @{nonketone_elements}acid";
+    $name =~ s/imidoic /imidic /;
     return ChemOnomatopist::Name->new( $name );
 }
 
