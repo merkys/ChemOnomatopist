@@ -11,6 +11,7 @@ use ChemOnomatopist::Chain; # FIXME: Not sure why it is needed
 use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name::Part::NondetachablePrefix;
+use ChemOnomatopist::Util qw( circle_permutations );
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_single_bond );
 use List::Util qw( all any uniq );
@@ -29,20 +30,8 @@ sub new
 sub backbone_SMILES()
 {
     my( $self ) = @_;
-
-    my @vertices = $self->vertices;
-    my @candidates;
-    for (0..$#vertices) {
-        push @candidates, cycle_SMILES( $self->graph, @vertices );
-        push @vertices, shift @vertices;
-    }
-    @vertices = reverse @vertices;
-    for (0..$#vertices) {
-        push @candidates, cycle_SMILES( $self->graph, @vertices );
-        push @vertices, shift @vertices;
-    }
-
-    my( $SMILES ) = sort @candidates;
+    my( $SMILES ) = sort map { cycle_SMILES( $self->graph, @$_ ) }
+                             circle_permutations( $self->vertices );
     return $SMILES;
 }
 
