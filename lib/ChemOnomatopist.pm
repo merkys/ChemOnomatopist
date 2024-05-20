@@ -1182,7 +1182,7 @@ sub filter_chains
 {
     my( @chains ) = @_;
 
-    for my $rule ( sub { return @_ },
+    for my $rule ( sub { @_ },
                    # P-44.1.1: Maximum number of substituents of principal characteristic group.
                    # P-44.1.2: Senior atom.
                    #           This is not needed as select_mainchain() returns such chains.
@@ -1330,16 +1330,7 @@ sub rule_circular_most_rings
     return all_max { $_->number_of_rings } @_;
 }
 
-sub rule_lowest_numbered_senior_groups
-{
-    my( @chains ) = @_;
-    my( $max_value ) = sort { cmp_arrays( [ $a->most_senior_group_positions ],
-                                          [ $b->most_senior_group_positions ] ) }
-                            @chains;
-    return grep { !cmp_arrays( [ $_->most_senior_group_positions ],
-                               [ $max_value->most_senior_group_positions ] ) }
-                @chains;
-}
+sub rule_lowest_numbered_senior_groups { all_min { ChemOnomatopist::Comparable::Array::Numeric->new( $_->most_senior_group_positions ) } @_ }
 
 sub rule_lowest_numbered_multiple_bonds { all_min { ChemOnomatopist::Comparable::Array::Numeric->new( $_->multiple_bond_positions ) } @_ }
 
