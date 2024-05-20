@@ -63,6 +63,12 @@ our %names = (
     'C=CC=CCN' => 'pyridine',
 );
 
+my %five_membered_aromatic_single_heteroatom = (
+    N => 'pyrrole',
+    O => 'furan',
+    S => 'thiophene',
+);
+
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
@@ -225,19 +231,12 @@ sub prefix()
     return $name;
 }
 
-my %five_membered_aromatic_single_heteroatom = (
-    N => 'pyrrole',
-    O => 'furan',
-    S => 'thiophene',
-);
-
-sub name()
+sub suffix()
 {
     my( $self ) = @_;
 
     my $graph = $self->graph;
     my $SMILES = $self->backbone_SMILES;
-    my %names = %ChemOnomatopist::Chain::Monocycle::names;
 
     # Check the preserved names
     if( $self->length == 5 && $self->number_of_double_bonds &&
@@ -346,13 +345,6 @@ sub name()
     my $name = ChemOnomatopist::Name->new( 'cyclo' );
     $name .= $self->SUPER::suffix;
     return $name;
-}
-
-sub suffix()
-{
-    my( $self ) = @_;
-    my $name = $self->name;
-    return blessed $name ? $name : ChemOnomatopist::Name->new( $name );
 }
 
 sub rule_lowest_parent_locant
