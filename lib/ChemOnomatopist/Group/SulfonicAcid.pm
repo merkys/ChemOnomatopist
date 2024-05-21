@@ -36,7 +36,9 @@ sub suffix()
     if( $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
         $hydroxy->element eq 'O' &&
         all { $_ eq 'O' } @non_hydroxy_elements ) {
-        return ChemOnomatopist::Name->new( 'sulfonic acid' ); # TODO: 'selenonic acid' and 'telluronic acid'
+        return ChemOnomatopist::Name->new( 'sulfonic acid' )   if $self->element eq 'S';
+        return ChemOnomatopist::Name->new( 'selenonic acid' )  if $self->element eq 'Se';
+        return ChemOnomatopist::Name->new( 'telluronic acid' ) if $self->element eq 'Te';
     }
 
     my %elements = array_frequencies @non_hydroxy_elements;
