@@ -213,7 +213,7 @@ sub get_sidechain_name
             if( $chain->needs_ane_suffix && $attachment =~ /yl$/ ) {
                 # FIXME: Properly detect the 'yl' suffix and replace it with suffix object
                 $attachment->pop_yl;
-                $attachment .= 'ane';
+                $attachment .= $attachment eq 'hydrazin' ? 'e' : 'ane';
             }
             $attachments{$attachment} = [ $attachment ] unless $attachments{$attachment};
             push @{$attachments{$attachment}}, $i;

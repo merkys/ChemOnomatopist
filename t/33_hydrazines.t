@@ -7,6 +7,12 @@ use ChemOnomatopist;
 use Test::More;
 
 my @cases = (
+    # From BBv3 P-66.3.2.1
+    { smiles => 'N(N)C(=O)O', iupac => 'hydrazinecarboxylic acid', AUTHOR => 1 },
+    { smiles => 'N(N)S(=O)(=O)CC(=O)O', iupac => '(hydrazinesulfonyl)acetic acid' },
+    { smiles => 'N(N)S(=O)C=1C(=CC2=CC=CC=C2C1)C(=O)O', iupac => '3-(hydrazinesulfinyl)naphthalene-2-carboxylic acid' },
+    { smiles => 'N(N)C(=O)C1=C(C=CC=C1)S(=O)(=O)O', iupac => '2-(hydrazinecarbonyl)benzene-1-sulfonic acid', AUTHOR => 1 },
+
     # From BBv2 P-68.3.1.2.1
     { smiles => 'CN(N)C', iupac => '1,1-dimethylhydrazine' },
     { smiles => 'C1(=CC=CC=C1)NN', iupac => 'phenylhydrazine' },
