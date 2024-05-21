@@ -55,7 +55,7 @@ sub suffix()
 
     my $name = ChemOnomatopist::Name->new;
     if( all { $_ eq 'O' } @elements ) {
-        $name .= 'peroxol';
+        $name->append_stem( 'peroxol' );
     } else {
         if( $elements[0] eq $elements[1] ) {
             $name->append_multiplier( 'di' );
@@ -69,7 +69,7 @@ sub suffix()
                                   grep { $_ ne 'O' } @elements;
             $name = ChemOnomatopist::Name->new( $name );
         }
-        $name .= 'peroxol';
+        $name->append_stem( 'peroxol' );
     }
 
     if( any { exists $_->{charge} && $_->{charge} == -1 } @{$self->{atoms}} ) {

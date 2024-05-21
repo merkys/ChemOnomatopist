@@ -10,7 +10,7 @@ use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util qw( array_frequencies );
-use List::Util qw( all first );
+use List::Util qw( all any first uniq );
 use Scalar::Util qw( blessed );
 
 sub new
@@ -33,44 +33,79 @@ sub suffix()
     my $hydroxy = first { blessed $_ && ( $_->isa( ChemOnomatopist::Group::Hydroxy:: ) ||
                                           $_->isa( ChemOnomatopist::Group::Hydroperoxide:: ) ) }
                         @attachments;
-    my @ketones = grep { $_ != $hydroxy } @attachments;
-    my @elements = sort grep { $_ ne 'O' } map { ChemOnomatopist::element( $_ ) } @attachments;
-    if( @ketones == 2 && !@elements ) {
-        return ChemOnomatopist::Name->new( 'sulfonic acid' ) if $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: );
-        return ChemOnomatopist::Name->new( 'sulfonoperoxoic acid' );
+    my @non_hydroxy = grep { $_ != $hydroxy } @attachments;
+    my @non_hydroxy_elements = map { ChemOnomatopist::element( $_ ) } @non_hydroxy;
+    if( $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
+        all { $_ eq 'O' } @non_hydroxy_elements ) {
+        return ChemOnomatopist::Name->new( 'sulfonic acid' );
     }
 
-    my %elements = array_frequencies @elements;
-    my @element_names = ();
-    for my $element (sort keys %elements) {
-        next unless exists $suffixes{$element};
-        if( $elements{$element} > 1 ) {
-            push @element_names, ChemOnomatopist::IUPAC_numerical_multiplier( $elements{$element} );
-        }
-        push @element_names, $suffixes{$element};
+    my %elements = array_frequencies @non_hydroxy_elements;
+    if( $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: ) ) {
+        $elements{$hydroxy->element}++;
     }
 
-    my @nonketone_elements = $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: )
-                                ? ( $hydroxy->element )
-                                : map { ChemOnomatopist::element( $_ ) } @{$hydroxy->{atoms}};
-    if( @ketones == 2 && all { $_ eq 'N' } map { ChemOnomatopist::element( $_ ) } @ketones ) {
-        @nonketone_elements = (); # No need to enumerate
+    my @names;
+    for (keys %elements) {
+        next unless $suffixes{$_};
+        my $name = ChemOnomatopist::Name->new;
+        $name->append_multiplier( ChemOnomatopist::IUPAC_numerical_multiplier( $elements{$_} ) ) if $elements{$_} > 1;
+        $name->append_element( $suffixes{$_} );
+        push @names, $name;
     }
-    push @nonketone_elements, '-' if @nonketone_elements;
-
-    local $" = '';
-    my $name = 'sulfono';
     if( $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: ) ) {
         my $suffix = $hydroxy->suffix;
-        $suffix->[ 0] =~ s/^-[^\-]+-//;
-        $suffix->[-1] =~ s/l$//;
-        $suffix->bracket unless $suffix eq 'peroxo';
-        $name .= $suffix;
+        $suffix->[ 0]{value} =~ s/^-[^\-]+-//;
+        $suffix->[-1]{value} =~ s/l$//;
+        $suffix->bracket unless $suffix eq 'peroxo'; # non-OO needs brackets
+        push @names, $suffix;
     }
-    $name =~ s/o$// if @element_names && $element_names[0] =~ /^i/;
-    $name .= "@{element_names}ic @{nonketone_elements}acid";
-    $name =~ s/imidoic /imidic /;
-    return ChemOnomatopist::Name->new( $name );
+    @names = sort { _cmp_names( $a, $b ) } @names;
+
+    my $name = ChemOnomatopist::Name->new( 'sulfono' );
+    for (sort { _cmp_names( $a, $b ) } @names) {
+        $name->[-1]{value} =~ s/o$// if $_ eq 'imido';
+        $name .= $_;
+    }
+    $name->[-1]{value} =~ s/o$// if !$name->is_enclosed && $name->[-1]{value} =~ /imido$/;
+    $name .= 'ic ';
+
+    if( $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: ) ) {
+        if( any { $_ ne 'N' && $_ ne $hydroxy->element } @non_hydroxy_elements ) {
+            $name .= $hydroxy->element . '-';
+        }
+    } else {
+        my @elements = map { ChemOnomatopist::element( $_ ) } @{$hydroxy->{atoms}};
+        if( scalar( uniq @elements ) == 2 ||
+            ((all { $_ eq 'O' } @elements) && any { $_ ne 'O' } @non_hydroxy_elements) ) {
+            $name .= join( '', @elements ) . '-';
+        }
+    }
+
+    return $name . 'acid';
+}
+
+sub _cmp_names
+{
+    my( $A, $B ) = @_;
+
+    my @A = @$A;
+    my @B = @$B;
+
+    shift @A if $A->starts_with_multiplier;
+    shift @B if $B->starts_with_multiplier;
+
+    if( $A->is_enclosed ) {
+        shift @A;
+        pop @A;
+    }
+    if( $B->is_enclosed ) {
+        shift @B;
+        pop @B;
+    }
+
+    local $" = '';
+    return "@A" cmp "@B";
 }
 
 1;
