@@ -82,7 +82,7 @@ sub suffix()
     } else {
         my @elements = map { ChemOnomatopist::element( $_ ) } @{$hydroxy->{atoms}};
         if( scalar( uniq @elements ) == 2 ||
-            ((all { $_ eq 'O' } @elements) && any { $_ ne 'O' } @non_hydroxy_elements) ) {
+            ((all { $_ eq 'O' } @elements) && any { $_ ne 'N' && $_ ne 'O' } @non_hydroxy_elements) ) {
             $name .= join( '', @elements ) . '-';
         }
     }
