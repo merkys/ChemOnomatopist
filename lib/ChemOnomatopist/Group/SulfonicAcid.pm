@@ -67,7 +67,7 @@ sub suffix()
         $name->[-1]{value} =~ s/o$// if $_ eq 'imido';
         $name .= $_;
     }
-    $name->[-1]{value} =~ s/o$// if !$name->is_enclosed && $name->[-1]{value} =~ /imido$/;
+    $name->[-1]{value} =~ s/(imid)o$/$1/ unless $name =~ /\)$/;
     $name .= 'ic ';
 
     if( $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: ) ) {
