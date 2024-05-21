@@ -15,11 +15,9 @@ use Scalar::Util qw( blessed );
 
 sub new
 {
-    my( $class, @attachments ) = @_;
-    return bless { attachments => \@attachments }, $class;
+    my( $class, $element, @attachments ) = @_;
+    return bless { attachments => \@attachments, element => $element }, $class;
 }
-
-sub element() { 'S' }
 
 my %suffixes = ( N => 'imido', O => '', S => 'thio', Se => 'seleno', Te => 'telluro' );
 

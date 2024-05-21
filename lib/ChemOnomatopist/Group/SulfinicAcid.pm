@@ -1,17 +1,15 @@
 package ChemOnomatopist::Group::SulfinicAcid;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Sulfinic acid group
 # VERSION
 
+use strict;
+use warnings;
+
 use parent ChemOnomatopist::Group::;
 
-sub element() { return 'S' }
-
 # From BBv2 P-65.3.0
-sub prefix() { return 'sulfino' }
-sub suffix() { return 'sulfinic acid' }
+sub prefix() { 'sulfino' }
+sub suffix() { 'sulfinic acid' }
 
 1;
