@@ -63,7 +63,9 @@ sub suffix()
     }
     @names = sort { _cmp_names( $a, $b ) } @names;
 
-    my $name = ChemOnomatopist::Name->new( 'sulfono' );
+    my $name = $self->element eq 'S'
+                ? ChemOnomatopist::Name->new( 'sulfono' )
+                : ChemOnomatopist::Name->new( $suffixes{$self->element} . 'no' );
     for (sort { _cmp_names( $a, $b ) } @names) {
         $name->[-1]{value} =~ s/o$// if $_ eq 'imido';
         $name .= $_;
