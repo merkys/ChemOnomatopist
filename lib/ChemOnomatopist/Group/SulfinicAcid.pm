@@ -6,10 +6,12 @@ package ChemOnomatopist::Group::SulfinicAcid;
 use strict;
 use warnings;
 
-use parent ChemOnomatopist::Group::;
+use ChemOnomatopist::Group::SulfonicAcid;
+use parent ChemOnomatopist::Group::SulfonicAcid::;
+
+use ChemOnomatopist::Name;
 
 # From BBv2 P-65.3.0
-sub prefix() { 'sulfino' }
-sub suffix() { 'sulfinic acid' }
+sub prefix() { ChemOnomatopist::Name->new( 'sulfino' ) }
 
 1;

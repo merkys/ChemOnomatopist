@@ -22,7 +22,7 @@ sub new
 my %suffixes = ( N => 'imido', O => '', S => 'thio', Se => 'seleno', Te => 'telluro' );
 
 # From BBv2 P-65.3.0 and Table 4.3
-sub prefix() { ChemOnomatopist::Name->new( 'sulfo' ) }
+sub prefix() { ChemOnomatopist::Name->new( $_[0]->element eq 'S' ? 'sulfo' : $suffixes{$_[0]->element} ) }
 sub suffix()
 {
     my( $self ) = @_;
@@ -36,9 +36,9 @@ sub suffix()
     if( $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
         $hydroxy->element eq 'O' &&
         all { $_ eq 'O' } @non_hydroxy_elements ) {
-        return ChemOnomatopist::Name->new( 'sulfonic acid' )   if $self->element eq 'S';
-        return ChemOnomatopist::Name->new( 'selenonic acid' )  if $self->element eq 'Se';
-        return ChemOnomatopist::Name->new( 'telluronic acid' ) if $self->element eq 'Te';
+        my $name = $self->prefix;
+        $name->[-1]{value} =~ s/no$//;
+        return $name .= 'nic acid';
     }
 
     my %elements = array_frequencies @non_hydroxy_elements;
@@ -63,9 +63,8 @@ sub suffix()
     }
     @names = sort { _cmp_names( $a, $b ) } @names;
 
-    my $name = $self->element eq 'S'
-                ? ChemOnomatopist::Name->new( 'sulfono' )
-                : ChemOnomatopist::Name->new( $suffixes{$self->element} . 'no' );
+    my $name = $self->prefix;
+    $name->[-1]{value} .= 'no' unless $name =~ /no$/;
     for (sort { _cmp_names( $a, $b ) } @names) {
         $name->[-1]{value} =~ s/o$// if $_ eq 'imido';
         $name .= $_;
