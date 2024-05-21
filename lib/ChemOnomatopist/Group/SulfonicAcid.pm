@@ -68,7 +68,12 @@ sub suffix()
         $name .= $_;
     }
     $name->[-1]{value} =~ s/(imid)o$/$1/ unless $name =~ /\)$/;
-    $name .= 'ic ';
+    if( $name =~ /\)$/ ) {
+        $name->[-2]{value} .= 'ic';
+        $name .= ' ';
+    } else {
+        $name .= 'ic ';
+    }
 
     if( $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: ) ) {
         if( any { $_ ne 'N' && $_ ne $hydroxy->element } @non_hydroxy_elements ) {
