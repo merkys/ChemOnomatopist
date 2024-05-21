@@ -67,11 +67,11 @@ sub suffix()
         $name->[-1]{value} =~ s/o$// if $_ eq 'imido';
         $name .= $_;
     }
-    $name->[-1]{value} =~ s/(imid)o$/$1/ unless $name =~ /\)$/;
     if( $name =~ /\)$/ ) {
         $name->[-2]{value} .= 'ic';
         $name .= ' ';
     } else {
+        $name->[-1]{value} =~ s/(imid)o$/$1/;
         $name .= 'ic ';
     }
 
