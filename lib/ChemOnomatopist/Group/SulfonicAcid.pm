@@ -36,6 +36,7 @@ sub suffix()
     my @non_hydroxy = grep { $_ != $hydroxy } @attachments;
     my @non_hydroxy_elements = map { ChemOnomatopist::element( $_ ) } @non_hydroxy;
     if( $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
+        $hydroxy->element eq 'O' &&
         all { $_ eq 'O' } @non_hydroxy_elements ) {
         return ChemOnomatopist::Name->new( 'sulfonic acid' );
     }
