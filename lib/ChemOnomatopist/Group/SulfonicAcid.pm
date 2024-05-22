@@ -78,10 +78,14 @@ sub suffix()
     }
 
     if( $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: ) ) {
+        # Needed if at least one non-hydroxy element is different (and not N)
         if( any { $_ ne 'N' && $_ ne $hydroxy->element } @non_hydroxy_elements ) {
             $name .= $hydroxy->element . '-';
         }
     } else {
+        # Peroxides need explicit elements if:
+        # a) elements are different
+        # b) elements are OO and there is a non-N and non-O element among non-hydroxy elements
         my @elements = map { ChemOnomatopist::element( $_ ) } @{$hydroxy->{atoms}};
         if( scalar( uniq @elements ) == 2 ||
             ((all { $_ eq 'O' } @elements) && any { $_ ne 'N' && $_ ne 'O' } @non_hydroxy_elements) ) {
