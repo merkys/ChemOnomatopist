@@ -7,7 +7,7 @@ use ChemOnomatopist;
 use Test::More;
 
 my @cases = (
-    # From BBv3 Table 4.3. Suffixes were turned to full names by prepending them with 'methane'
+    # From BBv3 Table 4.3. Suffixes were turned to full names by prepending them with 'benzene'
     { smiles => 'C1(=CC=CC=C1)C(=O)O', iupac => 'benzenecarboxylic acid', AUTHOR => 1 },
     { smiles => 'C1(=CC=CC=C1)C(=O)OO', iupac => 'benzenecarboperoxoic acid', AUTHOR => 1 },
     { smiles => '', iupac => 'benzenecarboperoxothioic OO-acid', AUTHOR => 1 },
