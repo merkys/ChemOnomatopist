@@ -69,7 +69,7 @@ sub suffix()
     my( $self ) = @_;
     my $hydroxy = $self->{hydroxy};
     my $ketone = $self->{ketone};
-    my @elements = ( ChemOnomatopist::element( $hydroxy ), $ketone->element );
+    my @elements = map { ChemOnomatopist::element( $_ ) } ( $hydroxy, $ketone );
     if( all { $_ eq 'O' } @elements ) {
         return ChemOnomatopist::Name->new( 'oic acid' ) if blessed $hydroxy;
         return ChemOnomatopist::Name->new( 'oate' );
@@ -127,7 +127,7 @@ sub suffix_if_cycle_substituent() { $_[0]->multisuffix }
 sub _cmp_instances($$)
 {
     my( $A, $B ) = @_;
-    return $A->{ketone}->element cmp $B->{ketone}->element ||
+    return ChemOnomatopist::element( $A->{ketone} )  cmp ChemOnomatopist::element( $B->{ketone} ) ||
            ChemOnomatopist::element( $A->{hydroxy} ) cmp ChemOnomatopist::element( $B->{hydroxy} );
 }
 
