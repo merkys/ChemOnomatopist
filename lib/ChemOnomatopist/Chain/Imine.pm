@@ -1,6 +1,6 @@
-package ChemOnomatopist::Chain::Imino;
+package ChemOnomatopist::Chain::Imine;
 
-# ABSTRACT: Imino chain
+# ABSTRACT: Imine chain
 # VERSION
 
 use strict;

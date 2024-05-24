@@ -24,7 +24,7 @@ use ChemOnomatopist::Group::Hydrazide;
 use ChemOnomatopist::Group::Hydrazine;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
-use ChemOnomatopist::Group::Imino;
+use ChemOnomatopist::Group::Imine;
 use ChemOnomatopist::Group::Isocyanate;
 use ChemOnomatopist::Group::Isocyanide;
 use ChemOnomatopist::Group::Ketone;
@@ -69,7 +69,7 @@ our @order = (
     ChemOnomatopist::Group::Hydroperoxide::,
     ChemOnomatopist::Group::Amidine::, # CHECKME: Is this correct?
     ChemOnomatopist::Group::Amine::,
-    ChemOnomatopist::Group::Imino::,
+    ChemOnomatopist::Group::Imine::,
 
     # TODO: Some are omitted
 

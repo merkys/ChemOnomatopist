@@ -1,6 +1,6 @@
-package ChemOnomatopist::Group::Imino;
+package ChemOnomatopist::Group::Imine;
 
-# ABSTRACT: Imino group
+# ABSTRACT: Imine group
 # VERSION
 
 use strict;

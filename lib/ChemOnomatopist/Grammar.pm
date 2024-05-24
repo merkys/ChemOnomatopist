@@ -25,7 +25,7 @@ use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Diazene;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
-use ChemOnomatopist::Group::Imino;
+use ChemOnomatopist::Group::Imine;
 use ChemOnomatopist::Group::Isocyanate;
 use ChemOnomatopist::Group::Isocyanide;
 use ChemOnomatopist::Group::Ketone;
@@ -87,7 +87,7 @@ sub is_amine         { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Amin
 sub is_cyanide       { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Cyanide:: ) }
 sub is_hydroxy       { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroxy:: ) }
 sub is_hydroperoxide { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Hydroperoxide:: ) }
-sub is_imine         { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Imino:: ) }
+sub is_imine         { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Imine:: ) }
 sub is_isocyanate    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanate:: ) }
 sub is_isocyanide    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanide:: ) }
 sub is_ketone        { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
@@ -264,9 +264,9 @@ my @rules = (
     [ sub { &is_nongroup_atom && &is_N && &has_H3 }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &has_H0 && any { ChemOnomatopist::element( $_ ) eq 'C' && is_double_bond( @_, $_ ) && $_[0]->degree( $_ ) + ($_->{hcount} ? $_->{hcount} : 0) == 3 } $_[0]->neighbours( $_[1] ) }, \&is_C, \&anything, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Imine->new, $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &has_H1 && any { ChemOnomatopist::element( $_ ) eq 'C' && is_double_bond( @_, $_ ) && $_[0]->degree( $_ ) + ($_->{hcount} ? $_->{hcount} : 0) == 3 } $_[0]->neighbours( $_[1] ) }, \&is_C, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Imino->new, $_[1] ) } ],
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Imine->new, $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, \&is_ketone, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&is_C,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitro->new, @_[1..3] ) } ],
 

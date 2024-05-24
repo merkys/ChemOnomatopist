@@ -16,7 +16,7 @@ use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Chain::Fluorene;
 use ChemOnomatopist::Chain::FromHalves;
-use ChemOnomatopist::Chain::Imino;
+use ChemOnomatopist::Chain::Imine;
 use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Chain::Monospiro;
 use ChemOnomatopist::Chain::Phenanthrene;
@@ -37,7 +37,7 @@ use ChemOnomatopist::Group;
 use ChemOnomatopist::Group::Amide;
 use ChemOnomatopist::Group::Amine;
 use ChemOnomatopist::Group::Ether;
-use ChemOnomatopist::Group::Imino;
+use ChemOnomatopist::Group::Imine;
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::MolecularGraph;
 use ChemOnomatopist::Name;
@@ -795,7 +795,7 @@ sub select_mainchain
                 push @POI, $group;
             } elsif( $group->isa( ChemOnomatopist::Group::Amide:: ) ) {
                 push @POI, $group->{parent};
-            } elsif( $group->isa( ChemOnomatopist::Group::Imino:: ) ) {
+            } elsif( $group->isa( ChemOnomatopist::Group::Imine:: ) ) {
                 push @POI, grep { is_double_bond( $graph, $group, $_ ) }
                                 $graph->neighbours( $group );
             } else {
@@ -1026,9 +1026,9 @@ sub select_mainchain
         $chain = ChemOnomatopist::Chain::Amine->new( $graph, $chain, @groups );
     }
     # Recognising imino chains
-    if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Imino:: &&
+    if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Imine:: &&
         @groups == 1 ) {
-        $chain = ChemOnomatopist::Chain::Imino->new( $graph, $chain, @groups );
+        $chain = ChemOnomatopist::Chain::Imine->new( $graph, $chain, @groups );
     }
 
     # This is needed to detect ethers.
