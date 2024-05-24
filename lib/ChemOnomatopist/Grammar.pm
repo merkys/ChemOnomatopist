@@ -155,7 +155,7 @@ my @rules = (
     # Carboxylic acid
     [ sub { &is_nongroup_atom && &is_C },
       sub { &is_hydroxy || &is_hydroperoxide || ( &is_nongroup_atom && &is_O && &charge_minus_one ) },
-      sub { &is_ketone || &is_hydrazine },
+      sub { &is_ketone || &is_hydrazine || &is_imine },
       \&anything,
       NO_MORE_VERTICES,
 
