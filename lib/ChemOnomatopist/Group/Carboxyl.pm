@@ -105,7 +105,7 @@ sub multisuffix()
         $name .= $ketone_part;
 
         local $" = '';
-        return $name . " @hydroxy_elements-acid" if any { $_ ne 'O' } @hydroxy_elements;
+        return $name . " @hydroxy_elements-acid" if scalar( uniq @hydroxy_elements ) > 1;
         return $name . ' acid';
     } else {
         my @elements = ( ChemOnomatopist::element( $hydroxy ), $ketone->element );
