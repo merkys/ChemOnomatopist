@@ -153,9 +153,12 @@ my @rules = (
     [ ( sub { &is_nongroup_atom && &is_Te } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
 
     # Carboxylic acid
-    [ sub { &is_nongroup_atom && &is_C }, sub { &is_hydroxy || &is_hydroperoxide }, sub { &is_ketone || &is_hydrazine }, \&anything, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[2], $_[3] ), @_[1..3] ) } ],
-    [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, sub { &is_ketone || &is_hydrazine }, \&anything, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_C },
+      sub { &is_hydroxy || &is_hydroperoxide || ( &is_nongroup_atom && &is_O && &charge_minus_one ) },
+      sub { &is_ketone || &is_hydrazine },
+      \&anything,
+      NO_MORE_VERTICES,
+
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[2], $_[3] ), @_[1..3] ) } ],
 
     # Nitramide
