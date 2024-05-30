@@ -1,3 +1,18 @@
+0.9.0 2024-05-30
+
+    - Implement support for a(ba)_n chains.
+    - Implement support for ace...ylenes.
+    - Implement support for picenes.
+    - Implement support for salts.
+    - Implement rules to prefer charged atoms.
+    - Implement rules for rings.
+    - Extend the definition for amides.
+    - Extend the definition for carboxylic, sulfinic and sulfonic acids.
+    - Extend the definition for sulfinyl and sulfonyl groups.
+    - Rewrite handling of indicated hydrogen atoms.
+    - Rewrite rules for isotopes.
+    - Implement '--opsin' and '--isomorphism' command line options in 'chemonomatopist' executable.
+
 0.8.0 2024-04-09
 
     - 30% correctness rate for all PINs from the Blue Book (2013).
