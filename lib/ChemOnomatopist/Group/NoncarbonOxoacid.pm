@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist;
+use ChemOnomatopist::Group::Hydroxy;
 
 sub new
 {
@@ -48,10 +49,10 @@ sub suffix
 {
     my( $self ) = @_;
     my @attachments = @{$self->{attachments}};
-    my @ketones = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Ketone:: ) } @attachments;
-    my $has_hydroxy = @attachments != @ketones;
+    my @hydroxy = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Hydroxy:: ) } @attachments;
+    my $has_ketone = @attachments != @hydroxy;
 
-    my $name = $elements{$self->element} . $suffixes{$has_hydroxy}->{scalar @ketones} . ' acid';
+    my $name = $elements{$self->element} . $suffixes{$has_ketone}->{scalar @hydroxy} . ' acid';
     return $name;
 }
 
