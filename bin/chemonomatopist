@@ -41,10 +41,16 @@ END
     [ 'debug', 'turn on the debug mode' ],
     [],
     [ 'help', 'print usage message and exit', { shortcircuit => 1 } ],
+    [ 'version', 'print version and exit', { shortcircuit => 1 } ],
 );
 
 if( $opt->help ) {
     print $usage->text;
+    exit;
+}
+
+if( $opt->version ) {
+    print $ChemOnomatopist::VERSION, "\n";
     exit;
 }
 
