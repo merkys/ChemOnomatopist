@@ -10,6 +10,7 @@ use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Hydroperoxide;
+use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Name;
 use List::Util qw( all any uniq );
 use Scalar::Util qw( blessed );
@@ -17,6 +18,8 @@ use Scalar::Util qw( blessed );
 sub new()
 {
     my( $class, $hydroxy, $ketone ) = @_;
+    die "cannot handle carboxyl group attached to nongroup atoms (most likely hydrazines)\n" unless blessed $ketone;
+    die "cannot handle carboxyl group attached to anything else than ketone\n" unless $ketone->isa( ChemOnomatopist::Group::Ketone:: );
     return bless { hydroxy => $hydroxy, ketone => $ketone }, $class;
 }
 
