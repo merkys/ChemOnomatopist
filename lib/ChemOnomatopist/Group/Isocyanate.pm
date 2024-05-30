@@ -8,7 +8,11 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-sub prefix() { 'isocyanato' }
-sub suffix() { 'isocyanate' }
+use ChemOnomatopist::Name;
+
+sub is_prefix_only() { 1 }
+
+sub prefix() { ChemOnomatopist::Name->new( 'isocyanato' ) }
+sub suffix() { ChemOnomatopist::Name->new( 'isocyanate' ) }
 
 1;
