@@ -33,6 +33,7 @@ use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Nitramide;
 use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Nitroso;
+use ChemOnomatopist::Group::OnousAcid;
 use ChemOnomatopist::Group::Peroxide;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::Sulfinyl;
@@ -63,12 +64,13 @@ sub is_S  { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1]
 sub is_Se { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'Se' }
 sub is_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'Te' }
 
-sub is_Br_Cl_F_I     { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I)$/ }
-sub is_Br_Cl_F_I_N   { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I|N)$/ }
-sub is_B_Cl_F_I      { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(B|Cl|F|I)$/ }
-sub is_S_Se_Te       { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(S|Se|Te)$/ }
-sub is_O_S_Se_Te     { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(O|S|Se|Te)$/ }
-sub is_C_N_O_S_Se_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(C|N|O|S|Se|Te)$/ }
+sub is_As_N_B_P_Sb_S_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(As|Sb|Te|N|B|P|S)$/ }
+sub is_Br_Cl_F_I        { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I)$/ }
+sub is_Br_Cl_F_I_N      { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I|N)$/ }
+sub is_B_Cl_F_I         { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(B|Cl|F|I)$/ }
+sub is_S_Se_Te          { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(S|Se|Te)$/ }
+sub is_O_S_Se_Te        { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(O|S|Se|Te)$/ }
+sub is_C_N_O_S_Se_Te    { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(C|N|O|S|Se|Te)$/ }
 
 sub is_heteroatom { ChemOnomatopist::element( $_[1] ) && !&is_C }
 
@@ -324,6 +326,20 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfinyl->new( ChemOnomatopist::element( $_[1] ) ), @_[1..2] ) } ],
     [ sub { &is_nongroup_atom && &is_S_Se_Te }, ( \&is_ketone ) x 2, ( \&anything ) x 2, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfonyl->new( ChemOnomatopist::element( $_[1] ) ), @_[1..3] ) } ],
+
+    # ...onous acids
+    [ sub { &is_nongroup_atom && &is_As_N_B_P_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 3, sub { &is_ketone && &is_O },
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::OnousAcid->new( @_[1..5] ), @_[1..5] ) } ],
+    [ sub { &is_nongroup_atom && &is_As_N_B_P_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 3,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::OnousAcid->new( @_[1..4] ), @_[1..4] ) } ],
+    [ sub { &is_nongroup_atom && &is_As_N_B_P_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 2, sub { &is_ketone && &is_O },
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::OnousAcid->new( @_[1..4] ), @_[1..4] ) } ],
+    [ sub { &is_nongroup_atom && &is_As_N_B_P_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 2,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::OnousAcid->new( @_[1..3] ), @_[1..3] ) } ],
+    [ sub { &is_nongroup_atom && &is_As_N_B_P_Sb_S_Te },   sub { &is_hydroxy && &is_O }, sub { &is_ketone && &is_O },
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::OnousAcid->new( @_[1..3] ), @_[1..3] ) } ],
+    [ sub { &is_nongroup_atom && &is_As_N_B_P_Sb_S_Te },   sub { &is_hydroxy && &is_O },
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::OnousAcid->new( @_[1..2] ), @_[1..2] ) } ],
 
     # Detecting amides attached to cyclic chains
     [ sub { &is_nongroup_atom && &is_C && 1 == grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) && $_->{parent} == $_[1] } $_[0]->neighbours( $_[1] ) }, \&is_amide, \&is_monocycle, NO_MORE_VERTICES,
