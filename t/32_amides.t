@@ -9,6 +9,8 @@ use Test::More;
 my @cases = (
     { smiles => 'C(C)N(C(=O)C=1OC=CC1)CC', iupac => 'N,N-diethylfuran-2-carboxamide' }, # From BBv2 P-16.2.1
 
+    { smiles => 'N(=C=O)N[N+](=O)[O-]', iupac => 'isocyanatonitramide' }, # From BBv3 P-58.3.2
+
     # From BBv2 P-62.2.3
     { smiles => 'N(C1=CC=CC=C1)C=1C=C(C(=O)O)C=CC1', iupac => '3-anilinobenzoic acid' },
     { smiles => 'CN(C1=CC=CC=C1)C=1C=C(C=CC1)O', iupac => '3-(N-methylanilino)phenol', AUTHOR => 1 },

@@ -28,6 +28,7 @@ use ChemOnomatopist::Group::Imine;
 use ChemOnomatopist::Group::Isocyanate;
 use ChemOnomatopist::Group::Isocyanide;
 use ChemOnomatopist::Group::Ketone;
+use ChemOnomatopist::Group::Nitramide;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Group::Urea;
@@ -54,6 +55,7 @@ our @order = (
     ChemOnomatopist::Group::Urea::,
     ChemOnomatopist::Group::Amide::,
     ChemOnomatopist::Group::Guanidine::,
+    ChemOnomatopist::Group::Nitramide::, # FIXME: Is this correct?
     # Hydrazides
     ChemOnomatopist::Group::Hydrazide::,
     # Imides
