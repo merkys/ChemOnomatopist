@@ -64,7 +64,7 @@ sub is_S  { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1]
 sub is_Se { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'Se' }
 sub is_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'Te' }
 
-sub is_As_N_B_P_Sb_S_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(As|Sb|Te|N|B|P|S)$/ }
+sub is_As_N_B_P_Sb_S_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(As|Sb|Si|Te|N|B|P|S)$/ }
 sub is_Br_Cl_F_I        { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I)$/ }
 sub is_Br_Cl_F_I_N      { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I|N)$/ }
 sub is_B_Cl_F_I         { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(B|Cl|F|I)$/ }
@@ -328,11 +328,17 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfonyl->new( ChemOnomatopist::element( $_[1] ) ), @_[1..3] ) } ],
 
     # Noncarbon oxoacids
+    [ sub { &is_nongroup_atom && &is_As_N_B_P_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 4,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..5] ), @_[1..5] ) } ],
+    [ sub { &is_nongroup_atom && &is_As_N_B_P_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 2, ( sub { &is_ketone && &is_O } ) x 2,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..5] ), @_[1..5] ) } ],
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 3, sub { &is_ketone && &is_O },
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..5] ), @_[1..5] ) } ],
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 3,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..4] ), @_[1..4] ) } ],
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 2, sub { &is_ketone && &is_O },
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..4] ), @_[1..4] ) } ],
+    [ sub { &is_nongroup_atom && &is_As_N_B_P_Sb_S_Te }, ( sub { &is_ketone && &is_O }  ) x 2, sub { &is_hydroxy && &is_O },
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..4] ), @_[1..4] ) } ],
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 2,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..3] ), @_[1..3] ) } ],
