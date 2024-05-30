@@ -1,6 +1,6 @@
-package ChemOnomatopist::Group::OnousAcid;
+package ChemOnomatopist::Group::NoncarbonOxoacid;
 
-# ABSTRACT: ...onous acid
+# ABSTRACT: Mononuclear noncarbon oxoacid as per BBv3 P-67.1.1.1
 # VERSION
 
 use strict;
