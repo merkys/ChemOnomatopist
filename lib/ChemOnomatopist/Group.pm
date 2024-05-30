@@ -47,10 +47,10 @@ our @order = (
     ChemOnomatopist::Group::Carboxyl::,
     ChemOnomatopist::Group::SulfonicAcid::,
     ChemOnomatopist::Group::SulfinicAcid::,
-    ChemOnomatopist::Group::AcylHalide::, # FIXME: Is this correct?
     # Anhydrides
     ChemOnomatopist::Group::Ester::,
     # Acid halides and pseudohalides
+    ChemOnomatopist::Group::AcylHalide::,
     # Amides
     ChemOnomatopist::Group::Urea::,
     ChemOnomatopist::Group::Amide::,
