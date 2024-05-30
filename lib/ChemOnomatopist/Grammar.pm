@@ -251,7 +251,7 @@ my @rules = (
 
     # Isocyanate
     [ sub { &is_nongroup_atom && &is_C && &has_H0 && &no_charge }, \&is_ketone, \&is_N, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Isocyanate->new, @_[1..3] ) } ],
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Isocyanate->new( $_[2]->element ), @_[1..3] ) } ],
 
     # N-based groups
     [ sub { &is_nongroup_atom && &is_N && &has_H0 && &no_charge }, sub { &is_nongroup_atom && &is_C && &no_charge }, NO_MORE_VERTICES,
