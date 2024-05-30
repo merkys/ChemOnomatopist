@@ -25,6 +25,7 @@ my %elements = (
     Cl => 'chor',
     F  => 'flour',
     I  => 'iod',
+    P  => 'phosph',
     Se => 'sele',
     Si => 'silic',
     Sb => 'stib',
@@ -42,6 +43,7 @@ my %suffixes = (
     '' => {
         3 => 'orous',
         2 => 'onous',
+        1 => 'inous',
     },
 );
 
