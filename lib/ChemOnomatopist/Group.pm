@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Chain::Circular;
+use ChemOnomatopist::Group::AcidHalide;
 use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
@@ -50,6 +51,7 @@ our @order = (
     # Anhydrides
     ChemOnomatopist::Group::Ester::,
     # Acid halides and pseudohalides
+    ChemOnomatopist::Group::AcidHalide::,
     ChemOnomatopist::Group::AcylHalide::,
     # Amides
     ChemOnomatopist::Group::Urea::,

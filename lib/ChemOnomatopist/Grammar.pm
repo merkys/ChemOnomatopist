@@ -9,6 +9,7 @@ use warnings;
 use Algorithm::Combinatorics qw( combinations );
 use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::ABA;
+use ChemOnomatopist::Group::AcidHalide;
 use ChemOnomatopist::Group::Amidine;
 use ChemOnomatopist::Group::Carbaldehyde;
 use ChemOnomatopist::Group::Carbonitrile;
@@ -198,6 +199,10 @@ my @rules = (
       sub { $_[0]->delete_vertices( $_[3] ); graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1], $_[3] ), $_[2] ) } ],
     [ sub { &is_sulfinyl || &is_sulfonyl }, \&is_amine,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1] ), $_[2] ) } ],
+
+    # Acid halide
+    [ sub { &is_sulfinyl || &is_sulfonyl }, \&is_Br_Cl_F_I,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::AcidHalide->new( $_[1], ChemOnomatopist::element( $_[2] ) ), @_[1..2] ) } ],
 
     # Acyl halide
     [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_B_Cl_F_I }, sub { &is_ketone && &is_O }, \&is_C, NO_MORE_VERTICES,
