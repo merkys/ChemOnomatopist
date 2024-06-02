@@ -58,6 +58,7 @@ sub nonstandard_valence_positions()
     return @nonstandard_valence_positions;
 }
 
+sub needs_ane_suffix() { 1 }
 sub needs_heteroatom_locants() { '' }
 sub needs_heteroatom_names() { '' }
 sub needs_substituent_locants { '' }

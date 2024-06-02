@@ -378,6 +378,9 @@ sub get_mainchain_name
                 push @senior_group_attachments, $i;
             } else {
                 my $attachment = get_sidechain_name( $graph, $atom, $group ? $group : $neighbour );
+                if( $chain->needs_ane_suffix && $attachment eq 'phenyl' ) {
+                    $attachment = ChemOnomatopist::Name->new( 'benzene' );
+                }
                 $attachments{$attachment} = [ $attachment ] unless $attachments{$attachment};
                 push @{$attachments{$attachment}}, $i;
             }
