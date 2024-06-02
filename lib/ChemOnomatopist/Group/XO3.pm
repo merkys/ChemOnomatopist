@@ -1,23 +1,25 @@
 package ChemOnomatopist::Group::XO3;
 
-use strict;
-use warnings;
-
 # ABSTRACT: XO3 group
 # VERSION
 
-use parent ChemOnomatopist::Group::;
+use strict;
+use warnings;
 
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Name;
 
-sub is_prefix_only() { return 1 }
+use parent ChemOnomatopist::Group::;
+
+sub is_prefix_only() { 1 }
 
 # Compiled from BBv2 Table 5.1 (P-59.1.9)
-sub prefix {
+sub prefix
+{
     my( $self ) = @_;
     my $prefix = 'per' . $elements{$self->element}{prefix};
     $prefix =~ s/a$/yl/;
-    return $prefix;
+    return ChemOnomatopist::Name->new( $prefix );
 }
 
 1;
