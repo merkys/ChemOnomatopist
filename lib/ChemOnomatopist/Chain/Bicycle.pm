@@ -316,17 +316,25 @@ sub has_form($$)
     my %degrees = map { $graph->degree( $_ ) => 1 } $graph->vertices;
     return '' unless join( ',', sort keys %degrees ) eq '2,3';
 
-    # Safeguard against graphs such as bicyclo[3.2.1]octane
+    # Ensure subgraph has three paths between the three-degreed vertices
     my @d3 = grep { $graph->degree( $_ ) == 3 } $graph->vertices;
     return '' unless @d3 == 2;
-    return '' unless $graph->has_edge( @d3 );
 
-    # Safeguard against graphs such as 1,1'-biphenyl
-    $graph = $graph->copy->delete_edge( @d3 );
-    return '' unless $graph->is_connected;
+    $graph = $graph->copy;
+    my @lengths;
+    for (1..3) {
+        my @path = $graph->SP_Dijkstra( @d3 );
+        return '' unless @path;
 
-    $graph->delete_vertices( @d3 );
-    return !$graph->is_connected;
+        $graph->delete_path( @path );
+        push @lengths, scalar @path;
+    }
+
+    # Ensure a single path directly joins the three-degreed vertices
+    return '' unless @lengths == 3;
+    return '' unless scalar( grep { $_ > 2 } @lengths ) == 2;
+
+    return 1;
 }
 
 # Tells whether the outer bonds of the bicycle qualify as aromatic
