@@ -1,18 +1,20 @@
 package ChemOnomatopist::Group::Ether;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Ether group
 # VERSION
 
+use strict;
+use warnings;
+
+use ChemOnomatopist::Name;
+
 use parent ChemOnomatopist::Group::;
 
-sub element() { return 'O' }
+sub element() { 'O' }
 
-sub is_part_of_chain() { return 1 }
+sub is_part_of_chain() { 1 }
 
-sub prefix() { return 'oxy' }
-sub suffix() { return '' }
+sub prefix() { ChemOnomatopist::Name->new( 'oxy' ) }
+sub suffix() { ChemOnomatopist::Name->new }
 
 1;
