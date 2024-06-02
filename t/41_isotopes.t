@@ -36,7 +36,7 @@ my @cases = (
     { smiles => '[2H]CCO', iupac => '(2-2H1)ethan-1-ol' },
     { smiles => '[12CH3]CO', iupac => '(2-12C)ethan-1-ol' },
     { smiles => 'N[14CH2]C1(CCCC1)O', iupac => '1-[amino(14C)methyl]cyclopentan-1-ol' },
-    { smiles => 'NCC1(CCCC1)[18OH]', iupac => '1-(aminomethyl)cyclopentan-1-(18O)ol', AUTHOR => 1 },
+    { smiles => 'NCC1(CCCC1)[18OH]', iupac => '1-(aminomethyl)cyclopentan-1-(18O)ol' },
     { smiles => '[131I]C1=CC=C2C=3C=CC(=CC3CC2=C1)NC(C)=O', iupac => 'N-[7-(131I)iodo-9H-fluoren-2-yl]acetamide', AUTHOR => 1 },
     { smiles => 'C(C)OC([14CH2][14CH2]C(=O)[O-])=O.[Na+]', iupac => 'sodium 4-ethoxy-4-oxo(2,3-14C2)butanoate', AUTHOR => 1 },
     { smiles => 'S1C([14CH2]CC1)C1=CC=NC=C1', iupac => '4-[(3-14C)thiolan-2-yl]pyridine' },
@@ -66,7 +66,7 @@ my @cases = (
     { smiles => 'ClC1=C(C=CC2=CC=CC=C12)[15N]=[N+](C1=CC=CC=C1)[O-]', iupac => '1-(1-chloronaphthalen-2-yl)-2-phenyl(1-15N)diazene 2-oxide', AUTHOR => 1 },
 
     { smiles => '[14C](CCCC)(=O)[O][3H]', iupac => '(1-14C)pentan(3H)oic acid', AUTHOR => 1 }, # From BBv3 P-82.2.4
-    { smiles => 'CCO[2H]', iupac => 'ethan(2H)ol', AUTHOR => 1 }, # From BBv3 P-82.6.1.1
+    { smiles => 'CCO[2H]', iupac => 'ethan(2H)ol' }, # From BBv3 P-82.6.1.1
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};

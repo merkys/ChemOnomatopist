@@ -8,6 +8,8 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
+use ChemOnomatopist::Name;
+
 sub new
 {
     my( $class, $parent, $ketone ) = @_;
@@ -18,7 +20,7 @@ sub element() { 'N' }
 
 sub is_terminal() { 1 }
 
-sub prefix { 'amido' }
+sub prefix { ChemOnomatopist::Name->new( 'amido' ) }
 
 my %infix = (
     S => 'thio',
@@ -29,7 +31,7 @@ my %infix = (
 sub suffix
 {
     my( $self ) = @_;
-    my $suffix = '';
+    my $suffix = ChemOnomatopist::Name->new;
     if( $self->{ketone} && exists $infix{$self->{ketone}->element} ) {
         $suffix .= $infix{$self->{ketone}->element};
     }

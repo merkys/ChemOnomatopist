@@ -18,7 +18,7 @@ sub new
 
 sub element() { 'O' }
 
-sub prefix() { 'peroxy' }
-sub suffix() { 'peroxolate' }
+sub prefix() { ChemOnomatopist::Name->new( 'peroxy' ) }
+sub suffix() { ChemOnomatopist::Name->new( 'peroxolate' ) }
 
 1;

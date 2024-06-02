@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Name;
+use ChemOnomatopist::Name::Part::Isotope;
 
 use parent ChemOnomatopist::Group::;
 
@@ -41,7 +42,9 @@ sub suffix
         $suffix = '(' . $self->{atom}{h_isotope}[0] . 'H)';
     }
 
-    return ChemOnomatopist::Name->new( $suffix . $suffixes{$self->element} );
+    my $name = ChemOnomatopist::Name->new;
+    $name .= ChemOnomatopist::Name::Part::Isotope->new( $suffix ) if $suffix;
+    return $name . $suffixes{$self->element};
 }
 
 sub _cmp_instances

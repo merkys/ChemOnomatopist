@@ -6,10 +6,12 @@ package ChemOnomatopist::Group::Cyanide;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Name;
+
 use parent ChemOnomatopist::Group::;
 
-sub prefix() { 'cyano' }
-sub suffix() { 'nitrile' }
-sub multisuffix() { 'carbonitrile' }
+sub prefix() { ChemOnomatopist::Name->new( 'cyano' ) }
+sub suffix() { ChemOnomatopist::Name->new( 'nitrile' ) }
+sub multisuffix() { ChemOnomatopist::Name->new( 'carbonitrile' ) }
 
 1;

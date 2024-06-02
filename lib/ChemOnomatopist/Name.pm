@@ -108,7 +108,8 @@ sub append_suffix($)
 {
     my( $self, $suffix ) = @_;
     if( @$self ) {
-        if( $suffix =~ /^[aeiouy]/ ) {
+        if( ( blessed $suffix && $suffix->remove_isotopes =~ /^[aeiouy]/) ||
+            (!blessed $suffix && $suffix =~ /^[aeiouy]/) ) {
             $self->[-2] =~ s/e$// if $self =~ /e-[0-9,]+-$/; # BBv2 P-16.7.1 (a)
             $self->[-1] =~ s/e$// if $self =~ /e$/;
         }
