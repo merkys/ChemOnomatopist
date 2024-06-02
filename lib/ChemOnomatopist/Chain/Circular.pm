@@ -94,10 +94,11 @@ sub needs_substituent_locants()
     # BBv2 P-14.3.4.2 (c): monosubstituted homogeneous cycles do not need locants
     return '' if $self->is_homogeneous && $self->number_of_branches == 1;
 
+    # If there is only one kind of substituents, locants are not needed
     if( $self->is_homogeneous && $self->number_of_branches >= $self->max_valence - 1 ) {
-        # If there is only one kind of substituents, locants are not needed
         return '' if uniq( map { "$_" } map { @$_ } $self->locant_names ) == 1;
     }
+
     return 1;
 }
 
