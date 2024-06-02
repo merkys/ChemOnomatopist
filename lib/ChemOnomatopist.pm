@@ -416,6 +416,7 @@ sub get_mainchain_name
                 ( $attachment =~ /^dec/ || # BBv2 P-16.3.4 (d)
                   $attachment =~ /^sulfanyl/ || # BBv3 P-16.3.6 (b)
                  !$attachment->is_simple ||
+                  $attachment->has_isotope ||
                   $attachment->has_substituent_locant ) ) {
                 $attachment->bracket;
             }

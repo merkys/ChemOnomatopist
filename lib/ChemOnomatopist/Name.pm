@@ -209,6 +209,12 @@ sub remove_isotopes()
     return bless { name => \@parts };
 }
 
+sub has_isotope()
+{
+    my( $self ) = @_;
+    return any { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Isotope:: ) } @$self;
+}
+
 sub has_locant()
 {
     my( $self ) = @_;

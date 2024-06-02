@@ -31,7 +31,7 @@ my @cases = (
     { smiles => 'ClC([2H])([2H])Cl', iupac => 'dichloro(2H2)methane' },
     { smiles => 'C(OC1=CC=CC=C1)([2H])([2H])[2H]', iupac => '(2H3)methoxybenzene', AUTHOR => 1 },
     { smiles => 'C1(=CC=CC=C1)[13C]([13CH3])=O', iupac => '1-phenyl(1,2-13C2)ethan-1-one' },
-    { smiles => '[13CH3]C1=C(C=CC=C1)[13CH3]', iupac => '1,2-di[(13C)methyl]benzene', AUTHOR => 1 },
+    { smiles => '[13CH3]C1=C(C=CC=C1)[13CH3]', iupac => '1,2-di[(13C)methyl]benzene' },
     { smiles => '[13CH3]C1=[13CH]C=CC=C1', iupac => '1-(13C)methyl(2-13C)benzene', AUTHOR => 1 },
     { smiles => '[2H]CCO', iupac => '(2-2H1)ethan-1-ol' },
     { smiles => '[12CH3]CO', iupac => '(2-12C)ethan-1-ol' },
