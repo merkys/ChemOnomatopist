@@ -97,6 +97,7 @@ sub is_isocyanide    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isoc
 sub is_ketone        { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
 sub is_sulfinyl      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Sulfinyl:: ) }
 sub is_sulfonyl      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Sulfonyl:: ) }
+sub is_XO3           { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::XO3:: ) }
 
 sub is_benzene   { any { $_->isa( ChemOnomatopist::Chain::Monocycle:: ) && $_->is_benzene } $_[0]->groups( $_[1] ) }
 sub is_circular  { any { $_->isa( ChemOnomatopist::Chain::Circular:: ) } $_[0]->groups( $_[1] ) }
@@ -301,6 +302,7 @@ my @rules = (
     # Nitroso and its analogues
     [ sub { &is_nongroup_atom && &is_Br_Cl_F_I_N }, \&is_ketone, \&is_C, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitroso->new( ChemOnomatopist::element( $_[1] ) ), @_[1..2] ) } ],
+
     # XO3
     [ sub { &is_nongroup_atom && &is_Br_Cl_F_I }, ( \&is_ketone ) x 3,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::XO3->new( ChemOnomatopist::element( $_[1] ) ), @_[1..4] ) } ],
@@ -345,6 +347,8 @@ my @rules = (
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te },   sub { &is_hydroxy && &is_O }, sub { &is_ketone && &is_O },
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..3] ), @_[1..3] ) } ],
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te },   sub { &is_hydroxy && &is_O },
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
+    [ \&is_XO3, sub { &is_hydroxy && &is_O },
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
 
     # Detecting amides attached to cyclic chains
