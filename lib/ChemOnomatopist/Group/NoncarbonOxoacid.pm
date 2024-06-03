@@ -11,12 +11,16 @@ use parent ChemOnomatopist::Group::;
 use ChemOnomatopist;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Ketone;
+use ChemOnomatopist::Group::XO3;
+use Scalar::Util qw( blessed );
 
 sub new
 {
     my( $class, $atom, @attachments ) = @_;
-    return bless { attachments => \@attachments, element => ChemOnomatopist::element( $atom ) }, $class;
+    return bless { attachments => \@attachments, atom => $atom }, $class;
 }
+
+sub element() { ChemOnomatopist::element( $_[0]->{atom} ) }
 
 sub is_part_of_chain() { 1 }
 
@@ -25,8 +29,8 @@ my %elements = (
     N  => 'az',
     B  => 'bor',
     Br => 'brom',
-    Cl => 'chor',
-    F  => 'flour',
+    Cl => 'chlor',
+    F  => 'fluor',
     I  => 'iod',
     P  => 'phosph',
     Se => 'sele',
@@ -45,12 +49,17 @@ my %suffixes = (
 sub suffix
 {
     my( $self ) = @_;
-    my @attachments = @{$self->{attachments}};
-    my $hydroxy = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Hydroxy:: ) } @attachments;
-    my $ketones = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Ketone:: ) }  @attachments;
+    my $name = $elements{$self->element};
+    if( blessed $self->{atom} && $self->{atom}->isa( ChemOnomatopist::Group::XO3:: ) ) {
+        $name = 'per' . $name . 'ic';
+    } else {
+        my @attachments = @{$self->{attachments}};
+        my $hydroxy = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Hydroxy:: ) } @attachments;
+        my $ketones = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Ketone:: ) }  @attachments;
 
-    my $name = $elements{$self->element} . $suffixes{$ketones}->{$hydroxy} . ' acid';
-    return $name;
+        $name .= $suffixes{$ketones}->{$hydroxy};
+    }
+    return $name . ' acid';
 }
 
 1;
