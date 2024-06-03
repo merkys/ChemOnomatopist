@@ -64,7 +64,7 @@ sub is_S  { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1]
 sub is_Se { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'Se' }
 sub is_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) eq 'Te' }
 
-sub is_As_N_B_P_Se_Si_Sb_S_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(As|Br|Cl|I|Sb|Se|Si|Te|N|B|P|S)$/ }
+sub is_As_N_B_P_Se_Si_Sb_S_Te { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(As|Br|Cl|F|I|Sb|Se|Si|Te|N|B|P|S)$/ }
 sub is_Br_Cl_F_I              { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I)$/ }
 sub is_Br_Cl_F_I_N            { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(Br|Cl|F|I|N)$/ }
 sub is_B_Cl_F_I               { ChemOnomatopist::element( $_[1] ) && ChemOnomatopist::element( $_[1] ) =~ /^(B|Cl|F|I)$/ }
