@@ -113,12 +113,12 @@ sub multisuffix()
     } else {
         my @elements = ( ChemOnomatopist::element( $hydroxy ), $ketone->element );
         if( all { $_ eq 'O' } @elements ) {
-            return ChemOnomatopist::Name->new( 'carboxylic acid' ) if blessed $hydroxy;
+            return ChemOnomatopist::Name->new( 'carboxylic acid' ) if blessed $hydroxy && !$hydroxy->charge;
             return ChemOnomatopist::Name->new( 'carboxylate' );
         }
 
         $name .= element_suffix( @elements );
-        return $name . 'ate' unless blessed $hydroxy;
+        return $name . 'ate' unless blessed $hydroxy && !$hydroxy->charge;
         return $name . 'ic acid' if uniq( @elements ) == 1;
         return $name . ('ic ' . $elements[0] . '-acid');
     }
