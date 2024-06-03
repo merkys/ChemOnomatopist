@@ -92,6 +92,7 @@ sub new
 }
 
 sub element() { $_[0]->{element} }
+sub charge() { 0 }
 
 sub is_part_of_chain() { '' }
 

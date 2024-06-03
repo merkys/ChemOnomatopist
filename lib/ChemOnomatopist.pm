@@ -754,6 +754,19 @@ sub element
     return $atom_or_group->element;
 }
 
+sub charge
+{
+    my( $atom_or_group ) = @_;
+    return undef unless ref $atom_or_group;
+
+    if( !blessed $atom_or_group ) {
+        die "unknown value '$atom_or_group' given for charge()\n" unless ref $atom_or_group eq 'HASH';
+        return exists $atom_or_group->{charge} ? $atom_or_group->{charge} : 0;
+    }
+
+    return $atom_or_group->charge;
+}
+
 # Check if an object or Perl hash is of certain chemical element
 sub is_element
 {

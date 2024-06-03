@@ -74,9 +74,9 @@ sub is_C_N_O_S_Se_Te          { ChemOnomatopist::element( $_[1] ) && ChemOnomato
 
 sub is_heteroatom { ChemOnomatopist::element( $_[1] ) && !&is_C }
 
-sub charge_plus_one  { exists $_[1]->{charge} && $_[1]->{charge} ==  1 }
-sub charge_minus_one { exists $_[1]->{charge} && $_[1]->{charge} == -1 }
-sub no_charge { !$_[1]->{charge} }
+sub charge_plus_one  {  ChemOnomatopist::charge( $_[1] ) ==  1 }
+sub charge_minus_one {  ChemOnomatopist::charge( $_[1] ) == -1 }
+sub no_charge        { !ChemOnomatopist::charge( $_[1] ) }
 
 sub has_H0 { !$_[1]->{hcount} }
 sub has_H1 {  exists $_[1]->{hcount} && $_[1]->{hcount} == 1 }
