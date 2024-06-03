@@ -44,7 +44,7 @@ my @cases = (
     { smiles => 'P(O)O', iupac => 'phosphonous acid' },
     { smiles => 'P(O)(O)(O)=O', iupac => 'phosphoric acid' },
     { smiles => 'P(O)(O)O', iupac => 'phosphorous acid' },
-    { smiles => '[Se](O)(O)(=O)=O', iupac => 'selenic acid', AUTHOR => 1 },
+    { smiles => '[Se](O)(O)(=O)=O', iupac => 'selenic acid' },
     { smiles => '[Se](O)(O)=O', iupac => 'selenous acid', AUTHOR => 1 },
     { smiles => '[Si](O)(O)(O)O', iupac => 'silicic acid' },
     { smiles => '[SbH2](O)=O', iupac => 'stibinic acid' },
