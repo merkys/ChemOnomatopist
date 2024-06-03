@@ -74,7 +74,7 @@ sub suffix()
     my $ketone = $self->{ketone};
     my @elements = map { ChemOnomatopist::element( $_ ) } ( $hydroxy, $ketone );
     if( all { $_ eq 'O' } @elements ) {
-        return ChemOnomatopist::Name->new( 'oic acid' ) if blessed $hydroxy;
+        return ChemOnomatopist::Name->new( 'oic acid' ) if blessed $hydroxy && !$hydroxy->charge;
         return ChemOnomatopist::Name->new( 'oate' );
     }
 
