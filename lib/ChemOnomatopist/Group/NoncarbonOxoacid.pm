@@ -63,6 +63,7 @@ sub suffix
 
         if( $self->element =~ /^(F|Cl|Br|I)$/ ) {
             $name .= 'ous' if $hydroxy == 2 && $ketones == 1;
+            $name .= 'ic'  if $hydroxy == 1 && $ketones == 2;
         } elsif( $self->element =~ /^(S|Se|Te)$/ ) {
             $name .= 'ous' if $hydroxy == 2 && $ketones == 1;
             $name .= 'ic'  if $hydroxy == 2 && $ketones == 2;
