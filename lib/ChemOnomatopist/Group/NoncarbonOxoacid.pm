@@ -61,7 +61,11 @@ sub suffix
         $ketones += 1 if blessed $self->{atom} && $self->{atom}->isa( ChemOnomatopist::Group::Sulfinyl:: );
         $ketones += 2 if blessed $self->{atom} && $self->{atom}->isa( ChemOnomatopist::Group::Sulfonyl:: );
 
-        if( $self->element =~ /^(F|Cl|Br|I)$/ ) {
+        if( $self->element eq 'B' ) {
+            $name .= 'inic' if $hydroxy == 1;
+            $name .= 'onic' if $hydroxy == 2;
+            $name .= 'ic'   if $hydroxy == 3;
+        } elsif( $self->element =~ /^(F|Cl|Br|I)$/ ) {
             $name .= 'ous' if $hydroxy == 2 && $ketones == 1;
             $name .= 'ic'  if $hydroxy == 1 && $ketones == 2;
             $name = 'hypo' . $name . 'ous' if $hydroxy == 1 && !$ketones;
