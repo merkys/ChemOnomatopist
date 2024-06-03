@@ -18,6 +18,7 @@ sub new
 }
 
 sub element() { $_[0]->{atom}{symbol} }
+sub charge()  { ChemOnomatopist::charge( $_[0]->{atom} ) }
 
 # From BBv2 P-63.1.5
 my %prefixes = ( O => 'hydroxy', S => 'sulfanyl', Se => 'selanyl', Te => 'tellanyl' );

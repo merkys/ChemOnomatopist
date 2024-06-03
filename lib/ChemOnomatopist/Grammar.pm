@@ -308,7 +308,7 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::XO3->new( ChemOnomatopist::element( $_[1] ) ), @_[1..4] ) } ],
 
     # Peroxide
-    [ sub { &is_nongroup_atom && &is_O }, sub { &is_nongroup_atom && &is_O }, sub { &is_C }, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_O }, sub { ( &is_nongroup_atom && &is_O ) || ( &is_hydroxy && &charge_minus_one ) }, sub { &is_C }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Peroxide->new( @_[1..2] ), @_[1..2] ) } ],
 
     # Hydroperoxide
