@@ -78,7 +78,7 @@ sub suffix()
         return ChemOnomatopist::Name->new( 'oate' );
     }
 
-    return element_suffix( @elements ) . 'ate' unless blessed $hydroxy;
+    return element_suffix( @elements ) . 'ate' unless blessed $hydroxy && !$hydroxy->charge;
     return element_suffix( @elements ) . 'ic acid' if uniq( @elements ) == 1;
     return element_suffix( @elements ) . ('ic ' . $elements[0] . '-acid');
 }
