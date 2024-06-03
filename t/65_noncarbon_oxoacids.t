@@ -45,7 +45,7 @@ my @cases = (
     { smiles => 'P(O)(O)(O)=O', iupac => 'phosphoric acid' },
     { smiles => 'P(O)(O)O', iupac => 'phosphorous acid' },
     { smiles => '[Se](O)(O)(=O)=O', iupac => 'selenic acid' },
-    { smiles => '[Se](O)(O)=O', iupac => 'selenous acid', AUTHOR => 1 },
+    { smiles => '[Se](O)(O)=O', iupac => 'selenous acid' },
     { smiles => '[Si](O)(O)(O)O', iupac => 'silicic acid' },
     { smiles => '[SbH2](O)=O', iupac => 'stibinic acid' },
     { smiles => '[SbH2]O', iupac => 'stibinous acid' },
@@ -54,9 +54,9 @@ my @cases = (
     { smiles => '[Sb](O)(O)(O)=O', iupac => 'stiboric acid' },
     { smiles => '[Sb](O)(O)O', iupac => 'stiborous acid' },
     { smiles => 'S(O)(O)(=O)=O', iupac => 'sulfuric acid' },
-    { smiles => 'S(O)(O)=O', iupac => 'sulfurous acid', AUTHOR => 1 },
+    { smiles => 'S(O)(O)=O', iupac => 'sulfurous acid' },
     { smiles => '[Te](O)(O)(=O)=O', iupac => 'telluric acid' },
-    { smiles => '[Te](O)(O)=O', iupac => 'tellurous acid', AUTHOR => 1 },
+    { smiles => '[Te](O)(O)=O', iupac => 'tellurous acid' },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
