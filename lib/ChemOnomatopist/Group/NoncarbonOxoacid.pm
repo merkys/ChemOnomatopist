@@ -46,11 +46,10 @@ sub suffix
 {
     my( $self ) = @_;
     my @attachments = @{$self->{attachments}};
-    my @hydroxy = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Hydroxy:: ) } @attachments;
-    my @ketones = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Ketone:: ) }  @attachments;
-    my $has_ketone = @attachments != @hydroxy;
+    my $hydroxy = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Hydroxy:: ) } @attachments;
+    my $ketones = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Ketone:: ) }  @attachments;
 
-    my $name = $elements{$self->element} . $suffixes{scalar @ketones}->{scalar @hydroxy} . ' acid';
+    my $name = $elements{$self->element} . $suffixes{$ketones}->{$hydroxy} . ' acid';
     return $name;
 }
 
