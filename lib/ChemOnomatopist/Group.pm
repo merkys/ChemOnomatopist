@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Chain::Circular;
+use ChemOnomatopist::Group::AcidHalide;
 use ChemOnomatopist::Group::AcylHalide;
 use ChemOnomatopist::Group::Aldehyde;
 use ChemOnomatopist::Group::Amide;
@@ -28,6 +29,7 @@ use ChemOnomatopist::Group::Imine;
 use ChemOnomatopist::Group::Isocyanate;
 use ChemOnomatopist::Group::Isocyanide;
 use ChemOnomatopist::Group::Ketone;
+use ChemOnomatopist::Group::Nitramide;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Group::Urea;
@@ -46,14 +48,16 @@ our @order = (
     ChemOnomatopist::Group::Carboxyl::,
     ChemOnomatopist::Group::SulfonicAcid::,
     ChemOnomatopist::Group::SulfinicAcid::,
-    ChemOnomatopist::Group::AcylHalide::, # FIXME: Is this correct?
     # Anhydrides
     ChemOnomatopist::Group::Ester::,
     # Acid halides and pseudohalides
+    ChemOnomatopist::Group::AcidHalide::,
+    ChemOnomatopist::Group::AcylHalide::,
     # Amides
     ChemOnomatopist::Group::Urea::,
     ChemOnomatopist::Group::Amide::,
     ChemOnomatopist::Group::Guanidine::,
+    ChemOnomatopist::Group::Nitramide::, # FIXME: Is this correct?
     # Hydrazides
     ChemOnomatopist::Group::Hydrazide::,
     # Imides

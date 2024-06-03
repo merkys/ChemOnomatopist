@@ -13,6 +13,8 @@ my @cases = (
     { smiles => 'C1(=CC=C(C=C1)C(=O)Cl)C(=O)Cl', iupac => 'benzene-1,4-dicarbonyl dichloride', AUTHOR => 1 },
     { smiles => 'C(CCC(=O)Cl)(=O)Br', iupac => 'butanedioyl bromide chloride', AUTHOR => 1 },
 
+    { smiles => 'C(CC)(=O)Br', iupac => 'propanoyl bromide' }, # From BBv3 P-68.5.0
+
     { smiles => 'C(C(=O)F)(C(F)(F)F)O', iupac => '3,3,3-trifluoro-2-hydroxypropanoyl fluoride' }, # PubChem 53938350
 );
 
