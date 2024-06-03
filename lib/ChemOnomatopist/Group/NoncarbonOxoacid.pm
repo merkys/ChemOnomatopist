@@ -38,7 +38,7 @@ my %elements = (
     Se => 'selen',
     Si => 'silic',
     Sb => 'stib',
-    S  => 'sulf',
+    S  => 'sulfur',
     Te => 'tellur',
 );
 

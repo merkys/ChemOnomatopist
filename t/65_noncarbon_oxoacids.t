@@ -53,7 +53,7 @@ my @cases = (
     { smiles => '[SbH](O)O', iupac => 'stibonous acid' },
     { smiles => '[Sb](O)(O)(O)=O', iupac => 'stiboric acid' },
     { smiles => '[Sb](O)(O)O', iupac => 'stiborous acid' },
-    { smiles => 'S(O)(O)(=O)=O', iupac => 'sulfuric acid', AUTHOR => 1 },
+    { smiles => 'S(O)(O)(=O)=O', iupac => 'sulfuric acid' },
     { smiles => 'S(O)(O)=O', iupac => 'sulfurous acid', AUTHOR => 1 },
     { smiles => '[Te](O)(O)(=O)=O', iupac => 'telluric acid' },
     { smiles => '[Te](O)(O)=O', iupac => 'tellurous acid', AUTHOR => 1 },
