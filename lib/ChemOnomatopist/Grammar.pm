@@ -304,7 +304,7 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitroso->new( ChemOnomatopist::element( $_[1] ) ), @_[1..2] ) } ],
 
     # XO3
-    [ sub { &is_nongroup_atom && &is_Br_Cl_F_I }, ( \&is_ketone ) x 3,
+    [ sub { &is_nongroup_atom && &is_Br_Cl_F_I }, ( sub { &is_ketone && &is_O } ) x 3,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::XO3->new( ChemOnomatopist::element( $_[1] ) ), @_[1..4] ) } ],
 
     # Peroxide
