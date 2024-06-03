@@ -350,6 +350,8 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
     [ \&is_XO3, sub { &is_hydroxy && &is_O },
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
+    [ sub { &is_sulfinyl || &is_sulfonyl }, ( sub { &is_hydroxy && &is_O } ) x 2,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..3] ), @_[1..3] ) } ],
 
     # Detecting amides attached to cyclic chains
     [ sub { &is_nongroup_atom && &is_C && 1 == grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) && $_->{parent} == $_[1] } $_[0]->neighbours( $_[1] ) }, \&is_amide, \&is_monocycle, NO_MORE_VERTICES,

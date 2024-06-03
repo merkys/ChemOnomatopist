@@ -55,7 +55,7 @@ my @cases = (
     { smiles => '[Sb](O)(O)O', iupac => 'stiborous acid' },
     { smiles => 'S(O)(O)(=O)=O', iupac => 'sulfuric acid', AUTHOR => 1 },
     { smiles => 'S(O)(O)=O', iupac => 'sulfurous acid', AUTHOR => 1 },
-    { smiles => '[Te](O)(O)(=O)=O', iupac => 'telluric acid', AUTHOR => 1 },
+    { smiles => '[Te](O)(O)(=O)=O', iupac => 'telluric acid' },
     { smiles => '[Te](O)(O)=O', iupac => 'tellurous acid', AUTHOR => 1 },
 );
 

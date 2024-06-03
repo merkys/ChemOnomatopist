@@ -11,6 +11,8 @@ use parent ChemOnomatopist::Group::;
 use ChemOnomatopist;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Ketone;
+use ChemOnomatopist::Group::Sulfinyl;
+use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Group::XO3;
 use Scalar::Util qw( blessed );
 
@@ -43,7 +45,7 @@ my %elements = (
 my %suffixes = (
     0 => { 1 => 'inous', 2 => 'onous', 3 => 'orous', 4 => 'ic' },
     1 => { 1 => 'inic',  2 => 'onic',  3 => 'oric'  },
-    2 => { 1 => 'ic' },
+    2 => { 1 => 'ic',    2 => 'ic' },
 );
 
 sub suffix
@@ -56,6 +58,8 @@ sub suffix
         my @attachments = @{$self->{attachments}};
         my $hydroxy = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Hydroxy:: ) } @attachments;
         my $ketones = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Ketone:: ) }  @attachments;
+        $ketones += 1 if blessed $self->{atom} && $self->{atom}->isa( ChemOnomatopist::Group::Sulfinyl:: );
+        $ketones += 2 if blessed $self->{atom} && $self->{atom}->isa( ChemOnomatopist::Group::Sulfonyl:: );
 
         $name .= $suffixes{$ketones}->{$hydroxy};
     }
