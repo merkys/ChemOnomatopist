@@ -208,6 +208,8 @@ sub nonstandard_valence_positions()
     return @nonstandard_valence_positions;
 }
 
+sub is_main() { $_[0]->{is_main} }
+
 sub is_hydrocarbon()
 {
     my( $self ) = @_;

@@ -1015,15 +1015,17 @@ sub select_mainchain
             }
         }
 
-        return shift @path_parts if @path_parts == 1; # methane
-
-        # Generate all possible chains.
-        # FIXME: This needs optimisation.
-        for my $part1 (@path_parts) {
-            for my $part2 (@path_parts) {
-                next if $part1->group eq $part2->group;
-                push @chains, ChemOnomatopist::Chain::FromHalves->new( $part1, $part2 );
+        if( @path_parts > 1 ) {
+            # Generate all possible chains.
+            # FIXME: This needs optimisation.
+            for my $part1 (@path_parts) {
+                for my $part2 (@path_parts) {
+                    next if $part1->group eq $part2->group;
+                    push @chains, ChemOnomatopist::Chain::FromHalves->new( $part1, $part2 );
+                }
             }
+        } else { # methane
+            @chains = @path_parts;
         }
     }
 
@@ -1071,6 +1073,8 @@ sub select_mainchain
         pop @vertices;
         $chain = ChemOnomatopist::Chain->new( $graph, undef, @vertices );
     }
+
+    $chain->{is_main} = 1;
 
     print STDERR ">>> mainchain: $chain (length = " . $chain->length . ")\n" if $DEBUG;
 
