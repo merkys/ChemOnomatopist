@@ -369,6 +369,13 @@ my @rules_old = (
     [ \&is_benzene, \&is_hydroxy, sub { graph_replace( $_[0], { type => 'phenol' }, @_[1..2] ) } ],
 );
 
+sub is_mainchain() { any { $_->is_main } $_[0]->groups( $_[1] ) }
+
+sub most_senior_group() { my @most_senior_groups = map { $_->most_senior_groups } $_[0]->groups( $_[1] ); return shift @most_senior_groups }
+
+my @mainchain_rules = (
+);
+
 sub parse_molecular_graph($)
 {
     my( $graph ) = @_;
