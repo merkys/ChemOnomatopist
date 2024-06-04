@@ -11,6 +11,7 @@ use parent ChemOnomatopist::Group::;
 use ChemOnomatopist;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Ketone;
+use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Group::XO3;
@@ -58,13 +59,19 @@ sub suffix
         my @attachments = @{$self->{attachments}};
         my $hydroxy = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Hydroxy:: ) } @attachments;
         my $ketones = grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Ketone:: ) }  @attachments;
+        $hydroxy += 1 if blessed $self->{atom} && $self->{atom}->isa( ChemOnomatopist::Group::Nitro:: );
         $ketones += 1 if blessed $self->{atom} && $self->{atom}->isa( ChemOnomatopist::Group::Sulfinyl:: );
         $ketones += 2 if blessed $self->{atom} && $self->{atom}->isa( ChemOnomatopist::Group::Sulfonyl:: );
 
-        if( $self->element eq 'B' ) {
+        if(      $self->element eq 'B' ) {
             $name .= 'inic' if $hydroxy == 1;
             $name .= 'onic' if $hydroxy == 2;
             $name .= 'ic'   if $hydroxy == 3;
+        } elsif( $self->element eq 'N' ) {
+            $name .= 'inic'     if $hydroxy == 2 && !$ketones;
+            $name  = 'nitric'   if $hydroxy == 2 &&  $ketones == 1;
+            $name .= 'onic'     if $hydroxy == 3;
+            $name  = 'nitroric' if $hydroxy == 4;
         } elsif( $self->element =~ /^(F|Cl|Br|I)$/ ) {
             $name .= 'ous' if $hydroxy == 2 && $ketones == 1;
             $name .= 'ic'  if $hydroxy == 1 && $ketones == 2;

@@ -95,6 +95,7 @@ sub is_imine         { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Imin
 sub is_isocyanate    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanate:: ) }
 sub is_isocyanide    { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Isocyanide:: ) }
 sub is_ketone        { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Ketone:: ) }
+sub is_nitro         { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Nitro:: ) }
 sub is_sulfinyl      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Sulfinyl:: ) }
 sub is_sulfonyl      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Sulfonyl:: ) }
 sub is_XO3           { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::XO3:: ) }
@@ -352,6 +353,8 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
     [ sub { &is_sulfinyl || &is_sulfonyl }, ( sub { &is_hydroxy && &is_O } ) x 2,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..3] ), @_[1..3] ) } ],
+    [ \&is_nitro, sub { &is_hydroxy && &is_O },
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
 
     # Detecting amides attached to cyclic chains
     [ sub { &is_nongroup_atom && &is_C && 1 == grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) && $_->{parent} == $_[1] } $_[0]->neighbours( $_[1] ) }, \&is_amide, \&is_monocycle, NO_MORE_VERTICES,
