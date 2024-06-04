@@ -1075,6 +1075,7 @@ sub select_mainchain
     }
 
     $chain->{is_main} = 1;
+    $graph->add_group( $chain );
 
     print STDERR ">>> mainchain: $chain (length = " . $chain->length . ")\n" if $DEBUG;
 
