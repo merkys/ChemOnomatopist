@@ -68,6 +68,13 @@ sub heteroatom_positions()
 
 sub needs_heteroatom_locants() { '' }
 
+sub needs_substituent_locants()
+{
+    my( $self ) = @_;
+    return '' if $self->inner_element eq 'O' && $self->length == 3 && $self->number_of_branches == 1;
+    return $self->SUPER::needs_substituent_locants;
+}
+
 sub prefix() { ChemOnomatopist::Name::Part::Element->new( $elements{$_[0]->inner_element}->{prefix} . 'ne' )->to_name }
 sub suffix() { &prefix }
 
