@@ -388,7 +388,7 @@ our @mainchain_rules = (
       sub { $_[0]->delete_group( $_[0]->groups( $_[1] ) ) } ],
 
     # Amide chains
-    [ sub { &is_mainchain && !&is_carboxamide && &most_senior_group && &most_senior_group->isa( ChemOnomatopist::Group::Amide:: ) && &number_of_most_senior_groups == 1 },
+    [ sub { &is_mainchain && !&is_carboxamide && !&is_urea && &most_senior_group && &most_senior_group->isa( ChemOnomatopist::Group::Amide:: ) && &number_of_most_senior_groups == 1 },
       sub { &is_amide && &is_nongroup },
       sub {
             my( $chain ) = $_[0]->groups( $_[1] );
