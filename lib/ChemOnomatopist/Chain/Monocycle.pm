@@ -148,7 +148,7 @@ sub parent(;$)
 
     # Addition/change of parent may need resetting the numbering
     my @candidates = $self->candidates;
-    @candidates = rule_lowest_parent_locant( @candidates );
+    @candidates = rule_lowest_parent_locant( @candidates ) if defined $self->parent_locant;
     @candidates = ChemOnomatopist::filter_chains( @candidates );
 
     $self->{vertices} = [ $candidates[0]->vertices ];
