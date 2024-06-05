@@ -451,6 +451,12 @@ sub get_mainchain_name
               $attachment->bracket;
         }
 
+        if( !$attachment->is_enclosed &&
+            !$chain->needs_substituent_locants &&
+             $i > 0 ) {
+            $attachment->bracket;
+        }
+
         if( $chain->isa( ChemOnomatopist::Group::Amidine:: ) &&
             !$attachment->is_enclosed && $i == $#order ) {
             # This is not nice, albeit works; have to look for a better solution.

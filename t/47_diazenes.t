@@ -21,8 +21,8 @@ my @cases = (
     { smiles => 'C1(=CC=CC2=CC=CC=C12)N=NC1=CC2=CC=CC=C2C=C1', iupac => '(naphthalen-1-yl)(naphthalen-2-yl)diazene' },
 
     # From BBv3 P-68.3.1.3.2.2
-    { smiles => 'C(=C)N=NC', iupac => 'ethenyl(methyl)diazene', AUTHOR => 1 },
-    { smiles => 'C1=C(C=CC2=CC=CC=C12)N=NC1=CC=CC=C1', iupac => '(naphthalen-2-yl)(phenyl)diazene', AUTHOR => 1 },
+    { smiles => 'C(=C)N=NC', iupac => 'ethenyl(methyl)diazene' },
+    { smiles => 'C1=C(C=CC2=CC=CC=C12)N=NC1=CC=CC=C1', iupac => '(naphthalen-2-yl)(phenyl)diazene' },
     { smiles => 'C1(=CC=CC=C1)N=NC1=CC=C(C=C1)S(=O)(=O)O', iupac => '4-(phenyldiazenyl)benzene-1-sulfonic acid' },
     { smiles => 'ClC1=CC(=C(C=C1)N=NC1=C(C=CC2=CC=CC=C12)N)C', iupac => '1-[(4-chloro-2-methylphenyl)diazenyl]naphthalen-2-amine' },
     { smiles => 'OC1=C(C2=CC=CC=C2C=C1)N=NC1=CC=C(C=C1)S(=O)(=O)O', iupac => '4-[(2-hydroxynaphthalen-1-yl)diazenyl]benzene-1-sulfonic acid' },
