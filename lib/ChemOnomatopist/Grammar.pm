@@ -401,6 +401,17 @@ our @mainchain_rules = (
             $_[0]->add_group( $amine );
           } ],
 
+    # Imine chains
+    [ sub { &is_mainchain && &most_senior_group && &most_senior_group->isa( ChemOnomatopist::Group::Imine:: ) && &number_of_most_senior_groups == 1 },
+      sub { &is_imine && &is_nongroup },
+      sub {
+            my( $chain ) = $_[0]->groups( $_[1] );
+            $_[0]->delete_group( $chain );
+            my $imine = ChemOnomatopist::Chain::Imine->new( $_[0], $chain, $_[2] );
+            $imine->{is_main} = 1;
+            $_[0]->add_group( $imine );
+          } ],
+
 );
 
 sub parse_molecular_graph($)

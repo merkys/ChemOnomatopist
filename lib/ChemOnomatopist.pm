@@ -1045,12 +1045,6 @@ sub select_mainchain
     ChemOnomatopist::Grammar::parse_graph( $graph, @ChemOnomatopist::Grammar::mainchain_rules );
     $chain = first { $_->is_main } $graph->groups;
 
-    # Recognising imino chains
-    if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Imine:: &&
-        @groups == 1 ) {
-        $chain = ChemOnomatopist::Chain::Imine->new( $graph, $chain, @groups );
-    }
-
     # This is needed to detect ethers.
     # However, it clears the cache of chains, thus is quite suboptimal.
     if( blessed $chain eq ChemOnomatopist::Chain::FromHalves:: ) {
