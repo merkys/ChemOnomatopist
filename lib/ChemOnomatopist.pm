@@ -1070,9 +1070,6 @@ sub select_mainchain
         $chain = ChemOnomatopist::Chain->new( $graph, undef, @vertices );
     }
 
-    #~ $chain->{is_main} = 1;
-    #~ $graph->add_group( $chain );
-
     print STDERR ">>> mainchain: $chain (length = " . $chain->length . ")\n" if $DEBUG;
 
     return $chain;
