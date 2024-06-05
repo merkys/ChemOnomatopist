@@ -1032,9 +1032,14 @@ sub select_mainchain
     die "cannot determine the parent structure\n" unless @chains;
 
     my $chain = filter_chains( @chains );
+    $chain->{is_main} = 1;
     my @vertices = $chain->vertices;
 
-    $chain->{is_main} = 1;
+    # Replace the outdated chain with the selected one
+    for my $group ($graph->groups) {
+        next unless set( $group->vertices ) == set( $chain->vertices );
+        $graph->delete_group( $group );
+    }
     $graph->add_group( $chain );
 
     ChemOnomatopist::Grammar::parse_graph( $graph, @ChemOnomatopist::Grammar::mainchain_rules );
