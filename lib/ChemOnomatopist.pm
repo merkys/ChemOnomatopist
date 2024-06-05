@@ -302,8 +302,14 @@ sub get_sidechain_name
                 $name->pop_yl;
             }
         }
-        $name .= $chain->prefix;
-        $name->pop_yl;
+
+        my $prefix = $chain->prefix;
+        if( $prefix eq 'nyl' && $name->ends_with_element && $name->[-1] eq 'sila' ) {
+            $name->[-1]{value} =~ s/a$//;
+        } else {
+            $name .= $prefix;
+            $name->pop_yl;
+        }
 
         if( $branches_at_start > 1 ) {
             my $branch_point = first { $chain[$_] == $start } 0..$#chain;
