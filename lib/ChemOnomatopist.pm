@@ -171,6 +171,10 @@ sub get_sidechain_name
         my $element = $elements{$symbol}->{prefix};
         my $name = ChemOnomatopist::Name->new;
 
+        if( $chain->nonstandard_valences ) {
+            $name->append_locants( map { 'λ' . $_ } $chain->nonstandard_valences );
+        }
+
         if(      $symbol eq 'Al' ) {
             $element = 'aluman';
         } elsif( $symbol eq 'As' ) {
