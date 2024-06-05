@@ -54,6 +54,7 @@ sub heteroatom_positions
 }
 
 sub is_hydrocarbon() { '' }
+sub is_main() { $_[0]->{is_main} }
 
 sub needs_substituent_locants() { $_[0]->{chain}->length > 0 }
 
