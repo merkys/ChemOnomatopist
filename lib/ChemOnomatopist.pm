@@ -931,9 +931,9 @@ sub select_mainchain
                                                $copy->degree( $_ ) == 1 &&
                                                element( $_ ) =~ /^(F|Cl|Br|I)$/ }
                                              $copy->vertices );
+                $copy->delete_vertices( map { $_->vertices } $copy->groups );
                 $copy->delete_vertices( grep { !is_element( $_, 'C' ) && !$_->is_part_of_chain }
-                                        grep { blessed $_ }
-                                             $copy->vertices );
+                                        grep { blessed $_ } $copy->vertices );
 
                 my $A = shift @$path;
                 my $B = pop @$path;
