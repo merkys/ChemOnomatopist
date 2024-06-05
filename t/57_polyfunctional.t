@@ -21,7 +21,7 @@ my @cases = (
     { smiles => 'CSSC(=CCCC)SC', iupac => '1-(methyldisulfanyl)-1-(methylsulfanyl)pent-1-ene', AUTHOR => 1 },
     { smiles => 'CO[Si](CCCS)(OC)OC', iupac => '3-(trimethoxysilyl)propane-1-thiol', AUTHOR => 1 },
     { smiles => 'C(C)SC=C(SCCC)SCCC', iupac => '1-{[2-(ethylsulfanyl)-1-(propylsulfanyl)ethen-1-yl]sulfanyl}propane', AUTHOR => 1 },
-    { smiles => 'CC(CC)N(C(C)(CC)O)C(C)CC', iupac => '2-[di(butan-2-yl)amino]butan-2-ol', AUTHOR => 1 },
+    { smiles => 'CC(CC)N(C(C)(CC)O)C(C)CC', iupac => '2-[di(butan-2-yl)amino]butan-2-ol' },
     { smiles => 'N[SiH](C1(CC(CC1)O)[SiH2]CN)C', iupac => '3-[amino(methyl)silyl]-3-[(aminomethyl)silyl]cyclopentan-1-ol', AUTHOR => 1 },
 );
 
