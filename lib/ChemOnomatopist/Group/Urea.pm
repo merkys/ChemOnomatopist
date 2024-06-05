@@ -32,8 +32,9 @@ sub heteroatom_positions() { my @not_applicable }
 sub needs_substituent_locants()
 {
     my( $self ) = @_;
-    return 1 if $self->number_of_branches > 1 && $self->number_of_branches < 4;
-    return 1 if any { $_->has_substituent_locant } map { @$_ } $self->locant_names;
+    return '' if !$self->is_main && $self->number_of_branches == 2;
+    return  1 if $self->number_of_branches > 1 && $self->number_of_branches < 4;
+    return  1 if any { $_->has_substituent_locant } map { @$_ } $self->locant_names;
     return '';
 }
 
