@@ -371,9 +371,22 @@ my @rules_old = (
 
 sub is_mainchain() { any { $_->is_main } $_[0]->groups( $_[1] ) }
 
-sub most_senior_group() { my @most_senior_groups = map { $_->most_senior_groups } $_[0]->groups( $_[1] ); return shift @most_senior_groups }
+sub is_carboxamide()  { any { $_->isa( ChemOnomatopist::Chain::Carboxamide:: ) } $_[0]->groups( $_[1] ) }
 
-my @mainchain_rules = (
+sub most_senior_group() { my @most_senior_groups = map { $_->most_senior_groups } $_[0]->groups( $_[1] ); return shift @most_senior_groups }
+sub number_of_most_senior_groups() { scalar map { $_->most_senior_groups } $_[0]->groups( $_[1] ) }
+
+our @mainchain_rules = (
+
+    # Amide chains
+    [ sub { &is_mainchain && !&is_carboxamide && &most_senior_group && &most_senior_group->isa( ChemOnomatopist::Group::Amide:: ) && &number_of_most_senior_groups == 1 },
+      sub { &is_amide && &is_nongroup },
+      sub {
+            my( $chain ) = $_[0]->groups( $_[1] );
+            $_[0]->delete_group( $chain );
+            $_[0]->add_group( ChemOnomatopist::Chain::Amide->new( $_[0], $chain, $_[2] ) );
+          } ],
+
 );
 
 sub parse_molecular_graph($)

@@ -1034,11 +1034,12 @@ sub select_mainchain
     my $chain = filter_chains( @chains );
     my @vertices = $chain->vertices;
 
-    # Recognising amide chains
-    if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Amide:: &&
-        @groups == 1 && !$chain->isa( ChemOnomatopist::Chain::Carboxamide:: ) ) {
-        $chain = ChemOnomatopist::Chain::Amide->new( $graph, $chain, @groups );
-    }
+    $chain->{is_main} = 1;
+    $graph->add_group( $chain );
+
+    ChemOnomatopist::Grammar::parse_graph( $graph, @ChemOnomatopist::Grammar::mainchain_rules );
+    $chain = first { $_->is_main } $graph->groups;
+
     # Recognising amine chains
     if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Amine:: &&
         @groups == 1 && !$chain->isa( ChemOnomatopist::Chain::Bicycle::Purine:: ) ) {
@@ -1074,8 +1075,8 @@ sub select_mainchain
         $chain = ChemOnomatopist::Chain->new( $graph, undef, @vertices );
     }
 
-    $chain->{is_main} = 1;
-    $graph->add_group( $chain );
+    #~ $chain->{is_main} = 1;
+    #~ $graph->add_group( $chain );
 
     print STDERR ">>> mainchain: $chain (length = " . $chain->length . ")\n" if $DEBUG;
 
