@@ -190,19 +190,19 @@ my @rules = (
             $_[0]->delete_group( $hydrazine );
         } ],
 
-    # Aldehyde
-    [ sub { &is_nongroup_atom && &is_C && &has_H1 }, \&is_ketone,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Aldehyde->new( $_[2] ), @_[1..2] ) } ],
-
-    # Aldehydes attached to carbon in cyclic system or a heteroatom
-    [ \&is_aldehyde, sub { &is_circular || &is_heteroatom }, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbaldehyde->new( $_[1] ), $_[1] ) } ],
-
     # Amide
     [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_ketone,
       sub { $_[0]->delete_vertices( $_[3] ); graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1], $_[3] ), $_[2] ) } ],
     [ sub { &is_sulfinyl || &is_sulfonyl }, \&is_amine,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1] ), $_[2] ) } ],
+
+    # Aldehyde
+    [ sub { &is_nongroup_atom && &is_C && &has_H1 }, \&is_ketone,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Aldehyde->new( $_[2] ), @_[1..2] ) } ],
+
+    # Aldehydes attached to carbon in cyclic system or a heteroatom
+    [ \&is_aldehyde, sub { &is_circular || ( &is_nongroup_atom && &is_heteroatom ) }, NO_MORE_VERTICES,
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbaldehyde->new( $_[1] ), $_[1] ) } ],
 
     # Acid halide
     [ sub { &is_sulfinyl || &is_sulfonyl }, \&is_Br_Cl_F_I,

@@ -65,7 +65,7 @@ my @cases = (
     { smiles => 'N1(CCCC2=CC=CC=C12)C(CC)=O', iupac => '1-(3,4-dihydroquinolin-1(2H)-yl)propan-1-one', AUTHOR => 1 },
 
     # From BBv2 P-66.1.4.1.1
-    { smiles => 'C(N)=S', iupac => 'methanethioamide', AUTHOR => 1 },
+    { smiles => 'C(N)=S', iupac => 'methanethioamide' },
     { smiles => 'C(C)(N)=S', iupac => 'ethanethioamide' },
     { smiles => 'C1(=CC=CC=C1)C(N)=S', iupac => 'benzenecarbothioamide', AUTHOR => 1 },
     { smiles => 'C(CCC(N)=S)(N)=S', iupac => 'butanedithioamide', AUTHOR => 1 },
