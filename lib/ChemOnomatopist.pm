@@ -181,6 +181,8 @@ sub get_sidechain_name
             $element = 'arsan';
         } elsif( $symbol eq 'P' ) {
             $element = 'phosphan';
+        } elsif( $symbol eq 'S' ) {
+            $element = 'sulfan';
         } elsif( $symbol ne 'B' ) {
             $element =~ s/a$//;
         }

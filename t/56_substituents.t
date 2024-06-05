@@ -17,7 +17,7 @@ my @cases = (
     { smiles => 'CC(CC(CCC(=O)O)CCC)C', iupac => '6-methyl-4-propylheptanoic acid' },
     { smiles => 'BrC(C(C(C(=O)O)C(=C)C(CC)CBr)=C)(CC)C', iupac => '4-bromo-2-[3-(bromomethyl)pent-1-en-2-yl]-4-methyl-3-methylidenehexanoic acid', AUTHOR => 1 },
     { smiles => '[SiH2]([SiH3])SS[SiH2][Si](C)(C)C', iupac => '2-(disilanyldisulfanyl)-1,1,1-trimethyldisilane', AUTHOR => 1 },
-    { smiles => 'C(=O)(O)C1=C(C=C(OC2=C(C(=C(C(=O)O)C=C2)P)[SH5])C=C1)[SH5]', iupac => '4-[4-carboxy-3-(λ6-sulfanyl)phenoxy]-2-phosphanyl-3-(λ6-sulfanyl)benzoic acid', AUTHOR => 1 },
+    { smiles => 'C(=O)(O)C1=C(C=C(OC2=C(C(=C(C(=O)O)C=C2)P)[SH5])C=C1)[SH5]', iupac => '4-[4-carboxy-3-(λ6-sulfanyl)phenoxy]-2-phosphanyl-3-(λ6-sulfanyl)benzoic acid' },
     { smiles => '[81Br]C(C(C(CC(=O)O)C(CC)[81Br])C)C', iupac => '5-(81Br)bromo-3-[1-(81Br)bromopropyl]-4-methylhexanoic acid' },
 
     # From BBv3 P-45.2.2
@@ -30,8 +30,8 @@ my @cases = (
     { smiles => 'CC(C(CC=C)C=C(C)C)=CC', iupac => '5-methyl-4-(2-methylprop-1-en-1-yl)hepta-1,5-diene' },
     { smiles => 'BrC(C(C(CC(=O)O)C(CC[N+](=O)[O-])[PH4])[PH4])C', iupac => '5-bromo-3-[3-nitro-1-(λ5-phosphanyl)propyl]-4-(λ5-phosphanyl)hexanoic acid' },
     { smiles => 'C(=O)(O)C1=CC(=C(OC2=CC(=C(C(=O)O)C=C2)[PH4])C=C1)P', iupac => '4-(4-carboxy-2-phosphanylphenoxy)-2-(λ5-phosphanyl)benzoic acid' },
-    { smiles => 'C(=O)(O)C1=CC(=C(OC2=CC(=C(C(=O)O)C=C2)[SH5])C=C1)[SH3]', iupac => '4-[4-carboxy-2-(λ4-sulfanyl)phenoxy]-2-(λ6-sulfanyl)benzoic acid', AUTHOR => 1 },
-    { smiles => 'C(=O)(O)C1=CC(=C(OC2=CC(=C(C(=O)O)C=C2)[SH5])C=C1)P', iupac => '4-(4-carboxy-2-phosphanylphenoxy)-2-(λ6-sulfanyl)benzoic acid', AUTHOR => 1 },
+    { smiles => 'C(=O)(O)C1=CC(=C(OC2=CC(=C(C(=O)O)C=C2)[SH5])C=C1)[SH3]', iupac => '4-[4-carboxy-2-(λ4-sulfanyl)phenoxy]-2-(λ6-sulfanyl)benzoic acid' },
+    { smiles => 'C(=O)(O)C1=CC(=C(OC2=CC(=C(C(=O)O)C=C2)[SH5])C=C1)P', iupac => '4-(4-carboxy-2-phosphanylphenoxy)-2-(λ6-sulfanyl)benzoic acid' },
     { smiles => 'N(C1C=C(C=C(C1)C)SC1=C(C(CC=C1)N([2H])[2H])C)([2H])[2H]', iupac => '3-{[3-(2H2)amino-5-methylcyclohexa-1,5-dien-1-yl]sulfanyl}-2-methylcyclohexa-2,4-dien-1-(2H2)amine', AUTHOR => 1 },
     { smiles => '[81Br]C(C(CC(=O)O)CC(C)[81Br])CC', iupac => '4-(81Br)bromo-3-[2-(81Br)bromopropyl]hexanoic acid' },
     { smiles => 'ClC(C(C)O)C(C(C(CC(C)O)C)CCC(C)O)C', iupac => '3-chloro-5-(3-hydroxybutyl)-4,6-dimethylnonane-2,8-diol' },
