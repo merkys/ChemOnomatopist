@@ -1093,6 +1093,10 @@ sub select_sidechain
         # Chalcogen analogues of ethers
         $C_graph->delete_vertices( grep { !is_element( $_, element( $start ) ) }
                                         $C_graph->vertices );
+    } elsif( $parent && grep { element( $start ) && element( $start ) eq $_ } qw( Si ) ) {
+        # Elements which can start sidechains
+        $C_graph->delete_vertices( grep { !is_element( $_, element( $start ) ) }
+                                        $C_graph->vertices );
     } else {
         # Delete non-carbon leaves
         $C_graph->delete_vertices( grep { $_ != $start && !is_element( $_, 'C' ) &&
