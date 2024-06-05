@@ -995,6 +995,7 @@ sub select_mainchain
                                            $_->isa( ChemOnomatopist::Group:: ) &&
                                            !$_->is_part_of_chain }
                                          $subgraph->vertices );
+        die "cannot determine the parent structure\n" unless $subgraph->is_connected;
         my @center = graph_center( $subgraph );
         my @path_parts;
         if( @center == 1 ) {
