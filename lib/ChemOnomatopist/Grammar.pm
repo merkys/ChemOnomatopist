@@ -372,6 +372,7 @@ my @rules_old = (
 sub is_mainchain() { any { $_->is_main } $_[0]->groups( $_[1] ) }
 
 sub is_carboxamide()  { any { $_->isa( ChemOnomatopist::Chain::Carboxamide:: ) } $_[0]->groups( $_[1] ) }
+sub is_purine()       { any { $_->isa( ChemOnomatopist::Chain::Bicycle::Purine:: ) } $_[0]->groups( $_[1] ) }
 
 sub most_senior_group() { my @most_senior_groups = map { $_->most_senior_groups } $_[0]->groups( $_[1] ); return shift @most_senior_groups }
 sub number_of_most_senior_groups() { scalar map { $_->most_senior_groups } $_[0]->groups( $_[1] ) }
@@ -384,7 +385,20 @@ our @mainchain_rules = (
       sub {
             my( $chain ) = $_[0]->groups( $_[1] );
             $_[0]->delete_group( $chain );
-            $_[0]->add_group( ChemOnomatopist::Chain::Amide->new( $_[0], $chain, $_[2] ) );
+            my $amide = ChemOnomatopist::Chain::Amide->new( $_[0], $chain, $_[2] );
+            $amide->{is_main} = 1;
+            $_[0]->add_group( $amide );
+          } ],
+
+    # Amine chains
+    [ sub { &is_mainchain && !&is_purine && &most_senior_group && &most_senior_group->isa( ChemOnomatopist::Group::Amine:: ) && &number_of_most_senior_groups == 1 },
+      sub { &is_amine && &is_nongroup },
+      sub {
+            my( $chain ) = $_[0]->groups( $_[1] );
+            $_[0]->delete_group( $chain );
+            my $amine = ChemOnomatopist::Chain::Amine->new( $_[0], $chain, $_[2] );
+            $amine->{is_main} = 1;
+            $_[0]->add_group( $amine );
           } ],
 
 );

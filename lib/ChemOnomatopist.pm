@@ -1040,11 +1040,6 @@ sub select_mainchain
     ChemOnomatopist::Grammar::parse_graph( $graph, @ChemOnomatopist::Grammar::mainchain_rules );
     $chain = first { $_->is_main } $graph->groups;
 
-    # Recognising amine chains
-    if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Amine:: &&
-        @groups == 1 && !$chain->isa( ChemOnomatopist::Chain::Bicycle::Purine:: ) ) {
-        $chain = ChemOnomatopist::Chain::Amine->new( $graph, $chain, @groups );
-    }
     # Recognising imino chains
     if( $most_senior_group && $most_senior_group eq ChemOnomatopist::Group::Imine:: &&
         @groups == 1 ) {
