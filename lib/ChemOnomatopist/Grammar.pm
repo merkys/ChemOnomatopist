@@ -251,7 +251,7 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
 
     # Urea
-    [ sub { &is_nongroup_atom && &is_C }, \&is_ketone, ( sub { &is_nongroup_atom && &is_N } ) x 2, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_C }, \&is_amide, \&is_amine, NO_MORE_VERTICES,
       sub { $_[0]->add_group( ChemOnomatopist::Group::Urea->new( @_ ) ) } ],
 
     # Isocyanide
