@@ -190,6 +190,10 @@ my @rules = (
             $_[0]->delete_group( $hydrazine );
         } ],
 
+    # Urea
+    [ sub { &is_nongroup_atom && &is_C }, \&is_ketone, \&is_amine, \&is_amine, NO_MORE_VERTICES,
+      sub { $_[0]->add_group( ChemOnomatopist::Group::Urea->new( @_ ) ) } ],
+
     # Amide
     [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_ketone,
       sub { $_[0]->delete_vertices( $_[3] ); graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1], $_[3] ), $_[2] ) } ],
@@ -249,10 +253,6 @@ my @rules = (
     # Ketones and their chalcogen analogues
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
-
-    # Urea
-    [ sub { &is_nongroup_atom && &is_C }, \&is_amide, \&is_amine, NO_MORE_VERTICES,
-      sub { $_[0]->add_group( ChemOnomatopist::Group::Urea->new( @_ ) ) } ],
 
     # Isocyanide
     [ sub { &is_nongroup_atom && &is_C && &has_H0 && &charge_minus_one }, sub { &is_nongroup_atom && &is_N && &has_H0 && &charge_plus_one }, NO_MORE_VERTICES,
