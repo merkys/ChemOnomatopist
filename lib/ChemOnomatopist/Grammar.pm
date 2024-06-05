@@ -376,11 +376,16 @@ sub is_mainchain() { any { $_->is_main } $_[0]->groups( $_[1] ) }
 
 sub is_carboxamide()  { any { $_->isa( ChemOnomatopist::Chain::Carboxamide:: ) } $_[0]->groups( $_[1] ) }
 sub is_purine()       { any { $_->isa( ChemOnomatopist::Chain::Bicycle::Purine:: ) } $_[0]->groups( $_[1] ) }
+sub is_urea()         { any { $_->isa( ChemOnomatopist::Group::Urea:: ) } $_[0]->groups( $_[1] ) }
 
 sub most_senior_group() { my @most_senior_groups = map { $_->most_senior_groups } $_[0]->groups( $_[1] ); return shift @most_senior_groups }
 sub number_of_most_senior_groups() { scalar map { $_->most_senior_groups } $_[0]->groups( $_[1] ) }
 
 our @mainchain_rules = (
+
+    # Unpack non-mainchain urea
+    [ sub { &is_urea && !&is_mainchain },
+      sub { $_[0]->delete_group( $_[0]->groups( $_[1] ) ) } ],
 
     # Amide chains
     [ sub { &is_mainchain && !&is_carboxamide && &most_senior_group && &most_senior_group->isa( ChemOnomatopist::Group::Amide:: ) && &number_of_most_senior_groups == 1 },
