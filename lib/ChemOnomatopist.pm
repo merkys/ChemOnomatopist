@@ -222,7 +222,9 @@ sub get_sidechain_name
 
     # Collecting names of all the attachments
     my $name = ChemOnomatopist::Name->new;
-    for my $attachment_name (sort { $a cmp $b } keys %attachments) {
+    my @order = sort { $a cmp $b } keys %attachments;
+    for my $i (0..$#order) {
+        my $attachment_name = $order[$i];
         my( $attachment, @positions ) = @{$attachments{$attachment_name}};
 
         if( $chain->needs_substituent_locants ) {
@@ -247,6 +249,12 @@ sub get_sidechain_name
                 (!$attachment->is_simple || $attachment->starts_with_locant) ) { # BBv3 P-16.5.1.1
                 $attachment->bracket;
             }
+        }
+
+        # Enclose all but the first attachment in a chain not needing substituent locants
+        if( !$attachment->is_enclosed && !$chain->needs_substituent_locants &&
+            @order > 1 && $i > 0 ) {
+            $attachment->bracket;
         }
 
         $name .= $attachment;
