@@ -175,7 +175,9 @@ sub get_sidechain_name
             $element = 'aluman';
         } elsif( $symbol eq 'As' ) {
             $element = 'arsan';
-        } elsif( $symbol !~ /^(B|P)$/ ) {
+        } elsif( $symbol eq 'P' ) {
+            $element = 'phosphan';
+        } elsif( $symbol ne 'B' ) {
             $element =~ s/a$//;
         }
         if( $symbol =~ /^(Cl|Br|F|I)$/ ) {
