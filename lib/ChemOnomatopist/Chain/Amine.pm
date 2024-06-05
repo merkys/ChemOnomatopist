@@ -26,6 +26,13 @@ sub new
     return bless { graph => $graph, chain => $chain, amine => $amine }, $class;
 }
 
+sub isa
+{
+    my( $self, $class ) = @_;
+    return 1 if $class eq ChemOnomatopist::Chain::Amine::;
+    return $self->{chain}->isa( $class );
+}
+
 sub vertices()
 {
     my $self = shift;

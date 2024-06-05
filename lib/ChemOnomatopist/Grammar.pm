@@ -412,6 +412,16 @@ our @mainchain_rules = (
             $_[0]->add_group( $imine );
           } ],
 
+    # Unclaimed amine group attached to other chains
+    [ sub { !&is_mainchain && &is_circular && &most_senior_group && &most_senior_group->isa( ChemOnomatopist::Group::Amine:: ) && &number_of_most_senior_groups == 1 },
+      sub { &is_amine && &is_nongroup },
+      sub {
+            my( $chain ) = $_[0]->groups( $_[1] );
+            $_[0]->delete_group( $chain );
+            my $amine = ChemOnomatopist::Chain::Amine->new( $_[0], $chain, $_[2] );
+            $_[0]->add_group( $amine );
+          } ],
+
 );
 
 sub parse_molecular_graph($)
