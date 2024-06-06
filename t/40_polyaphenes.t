@@ -21,5 +21,8 @@ for my $case (@cases) {
     eval { $ok = is ChemOnomatopist::get_name( $case->{smiles} ), $case->{iupac}, $case->{smiles} };
     $@ =~ s/\n$// if $@;
     fail $case->{smiles} . ": $@" if $@;
-    diag 'test supposed to fail with AUTHOR_TESTING' if $case->{AUTHOR} && $ok;
+    if( $case->{AUTHOR} && $ok ) {
+        diag 'test supposed to fail with AUTHOR_TESTING' .
+             ( $case->{AUTHOR} !~ /^1$/ ? ': ' . $case->{AUTHOR} : '' );
+    }
 }
