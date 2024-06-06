@@ -39,7 +39,7 @@ sub suffix
     if( exists $self->{atom}{isotope} ) {
         $suffix = '(' . $self->{atom}{isotope} . $self->element . ')';
     }
-    if( @{$self->{atom}{h_isotope}} && defined $self->{atom}{h_isotope}[0] ) {
+    if( exists $self->{atom}{h_isotope} && @{$self->{atom}{h_isotope}} && defined $self->{atom}{h_isotope}[0] ) {
         $suffix = '(' . $self->{atom}{h_isotope}[0] . 'H)';
     }
 

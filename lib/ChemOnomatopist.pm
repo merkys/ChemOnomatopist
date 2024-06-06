@@ -171,11 +171,19 @@ sub get_sidechain_name
         my $element = $elements{$symbol}->{prefix};
         my $name = ChemOnomatopist::Name->new;
 
+        if( $chain->nonstandard_valences ) {
+            $name->append_locants( map { 'λ' . $_ } $chain->nonstandard_valences );
+        }
+
         if(      $symbol eq 'Al' ) {
             $element = 'aluman';
         } elsif( $symbol eq 'As' ) {
             $element = 'arsan';
-        } elsif( $symbol !~ /^(B|P)$/ ) {
+        } elsif( $symbol eq 'P' ) {
+            $element = 'phosphan';
+        } elsif( $symbol eq 'S' ) {
+            $element = 'sulfan';
+        } elsif( $symbol ne 'B' ) {
             $element =~ s/a$//;
         }
         if( $symbol =~ /^(Cl|Br|F|I)$/ ) {

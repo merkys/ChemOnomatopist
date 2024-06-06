@@ -22,7 +22,17 @@ sub needs_heteroatom_names() { '' }
 
 sub needs_substituent_locants() { '' }
 
-sub prefix() { die "cannot use esters as prefixes yet\n" }
+sub prefix()
+{
+    my( $self ) = @_;
+
+    if( $self->parent && $self->graph->has_edge( $self->parent, $self->{vertices}[0] ) ) {
+        die "cannot handle complicated esters\n";
+    }
+
+    return 'oxy';
+}
+
 sub suffix() { 'anoate' }
 
 1;
