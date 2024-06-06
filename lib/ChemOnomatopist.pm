@@ -1075,12 +1075,6 @@ sub select_mainchain
     ChemOnomatopist::Grammar::parse_graph( $graph, @ChemOnomatopist::Grammar::mainchain_rules );
     $chain = first { $_->is_main } $graph->groups;
 
-    # This is needed to detect ethers.
-    # However, it clears the cache of chains, thus is quite suboptimal.
-    if( blessed $chain eq ChemOnomatopist::Chain::FromHalves:: ) {
-        $chain = ChemOnomatopist::Chain->new( $graph, undef, @vertices );
-    }
-
     # Replace the original chain with the selected candidate
     if( $chain->isa( ChemOnomatopist::Group:: ) && $chain->candidate_for ) {
         graph_replace( $graph, $chain, $chain->candidate_for );
