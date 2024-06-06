@@ -427,7 +427,7 @@ our @mainchain_rules = (
           } ],
 
     # Unpack sidechain amides
-    [ sub { !&is_mainchain && &is_amide && !&is_carboxamide },
+    [ sub { !&is_mainchain && &is_amide && !&is_carboxamide && $_[1]->{ketone} },
       sub {
             my $amine = ChemOnomatopist::Group::Amine->new;
             graph_replace( $_[0], $amine, $_[1] );
