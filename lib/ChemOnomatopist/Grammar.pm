@@ -375,6 +375,7 @@ my @rules_old = (
 sub is_mainchain() { any { $_->is_main } $_[0]->groups( $_[1] ) }
 
 sub is_carboxamide()  { any { $_->isa( ChemOnomatopist::Chain::Carboxamide:: ) } $_[0]->groups( $_[1] ) }
+sub is_ester()        { any { $_->isa( ChemOnomatopist::Group::Ester:: ) } $_[0]->groups( $_[1] ) }
 sub is_purine()       { any { $_->isa( ChemOnomatopist::Chain::Bicycle::Purine:: ) } $_[0]->groups( $_[1] ) }
 
 sub most_senior_group() { my @most_senior_groups = map { $_->most_senior_groups } $_[0]->groups( $_[1] ); return shift @most_senior_groups }
@@ -423,6 +424,15 @@ our @mainchain_rules = (
             $_[0]->delete_group( $chain );
             my $amine = ChemOnomatopist::Chain::Amine->new( $_[0], $chain, $_[2] );
             $_[0]->add_group( $amine );
+          } ],
+
+    # Unpack non-mainchain esters
+    [ sub { !&is_mainchain && &is_ester && &is_C },
+      sub {
+            my( $ester ) = $_[0]->groups( $_[1] );
+            $_[0]->delete_group( $ester );
+            my( $C, $O ) = $ester->vertices;
+            graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $O, $ester->{ketone} ), $ester->vertices );
           } ],
 
 );

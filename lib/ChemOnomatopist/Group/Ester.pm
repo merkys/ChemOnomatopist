@@ -14,7 +14,7 @@ sub new
 {
     my( $class, $graph, $C, $ketone, $O ) = @_;
     die "cannot name esters yet\n" if $ChemOnomatopist::CAUTIOUS;
-    return bless { graph => $graph, vertices => [ $C, $O ] }, $class;
+    return bless { graph => $graph, vertices => [ $C, $O ], ketone => $ketone }, $class;
 }
 
 sub needs_heteroatom_locants() { '' }
