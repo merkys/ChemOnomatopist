@@ -19,8 +19,8 @@ sub needs_heteroatom_names() { '' }
 
 sub locants($@)
 {
-    shift;
-    map { $_ ? 'S' : 'N' } @_;
+    my $self = shift;
+    map { $_ ? $self->{vertices}[1]->{symbol} : 'N' } @_;
 }
 
 sub suffix() { 'sulfanimine' }
