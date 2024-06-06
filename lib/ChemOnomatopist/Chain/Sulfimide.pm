@@ -6,6 +6,8 @@ package ChemOnomatopist::Chain::Sulfimide;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Name;
+
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 sub new
@@ -23,6 +25,6 @@ sub locants($@)
     map { $_ ? $self->{vertices}[1]->{symbol} : 'N' } @_;
 }
 
-sub suffix() { 'sulfanimine' }
+sub suffix() { ChemOnomatopist::Name->new( 'sulfanimine' ) } # FIXME: Support Se and Te
 
 1;
