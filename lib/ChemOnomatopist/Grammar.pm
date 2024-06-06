@@ -191,6 +191,7 @@ my @rules = (
         } ],
 
     # Amide
+    # CHECKME: Why ketone has to be deleted and not used in replace? It fails somewhy.
     [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_ketone,
       sub { $_[0]->delete_vertices( $_[3] ); graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1], $_[3] ), $_[2] ) } ],
     [ sub { &is_sulfinyl || &is_sulfonyl }, \&is_amine,
@@ -423,6 +424,14 @@ our @mainchain_rules = (
             $_[0]->delete_group( $chain );
             my $amine = ChemOnomatopist::Chain::Amine->new( $_[0], $chain, $_[2] );
             $_[0]->add_group( $amine );
+          } ],
+
+    # Unpack sidechain amides
+    [ sub { !&is_mainchain && &is_amide },
+      sub {
+            my $amine = ChemOnomatopist::Group::Amine->new;
+            graph_replace( $_[0], $amine, $_[1] );
+            $_[0]->set_edge_attribute( $_[1]->{parent}, $_[1]->{ketone}, 'bond', '=' );
           } ],
 
 );
