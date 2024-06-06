@@ -1075,11 +1075,6 @@ sub select_mainchain
     ChemOnomatopist::Grammar::parse_graph( $graph, @ChemOnomatopist::Grammar::mainchain_rules );
     $chain = first { $_->is_main } $graph->groups;
 
-    # Replace the original chain with the selected candidate
-    if( $chain->isa( ChemOnomatopist::Group:: ) && $chain->candidate_for ) {
-        graph_replace( $graph, $chain, $chain->candidate_for );
-    }
-
     # If there is at least one of carbon-based senior group attachment,
     # it means both ends are already senior, prompting to follow the
     # exception of three or more carbon-based groups.
