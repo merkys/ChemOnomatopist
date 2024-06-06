@@ -26,6 +26,8 @@ my @cases = (
     { smiles => 'C[Si](=NC1=CC=CC=C1)C', iupac => '1,1-dimethyl-N-phenylsilanimine', AUTHOR => 1 },
     { smiles => 'CN=[SiH]CC(=O)OC', iupac => 'methyl [(methylimino)silyl]acetate', AUTHOR => 1 },
 
+    { smiles => 'C(C)S(=NC1=CC=CC=C1)CC', iupac => 'S,S-diethyl-N-phenyl-λ4-sulfanimine' }, # From BBv3 P-68.4.3.3
+
     { smiles => 'C(C(=N)C(=O)O)C(=O)O', iupac => '2-iminobutanedioic acid' },
     { smiles => 'CC(C)C=N', iupac => '2-methylpropan-1-imine' },
     { smiles => 'CCCN=CC', iupac => 'N-propylethanimine' },
