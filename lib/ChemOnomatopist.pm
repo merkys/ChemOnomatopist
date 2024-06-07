@@ -502,7 +502,7 @@ sub get_mainchain_name
                 $name .= $number;
             }
 
-            if( $chain->length == 1 && $element eq 'S' ) {
+            if( $element eq 'S' && all { element( $_ ) eq 'S' } $chain->vertices ) {
                 $name->append_element( 'sulfa' );
             } else {
                 $name->append_element( $elements{$element}->{prefix} );
