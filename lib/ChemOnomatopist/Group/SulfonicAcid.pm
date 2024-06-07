@@ -22,7 +22,15 @@ sub new
 my %suffixes = ( N => 'imido', O => '', S => 'thio', Se => 'seleno', Te => 'telluro' );
 
 # From BBv2 P-65.3.0 and Table 4.3
-sub prefix() { ChemOnomatopist::Name->new( $_[0]->element eq 'S' ? 'sulfo' : $suffixes{$_[0]->element} ) }
+sub prefix()
+{
+    my( $self ) = @_;
+    my $suffix =  $suffixes{$self->element};
+    $suffix = 'sulfo'    if $self->element eq 'S';
+    $suffix = 'selenono' if $self->element eq 'Se';
+    return ChemOnomatopist::Name->new( $suffix );
+}
+
 sub suffix()
 {
     my( $self ) = @_;
@@ -64,7 +72,7 @@ sub suffix()
     @names = sort { _cmp_names( $a, $b ) } @names;
 
     my $name = $self->prefix;
-    $name->[-1]{value} .= 'no' unless $name =~ /no$/;
+    $name->[-1]{value} .= 'no' unless $name =~ /no$/ && $name ne 'seleno';
     for (sort { _cmp_names( $a, $b ) } @names) {
         $name->[-1]{value} =~ s/o$// if $_ eq 'imido';
         $name .= $_;
