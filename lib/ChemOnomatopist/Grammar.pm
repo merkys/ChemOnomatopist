@@ -288,7 +288,10 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imine->new, $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, \&is_ketone, sub { &is_hydroxy && &is_O && &charge_minus_one }, \&anything,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitro->new, @_[1..3] ) } ],
-    [ sub { &is_nongroup_atom && &is_N && &has_H0 && any { ChemOnomatopist::element( $_ ) =~ /^(S|Se|Te)$/ && is_double_bond( @_, $_ ) && $_[0]->degree( $_ ) + ($_->{hcount} ? $_->{hcount} : 0) == 3 } $_[0]->neighbours( $_[1] ) }, \&is_S_Se_Te, \&anything, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H0 && any { ChemOnomatopist::element( $_ ) =~ /^(S|Se|Te)$/ && is_double_bond( @_, $_ ) && $_[0]->degree( $_ ) + ($_->{hcount} ? $_->{hcount} : 0) == 3 } $_[0]->neighbours( $_[1] ) },
+      sub { &is_nongroup_atom && &is_S_Se_Te },
+      \&anything,
+      NO_MORE_VERTICES,
       sub { $_[0]->add_group( ChemOnomatopist::Chain::Sulfimide->new( @_[0..2] ) ) } ],
 
     # Esters of nitric acid and nitrous acid
