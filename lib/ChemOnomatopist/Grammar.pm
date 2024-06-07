@@ -156,12 +156,15 @@ my @rules = (
             }
         } ],
 
+    # Chalcogen chains
     [ ( sub { &is_nongroup_atom && &is_O  } ) x 3, NO_MORE_VERTICES,
         sub { $_[0]->add_group( ChemOnomatopist::Chain::Chalcogen->new( $_[0], undef, @_[1..3] ) ) } ],
     [ ( sub { &is_nongroup_atom && &is_S  } ) x 3, NO_MORE_VERTICES,
         sub { $_[0]->add_group( ChemOnomatopist::Chain::Chalcogen->new( $_[0], undef, @_[1..3] ) ) } ],
-    [ ( sub { &is_nongroup_atom && &is_Se } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
-    [ ( sub { &is_nongroup_atom && &is_Te } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
+    [ ( sub { &is_nongroup_atom && &is_Se } ) x 3, NO_MORE_VERTICES,
+        sub { $_[0]->add_group( ChemOnomatopist::Chain::Chalcogen->new( $_[0], undef, @_[1..3] ) ) } ],
+    [ ( sub { &is_nongroup_atom && &is_Te } ) x 3, NO_MORE_VERTICES,
+        sub { $_[0]->add_group( ChemOnomatopist::Chain::Chalcogen->new( $_[0], undef, @_[1..3] ) ) } ],
 
     # Carboxylic acid
     [ sub { &is_nongroup_atom && &is_C },
