@@ -12,7 +12,7 @@ my @cases = (
     { smiles => 'COOOS', iupac => 'methyltrioxidanethiol' },
     { smiles => '', iupac => 'methyloxidane-SO-thioperoxol', AUTHOR => 1 },
     { smiles => 'CSSO', iupac => 'methyldisulfanol', AUTHOR => 1 },
-    { smiles => 'CSSS[SeH]', iupac => 'methyltrisulfaneselenol', AUTHOR => 1 },
+    { smiles => 'CSSS[SeH]', iupac => 'methyltrisulfaneselenol' },
     { smiles => 'COOSS', iupac => 'methyldioxidanedithioperoxol', AUTHOR => 1 },
     { smiles => 'COS[Se][SeH]', iupac => 'methoxysulfanediselenoperoxol', AUTHOR => 1 },
     { smiles => 'CSSOO', iupac => 'methyldisulfaneperoxol', AUTHOR => 1 },
