@@ -19,6 +19,7 @@ sub new
 }
 
 sub element() { $_[0]->{atoms}[0]{symbol} }
+sub is_terminal() { 1 }
 
 sub prefix()
 {
