@@ -16,6 +16,7 @@ DESCRIPTION
     $basename prepares tests for ChemOnomatopist
 
 END
+    [ 'author',  'mark output tests with AUTHOR flag' ],
     [ 'pubchem', 'treat the input as three-columned PubChem file' ],
     [],
     [ 'help', 'print usage message and exit', { shortcircuit => 1 } ],
@@ -44,7 +45,9 @@ for (@lines) {
     }
     $iupac =~ s/'/\\'/g;
 
-    print "{ smiles => '$smiles', iupac => '$iupac' },";
+    print "{ smiles => '$smiles', iupac => '$iupac'";
+    print ', AUTHOR => 1' if $opt->author;
+    print ' },';
     print " # $source" if $source;
     print "\n";
 }
