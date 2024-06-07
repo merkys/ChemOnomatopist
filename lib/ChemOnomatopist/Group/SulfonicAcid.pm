@@ -95,6 +95,7 @@ sub suffix()
                         @attachments;
     my @non_hydroxy = grep { $_ != $hydroxy } @attachments;
     my @non_hydroxy_elements = map { ChemOnomatopist::element( $_ ) } @non_hydroxy;
+
     if( $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
         $hydroxy->element eq 'O' &&
         all { $_ eq 'O' } @non_hydroxy_elements ) {
@@ -103,7 +104,10 @@ sub suffix()
         return $name .= 'nic acid';
     }
 
-    my $name = $self->prefix;
+    my $name = ChemOnomatopist::Name->new( $suffixes{$self->element} );
+    $name = ChemOnomatopist::Name->new( 'sulfo' )    if $self->element eq 'S';
+    $name = ChemOnomatopist::Name->new( 'selenono' ) if $self->element eq 'Se';
+
     my $attachments_part = $self->attachments_part;
     $name .= $attachments_part =~ /^i/ ? 'n' : 'no';
     $name .= $self->attachments_part;
