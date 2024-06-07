@@ -12,6 +12,6 @@ use parent ChemOnomatopist::Group::SulfonicAcid::;
 use ChemOnomatopist::Name;
 
 # From BBv2 P-65.3.0
-sub prefix() { ChemOnomatopist::Name->new( 'sulfino' ) }
+sub element_prefix() { ChemOnomatopist::Name->new( 'sulfino' ) }
 
 1;

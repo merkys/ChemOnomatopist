@@ -76,7 +76,7 @@ sub attachments_part()
 
 # From BBv2 P-65.3.0 and Table 4.3
 # FIXME: prefix() has to enumerate elements in the attachments
-sub prefix()
+sub element_prefix()
 {
     my( $self ) = @_;
     my $suffix =  $suffixes{$self->element};
@@ -84,6 +84,8 @@ sub prefix()
     $suffix = 'selenono' if $self->element eq 'Se';
     return ChemOnomatopist::Name->new( $suffix );
 }
+
+sub prefix() { $_[0]->element_prefix }
 
 sub suffix()
 {
@@ -99,14 +101,12 @@ sub suffix()
     if( $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
         $hydroxy->element eq 'O' &&
         all { $_ eq 'O' } @non_hydroxy_elements ) {
-        my $name = $self->prefix;
+        my $name = $self->element_prefix;
         $name->[-1]{value} =~ s/no$//;
         return $name .= 'nic acid';
     }
 
-    my $name = ChemOnomatopist::Name->new( $suffixes{$self->element} );
-    $name = ChemOnomatopist::Name->new( 'sulfo' )    if $self->element eq 'S';
-    $name = ChemOnomatopist::Name->new( 'selenono' ) if $self->element eq 'Se';
+    my $name = $self->element_prefix;
 
     my $attachments_part = $self->attachments_part;
     $name .= $attachments_part =~ /^i/ ? 'n' : 'no';
