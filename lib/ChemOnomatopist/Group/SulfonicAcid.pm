@@ -74,7 +74,7 @@ sub suffix()
 
     my $name = $self->prefix;
     $name->[-1]{value} .= 'no' unless $name =~ /no$/ && $name ne 'seleno';
-    for (sort { _cmp_names( $a, $b ) } @names) {
+    for (@names) {
         $name->[-1]{value} =~ s/o$// if $_ eq 'imido';
         $name .= $_;
     }
