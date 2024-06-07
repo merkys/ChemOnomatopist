@@ -22,6 +22,7 @@ sub new
 my %suffixes = ( N => 'imido', O => '', S => 'thio', Se => 'seleno', Te => 'telluro' );
 
 # From BBv2 P-65.3.0 and Table 4.3
+# FIXME: prefix() has to enumerate elements in the attachments
 sub prefix()
 {
     my( $self ) = @_;
