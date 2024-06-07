@@ -14,6 +14,7 @@ use ChemOnomatopist::Group::Amidine;
 use ChemOnomatopist::Group::Carbaldehyde;
 use ChemOnomatopist::Group::Carbonitrile;
 use ChemOnomatopist::Chain::Carboxamide;
+use ChemOnomatopist::Chain::Chalcogen;
 use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Ether;
@@ -102,6 +103,7 @@ sub is_sulfonyl      { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::Sulf
 sub is_XO3           { blessed $_[1] && $_[1]->isa( ChemOnomatopist::Group::XO3:: ) }
 
 sub is_benzene   { any { $_->isa( ChemOnomatopist::Chain::Monocycle:: ) && $_->is_benzene } $_[0]->groups( $_[1] ) }
+sub is_chalcogen { any { $_->isa( ChemOnomatopist::Chain::Chalcogen:: ) } $_[0]->groups( $_[1] ) }
 sub is_circular  { any { $_->isa( ChemOnomatopist::Chain::Circular:: ) } $_[0]->groups( $_[1] ) }
 sub is_monocycle { any { $_->isa( ChemOnomatopist::Chain::Monocycle:: ) } $_[0]->groups( $_[1] ) }
 
@@ -154,7 +156,8 @@ my @rules = (
             }
         } ],
 
-    [ ( sub { &is_nongroup_atom && &is_O  } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
+    [ ( sub { &is_nongroup_atom && &is_O  } ) x 3, NO_MORE_VERTICES,
+        sub { $_[0]->add_group( ChemOnomatopist::Chain::Chalcogen->new( $_[0], undef, @_[1..3] ) ) } ],
     [ ( sub { &is_nongroup_atom && &is_S  } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
     [ ( sub { &is_nongroup_atom && &is_Se } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
     [ ( sub { &is_nongroup_atom && &is_Te } ) x 3, NO_MORE_VERTICES, sub { die "cannot handle chalcogen parent hydrides\n" } ],
