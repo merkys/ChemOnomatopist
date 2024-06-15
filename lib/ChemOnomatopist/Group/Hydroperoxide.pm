@@ -27,7 +27,7 @@ sub prefix()
 
     my @elements = map { ChemOnomatopist::element( $_ ) } @{$self->{atoms}};
 
-    return 'hydroperoxy' if all { $_ eq 'O' } @elements;
+    return ChemOnomatopist::Name->new( 'hydroperoxy' ) if all { $_ eq 'O' } @elements;
     if( all { $_ eq 'S' } @elements ) {
         my $name = ChemOnomatopist::Name->new;
         $name->append_multiplier( 'di' );
