@@ -30,6 +30,7 @@ use ChemOnomatopist::Group::Isocyanate;
 use ChemOnomatopist::Group::Isocyanide;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Nitramide;
+use ChemOnomatopist::Group::Sulfinamide;
 use ChemOnomatopist::Group::SulfinicAcid;
 use ChemOnomatopist::Group::SulfonicAcid;
 use ChemOnomatopist::Group::Urea;
@@ -55,6 +56,7 @@ our @order = (
     ChemOnomatopist::Group::AcylHalide::,
     # Amides
     ChemOnomatopist::Group::Urea::,
+    ChemOnomatopist::Group::Sulfinamide::,
     ChemOnomatopist::Group::Amide::,
     ChemOnomatopist::Group::Guanidine::,
     ChemOnomatopist::Group::Nitramide::, # FIXME: Is this correct?
