@@ -16,7 +16,7 @@ my %prefixes = (
     Te => 'telluronamide',
 );
 
-sub prefix { ChemOnomatopist::Name->new( 'sulfonamido' ) } # FIXME: May be incorrect
+sub prefix { ChemOnomatopist::Name->new( 'sulfamoyl' ) } # FIXME: May be incorrect
 sub suffix { ChemOnomatopist::Name->new( $prefixes{$_[0]->element} ) }
 
 1;

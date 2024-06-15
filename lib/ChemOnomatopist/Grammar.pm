@@ -371,9 +371,9 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
 
     # Sulfinamides and sulfonamides
-    [ \&is_amide, \&is_sulfinyl,
+    [ \&is_amide, \&is_sulfinyl, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfinamide->new( $_[2]->element ), @_[1..2] ) } ],
-    [ \&is_amide, \&is_sulfonyl,
+    [ \&is_amide, \&is_sulfonyl, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfonamide->new( $_[2]->element ), @_[1..2] ) } ],
 
     # Detecting amides attached to cyclic chains
