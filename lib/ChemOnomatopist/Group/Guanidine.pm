@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 use Algorithm::Combinatorics qw( permutations );
+use ChemOnomatopist::Name;
 use Chemistry::OpenSMILES qw( is_double_bond );
 
 sub new
@@ -59,12 +60,12 @@ sub locants(@) {
 sub prefix {
     my( $self ) = @_;
     if( $self->{is_double_bond}[2] && $self->graph->degree( $self->{vertices}[2] ) > 2 ) {
-        return '[(diaminomethylidene)amino]';
+        return ChemOnomatopist::Name->new( '[(diaminomethylidene)amino]' );
     } else {
-        return '(carbamimidoylamino)';
+        return ChemOnomatopist::Name->new( '(carbamimidoylamino)' );
     }
 }
 
-sub suffix { 'guanidine' }
+sub suffix { ChemOnomatopist::Name->new( 'guanidine' ) }
 
 1;
