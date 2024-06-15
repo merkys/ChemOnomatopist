@@ -6,6 +6,8 @@ package ChemOnomatopist::Group::Hydrazide;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Name;
+
 use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 sub new
@@ -14,8 +16,8 @@ sub new
     return bless { graph => $graph, ketone => $ketone, vertices => \@vertices }, $class;
 }
 
-sub needs_heteroatom_locants() { return '' }
-sub needs_heteroatom_names() { return '' }
+sub needs_heteroatom_locants() { '' }
+sub needs_heteroatom_names() { '' }
 sub needs_substituent_locants()
 {
     my( $self ) = @_;
@@ -30,7 +32,7 @@ sub locants(@)
 
 my %suffixes = ( O => '', S => 'thio', Se => 'seleno', Te => 'telluro' );
 
-sub prefix() { $suffixes{$_[0]->{ketone}->element} . 'hydrazidyl' }
-sub suffix() { $suffixes{$_[0]->{ketone}->element} . 'hydrazide' }
+sub prefix() { ChemOnomatopist::Name->new( $suffixes{$_[0]->{ketone}->element} . 'hydrazidyl' ) }
+sub suffix() { ChemOnomatopist::Name->new( $suffixes{$_[0]->{ketone}->element} . 'hydrazide'  ) }
 
 1;
