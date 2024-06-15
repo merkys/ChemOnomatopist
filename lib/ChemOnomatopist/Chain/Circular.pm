@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
-use ChemOnomatopist::Chain; # FIXME: Not sure why it is needed
+use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name::Part::NondetachablePrefix;
