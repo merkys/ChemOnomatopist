@@ -16,6 +16,7 @@ sub new
     return bless { graph => $graph, ketone => $ketone, vertices => \@vertices }, $class;
 }
 
+sub needs_ane_suffix() { 1 }
 sub needs_heteroatom_locants() { '' }
 sub needs_heteroatom_names() { '' }
 sub needs_substituent_locants()

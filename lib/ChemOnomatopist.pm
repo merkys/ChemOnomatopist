@@ -400,8 +400,14 @@ sub get_mainchain_name
                 push @senior_group_attachments, $i;
             } else {
                 my $attachment = get_sidechain_name( $graph, $atom, $group ? $group : $neighbour );
-                if( $chain->needs_ane_suffix && $attachment eq 'phenyl' ) {
-                    $attachment = ChemOnomatopist::Name->new( 'benzene' );
+                if( $chain->needs_ane_suffix ) {
+                    if( $attachment eq 'phenyl' ) {
+                        $attachment = ChemOnomatopist::Name->new( 'benzene' );
+                    } elsif( $attachment =~ /yl$/ ) {
+                        # FIXME: Properly detect the 'yl' suffix and replace it with suffix object
+                        $attachment->pop_yl;
+                        $attachment .= $attachment eq 'hydrazin' ? 'e' : 'ane';
+                    }
                 }
                 $attachments{$attachment} = [ $attachment ] unless $attachments{$attachment};
                 push @{$attachments{$attachment}}, $i;

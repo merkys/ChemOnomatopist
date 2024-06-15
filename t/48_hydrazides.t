@@ -24,7 +24,7 @@ my @cases = (
     { smiles => 'C(C)(NN)=N', iupac => 'ethanimidohydrazide', AUTHOR => 1 },
 
     # From BBv3 P-66.3.4
-    { smiles => 'C(CC)(NN)=S', iupac => 'propanethiohydrazide', AUTHOR => 1 },
+    { smiles => 'C(CC)(NN)=S', iupac => 'propanethiohydrazide' },
     { smiles => 'C1(=CC=CC=C1)C(NN)=S', iupac => 'benzenecarbothiohydrazide', AUTHOR => 1 },
     { smiles => 'N(N)C(C(=O)NN)=S', iupac => '2-hydrazinyl-2-sulfanylideneacetohydrazide', AUTHOR => 1 },
 );
