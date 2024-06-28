@@ -1,3 +1,13 @@
+0.10.0 2024-06-28
+
+    - Implement support for acyl halides.
+    - Implement support for chalcogen chains.
+    - Implement support for nitramides.
+    - Implement support for noncarbonic oxoacids.
+    - Implement support for sulfimides, sulfinamides and sulfonamides.
+    - Postprocess molecular graphs after main chain identification.
+    - Add nonstandard valences to side chains.
+
 0.9.0 2024-05-30
 
     - Implement support for a(ba)_n chains.
