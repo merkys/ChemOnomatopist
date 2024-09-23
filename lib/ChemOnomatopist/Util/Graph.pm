@@ -45,7 +45,7 @@ sub BFS_is_chain_branched
 {
     my( $graph, $start ) = @_;
 
-    # FIXME: Not entirely sure why visited vertices are removed (A.M.)
+    # FIXME: Not entirely sure why visited vertices are removed
     my $graph_copy = $graph->copy;
 
     my $branched = 0;
