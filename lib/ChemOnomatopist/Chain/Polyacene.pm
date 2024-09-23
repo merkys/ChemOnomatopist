@@ -11,7 +11,6 @@ use parent ChemOnomatopist::Chain::Circular::;
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Util::Graph qw(
     graph_without_edge_attributes
-    subgraph
 );
 use Graph::Nauty qw( are_isomorphic );
 use Graph::Undirected;
@@ -23,16 +22,16 @@ sub new
     my( $class, $graph, @cycles ) = @_;
 
     my @vertices = map { $_->vertices } @cycles;
-    my $subgraph = subgraph( $graph, @vertices );
+    my $subgraph = $graph->subgraph( @vertices );
     $subgraph->delete_vertices( grep { $subgraph->degree( $_ ) == 3 }
                                      $subgraph->vertices );
     $subgraph->delete_vertices( grep { !$subgraph->degree( $_ ) }
                                      $subgraph->vertices );
     my $start = first { $subgraph->degree( $_ ) == 1 } $subgraph->vertices;
 
-    $subgraph = subgraph( $graph, @vertices ); # Restore the subgraph
+    $subgraph = $graph->subgraph( @vertices ); # Restore the subgraph
     my $last = first { $subgraph->degree( $_ ) == 3 }
-                      $subgraph->neighbours( $start );
+                       $subgraph->neighbours( $start );
     $subgraph->delete_edges( $start, $last,
                              map  { @$_ }
                              grep { $subgraph->degree( $_->[0] ) == 3 &&
@@ -60,7 +59,7 @@ sub flipped_horizontally()
 {
     my( $self ) = @_;
 
-    my $subgraph = subgraph( $self->graph, $self->vertices );
+    my $subgraph = $self->graph->subgraph( $self->vertices );
     my @chords = grep { $subgraph->degree( $_->[0] ) == 3 &&
                         $subgraph->degree( $_->[1] ) == 3 } $subgraph->edges;
     $subgraph->delete_edges( $self->{vertices}[$self->length / 2 + 3],
@@ -74,7 +73,7 @@ sub flipped_vertically()
 {
     my( $self ) = @_;
 
-    my $subgraph = subgraph( $self->graph, $self->vertices );
+    my $subgraph = $self->graph->subgraph( $self->vertices );
     my @chords = grep { $subgraph->degree( $_->[0] ) == 3 &&
                         $subgraph->degree( $_->[1] ) == 3 } $subgraph->edges;
     $subgraph->delete_edges( $self->{vertices}[3],

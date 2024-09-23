@@ -10,7 +10,6 @@ use parent ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist::Util::Graph qw(
     graph_without_edge_attributes
-    subgraph
 );
 use Graph::Nauty qw( are_isomorphic );
 use Graph::Undirected;
@@ -24,14 +23,14 @@ sub new
     my @vertices = map { $_->vertices } @cycles;
 
     # Take a subgraph of only triple-connected vertices
-    my $g3 = subgraph( $graph, @vertices );
+    my $g3 = $graph->subgraph( @vertices );
     # Leave only triple-connected vertices
     $g3->delete_vertices( grep { $g3->degree( $_ ) < 3 } $g3->vertices );
     # There will be only two two-connected vertices now
     my $end = first { $g3->degree( $_ ) == 2 } $g3->vertices;
 
     # Take a subgraph of all participating vertices
-    my $subgraph = subgraph( $graph, @vertices );
+    my $subgraph = $graph->subgraph( @vertices );
     # Find the first vertex
     my $start = first { $subgraph->degree( $_ ) == 2 } $subgraph->neighbours( $end );
 

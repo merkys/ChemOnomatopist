@@ -15,13 +15,14 @@ use ChemOnomatopist::Util::Graph qw(
 );
 use Graph::Nauty qw( are_isomorphic );
 use Graph::Undirected;
+use List::Util qw( first );
 use Set::Object qw( set );
 
 sub new
 {
     my( $class, $graph, @cycles ) = @_;
 
-    my $subgraph = subgraph( $graph, map { $_->vertices } @cycles );
+    my $subgraph = $graph->subgraph( map { $_->vertices } @cycles );
 
     # Constructing the connectivity graph for cycles
     my $connectivity_graph = Graph::Undirected->new( refvertexed => 1 );
@@ -35,13 +36,13 @@ sub new
     for my $cycle (@cycles) {
         next unless scalar( grep { $subgraph->degree( $_->[0] ) == 3 &&
                                    $subgraph->degree( $_->[1] ) == 3 }
-                                 subgraph( $graph, $cycle->vertices )->edges ) == 3;
+                                 $graph->subgraph( $cycle->vertices )->edges ) == 3;
         $common_ring = $cycle;
     }
 
     # Finding the correct order of cycles, flipping if needed
     my $common_ring_pos = @cycles % 2 ? (@cycles - 1) / 2 : @cycles / 2 - 1;
-    my( $start ) = grep { $connectivity_graph->degree( $_ ) == 1 } @cycles;
+    my $start = first { $connectivity_graph->degree( $_ ) == 1 } @cycles;
     my @cycles_in_order = Graph::Traversal::DFS->new( $connectivity_graph,
                                                       start => $start )->dfs;
     if( !@cycles % 2 && $cycles_in_order[$common_ring_pos] != $common_ring ) {
@@ -49,7 +50,7 @@ sub new
     }
 
     # Finding the atom in the common ring which will get the lowest number
-    $subgraph = subgraph( $graph, $common_ring->vertices );
+    $subgraph = $graph->subgraph( $common_ring->vertices );
     $subgraph->delete_edges( map { @$_ }
                              map { subgraph( $graph, $_->vertices )->edges }
                                  ( $cycles_in_order[$common_ring_pos-1],

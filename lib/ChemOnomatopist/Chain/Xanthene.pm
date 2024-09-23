@@ -9,7 +9,6 @@ use warnings;
 use parent ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist::Elements qw( %elements );
-use ChemOnomatopist::Util::Graph qw( subgraph );
 use List::Util qw( any first uniq );
 use Set::Object qw( set );
 
@@ -26,7 +25,7 @@ sub new
     }
 
     # Find the correct vertex order
-    my $subgraph = subgraph( $graph, map { $_->vertices } @cycles );
+    my $subgraph = $graph->subgraph( map { $_->vertices } @cycles );
     my @bridges = grep { $subgraph->degree( $_->[0] ) == 3 &&
                          $subgraph->degree( $_->[1] ) == 3 }
                          $subgraph->edges;
