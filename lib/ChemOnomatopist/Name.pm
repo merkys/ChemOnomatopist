@@ -250,14 +250,6 @@ sub is_simple()
     return  1;
 }
 
-# FIXME: Incomplete, untested and unused
-# 0 if simple, 1 if compound
-sub level()
-{
-    my( $self ) = @_;
-    return 0 + ((grep { blessed $_ && $_->isa( ChemOnomatopist::Name::Part::Stem:: ) } @$self) > 1);
-}
-
 sub ends_with_alkane_an_suffix()
 {
     my( $self ) = @_;
