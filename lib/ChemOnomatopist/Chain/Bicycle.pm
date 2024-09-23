@@ -209,7 +209,7 @@ sub new
             @cycles = map { $_->flipped } @cycles;
             $self->{cycles} = \@cycles;
         }
-        $self->_adjust_vertices_to_cycles; # CHECKME: Is this needed?
+        $self->_adjust_vertices_to_cycles;
     }
 
     return $self;
