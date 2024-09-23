@@ -18,7 +18,7 @@ use ChemOnomatopist::Util::Graph qw(
 use Clone qw( clone );
 use Graph::Traversal::BFS;
 use Graph::Undirected;
-use List::Util qw( all any max min sum0 uniq );
+use List::Util qw( all any first max min sum0 uniq );
 use Scalar::Util qw( blessed );
 
 # There must be a nicer way to handle calls to parent...
@@ -87,8 +87,7 @@ sub get_name
     my( $order ) = select_mainchain( $graph->copy );
     my @chain;
     for my $curr_vertex (@$order) {
-        my( $vertex ) = grep { $_->{number} == $curr_vertex } $graph->vertices;
-        push @chain, $vertex;
+        push @chain, first { $_->{number} == $curr_vertex } $graph->vertices;
     }
 
     return get_mainchain_name( $graph->copy, ChemOnomatopist::Chain->new( $graph, undef, @chain ) );
@@ -169,7 +168,7 @@ sub select_mainchain
     for (my $i = 0; $i < scalar @farthest; $i++) {
         my %tree = ( $farthest[$i] => [ $farthest[$i], 0 ] );
 
-        my( $vertex ) = grep { $_->{number} eq $farthest[$i] } $carbon_graph->vertices;
+        my $vertex = first { $_->{number} eq $farthest[$i] } $carbon_graph->vertices;
         # Start creation of the tree from all the starting vertices
         push @all_trees, \%{create_tree( $carbon_graph->copy, $vertex, \%tree )};
     }
@@ -351,9 +350,9 @@ sub rule_greatest_number_of_side_chains
 
         # Beginning of the structure is found. Then all chains that belongs to
         # the current tree are selected
-        my @first = grep { $structure{$_}->[0] == 0 } keys %structure;
+        my $first = first { $structure{$_}->[0] == 0 } keys %structure;
         my @chains_in_the_tree =
-            grep { $_->[0] == $first[0] || $_->[-1] == $first[0] } @$chains;
+            grep { $_->[0] == $first || $_->[-1] == $first } @$chains;
 
         # Structure with index of the tree, beginning and ending of the chain,
         # number of side chains in the chain created for each chain
@@ -407,8 +406,8 @@ sub rule_lowest_numbered_locants
 
         # Beginning of the structure is found. Then all chains that belongs to
         # the current tree are selected
-        my @first = grep { $structure{$_}->[0] == 0 } keys %structure;
-        my @chains_in_the_tree = grep { @{$_}[0] == $first[0] || @{$_}[-1] == $first[0] } @$chains;
+        my $first = first { $structure{$_}->[0] == 0 } keys %structure;
+        my @chains_in_the_tree = grep { @{$_}[0] == $first || @{$_}[-1] == $first } @$chains;
 
         # Structure with index of the tree, beginning and ending of the chain,
         # places of the locants in the chain created for each tree
@@ -472,7 +471,7 @@ sub rule_most_carbon_in_side_chains
 
         # Beginning of the structure is found. Then all chains that belongs to
         # the current tree are selected
-        my( $first ) = grep { $structure{$_}->[0] == 0 } keys %structure;
+        my $first = first { $structure{$_}->[0] == 0 } keys %structure;
         my @structure_chains = grep { $_->[0] == $first || $_->[-1] == $first } @$chains;
 
         # Structure with index of the tree, beginning and ending of the chain,
@@ -509,7 +508,7 @@ sub rule_most_carbon_in_side_chains
     }
     my %seen;
     my @uniq_side_chain_paths =
-                grep { !$seen{$_->[0]}++ } @greatest_no_of_side_chains_paths;
+        grep { !$seen{$_->[0]}++ } @greatest_no_of_side_chains_paths;
     my @result = @trees[map { $_->[0] } @uniq_side_chain_paths];
 
     return \@result, \@eligible_chains;
@@ -534,7 +533,7 @@ sub rule_least_branched_side_chains
 
         # Beginning of the structure is found. Then all chains that belong to
         # the current tree are selected
-        my( $first ) = grep { $structure{$_}->[0] == 0 } keys %structure;
+        my $first = first { $structure{$_}->[0] == 0 } keys %structure;
         my @chains_in_the_tree = grep { $_->[0] == $first || $_->[-1] == $first } @$chains;
 
         for my $chain (@chains_in_the_tree) {
@@ -597,14 +596,14 @@ sub pick_chain_with_lowest_attachments_alphabetically
 
         # Beginning of the structure is found. Then all chains that belongs to
         # the current tree are selected
-        my( $first ) = grep { $structure{$_}->[0] == 0 } keys %structure;
+        my $first = first { $structure{$_}->[0] == 0 } keys %structure;
         my @chains_in_the_tree = grep { $_->[0] == $first || $_->[-1] == $first } @$chains;
 
         # Placings of the locants found for each chain
         for my $chain (@chains_in_the_tree) {
             my @attachments_only;
             for my $locant (uniq find_locant_placing( $graph, $chain )) {
-                my( $vertex ) = grep { $_->{number} == $chain->[$locant-1] } $graph->vertices;
+                my $vertex = first { $_->{number} == $chain->[$locant-1] } $graph->vertices;
 
                 # Cycle through non-mainchain neighbours:
                 for my $neighbour ($graph->neighbours( $vertex )) {
@@ -655,7 +654,7 @@ sub find_lengths_of_side_chains
     return sort @$side_chain_lengths unless $atoms_left;
 
     my @vertices = $graph->vertices;
-    my( $vertex ) = grep { $_->{number} == $curr_vertex } @vertices;
+    my $vertex = first { $_->{number} == $curr_vertex } @vertices;
     my @curr_neighbours = $graph->neighbours( $vertex );
     if( scalar @curr_neighbours == 1 ) {
         $graph->delete_vertex( $vertex );
@@ -740,7 +739,7 @@ sub find_number_of_side_chains
     my $number_of_side_chains = 0;
 
     for my $curr_vertex ( reverse @$main_chain ) {
-        my( $vertex ) = grep { $_->{number} == $curr_vertex } @vertices;
+        my $vertex = first { $_->{number} == $curr_vertex } @vertices;
         my @curr_neighbours = $graph->neighbours( $vertex );
         return $number_of_side_chains unless scalar @curr_neighbours;
 
@@ -765,7 +764,7 @@ sub find_number_of_branched_side_chains
     my $number_of_branched_side_chains = 0;
 
     for my $curr_vertex ( reverse @$main_chain ) {
-        my( $vertex ) = grep {$_->{number} == $curr_vertex} @vertices;
+        my $vertex = first {$_->{number} == $curr_vertex} @vertices;
         my @curr_neighbours = $graph->neighbours( $vertex );
         return $number_of_branched_side_chains unless scalar @curr_neighbours;
 
