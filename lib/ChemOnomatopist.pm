@@ -50,8 +50,6 @@ use ChemOnomatopist::Util qw(
     zip
 );
 use ChemOnomatopist::Util::Graph qw(
-    BFS_calculate_chain_length
-    BFS_is_chain_branched
     cyclic_components
     graph_center
     graph_cycle_core
