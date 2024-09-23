@@ -33,7 +33,6 @@ sub new
     # Adjust the order
     if( any { ChemOnomatopist::element( $_ ) eq 'N' } @vertices ) {
         # Find the order so as N is closest to the beginning of the chain
-        # CHECKME: This might not be correct due to offset
         my $first = first { ChemOnomatopist::element( $vertices[$_] ) eq 'N' }
                           0..$#vertices;
         my $last  = first { ChemOnomatopist::element( $vertices[-1-$_] ) eq 'N' }
