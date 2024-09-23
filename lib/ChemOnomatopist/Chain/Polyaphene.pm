@@ -54,9 +54,9 @@ sub new
                              map { $graph->subgraph( $_->vertices )->edges }
                                  ( $cycles_in_order[$common_ring_pos-1],
                                    $cycles_in_order[$common_ring_pos+1] ) );
-    my( $short_edge ) = grep { $subgraph->degree( $_->[0] ) == 1 &&
-                               $subgraph->degree( $_->[1] ) == 1 }
-                               $subgraph->edges;
+    my $short_edge = first { $subgraph->degree( $_->[0] ) == 1 &&
+                             $subgraph->degree( $_->[1] ) == 1 }
+                             $subgraph->edges;
     my( $junction ) = (set( $cycles_in_order[$common_ring_pos-1]->vertices ) *
                        set( @$short_edge ))->members;
 
@@ -83,7 +83,7 @@ sub new
         }
     }
 
-    my( $last ) = grep { $subgraph->degree( $_ ) == 3 }
+    my $last = first { $subgraph->degree( $_ ) == 3 }
                        $subgraph->neighbours( $first );
 
     # Deleting chords and connection between first and last atoms
