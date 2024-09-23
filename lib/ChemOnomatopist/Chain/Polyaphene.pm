@@ -11,7 +11,6 @@ use parent ChemOnomatopist::Chain::Circular::;
 use ChemOnomatopist::Util::Graph qw(
     graph_without_edge_attributes
     merge_graphs
-    subgraph
 );
 use Graph::Nauty qw( are_isomorphic );
 use Graph::Undirected;
@@ -52,7 +51,7 @@ sub new
     # Finding the atom in the common ring which will get the lowest number
     $subgraph = $graph->subgraph( $common_ring->vertices );
     $subgraph->delete_edges( map { @$_ }
-                             map { subgraph( $graph, $_->vertices )->edges }
+                             map { $graph->subgraph( $_->vertices )->edges }
                                  ( $cycles_in_order[$common_ring_pos-1],
                                    $cycles_in_order[$common_ring_pos+1] ) );
     my( $short_edge ) = grep { $subgraph->degree( $_->[0] ) == 1 &&
@@ -62,12 +61,12 @@ sub new
                        set( @$short_edge ))->members;
 
     # Finding the candidates of the starting atom
-    $subgraph = subgraph( $graph, $cycles_in_order[0]->vertices );
+    $subgraph = $graph->subgraph( $cycles_in_order[0]->vertices );
     $subgraph->delete_vertices(   $cycles_in_order[1]->vertices );
     my @candidates = grep { $subgraph->degree( $_ ) == 1 } $subgraph->vertices;
 
     # Finding the first and the last atom in the enumeration order
-    $subgraph = subgraph( $graph, map { $_->vertices } @cycles );
+    $subgraph = $graph->subgraph( map { $_->vertices } @cycles );
     my $shortest_paths = $subgraph->single_source_shortest_paths( $junction );
     my $min_length;
     my $first;
