@@ -118,7 +118,6 @@ sub append_suffix($)
     return $self->append( $suffix );
 }
 
-# FIXME: Implement according to BBv2 P-16.5.4: {[({[( )]})]}
 sub bracket()
 {
     my( $self ) = @_;
@@ -128,17 +127,15 @@ sub bracket()
     @$name_wo_fusion =
         grep { !blessed $_ || !$_->isa( ChemOnomatopist::Name::Part::Fusion:: ) }
              @$name_wo_fusion;
+    $name_wo_fusion =~ s/[^\{\[\(]//g;
 
-    if( $name_wo_fusion =~ /\{/ ) {
-        unshift @$self, '(';
-        push    @$self, ')';
-    } elsif( $name_wo_fusion =~ /\[/ ) {
-        unshift @$self, '{';
-        push    @$self, '}';
-    } elsif( $name_wo_fusion =~ /\(/ ) {
+    if(      $name_wo_fusion =~ /^\(/ ) {
         unshift @$self, '[';
         push    @$self, ']';
-    } else {
+    } elsif( $name_wo_fusion =~ /^\[/ ) {
+        unshift @$self, '[';
+        push    @$self, ']';
+    } else { # Empty name or name starts with {
         unshift @$self, '(';
         push    @$self, ')';
     }
