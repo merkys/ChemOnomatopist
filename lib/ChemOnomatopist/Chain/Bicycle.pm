@@ -93,7 +93,7 @@ sub new
     # Has to be created early to be given for fused parts
     my $self = bless { graph => $graph, vertices => \@vertices }, $class;
 
-    my $subgraph = $graph->subgraph( \@vertices );
+    my $subgraph = $graph->subgraph( @vertices );
     my @bridge = grep { $subgraph->degree( $_ ) == 3 } @vertices;
     $subgraph->delete_edge( @bridge );
     @vertices = Graph::Traversal::DFS->new( $subgraph, start => $bridge[0] )->dfs;
@@ -107,7 +107,7 @@ sub new
             die "bicycles with three and four-membered cycles are not supported yet\n"
         }
 
-        my $subgraph = $graph->subgraph( [ @{$components[$_]}, @bridge ] );
+        my $subgraph = $graph->subgraph( @{$components[$_]}, @bridge );
         $subgraph->delete_edge( @bridge );
         my @path = Graph::Traversal::DFS->new( $subgraph, start => $bridge[$_] )->dfs;
         push @path, shift @path;

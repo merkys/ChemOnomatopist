@@ -10,13 +10,14 @@ use parent ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist;
 use Graph::Traversal::DFS;
+use List::Util qw( first );
 
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
 
-    my $subgraph = $graph->subgraph( \@vertices );
-    my( $spiro_atom ) = grep { $subgraph->degree( $_ ) == 4 } @vertices;
+    my $subgraph = $graph->subgraph( @vertices );
+    my $spiro_atom = first { $subgraph->degree( $_ ) == 4 } @vertices;
     $subgraph->delete_vertex( $spiro_atom );
 
     # Graph is broken into components.
