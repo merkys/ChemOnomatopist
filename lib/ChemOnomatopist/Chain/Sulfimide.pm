@@ -25,6 +25,8 @@ sub locants($@)
     map { $_ ? $self->{vertices}[1]->{symbol} : 'N' } @_;
 }
 
-sub suffix() { ChemOnomatopist::Name->new( 'sulfanimine' ) } # FIXME: Support Se and Te
+# CHECKME: Se and Te suffixes may be incorrect, BBv3 has no examples
+my %suffix = ( S => 'sulfan', Se => 'selan', Te => 'telan' );
+sub suffix() { ChemOnomatopist::Name->new( $suffix{$_[0]->{vertices}[1]->{symbol}} . 'imine' ) }
 
 1;
