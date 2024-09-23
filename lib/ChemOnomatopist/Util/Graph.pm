@@ -36,8 +36,7 @@ our @EXPORT_OK = qw(
 sub BFS_calculate_chain_length
 {
     my( $graph, $start ) = @_;
-    my $bfs = Graph::Traversal::BFS->new( $graph, start => $start );
-    return scalar $bfs->bfs;
+    return scalar Graph::Traversal::BFS->new( $graph, start => $start )->bfs;
 }
 
 # Returns 1 if there is any braches in the given graph and if there is none
@@ -146,8 +145,8 @@ sub graph_cycles
         for my $component ($wo_chords->connected_components) {
             next if @$component == 1;
             my @ends = grep { $wo_chords->degree( $_ ) == 1 } @$component; # Should be two
-            my( $chord ) = grep { ($graph->has_edge( $_->[0], $ends[0] ) && $graph->has_edge( $_->[1], $ends[1] )) ||
-                                  ($graph->has_edge( $_->[0], $ends[1] ) && $graph->has_edge( $_->[1], $ends[0] )) } @chords;
+            my $chord = first { ($graph->has_edge( $_->[0], $ends[0] ) && $graph->has_edge( $_->[1], $ends[1] )) ||
+                                ($graph->has_edge( $_->[0], $ends[1] ) && $graph->has_edge( $_->[1], $ends[0] )) } @chords;
             next unless $chord;
             # Found a chord which completes a cycle
             my $vertices = set( @$component, @$chord );
@@ -247,10 +246,10 @@ sub graph_longest_paths_from_vertex
     for my $vertex ( @furthest_leaves ) {
         my @path;
         while( defined $vertex ) {
-            push @path, $vertex;
+            unshift @path, $vertex;
             $vertex = $from{$vertex};
         }
-        push @longest_paths, [ reverse @path ];
+        push @longest_paths, \@path;
     }
 
     return @longest_paths;
