@@ -26,7 +26,7 @@ sub new
     }
 }
 
-# Graph::copy() does not copy edge attributes
+# copy() is overridden as Graph::copy() does not copy edge attributes
 sub copy()
 {
     my( $self ) = @_;
@@ -45,6 +45,7 @@ sub copy()
     return $copy;
 }
 
+# TODO: Add edge attributes
 sub subgraph()
 {
     my( $self, @vertices ) = @_;
