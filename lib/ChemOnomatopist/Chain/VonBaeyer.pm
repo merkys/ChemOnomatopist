@@ -17,14 +17,14 @@ sub new
 {
     my( $class, $graph, @vertices ) = @_;
 
-    my $subgraph = $graph->subgraph( \@vertices );
+    my $subgraph = $graph->subgraph( @vertices );
     my @d3 = grep { $subgraph->degree( $_ ) == 3 } @vertices;
 
     $subgraph->delete_vertices( @d3 );
     # According to BBv3 P-23.2.1 and P-23.2.3, cycles should be ordered in decreasing size
     my @components = sort { @$b <=> @$a } $subgraph->connected_components;
 
-    $subgraph = $graph->subgraph( \@vertices );
+    $subgraph = $graph->subgraph( @vertices );
     my $first_of_bridge = first { $subgraph->has_edge( $d3[0], $_ ) }
                                  @{$components[-1]};
     my $last_of_bridge  = first { $subgraph->has_edge( $d3[1], $_ ) }
@@ -85,7 +85,7 @@ sub flipped()
 
     my $graph = $self->graph;
     my @vertices = $self->vertices;
-    my $subgraph = $graph->subgraph( \@vertices );
+    my $subgraph = $graph->subgraph( @vertices );
     my @sizes = @{$self->{sizes}};
 
     my @d3 = grep { $subgraph->degree( $_ ) == 3 } @vertices;
@@ -110,7 +110,7 @@ sub cycles_swapped($$)
 
     my $graph = $self->graph;
     my @vertices = $self->vertices;
-    my $subgraph = $graph->subgraph( \@vertices );
+    my $subgraph = $graph->subgraph( @vertices );
     my @sizes = @{$self->{sizes}};
 
     my @d2 = grep { $subgraph->degree( $_ ) == 2 } @vertices;
@@ -156,7 +156,7 @@ sub prefix()
     my $name = $self->suffix;
     if( $self->parent ) { # FIXME: Not stable for naphthalene
         my @vertices = $self->vertices;
-        my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
+        my $position = first { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
         die "unknown locant in multicyclic compound\n" unless defined $position;
         $name->pop_e;
         $name->append_substituent_locant( $self->locants( $position ) );

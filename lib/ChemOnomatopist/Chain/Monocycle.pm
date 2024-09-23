@@ -129,7 +129,7 @@ sub autosymmetric_equivalents()
 {
     my( $self ) = @_;
 
-    my $cycle = $self->graph->subgraph( [ $self->vertices ] ); # TODO: Add attributes
+    my $cycle = $self->graph->subgraph( $self->vertices ); # TODO: Add attributes
     my @chains = map { ChemOnomatopist::Chain::Circular->new( $cycle, @$_ ) }
                      circle_permutations( $self->vertices );
     # CHECKME: Additional rules from ChemOnomatopist::filter_chains() might still be needed

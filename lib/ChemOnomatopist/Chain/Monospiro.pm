@@ -102,7 +102,7 @@ sub prefix()
 
     if( $self->parent ) {
         my @vertices = $self->vertices;
-        my( $position ) = grep { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
+        my $position = first { $self->graph->has_edge( $self->parent, $vertices[$_] ) } 0..$#vertices;
         die "unknown locant in multicyclic compound\n" unless defined $position;
         $name->append_substituent_locant( $self->locants( $position ) );
     }
