@@ -170,18 +170,24 @@ sub new
                         $self->flipped_horizontally->flipped_vertically );
 
         # Establish the order
+        # FIXME: Somehow the rules from BBv3 P-14.4 interplay here
         for my $rule (
-                       # P-25.3.3.1.2 (a): Lower locants for heteroatoms
-                       \&ChemOnomatopist::rule_lowest_numbered_heteroatoms,
-                       # P-25.3.3.1.2 (b): Lower locants for senior heteroatoms
-                       \&ChemOnomatopist::rule_lowest_numbered_most_senior_heteroatoms,
-                       # P-25.3.3.1.2 (c): Lower locants for fusion carbon atoms
-                       \&rule_lowest_numbered_fusion_carbons,
-                       # P-25.3.3.1.2 (d): Lower locants for fusion heteroatoms (rather than nonfusion)
-                       \&rule_lowest_numbered_fusion_heteroatoms,
-                       # TODO: P-25.3.3.1.2 (e): Lower locants for interior heteroatom
-                       # P-25.3.3.1.2 (f): Lower locants for indicated hydrogen atoms
-                       \&ChemOnomatopist::rule_lowest_numbered_indicated_hydrogens,
+                        # P-25.3.3.1.2 (a): Lower locants for heteroatoms
+                        \&ChemOnomatopist::rule_lowest_numbered_heteroatoms,
+                        # P-25.3.3.1.2 (b): Lower locants for senior heteroatoms
+                        \&ChemOnomatopist::rule_lowest_numbered_most_senior_heteroatoms,
+                        # P-25.3.3.1.2 (c): Lower locants for fusion carbon atoms
+                        \&rule_lowest_numbered_fusion_carbons,
+                        # P-25.3.3.1.2 (d): Lower locants for fusion heteroatoms (rather than nonfusion)
+                        \&rule_lowest_numbered_fusion_heteroatoms,
+                        # TODO: P-25.3.3.1.2 (e): Lower locants for interior heteroatom
+                        # P-25.3.3.1.2 (f): Lower locants for indicated hydrogen atoms
+                        \&ChemOnomatopist::rule_lowest_numbered_indicated_hydrogens,
+
+                        # P-14.4 (f): Lower locants for detachable alphabetized prefixes
+                        # CHECKME: Not sure what is the relation with other rules
+                        # FIXME: Does not take alphabetic order in consideration
+                        \&ChemOnomatopist::rule_lowest_numbered_locants,
                      ) {
             my @candidates_now = $rule->( @candidates );
             if( @candidates_now == 1 ) {
