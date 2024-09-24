@@ -11,6 +11,7 @@ use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::ABA;
 use ChemOnomatopist::Group::AcidHalide;
 use ChemOnomatopist::Group::Amidine;
+use ChemOnomatopist::Group::Azide;
 use ChemOnomatopist::Group::Carbaldehyde;
 use ChemOnomatopist::Group::Carbonitrile;
 use ChemOnomatopist::Chain::Carboxamide;
@@ -184,7 +185,7 @@ my @rules = (
       sub { &is_nongroup_atom && &is_N && &charge_minus_one && &has_1_neighbour },
       \&is_N,
       NO_MORE_VERTICES,
-      sub { die "cannot handle azides yet\n" } ],
+      sub { graph_replace( $_[0], ChemOnomatopist::Group::Azide->new, @_[1..3] ) } ],
 
     # Hydrazine and diazene
     [ ( sub { &is_nongroup_atom && &is_N } ) x 2,
