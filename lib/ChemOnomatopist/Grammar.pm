@@ -183,6 +183,7 @@ my @rules = (
     [ sub { &is_nongroup_atom && &is_N && &charge_plus_one  && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) },
       sub { &is_nongroup_atom && &is_N && &charge_minus_one && &has_1_neighbour },
       \&is_N,
+      NO_MORE_VERTICES,
       sub { die "cannot handle azides yet\n" } ],
 
     # Hydrazine and diazene
