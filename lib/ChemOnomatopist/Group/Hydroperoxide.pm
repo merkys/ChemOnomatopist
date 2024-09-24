@@ -19,6 +19,7 @@ sub new
 }
 
 sub element() { $_[0]->{atoms}[0]{symbol} }
+sub charge()  { ChemOnomatopist::charge( $_[0]->{atoms}[1] ) }
 sub is_terminal() { 1 }
 
 sub prefix()
@@ -73,7 +74,7 @@ sub suffix()
         $name->append_stem( 'peroxol' );
     }
 
-    if( any { exists $_->{charge} && $_->{charge} == -1 } @{$self->{atoms}} ) {
+    if( $self->charge == -1 ) {
         $name .= 'ate';
     }
 
