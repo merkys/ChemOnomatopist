@@ -180,8 +180,8 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitramide->new, @_[1..4] ) } ],
 
     # Azide
-    [ sub { &is_nongroup_atom && &is_N && &charge_plus_one && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) },
-      sub { &is_nongroup_atom && &is_N && &charge_minus_one },
+    [ sub { &is_nongroup_atom && &is_N && &charge_plus_one  && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) },
+      sub { &is_nongroup_atom && &is_N && &charge_minus_one && &has_1_neighbour },
       \&is_N,
       sub { die "cannot handle azides yet\n" } ],
 
