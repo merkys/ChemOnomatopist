@@ -103,7 +103,12 @@ sub suffix()
         all { $_ eq 'O' } @non_hydroxy_elements ) {
         my $name = $self->element_prefix;
         $name->[-1]{value} =~ s/no$//;
-        return $name .= 'nic acid';
+        if( $hydroxy->charge ) {
+            $name .= 'nate'; # BBv3 P-72.2.2.2.1.1
+        } else {
+            $name .= 'nic acid';
+        }
+        return $name;
     }
 
     my $name = $self->element_prefix;
