@@ -29,6 +29,7 @@ my @cases = (
     { smiles => 'CO[O-]', iupac => 'methaneperoxolate' },
     { smiles => 'C(CO[O-])O[O-]', iupac => 'ethane-1,2-bis(peroxolate)', AUTHOR => 1 },
     { smiles => 'C1(=CC=C(C=C1)S[S-])S[S-]', iupac => 'benzene-1,4-bis(dithioperoxolate)' },
+    { smiles => 'C1(=CC=C(C=C1)O[S-])O[S-]', iupac => 'benzene-1,4-bis(OS-thioperoxolate)', AUTHOR => 1 },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
