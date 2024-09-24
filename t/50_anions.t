@@ -26,7 +26,13 @@ my @cases = (
     { smiles => 'N1C(=CC=C1)C([O-])=N', iupac => '1H-pyrrole-2-carboximidate', AUTHOR => 1 },
 
     # From BBv3 P-72.2.2.2.2
+    { smiles => 'C[O-]', iupac => 'methoxide', AUTHOR => 1 },
+    { smiles => 'CC(C)[O-]', iupac => 'propan-2-olate' },
+    { smiles => 'C=1(C(=CC=CC1)[O-])[O-]', iupac => 'benzene-1,2-bis(olate)', AUTHOR => 1 },
+    { smiles => 'C=1(C(=CC=CC1)[S-])[S-]', iupac => 'benzene-1,2-bis(thiolate)', AUTHOR => 1 },
+    { smiles => 'CN([O-])C', iupac => 'dimethylaminoxide', AUTHOR => 1 },
     { smiles => 'CO[O-]', iupac => 'methaneperoxolate' },
+    { smiles => 'CCS[O-]', iupac => 'ethane(SO-thioperoxolate)', AUTHOR => 1 },
     { smiles => 'C(CO[O-])O[O-]', iupac => 'ethane-1,2-bis(peroxolate)', AUTHOR => 1 },
     { smiles => 'C1(=CC=C(C=C1)S[S-])S[S-]', iupac => 'benzene-1,4-bis(dithioperoxolate)' },
     { smiles => 'C1(=CC=C(C=C1)O[S-])O[S-]', iupac => 'benzene-1,4-bis(OS-thioperoxolate)', AUTHOR => 1 },

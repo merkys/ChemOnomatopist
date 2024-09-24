@@ -45,7 +45,9 @@ sub suffix
 
     my $name = ChemOnomatopist::Name->new;
     $name .= ChemOnomatopist::Name::Part::Isotope->new( $suffix ) if $suffix;
-    return $name . $suffixes{$self->element};
+    $name .= $suffixes{$self->element};
+    $name .= 'ate' if $self->charge == -1;
+    return $name;
 }
 
 sub _cmp_instances
