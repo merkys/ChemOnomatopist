@@ -179,6 +179,12 @@ my @rules = (
     [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, ( sub { &is_nongroup_atom && &is_O && &has_1_neighbour } ) x 2, sub { &is_nongroup_atom && &is_N }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitramide->new, @_[1..4] ) } ],
 
+    # Azide
+    [ sub { &is_nongroup_atom && &is_N && &charge_plus_one && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) },
+      sub { &is_nongroup_atom && &is_N && &charge_minus_one },
+      \&is_N,
+      sub { die "cannot handle azides yet\n" } ],
+
     # Hydrazine and diazene
     [ ( sub { &is_nongroup_atom && &is_N } ) x 2,
         sub { is_double_bond( @_ )
