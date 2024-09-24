@@ -23,6 +23,6 @@ sub is_terminal() { 1 }
 sub needs_multiple_bond_suffix() { '' }
 
 sub prefix() { ChemOnomatopist::Name->new( 'imino' ) }
-sub suffix() { ChemOnomatopist::Name->new( 'imine' ) }
+sub suffix() { ChemOnomatopist::Name->new( $_[0]->charge == -1 ? 'iminide' : 'imine' ) }
 
 1;
