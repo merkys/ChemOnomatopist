@@ -17,7 +17,6 @@ sub new
 }
 
 sub element() { 'N' }
-
 sub is_terminal() { 1 }
 
 sub prefix { ChemOnomatopist::Name->new( 'amido' ) }

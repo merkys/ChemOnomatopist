@@ -274,6 +274,9 @@ my @rules = (
     # N-based groups
     [ sub { &is_nongroup_atom && &is_N && &has_H0 && &no_charge }, sub { &is_nongroup_atom && &is_C && &no_charge }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
+    # TODO: Recognise aminium cations
+    # [ sub { &is_nongroup_atom && &is_N && &has_H0 && &charge_plus_one }, ( \&anything ) x 4, NO_MORE_VERTICES,
+    #   sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &no_charge }, ( \&anything ) x 3, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &has_H1 }, ( \&anything ) x 2, NO_MORE_VERTICES,
