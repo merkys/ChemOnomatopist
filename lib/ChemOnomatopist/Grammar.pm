@@ -247,7 +247,7 @@ my @rules = (
           } ],
 
     # O-based groups
-    [ sub { &is_nongroup_atom && &is_O && ( &has_H1 || &charge_minus_one ) }, \&anything, NO_MORE_VERTICES,
+    [ 'hydroxy', sub { &is_nongroup_atom && &is_O && ( &has_H1 || &charge_minus_one ) }, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_O },
         EDGE { is_double_bond( @_ ) }, \&anything,
@@ -285,10 +285,15 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Isocyanate->new( $_[2]->element ), @_[1..3] ) } ],
 
     # N-based groups
-    [ sub { &is_nongroup_atom && &is_N },
+    [ 'cyanide without N-substitutions',
+      sub { &is_nongroup_atom && &is_N },
         EDGE { is_triple_bond( @_ ) }, sub { &is_nongroup_atom && &is_C },
-      NO_MORE_VERTICES,
+        NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
+    [ 'cyanide with N-substitutions',
+      sub { &is_nongroup_atom && &is_N },
+        EDGE { is_triple_bond( @_ ) }, sub { &is_nongroup_atom && &is_C },
+      sub { die "cannot name N-substituted cyano groups yet\n" } ],
     # TODO: Recognise aminium cations
     # [ sub { &is_nongroup_atom && &is_N && &has_H0 && &charge_plus_one }, ( \&anything ) x 4, NO_MORE_VERTICES,
     #   sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
@@ -324,9 +329,10 @@ my @rules = (
       sub { die "cannot handle nitric/nitrous acid esters yet\n" } ],
 
     # Carbonitrile, special case of cyanide
-    [ \&is_cyanide, \&is_circular, NO_MORE_VERTICES,
+    [ 'cyanide attached to circular compound',
+      \&is_cyanide, \&is_circular, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
-    [ \&is_cyanide, \&is_heteroatom, NO_MORE_VERTICES,
+    [ 'cyanide attached to heteroatom', \&is_cyanide, \&is_heteroatom, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
 
     # Amidines (BBv3 P-66.4.1)
@@ -384,7 +390,7 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..3] ), @_[1..3] ) } ],
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te },   sub { &is_hydroxy && &is_O }, sub { &is_ketone && &is_O },
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..3] ), @_[1..3] ) } ],
-    [ sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te },   sub { &is_hydroxy && &is_O },
+    [ 'noncarbon oxoacid', sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te }, sub { &is_hydroxy && &is_O },
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
     [ \&is_XO3, sub { &is_hydroxy && &is_O },
       sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
