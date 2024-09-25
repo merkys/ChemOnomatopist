@@ -910,6 +910,8 @@ sub select_mainchain
         } elsif( @parents == 1 ) {
             if( blessed $parents[0] && $parents[0]->can( 'candidates' ) ) {
                 @chains = $parents[0]->candidates;
+            } elsif( blessed $parents[0] && !$parents[0]->is_part_of_chain ) {
+                @chains = ( ChemOnomatopist::Chain->new( $graph, undef, @parents ) );
             } else {
                 # As the starting position is known, it is enough to take the "sidechain"
                 # containing this particular parent:
