@@ -10,7 +10,7 @@ my @cases = (
     # From BBv3 P-68.4.2.2
     { smiles => 'COOS', iupac => 'methyldioxidanethiol', AUTHOR => 1 },
     { smiles => 'COOOS', iupac => 'methyltrioxidanethiol' },
-    { smiles => '', iupac => 'methyloxidane-SO-thioperoxol', AUTHOR => 1 },
+    { smiles => 'COSO', iupac => 'methyloxidane-SO-thioperoxol', AUTHOR => 1 },
     { smiles => 'CSSO', iupac => 'methyldisulfanol', AUTHOR => 1 },
     { smiles => 'CSSS[SeH]', iupac => 'methyltrisulfaneselenol' },
     { smiles => 'COOSS', iupac => 'methyldioxidanedithioperoxol', AUTHOR => 1 },
