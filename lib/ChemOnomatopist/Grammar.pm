@@ -46,6 +46,7 @@ use ChemOnomatopist::Group::Urea;
 use ChemOnomatopist::Group::XO3;
 use Chemistry::OpenSMILES qw(
     is_double_bond
+    is_triple_bond
 );
 use Graph::Grammar;
 use Graph::MoreUtils qw( graph_replace );
@@ -280,7 +281,9 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Isocyanate->new( $_[2]->element ), @_[1..3] ) } ],
 
     # N-based groups
-    [ sub { &is_nongroup_atom && &is_N && &has_H0 && &no_charge }, sub { &is_nongroup_atom && &is_C && &no_charge }, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H0 && &no_charge },
+        EDGE { is_triple_bond( @_ ) }, sub { &is_nongroup_atom && &is_C && &no_charge },
+        NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
     # TODO: Recognise aminium cations
     # [ sub { &is_nongroup_atom && &is_N && &has_H0 && &charge_plus_one }, ( \&anything ) x 4, NO_MORE_VERTICES,
