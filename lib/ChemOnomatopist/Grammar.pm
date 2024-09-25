@@ -285,8 +285,8 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Isocyanate->new( $_[2]->element ), @_[1..3] ) } ],
 
     # N-based groups
-    [ sub { &is_nongroup_atom && &is_N && &has_H0 && &no_charge },
-        EDGE { is_triple_bond( @_ ) }, sub { &is_nongroup_atom && &is_C && &no_charge },
+    [ sub { &is_nongroup_atom && &is_N },
+        EDGE { is_triple_bond( @_ ) }, sub { &is_nongroup_atom && &is_C },
       NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
     # TODO: Recognise aminium cations
