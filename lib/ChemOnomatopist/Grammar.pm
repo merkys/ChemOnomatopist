@@ -249,7 +249,9 @@ my @rules = (
     # O-based groups
     [ sub { &is_nongroup_atom && &is_O && ( &has_H1 || &charge_minus_one ) }, \&anything, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( $_[1] ), $_[1] ) } ],
-    [ sub { &is_nongroup_atom && &is_O && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&anything, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_O },
+        EDGE { is_double_bond( @_ ) }, \&anything,
+      NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
 
     # Ester
