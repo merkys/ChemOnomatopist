@@ -15,7 +15,7 @@ my @cases = (
 
     # From BBv3 P-61.11.1
     { smiles => 'N(=[N+]=[N-])C1=CC(=C(C=C1)F)[N+](=O)[O-]', iupac => '4-azido-1-fluoro-2-nitrobenzene' },
-    { smiles => '[N+](=O)([O-])NC(N(CCC)N=O)=N', iupac => 'N\'-nitro-N-nitroso-N-propylguanidine', AUTHOR => 1 },
+    { smiles => '[N+](=O)([O-])NC(N(CCC)N=O)=N', iupac => 'N\'-nitro-N-nitroso-N-propylguanidine' },
 
     # From BBv3 P-61.11.2
     { smiles => 'Cl[Si]([SiH2][SiH2][SiH2][Si](C)(C)C)(Cl)Cl', iupac => '1,1,1-trichloro-5,5,5-trimethylpentasilane', AUTHOR => 1 },
