@@ -13,6 +13,15 @@ my @cases = (
     { smiles => 'C(O)OO', iupac => 'hydroperoxymethanol' },
     { smiles => 'OOCC(=O)C', iupac => '1-hydroperoxypropan-2-one' }, # Unchecked
 
+    # From BBv3 P-61.11.1
+    { smiles => 'N(=[N+]=[N-])C1=CC(=C(C=C1)F)[N+](=O)[O-]', iupac => '4-azido-1-fluoro-2-nitrobenzene' },
+    { smiles => '[N+](=O)([O-])NC(N(CCC)N=O)=N', iupac => 'N\'-nitro-N-nitroso-N-propylguanidine', AUTHOR => 1 },
+
+    # From BBv3 P-61.11.2
+    { smiles => 'Cl[Si]([SiH2][SiH2][SiH2][Si](C)(C)C)(Cl)Cl', iupac => '1,1,1-trichloro-5,5,5-trimethylpentasilane', AUTHOR => 1 },
+    { smiles => 'BrCCCl', iupac => '1-bromo-2-chloroethane' },
+    { smiles => 'N(=[N+]=[N-])C1=CC=C(C=C1)N=C=O', iupac => '1-azido-4-isocyanatobenzene' },
+
     # From BBv2 P-65.1.2.4
     { smiles => 'CC(=O)CCCC(=O)O', iupac => '5-oxohexanoic acid' },
     { smiles => 'C(=O)(O)C(O)C(C(=O)O)C(=O)C(=O)O', iupac => '1-hydroxy-3-oxopropane-1,2,3-tricarboxylic acid' },
