@@ -1085,7 +1085,8 @@ sub select_mainchain
     if( $most_senior_group &&
         element( $groups[0] ) && element( $groups[0] ) eq 'C' &&
         !$chain->isa( ChemOnomatopist::Chain::Circular:: ) &&
-         $chain->number_of_groups( $most_senior_group ) ) {
+         $chain->number_of_groups( $most_senior_group ) &&
+         @vertices >= 3 ) {
 
         shift @vertices;
         pop @vertices;
