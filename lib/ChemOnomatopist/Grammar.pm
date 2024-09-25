@@ -267,7 +267,9 @@ my @rules = (
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te && ( &has_H1 || &charge_minus_one ) }, \&is_C_N_O_S_Se_Te, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( $_[1] ), $_[1] ) } ],
     # Ketones and their chalcogen analogues
-    [ sub { &is_nongroup_atom && &is_O_S_Se_Te && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) }, \&anything, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_O_S_Se_Te && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) },
+        EDGE { is_double_bond( @_ ) }, \&anything,
+      NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( ChemOnomatopist::element( $_[1] ) ), $_[1] ) } ],
 
     # Urea
@@ -298,9 +300,14 @@ my @rules = (
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &has_H3 }, NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
-    [ sub { &is_nongroup_atom && &is_N && &has_H0 && any { ChemOnomatopist::element( $_ ) eq 'C' && is_double_bond( @_, $_ ) && $_[0]->degree( $_ ) + ($_->{hcount} ? $_->{hcount} : 0) == 3 } $_[0]->neighbours( $_[1] ) }, \&is_C, \&anything, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && &has_H0 },
+        EDGE { is_double_bond( @_ ) && $_[0]->degree( $_[2] ) + ($_[2]->{hcount} ? $_[2]->{hcount} : 0) == 3 }, \&is_C,
+        \&anything,
+      NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imine->new( $_[1] ), $_[1] ) } ],
-    [ sub { &is_nongroup_atom && &is_N && ( &has_H1 || ( &has_H0 && &charge_minus_one ) ) && any { ChemOnomatopist::element( $_ ) eq 'C' && is_double_bond( @_, $_ ) && $_[0]->degree( $_ ) + ($_->{hcount} ? $_->{hcount} : 0) == 3 } $_[0]->neighbours( $_[1] ) }, \&is_C, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_N && ( &has_H1 || ( &has_H0 && &charge_minus_one ) ) },
+        EDGE { is_double_bond( @_ ) && $_[0]->degree( $_[2] ) + ($_[2]->{hcount} ? $_[2]->{hcount} : 0) == 3 }, \&is_C,
+      NO_MORE_VERTICES,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Imine->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, \&is_ketone, sub { &is_hydroxy && &is_O && &charge_minus_one }, \&anything,
       sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitro->new, @_[1..3] ) } ],
