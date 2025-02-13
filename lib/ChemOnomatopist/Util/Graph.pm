@@ -69,7 +69,7 @@ sub cyclic_components
 
     # Due to the issue in Graph, bridges() returns strings instead of real objects.
     # Graph issue: https://github.com/graphviz-perl/Graph/issues/29
-    # The code below works now buggy (< 0.9727) as well as fixed (>= 0.9727) versions.
+    # The code below works on buggy (< 0.9727) as well as fixed (>= 0.9727) versions.
     my %vertices_by_name = map { $_ => $_ } $graph->vertices;
     $graph->delete_edges( map { map { $vertices_by_name{$_} } @$_ } $graph->bridges );
     $graph->delete_vertices( grep { !$graph->degree( $_ ) } $graph->vertices );
