@@ -6,7 +6,7 @@ package ChemOnomatopist::Isotope;
 use strict;
 use warnings;
 
-use Chemistry::Isotope qw( isotope_abundance );
+use ChemOnomatopist::Util;
 
 sub new
 {
@@ -20,15 +20,12 @@ sub new
 sub atomic_number()
 {
     my( $self ) = @_;
-    my $abundance = isotope_abundance( $self->element );
-    my( $most_abundant ) = sort { $abundance->{$b} <=> $abundance->{$a} }
-                                keys %$abundance;
-    return $most_abundant + 0;
+    return ChemOnomatopist::Util::atomic_number( $self->element );
 }
 
-sub element()       { $_[0]->{element} }
-sub index()         { $_[0]->{index} }
-sub locant()        { $_[0]->{locant} }
-sub mass_number()   { $_[0]->{mass_number} }
+sub element()     { $_[0]->{element} }
+sub index()       { $_[0]->{index} }
+sub locant()      { $_[0]->{locant} }
+sub mass_number() { $_[0]->{mass_number} }
 
 1;
