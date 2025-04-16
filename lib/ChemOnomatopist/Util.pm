@@ -6,9 +6,10 @@ package ChemOnomatopist::Util;
 use strict;
 use warnings;
 
+use Chemistry::Isotope qw( isotope_abundance );
 use Exporter;
 use Graph::Undirected;
-use List::Util qw( max min pairs );
+use List::Util qw( first max min pairs );
 use Scalar::Util qw( blessed );
 
 use parent Exporter::;
@@ -17,6 +18,7 @@ our @EXPORT_OK = qw(
     all_max
     all_min
     array_frequencies
+    atomic_number
     circle_permutations
     cmp_arrays
     copy
@@ -53,6 +55,16 @@ sub array_frequencies(@)
         $frequencies{$_}++;
     }
     return %frequencies;
+}
+
+sub atomic_number($)
+{
+    my( $element ) = @_;
+    my $abundance = isotope_abundance( $element );
+    my $most_abundant = first { 1 }
+                        sort  { $abundance->{$b} <=> $abundance->{$a} }
+                              keys %$abundance;
+    return $most_abundant + 0;
 }
 
 sub circle_permutations(@)

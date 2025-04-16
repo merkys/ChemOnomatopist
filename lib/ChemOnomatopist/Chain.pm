@@ -17,8 +17,10 @@ use ChemOnomatopist::Group::Ether;
 use ChemOnomatopist::Isotope;
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Isotope;
+use ChemOnomatopist::Util qw( atomic_number );
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Chemistry::OpenSMILES qw( is_chiral_tetrahedral );
+use Chemistry::OpenSMILES::Writer;
 use Graph::Traversal::DFS;
 use List::Util qw( all any first none sum0 uniq );
 use Scalar::Util qw( blessed );
@@ -715,7 +717,29 @@ sub stereodescriptor_part()
     my @stereocenter_positions = $self->stereocenter_positions;
     return ChemOnomatopist::Name->new unless @stereocenter_positions;
 
-    return ChemOnomatopist::Name->new( '(R)-' ); # FIXME: Only for testing
+    my @stereodescriptors;
+    for my $i (@stereocenter_positions) {
+        my @chirality_neighbours = @{$self->{vertices}[$i]{chirality_neighbours}};
+        my @elements = map { $_->{symbol} } @chirality_neighbours;
+        die "cannot process complicated chiral centers\n" unless @elements == 4;
+
+        if( @elements > uniq @elements ) {
+            die "cannot process complicated chiral centers\n";
+        }
+
+        my %order = map { ( $chirality_neighbours[$_] => $_ ) } 0..3;
+        my @order_now = sort { atomic_number( ucfirst $b->{symbol} ) <=>
+                               atomic_number( ucfirst $a->{symbol} ) }
+                             @chirality_neighbours;
+
+        my $chirality = $self->{vertices}[$i]{chirality};
+        if( join( '', Chemistry::OpenSMILES::Writer::_permutation_order( map { $order{$_} } @order_now ) ) ne '0123' ) {
+            $chirality = $chirality eq '@' ? '@@' : '@';
+        }
+        push @stereodescriptors, $chirality eq '@' ? 'S' : 'R';
+    }
+    return ChemOnomatopist::Name->new unless @stereodescriptors;
+    return ChemOnomatopist::Name->new( '(' . join( ',', @stereodescriptors ) . ')-' );
 }
 
 sub prefix()
