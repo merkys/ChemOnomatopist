@@ -227,7 +227,7 @@ sub get_sidechain_name
     }
 
     # Collecting names of all the attachments
-    my $name = ChemOnomatopist::Name->new;
+    my $name = $chain->stereodescriptor_part;
     my @order = sort { $a cmp $b } keys %attachments;
     for my $i (0..$#order) {
         my $attachment_name = $order[$i];
