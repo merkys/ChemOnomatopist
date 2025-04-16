@@ -18,6 +18,7 @@ use ChemOnomatopist::Isotope;
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Isotope;
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
+use Chemistry::OpenSMILES qw( is_chiral_tetrahedral );
 use Graph::Traversal::DFS;
 use List::Util qw( all any first none sum0 uniq );
 use Scalar::Util qw( blessed );
@@ -210,6 +211,24 @@ sub nonstandard_valence_positions()
 
     $self->{nonstandard_valence_positions} = \@nonstandard_valence_positions;
     return @nonstandard_valence_positions;
+}
+
+sub stereocenter_positions()
+{
+    my( $self ) = @_;
+
+    return @{$self->{stereocenter_positions}} if $self->{stereocenter_positions};
+
+    my @vertices = $self->vertices;
+    my @stereocenter_positions;
+    for (0..$#vertices) {
+        next if blessed $vertices[$_];
+        next unless is_chiral_tetrahedral( $vertices[$_] );
+        push @stereocenter_positions, $_;
+    }
+
+    $self->{stereocenter_positions} = \@stereocenter_positions;
+    return @stereocenter_positions;
 }
 
 sub is_main() { $_[0]->{is_main} }
@@ -612,6 +631,12 @@ sub number_of_nonstandard_valence_positions()
     return scalar $self->nonstandard_valence_positions;
 }
 
+sub number_of_stereocenter_positions()
+{
+    my( $self ) = @_;
+    return scalar $self->stereocenter_positions;
+}
+
 sub charge_part()
 {
     my( $self ) = @_;
@@ -681,6 +706,16 @@ sub isotope_part()
     }
 
     return ChemOnomatopist::Name::Part::Isotope->new( "($isotopes)" );
+}
+
+sub stereodescriptor_part()
+{
+    my( $self ) = @_;
+
+    my @stereocenter_positions = $self->stereocenter_positions;
+    return ChemOnomatopist::Name->new unless @stereocenter_positions;
+
+    return ChemOnomatopist::Name->new( '(R)-' ); # FIXME: Only for testing
 }
 
 sub prefix()
