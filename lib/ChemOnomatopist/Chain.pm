@@ -17,6 +17,7 @@ use ChemOnomatopist::Group::Ether;
 use ChemOnomatopist::Isotope;
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Isotope;
+use ChemOnomatopist::Name::Part::Stereodescriptor;
 use ChemOnomatopist::Util qw( atomic_number );
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Chemistry::OpenSMILES qw( is_chiral_tetrahedral );
@@ -739,7 +740,7 @@ sub stereodescriptor_part()
         push @stereodescriptors, $chirality eq '@' ? 'S' : 'R';
     }
     return ChemOnomatopist::Name->new unless @stereodescriptors;
-    return ChemOnomatopist::Name->new( '(' . join( ',', @stereodescriptors ) . ')-' );
+    return ChemOnomatopist::Name::Part::Stereodescriptor->new( '(' . join( ',', @stereodescriptors ) . ')-' )->to_name;
 }
 
 sub prefix()

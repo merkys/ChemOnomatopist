@@ -74,7 +74,7 @@ sub append_locants
     my( $self, @locants ) = @_;
     return $self unless @locants;
 
-    if( @$self && !$self->ends_with_locant ) {
+    if( @$self && !$self->ends_with_locant && !$self->ends_with_stereodescriptor ) {
         $self->append( ChemOnomatopist::Name::Part::Locants->new( '-' . join( ',', @locants ) . '-' ) );
     } else {
         $self->append( ChemOnomatopist::Name::Part::Locants->new( join( ',', @locants ) . '-' ) );
@@ -264,6 +264,14 @@ sub ends_with_element()
     return @$self &&
            blessed $self->[-1] &&
            $self->[-1]->isa( ChemOnomatopist::Name::Part::Element:: );
+}
+
+sub ends_with_stereodescriptor()
+{
+    my( $self ) = @_;
+    return @$self &&
+           blessed $self->[-1] &&
+           $self->[-1]->isa( ChemOnomatopist::Name::Part::Stereodescriptor:: );
 }
 
 sub starts_with_element()
