@@ -603,7 +603,8 @@ sub find_groups
         $valence += $atom->{hcount} if $atom->{hcount};
         for my $neighbour ($graph->neighbours( $atom )) {
             my $order = 1;
-            if( $graph->has_edge_attribute( $atom, $neighbour, 'bond' ) ) {
+            if( $graph->has_edge_attribute( $atom, $neighbour, 'bond' ) &&
+                exists   $bond_symbol_to_order{$graph->get_edge_attribute( $atom, $neighbour, 'bond' )} ) {
                 $order = $bond_symbol_to_order{$graph->get_edge_attribute( $atom, $neighbour, 'bond' )};
             }
             $valence += $order;
@@ -620,7 +621,8 @@ sub find_groups
         my %valences;
         for my $edge ($core->edges) {
             my $order = 1;
-            if( $core->has_edge_attribute( @$edge, 'bond' ) ) {
+            if( $core->has_edge_attribute( @$edge, 'bond' ) &&
+                exists   $bond_symbol_to_order{$core->get_edge_attribute( @$edge, 'bond' )} ) {
                 $order = $bond_symbol_to_order{$core->get_edge_attribute( @$edge, 'bond' )};
             }
             $valences{$edge->[0]} += $order;
