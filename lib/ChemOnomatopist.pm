@@ -45,6 +45,7 @@ use ChemOnomatopist::Name::Part::Stem;
 use ChemOnomatopist::Util qw(
     all_max
     all_min
+    atomic_number
     cmp_arrays
     copy
     zip
@@ -1682,6 +1683,25 @@ sub alkane_chain_name($)
 
     return $names[$N] if $N < @names;
     return IUPAC_numerical_multiplier( $N );
+}
+
+sub order_by_neighbours($$$)
+{
+    my( $graph, $A, $B ) = @_;
+
+    my $cmp = 0;
+    my @frontA = ( $A );
+    my @frontB = ( $B );
+    my $seen = set;
+    while( !$cmp && ( @frontA || @frontB ) ) {
+        $cmp = cmp_arrays( [ reverse sort map { atomic_number( $_ ) } @frontB ],
+                           [ reverse sort map { atomic_number( $_ ) } @frontA ] );
+        $seen->insert( @frontA, @frontB );
+        @frontA = grep { !$seen->has( $_ ) } map { $graph->neighbours( $_ ) } @frontA;
+        @frontB = grep { !$seen->has( $_ ) } map { $graph->neighbours( $_ ) } @frontB;
+    }
+
+    return $cmp;
 }
 
 1;

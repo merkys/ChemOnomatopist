@@ -60,6 +60,7 @@ sub array_frequencies(@)
 sub atomic_number($)
 {
     my( $element ) = @_;
+    $element = ucfirst lc $element->{symbol} if ref $element;
     my $abundance = isotope_abundance( $element );
     my $most_abundant = first { 1 }
                         sort  { $abundance->{$b} <=> $abundance->{$a} }
