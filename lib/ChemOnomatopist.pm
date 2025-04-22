@@ -1685,6 +1685,7 @@ sub alkane_chain_name($)
     return IUPAC_numerical_multiplier( $N );
 }
 
+# Implemented according to BBv3 P-92.1.4
 sub order_by_neighbours($$$)
 {
     my( $graph, $A, $B ) = @_;
