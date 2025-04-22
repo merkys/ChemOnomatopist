@@ -21,6 +21,7 @@ use ChemOnomatopist::Name::Part::Locants;
 use ChemOnomatopist::Name::Part::Locants::Substituent;
 use ChemOnomatopist::Name::Part::Multiplier;
 use ChemOnomatopist::Name::Part::Stem;
+use ChemOnomatopist::Name::Part::Stereodescriptor;
 use Clone qw( clone );
 use List::Util qw( any );
 use Scalar::Util qw( blessed );

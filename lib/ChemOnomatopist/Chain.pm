@@ -718,10 +718,11 @@ sub stereodescriptor_part()
     my @stereocenter_positions = $self->stereocenter_positions;
     return ChemOnomatopist::Name->new unless @stereocenter_positions;
 
+    my @vertices = $self->vertices;
     my @stereodescriptors;
     for my $i (@stereocenter_positions) {
-        my @chirality_neighbours = @{$self->{vertices}[$i]{chirality_neighbours}};
-        my @elements = map { $_->{symbol} } @chirality_neighbours;
+        my @chirality_neighbours = @{$vertices[$i]->{chirality_neighbours}};
+        my @elements = map { ucfirst $_->{symbol} } @chirality_neighbours;
         die "cannot process complicated chiral centers\n" unless @elements == 4;
 
         if( @elements > uniq @elements ) {
@@ -733,7 +734,7 @@ sub stereodescriptor_part()
                                atomic_number( ucfirst $a->{symbol} ) }
                              @chirality_neighbours;
 
-        my $chirality = $self->{vertices}[$i]{chirality};
+        my $chirality = $vertices[$i]->{chirality};
         if( join( '', Chemistry::OpenSMILES::Writer::_permutation_order( map { $order{$_} } @order_now ) ) ne '0123' ) {
             $chirality = $chirality eq '@' ? '@@' : '@';
         }
