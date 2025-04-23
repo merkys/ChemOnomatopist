@@ -15,7 +15,7 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name;
 use ChemOnomatopist::Name::Part::Fusion;
 use ChemOnomatopist::Name::Part::Stem;
-use ChemOnomatopist::Util qw( all_max all_min element );
+use ChemOnomatopist::Util qw( all_max all_min );
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_double_bond );
 use Graph::Traversal::DFS;
@@ -289,14 +289,14 @@ sub fusion_positions()
 sub fusion_carbon_positions()
 {
     my( $self ) = @_;
-    return grep { element( $self->{vertices}[$_] ) eq 'C' }
+    return grep { ChemOnomatopist::Util::element( $self->{vertices}[$_] ) eq 'C' }
                 $self->fusion_positions;
 }
 
 sub fusion_heteroatom_positions()
 {
     my( $self ) = @_;
-    return grep { element( $self->{vertices}[$_] ) ne 'C' }
+    return grep { ChemOnomatopist::Util::element( $self->{vertices}[$_] ) ne 'C' }
                 $self->fusion_positions;
 }
 

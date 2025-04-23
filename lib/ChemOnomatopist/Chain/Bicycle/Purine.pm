@@ -6,6 +6,7 @@ package ChemOnomatopist::Chain::Bicycle::Purine;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Util;
 use List::Util qw( first );
 
 use parent ChemOnomatopist::Chain::Bicycle::;
@@ -16,7 +17,7 @@ sub new
 
     my $imidazole  = first { $_->length == 5 } @cycles;
     my $pyrimidine = first { $_->length == 6 } @cycles;
-    if( ChemOnomatopist::element( $pyrimidine->{vertices}[0] ) eq 'N' ) {
+    if( ChemOnomatopist::Util::element( $pyrimidine->{vertices}[0] ) eq 'N' ) {
         $pyrimidine = $pyrimidine->flipped;
     }
     if( $pyrimidine->{vertices}[-1] != $imidazole->{vertices}[-1] ) {

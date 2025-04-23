@@ -12,6 +12,7 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Name;
+use ChemOnomatopist::Util;
 use List::Util qw( all any uniq );
 use Scalar::Util qw( blessed );
 
@@ -53,7 +54,7 @@ sub prefix()
     my $ketone = $self->{ketone};
 
     my $name = ChemOnomatopist::Name->new;
-    if( ChemOnomatopist::element( $hydroxy ) ne 'O' ||
+    if( ChemOnomatopist::Util::element( $hydroxy ) ne 'O' ||
         $ketone->element ne 'O' ) {
         $name .= $hydroxy->prefix;
         $name->bracket unless $name->is_simple;
@@ -72,7 +73,7 @@ sub suffix()
     my( $self ) = @_;
     my $hydroxy = $self->{hydroxy};
     my $ketone = $self->{ketone};
-    my @elements = map { ChemOnomatopist::element( $_ ) } ( $hydroxy, $ketone );
+    my @elements = map { ChemOnomatopist::Util::element( $_ ) } ( $hydroxy, $ketone );
     if( all { $_ eq 'O' } @elements ) {
         return ChemOnomatopist::Name->new( 'oic acid' ) if blessed $hydroxy && !$hydroxy->charge;
         return ChemOnomatopist::Name->new( 'oate' );
@@ -93,8 +94,7 @@ sub multisuffix()
     if( blessed $hydroxy &&
         $hydroxy->isa( ChemOnomatopist::Group::Hydroperoxide:: ) ) {
 
-        my @hydroxy_elements = map { ChemOnomatopist::element( $_ ) }
-                                   @{$hydroxy->{atoms}};
+        my @hydroxy_elements = map { ChemOnomatopist::Util::element( $_ ) } @{$hydroxy->{atoms}};
         my $hydroxy_part = element_suffix( @hydroxy_elements );
         my $ketone_part  = element_suffix( $ketone->element );
 
@@ -111,7 +111,7 @@ sub multisuffix()
         return $name . " @hydroxy_elements-acid" if scalar( uniq @hydroxy_elements ) > 1;
         return $name . ' acid';
     } else {
-        my @elements = ( ChemOnomatopist::element( $hydroxy ), $ketone->element );
+        my @elements = ( ChemOnomatopist::Util::element( $hydroxy ), $ketone->element );
         if( all { $_ eq 'O' } @elements ) {
             return ChemOnomatopist::Name->new( 'carboxylic acid' ) if blessed $hydroxy && !$hydroxy->charge;
             return ChemOnomatopist::Name->new( 'carboxylate' );
@@ -130,8 +130,8 @@ sub suffix_if_cycle_substituent() { $_[0]->multisuffix }
 sub _cmp_instances($$)
 {
     my( $A, $B ) = @_;
-    return ChemOnomatopist::element( $A->{ketone} )  cmp ChemOnomatopist::element( $B->{ketone} ) ||
-           ChemOnomatopist::element( $A->{hydroxy} ) cmp ChemOnomatopist::element( $B->{hydroxy} );
+    return ChemOnomatopist::Util::element( $A->{ketone} )  cmp ChemOnomatopist::Util::element( $B->{ketone} ) ||
+           ChemOnomatopist::Util::element( $A->{hydroxy} ) cmp ChemOnomatopist::Util::element( $B->{hydroxy} );
 }
 
 1;

@@ -8,13 +8,13 @@ use warnings;
 
 use parent ChemOnomatopist::Group::;
 
-use ChemOnomatopist;
 use ChemOnomatopist::Group::Hydroxy;
 use ChemOnomatopist::Group::Ketone;
 use ChemOnomatopist::Group::Nitro;
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Group::XO3;
+use ChemOnomatopist::Util;
 use Scalar::Util qw( blessed );
 
 sub new
@@ -23,7 +23,7 @@ sub new
     return bless { attachments => \@attachments, atom => $atom }, $class;
 }
 
-sub element() { ChemOnomatopist::element( $_[0]->{atom} ) }
+sub element() { ChemOnomatopist::Util::element( $_[0]->{atom} ) }
 
 sub is_part_of_chain() { 1 }
 

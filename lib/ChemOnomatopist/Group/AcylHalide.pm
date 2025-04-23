@@ -18,7 +18,7 @@ sub new
     return bless { halide => $halide }, $class;
 }
 
-sub element() { return 'C' }
+sub element() { 'C' }
 
 sub prefix()
 {

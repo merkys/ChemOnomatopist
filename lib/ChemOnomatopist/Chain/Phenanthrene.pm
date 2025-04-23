@@ -8,6 +8,7 @@ use warnings;
 
 use ChemOnomatopist::Chain::Polyaphene;
 use ChemOnomatopist::Name;
+use ChemOnomatopist::Util;
 use ChemOnomatopist::Util::Graph qw( merge_graphs );
 use Graph::Undirected;
 use List::Util qw( first all any );
@@ -31,18 +32,16 @@ sub new
     my @vertices = Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs;
 
     # Adjust the order
-    if( any { ChemOnomatopist::element( $_ ) eq 'N' } @vertices ) {
+    if( any { ChemOnomatopist::Util::element( $_ ) eq 'N' } @vertices ) {
         # Find the order so as N is closest to the beginning of the chain
-        my $first = first { ChemOnomatopist::element( $vertices[$_] ) eq 'N' }
-                          0..$#vertices;
-        my $last  = first { ChemOnomatopist::element( $vertices[-1-$_] ) eq 'N' }
-                          0..$#vertices;
+        my $first = first { ChemOnomatopist::Util::element( $vertices[$_] )    eq 'N' } 0..$#vertices;
+        my $last  = first { ChemOnomatopist::Util::element( $vertices[-1-$_] ) eq 'N' } 0..$#vertices;
         @vertices = reverse @vertices if $last < $first;
         push @vertices, shift @vertices;
 
         # Phenanthridine has a strict order
-        if( (grep { ChemOnomatopist::element( $_ ) eq 'N' } @vertices) == 1 &&
-            ChemOnomatopist::element( $vertices[5] ) ne 'N' ) {
+        if( (grep { ChemOnomatopist::Util::element( $_ ) eq 'N' } @vertices) == 1 &&
+            ChemOnomatopist::Util::element( $vertices[5] ) ne 'N' ) {
             die "cannot handle complicated cyclic compounds\n";
         }
     } else {

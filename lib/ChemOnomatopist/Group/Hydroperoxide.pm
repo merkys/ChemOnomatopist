@@ -26,7 +26,7 @@ sub prefix()
 {
     my( $self ) = @_;
 
-    my @elements = map { ChemOnomatopist::element( $_ ) } @{$self->{atoms}};
+    my @elements = map { ChemOnomatopist::Util::element( $_ ) } @{$self->{atoms}};
 
     return ChemOnomatopist::Name->new( 'hydroperoxy' ) if all { $_ eq 'O' } @elements;
     if( all { $_ eq 'S' } @elements ) {
@@ -53,7 +53,7 @@ sub suffix()
 {
     my( $self ) = @_;
 
-    my @elements = map { ChemOnomatopist::element( $_ ) } @{$self->{atoms}};
+    my @elements = map { ChemOnomatopist::Util::element( $_ ) } @{$self->{atoms}};
 
     my $name = ChemOnomatopist::Name->new;
     if( all { $_ eq 'O' } @elements ) {
@@ -85,8 +85,8 @@ sub suffix()
 sub _cmp_instances
 {
     my( $A, $B ) = @_;
-    return scalar( grep { ChemOnomatopist::element( $_ ) eq 'O' } @{$B->{atoms}}) <=>
-           scalar( grep { ChemOnomatopist::element( $_ ) eq 'O' } @{$A->{atoms}});
+    return scalar( grep { ChemOnomatopist::Util::element( $_ ) eq 'O' } @{$B->{atoms}}) <=>
+           scalar( grep { ChemOnomatopist::Util::element( $_ ) eq 'O' } @{$A->{atoms}});
 }
 
 1;

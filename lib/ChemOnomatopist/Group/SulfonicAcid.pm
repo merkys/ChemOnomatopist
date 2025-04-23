@@ -36,7 +36,7 @@ sub attachments_part()
     my @attachments = @{$self->{attachments}};
     my $hydroxy = $self->hydroxy;
     my @non_hydroxy = grep { $_ != $hydroxy } @attachments;
-    my @non_hydroxy_elements = map { ChemOnomatopist::element( $_ ) } @non_hydroxy;
+    my @non_hydroxy_elements = map { ChemOnomatopist::Util::element( $_ ) } @non_hydroxy;
 
     my %elements = array_frequencies @non_hydroxy_elements;
     if( $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: ) ) {
@@ -96,7 +96,7 @@ sub suffix()
                                           $_->isa( ChemOnomatopist::Group::Hydroperoxide:: ) ) }
                         @attachments;
     my @non_hydroxy = grep { $_ != $hydroxy } @attachments;
-    my @non_hydroxy_elements = map { ChemOnomatopist::element( $_ ) } @non_hydroxy;
+    my @non_hydroxy_elements = map { ChemOnomatopist::Util::element( $_ ) } @non_hydroxy;
 
     if( $hydroxy->isa( ChemOnomatopist::Group::Hydroxy:: ) &&
         $hydroxy->element eq 'O' &&
@@ -126,7 +126,7 @@ sub suffix()
         # Peroxides need explicit elements if:
         # a) elements are different
         # b) elements are OO and there is a non-N and non-O element among non-hydroxy elements
-        my @elements = map { ChemOnomatopist::element( $_ ) } @{$hydroxy->{atoms}};
+        my @elements = map { ChemOnomatopist::Util::element( $_ ) } @{$hydroxy->{atoms}};
         if( scalar( uniq @elements ) == 2 ||
             ((all { $_ eq 'O' } @elements) && any { $_ ne 'N' && $_ ne 'O' } @non_hydroxy_elements) ) {
             $name .= join( '', @elements ) . '-';

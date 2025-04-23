@@ -10,6 +10,7 @@ use parent ChemOnomatopist::Group::, ChemOnomatopist::Chain::;
 
 use ChemOnomatopist::Name::Part::Locants;
 use ChemOnomatopist::Name::Part::Stem;
+use ChemOnomatopist::Util;
 use Clone qw( clone );
 use List::Util qw( first );
 use Scalar::Util qw( blessed );
@@ -49,7 +50,8 @@ sub nonstandard_valence_positions()
     my @nonstandard_valence_positions;
     for (1..$#vertices) { # Nonstandard valence of the central atom is not important, hence skipped
         next if blessed $vertices[$_];
-        next if ChemOnomatopist::element( $vertices[$_] ) && ChemOnomatopist::element( $vertices[$_] ) eq 'C';
+        next if ChemOnomatopist::Util::element( $vertices[$_] ) &&
+                ChemOnomatopist::Util::element( $vertices[$_] ) eq 'C';
         next unless exists $vertices[$_]->{valence};
         push @nonstandard_valence_positions, $_;
     }
@@ -71,8 +73,8 @@ sub prefix()
     my( $central_atom, @others ) = $self->vertices;
     return 'carbamimidoyl' unless $central_atom->{symbol} eq 'S';
 
-    my $N = grep { ChemOnomatopist::element( $_ ) eq 'N' } @others;
-    my $O = grep { ChemOnomatopist::element( $_ ) eq 'O' } @others;
+    my $N = grep { ChemOnomatopist::Util::element( $_ ) eq 'N' } @others;
+    my $O = grep { ChemOnomatopist::Util::element( $_ ) eq 'O' } @others;
 
     my $name = ChemOnomatopist::Name::Part::Locants->new( 'S-' )->to_name;
     $name .= 'amino';
@@ -93,8 +95,8 @@ sub suffix()
     my $name = ChemOnomatopist::Name::Part::Stem->new( $prefixes{$central_atom->{symbol}} )->to_name;
     $name .= 'carbox' if $self->{is_carboximidamide};
     if( $central_atom->{symbol} ne 'C' ) {
-        my $N = grep { ChemOnomatopist::element( $_ ) eq 'N' } @others;
-        my $O = grep { ChemOnomatopist::element( $_ ) eq 'O' } @others;
+        my $N = grep { ChemOnomatopist::Util::element( $_ ) eq 'N' } @others;
+        my $O = grep { ChemOnomatopist::Util::element( $_ ) eq 'O' } @others;
         $name .= 'in'    if $N == 2;
         $name .= 'on'    if $N == 2 && $O == 1;
         $name .= 'onodi' if $N == 3;

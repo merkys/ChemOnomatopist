@@ -9,6 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist::Name;
+use ChemOnomatopist::Util;
 use ChemOnomatopist::Util::Graph qw(
     graph_without_edge_attributes
 );
@@ -67,7 +68,7 @@ sub has_form($$)
     return '' unless @vertices == 22;
     return are_isomorphic( graph_without_edge_attributes( $graph ),
                            $class->ideal_graph,
-                           sub { ChemOnomatopist::element( $_[0] ) } );
+                           sub { ChemOnomatopist::Util::element( $_[0] ) } );
 }
 
 sub ideal_graph($)

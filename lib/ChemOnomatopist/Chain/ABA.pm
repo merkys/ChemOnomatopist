@@ -10,6 +10,7 @@ use parent ChemOnomatopist::Chain::;
 
 use ChemOnomatopist::Name::Part::Element;
 use ChemOnomatopist::Elements qw( %elements );
+use ChemOnomatopist::Util;
 use Scalar::Util qw( blessed );
 
 sub new
@@ -45,8 +46,8 @@ sub add
     $self->{vertices} = \@vertices;
 }
 
-sub inner_element { ChemOnomatopist::element( $_[0]->{vertices}[1] ) }
-sub outer_element { ChemOnomatopist::element( $_[0]->{vertices}[0] ) }
+sub inner_element { ChemOnomatopist::Util::element( $_[0]->{vertices}[1] ) }
+sub outer_element { ChemOnomatopist::Util::element( $_[0]->{vertices}[0] ) }
 
 sub heteroatom_positions()
 {
@@ -57,8 +58,8 @@ sub heteroatom_positions()
     my @vertices = $self->vertices;
     my @heteroatom_positions;
     for (0..$#vertices) {
-        next if ChemOnomatopist::element( $vertices[$_] ) eq 'C';
-        next if ChemOnomatopist::element( $vertices[$_] ) eq $self->inner_element;
+        next if ChemOnomatopist::Util::element( $vertices[$_] ) eq 'C';
+        next if ChemOnomatopist::Util::element( $vertices[$_] ) eq $self->inner_element;
         push @heteroatom_positions, $_;
     }
 

@@ -10,7 +10,7 @@ use ChemOnomatopist::Chain;
 use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Name::Part::NondetachablePrefix;
-use ChemOnomatopist::Util qw( circle_permutations element );
+use ChemOnomatopist::Util qw( circle_permutations );
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
 use Chemistry::OpenSMILES qw( is_single_bond );
 use List::Util qw( all any uniq );
@@ -144,7 +144,7 @@ sub indicated_hydrogens()
     for my $i (0..$#vertices) {
         # Rough interpretation of BBv2 P-14.7.1 and P-22.2.2.1.4
         next unless $vertices[$i]->{hcount};
-        my $element = element( $vertices[$i] );
+        my $element = ChemOnomatopist::Util::element( $vertices[$i] );
         if( $element eq 'C' ) {
             if(  $vertices[$i]->{hcount} == 2 ||
                 ($graph->degree( $vertices[$i] ) == 3 &&
@@ -175,8 +175,8 @@ sub locants(@)
     my $letter = 'a';
     for my $i (0..$#vertices) {
         if( $graph->degree( $vertices[$i] ) == 2 ||
-            !element( $vertices[$i] ) ||
-             element( $vertices[$i] ) ne 'C' ) {
+            !ChemOnomatopist::Util::element( $vertices[$i] ) ||
+             ChemOnomatopist::Util::element( $vertices[$i] ) ne 'C' ) {
             $pos++;
             $locant_map{$i} = $pos;
             $letter = 'a';

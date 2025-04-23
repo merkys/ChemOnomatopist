@@ -12,7 +12,7 @@ use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Sulfinyl;
 use ChemOnomatopist::Group::Sulfonyl;
 use ChemOnomatopist::Name;
-use ChemOnomatopist::Util qw( all_min circle_permutations cmp_arrays element );
+use ChemOnomatopist::Util qw( all_min circle_permutations cmp_arrays );
 use List::Util qw( all first );
 use Scalar::Util qw( blessed );
 
@@ -78,13 +78,13 @@ sub new
     my( $senior_heteroatom ) = sort { $elements{$a}->{seniority} <=>
                                       $elements{$b}->{seniority} }
                                grep { $_ ne 'C' }
-                               map  { element( $_ ) }
+                               map  { ChemOnomatopist::Util::element( $_ ) }
                                     @vertices;
     return $self unless $senior_heteroatom;
 
     my @chains;
     for (circle_permutations( @vertices )) {
-        next unless element( $_->[0] ) eq $senior_heteroatom;
+        next unless ChemOnomatopist::Util::element( $_->[0] ) eq $senior_heteroatom;
         push @chains, ChemOnomatopist::Chain::Circular->new( $graph, @$_ );
     }
 
@@ -104,13 +104,13 @@ sub candidates()
     my @chains;
     for (0..$#vertices) {
         push @chains, bless { graph => $graph, vertices => [ @vertices ], parent => $parent }, ChemOnomatopist::Chain::Monocycle::
-            if !$senior_heteroatom || element( $vertices[0] ) eq $senior_heteroatom;
+            if !$senior_heteroatom || ChemOnomatopist::Util::element( $vertices[0] ) eq $senior_heteroatom;
         push @vertices, shift @vertices;
     }
     @vertices = reverse @vertices;
     for (0..$#vertices) {
         push @chains, bless { graph => $graph, vertices => [ @vertices ], parent => $parent }, ChemOnomatopist::Chain::Monocycle::
-            if !$senior_heteroatom || element( $vertices[0] ) eq $senior_heteroatom;
+            if !$senior_heteroatom || ChemOnomatopist::Util::element( $vertices[0] ) eq $senior_heteroatom;
         push @vertices, shift @vertices;
     }
 
@@ -159,14 +159,14 @@ sub needs_heteroatom_locants()
     my( $self ) = @_;
     return '' if $self->is_hydrocarbon;
     return '' if $self->is_monoreplaced && !$self->is_substituted;
-    return $self->length < 3 || $self->length > 10 || all { element( $_ ) ne 'C' } $self->vertices;
+    return $self->length < 3 || $self->length > 10 || all { ChemOnomatopist::Util::element( $_ ) ne 'C' } $self->vertices;
 }
 
 sub needs_heteroatom_names()
 {
     my( $self ) = @_;
     return '' if $self->is_hydrocarbon;
-    return $self->length < 3 || $self->length > 10 || all { element( $_ ) ne 'C' } $self->vertices;
+    return $self->length < 3 || $self->length > 10 || all { ChemOnomatopist::Util::element( $_ ) ne 'C' } $self->vertices;
 }
 
 sub needs_indicated_hydrogens()
@@ -261,7 +261,7 @@ sub suffix()
         my %heteroatoms;
         my @vertices = $self->vertices;
         for my $i (0..$#vertices) {
-            my $symbol = element( $vertices[$i] );
+            my $symbol = ChemOnomatopist::Util::element( $vertices[$i] );
             next if $symbol eq 'C';
             $heteroatoms{$symbol} = [] unless $heteroatoms{$symbol};
             push @{$heteroatoms{$symbol}}, $i;

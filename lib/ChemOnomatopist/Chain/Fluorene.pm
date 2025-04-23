@@ -9,7 +9,7 @@ use warnings;
 use parent ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist::Name;
-use ChemOnomatopist::Util qw( element );
+use ChemOnomatopist::Util;
 use ChemOnomatopist::Util::Graph qw(
     graph_without_edge_attributes
     merge_graphs
@@ -51,7 +51,7 @@ sub has_form($$)
 
     return are_isomorphic( graph_without_edge_attributes( $graph ),
                            $class->ideal_graph,
-                           sub { element( $_[0] ) } );
+                           sub { ChemOnomatopist::Util::element( $_[0] ) } );
 }
 
 sub ideal_graph($)
