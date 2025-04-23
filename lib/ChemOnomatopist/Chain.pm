@@ -737,6 +737,7 @@ sub stereodescriptor_part()
                 $cistrans *= -1;
             }
             $cistrans *= -1 if $atom1->{number} > $atom2->{number};
+            $cistrans *= -1 if $atom3->{number} > $atom4->{number};
 
             my $atom1_new = first { 1 }
                             sort  { ChemOnomatopist::order_by_neighbours( $graph, $atom2, $a, $b ) }
