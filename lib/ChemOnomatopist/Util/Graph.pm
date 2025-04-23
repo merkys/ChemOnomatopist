@@ -27,6 +27,7 @@ our @EXPORT_OK = qw(
     graph_path_between_vertices
     graph_without_edge_attributes
     merge_graphs
+    neighbours_at_distance
     subgraph
     tree_branch_positions
     tree_number_of_branches
@@ -278,6 +279,19 @@ sub merge_graphs
     $merged->add_edge( $A_vertex, $B_vertex ) if $A_vertex && $B_vertex;
 
     return $merged;
+}
+
+sub neighbours_at_distance
+{
+    my( $graph, $vertex, $from, $distance, $path ) = @_;
+
+    if( $distance ) {
+        return map  { neighbours_at_distance( $graph, $_, $vertex, $distance-1, set( @$path, $vertex ) ) }
+               grep { !$path->has( $_ ) }
+                    $graph->neighbours( $vertex );
+    } else {
+        return grep { $_ ne $from } $graph->neighbours( $vertex );
+    }
 }
 
 sub subgraph

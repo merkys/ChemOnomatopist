@@ -59,6 +59,7 @@ use ChemOnomatopist::Util::Graph qw(
     graph_longest_paths_from_vertex
     graph_path_between_vertices
     graph_without_edge_attributes
+    neighbours_at_distance
     subgraph
     tree_branch_positions
     tree_number_of_branches
@@ -1686,20 +1687,20 @@ sub alkane_chain_name($)
 }
 
 # Implemented according to BBv3 P-92.1.4
-sub order_by_neighbours($$$)
+sub order_by_neighbours($$$$)
 {
-    my( $graph, $A, $B ) = @_;
+    my( $graph, $parent, $A, $B ) = @_;
 
     my $cmp = 0;
+    my $distance = 0;
     my @frontA = ( $A );
     my @frontB = ( $B );
-    my $seen = set;
     while( !$cmp && ( @frontA || @frontB ) ) {
         $cmp = cmp_arrays( [ reverse sort map { atomic_number( $_ ) } @frontB ],
                            [ reverse sort map { atomic_number( $_ ) } @frontA ] );
-        $seen->insert( @frontA, @frontB );
-        @frontA = grep { !$seen->has( $_ ) } map { $graph->neighbours( $_ ) } @frontA;
-        @frontB = grep { !$seen->has( $_ ) } map { $graph->neighbours( $_ ) } @frontB;
+        @frontA = neighbours_at_distance( $graph, $A, $parent, $distance, set( $parent ) );
+        @frontB = neighbours_at_distance( $graph, $B, $parent, $distance, set( $parent ) );
+        $distance++;
     }
 
     return $cmp;

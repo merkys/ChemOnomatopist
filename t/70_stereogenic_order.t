@@ -25,6 +25,6 @@ my $parser = Chemistry::OpenSMILES::Parser->new;
 for my $case (@cases) {
     my( $moiety ) = $parser->parse( $case->{smiles} );
     my $atom = first { is_chiral $_ } $moiety->vertices;
-    my @order = sort { ChemOnomatopist::order_by_neighbours( $moiety, $a, $b ) } $moiety->neighbours( $atom );
+    my @order = sort { ChemOnomatopist::order_by_neighbours( $moiety, $atom, $a, $b ) } $moiety->neighbours( $atom );
     is join( ',', map { $_->{number} } @order ), $case->{order};
 }
