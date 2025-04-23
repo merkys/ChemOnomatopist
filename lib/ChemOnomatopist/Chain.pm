@@ -215,24 +215,6 @@ sub nonstandard_valence_positions()
     return @nonstandard_valence_positions;
 }
 
-sub stereocenter_positions()
-{
-    my( $self ) = @_;
-
-    return @{$self->{stereocenter_positions}} if $self->{stereocenter_positions};
-
-    my @vertices = $self->vertices;
-    my @stereocenter_positions;
-    for (0..$#vertices) {
-        next if blessed $vertices[$_];
-        next unless is_chiral_tetrahedral( $vertices[$_] );
-        push @stereocenter_positions, $_;
-    }
-
-    $self->{stereocenter_positions} = \@stereocenter_positions;
-    return @stereocenter_positions;
-}
-
 sub is_main() { $_[0]->{is_main} }
 
 sub is_hydrocarbon()
@@ -634,12 +616,6 @@ sub number_of_nonstandard_valence_positions()
     return scalar $self->nonstandard_valence_positions;
 }
 
-sub number_of_stereocenter_positions()
-{
-    my( $self ) = @_;
-    return scalar $self->stereocenter_positions;
-}
-
 sub charge_part()
 {
     my( $self ) = @_;
@@ -715,12 +691,12 @@ sub stereodescriptor_part()
 {
     my( $self ) = @_;
 
-    my @stereocenter_positions = $self->stereocenter_positions;
-    return ChemOnomatopist::Name->new unless @stereocenter_positions;
-
     my @vertices = $self->vertices;
     my @stereodescriptors;
-    for my $i (@stereocenter_positions) {
+    for my $i (0..$#vertices) {
+        next if blessed $vertices[$i];
+        next unless is_chiral_tetrahedral( $vertices[$i] );
+
         my @chirality_neighbours = @{$vertices[$i]->{chirality_neighbours}};
         die "cannot process complicated chiral centers\n" unless @chirality_neighbours == 4;
 
