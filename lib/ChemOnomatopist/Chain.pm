@@ -733,7 +733,7 @@ sub stereodescriptor_part()
             $chirality = $chirality eq '@' ? '@@' : '@';
         }
         my $stereodescriptor = $chirality eq '@' ? 'S' : 'R';
-        if( @stereocenter_positions > 1 || $self->number_of_double_bonds ) {
+        if( $self->length > 1 ) {
             $stereodescriptor = join( ',', $self->locants( $i ) ) . $stereodescriptor;
         }
         push @stereodescriptors, $stereodescriptor;

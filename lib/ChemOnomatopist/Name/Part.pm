@@ -8,8 +8,8 @@ use warnings;
 
 use ChemOnomatopist::Name;
 
-use overload '""' => sub { return $_[0]->{value} };
-use overload 'cmp' => sub { return ("$_[0]" cmp "$_[1]") * ($_[2] ? -1 : 1) };
+use overload '""'  => sub { $_[0]->{value} };
+use overload 'cmp' => sub { ("$_[0]" cmp "$_[1]") * ($_[2] ? -1 : 1) };
 
 sub new
 {

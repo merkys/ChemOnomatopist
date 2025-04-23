@@ -98,7 +98,7 @@ sub has_form($$)
 
     return are_isomorphic( graph_without_edge_attributes( $graph ),
                            $class->ideal_graph( $N ),
-                           sub { return 'C' } );
+                           sub { 'C' } );
 }
 
 sub ideal_graph($$)

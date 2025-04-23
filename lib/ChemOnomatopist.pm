@@ -702,7 +702,7 @@ sub find_groups
                 (any  { !$_->is_hydrocarbon } @cycles) &&
                 are_isomorphic( graph_without_edge_attributes( $core ),
                                 ChemOnomatopist::Chain::Xanthene->ideal_graph,
-                                sub { return 'C' } ) ) {
+                                sub { 'C' } ) ) {
                 $compound = ChemOnomatopist::Chain::Xanthene->new( $graph, @cycles );
             } elsif( ChemOnomatopist::Chain::Aceylene->has_form( $core ) ) {
                 $compound = ChemOnomatopist::Chain::Aceylene->new( $graph, @cycles );
@@ -719,7 +719,7 @@ sub find_groups
                      (all { $_->length == 6 } @cycles) &&
                      are_isomorphic( graph_without_edge_attributes( $core ),
                                      ChemOnomatopist::Chain::Phenanthrene->ideal_graph,
-                                     sub { return 'C' } ) ) {
+                                     sub { 'C' } ) ) {
                 $compound = ChemOnomatopist::Chain::Phenanthrene->new( $graph, @cycles );
             } elsif( @cycles >= 4 &&
                      (all { $_->length == 6 && $_->is_hydrocarbon } @cycles) &&
@@ -1180,7 +1180,7 @@ sub select_sidechain
         return @chains_now;
     };
 
-    for my $rule ( sub { return @_ },
+    for my $rule ( sub { @_ },
                    \&rule_longest_chains,
                    \&rule_greatest_number_of_side_chains, # After this rule we are left with a set of longest chains all having the same number of side chains
                    $rule_lowest_free_valence,
