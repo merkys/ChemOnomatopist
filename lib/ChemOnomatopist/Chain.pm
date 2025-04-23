@@ -722,23 +722,21 @@ sub stereodescriptor_part()
     my @stereodescriptors;
     for my $i (@stereocenter_positions) {
         my @chirality_neighbours = @{$vertices[$i]->{chirality_neighbours}};
-        my @elements = map { ucfirst $_->{symbol} } @chirality_neighbours;
-        die "cannot process complicated chiral centers\n" unless @elements == 4;
-
-        if( @elements > uniq @elements ) {
-            die "cannot process complicated chiral centers\n";
-        }
+        die "cannot process complicated chiral centers\n" unless @chirality_neighbours == 4;
 
         my %order = map { ( $chirality_neighbours[$_] => $_ ) } 0..3;
-        my @order_now = sort { atomic_number( ucfirst $b->{symbol} ) <=>
-                               atomic_number( ucfirst $a->{symbol} ) }
+        my @order_now = sort { ChemOnomatopist::order_by_neighbours( $self->graph, $vertices[$i], $a, $b ) }
                              @chirality_neighbours;
 
         my $chirality = $vertices[$i]->{chirality};
         if( join( '', Chemistry::OpenSMILES::Writer::_permutation_order( map { $order{$_} } @order_now ) ) ne '0123' ) {
             $chirality = $chirality eq '@' ? '@@' : '@';
         }
-        push @stereodescriptors, $chirality eq '@' ? 'S' : 'R';
+        my $stereodescriptor = $chirality eq '@' ? 'S' : 'R';
+        if( @stereocenter_positions > 1 || $self->number_of_double_bonds ) {
+            $stereodescriptor = join( ',', $self->locants( $i ) ) . $stereodescriptor;
+        }
+        push @stereodescriptors, $stereodescriptor;
     }
     return ChemOnomatopist::Name->new unless @stereodescriptors;
     return ChemOnomatopist::Name::Part::Stereodescriptor->new( '(' . join( ',', @stereodescriptors ) . ')-' )->to_name;

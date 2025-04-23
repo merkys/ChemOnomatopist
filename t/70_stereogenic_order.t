@@ -15,7 +15,8 @@ my @cases = (
     # From BBv3 P-92.1.4.2
     { smiles => 'C[C@H](C=C)O',          order => '4,2,0,8'  },
     { smiles => 'O[C@H](C=O)C',          order => '0,2,4,6'  },
-    { smiles => 'C1(CC1)[C@@H](C(C)C)O', order => '7,0,4,13' }, # From BBv3 P-92.1.4.3 # FIXME: Fails
+
+    { smiles => 'C1(CC1)[C@@H](C(C)C)O', order => '7,0,4,13' }, # From BBv3 P-92.1.4.3
 );
 
 plan tests => scalar @cases;
