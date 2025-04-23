@@ -19,7 +19,11 @@ use ChemOnomatopist::Name::Part::Isotope;
 use ChemOnomatopist::Name::Part::Stereodescriptor;
 use ChemOnomatopist::Util qw( atomic_number );
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
-use Chemistry::OpenSMILES qw( is_chiral_tetrahedral );
+use Chemistry::OpenSMILES qw(
+    is_chiral_tetrahedral
+    is_cis_trans_bond
+    is_double_bond
+);
 use Chemistry::OpenSMILES::Writer;
 use Graph::Traversal::DFS;
 use List::Util qw( all any first none sum0 uniq );
@@ -692,27 +696,38 @@ sub stereodescriptor_part()
     my( $self ) = @_;
 
     my @vertices = $self->vertices;
+    my $graph = $self->graph;
     my @stereodescriptors;
     for my $i (0..$#vertices) {
         next if blessed $vertices[$i];
-        next unless is_chiral_tetrahedral( $vertices[$i] );
 
-        my @chirality_neighbours = @{$vertices[$i]->{chirality_neighbours}};
-        die "cannot process complicated chiral centers\n" unless @chirality_neighbours == 4;
+        if( is_chiral_tetrahedral( $vertices[$i] ) ) {
+            my @chirality_neighbours = @{$vertices[$i]->{chirality_neighbours}};
+            die "cannot process complicated chiral centers\n" unless @chirality_neighbours == 4;
 
-        my %order = map { ( $chirality_neighbours[$_] => $_ ) } 0..3;
-        my @order_now = sort { ChemOnomatopist::order_by_neighbours( $self->graph, $vertices[$i], $a, $b ) }
-                             @chirality_neighbours;
+            my %order = map { ( $chirality_neighbours[$_] => $_ ) } 0..3;
+            my @order_now = sort { ChemOnomatopist::order_by_neighbours( $graph, $vertices[$i], $a, $b ) }
+                                 @chirality_neighbours;
 
-        my $chirality = $vertices[$i]->{chirality};
-        if( join( '', Chemistry::OpenSMILES::Writer::_permutation_order( map { $order{$_} } @order_now ) ) ne '0123' ) {
-            $chirality = $chirality eq '@' ? '@@' : '@';
+            my $chirality = $vertices[$i]->{chirality};
+            if( join( '', Chemistry::OpenSMILES::Writer::_permutation_order( map { $order{$_} } @order_now ) ) ne '0123' ) {
+                $chirality = $chirality eq '@' ? '@@' : '@';
+            }
+            my $stereodescriptor = $chirality eq '@' ? 'S' : 'R';
+            if( $self->length > 1 ) {
+                $stereodescriptor = join( ',', $self->locants( $i ) ) . $stereodescriptor;
+            }
+            push @stereodescriptors, $stereodescriptor;
+        } elsif( $i < $#vertices &&
+                 is_double_bond( $graph, $vertices[$i], $vertices[$i+1] ) &&
+                 (any { is_cis_trans_bond( $graph, $vertices[$i],   $_ ) } $graph->neighbours( $vertices[$i] )) &&
+                 (any { is_cis_trans_bond( $graph, $vertices[$i+1], $_ ) } $graph->neighbours( $vertices[$i+1] )) ) {
+            my @neighbours1 = sort { ChemOnomatopist::order_by_neighbours( $graph, $vertices[$i], $a, $b ) }
+                              grep { $_ != $vertices[$i+1] } $graph->neighbours( $vertices[$i] );
+            my @neighbours2 = sort { ChemOnomatopist::order_by_neighbours( $graph, $vertices[$i+1], $a, $b ) }
+                              grep { $_ != $vertices[$i]   } $graph->neighbours( $vertices[$i+1] );
+            # TODO: Detect cis/trans character
         }
-        my $stereodescriptor = $chirality eq '@' ? 'S' : 'R';
-        if( $self->length > 1 ) {
-            $stereodescriptor = join( ',', $self->locants( $i ) ) . $stereodescriptor;
-        }
-        push @stereodescriptors, $stereodescriptor;
     }
     return ChemOnomatopist::Name->new unless @stereodescriptors;
     return ChemOnomatopist::Name::Part::Stereodescriptor->new( '(' . join( ',', @stereodescriptors ) . ')-' )->to_name;
