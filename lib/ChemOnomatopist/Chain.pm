@@ -697,6 +697,7 @@ sub stereodescriptor_part()
 
     my @vertices = $self->vertices;
     my $graph = $self->graph;
+    my $double_bond_positions = set( $self->double_bond_positions );
     my @stereodescriptors;
     for my $i (0..$#vertices) {
         next if blessed $vertices[$i];
@@ -718,15 +719,39 @@ sub stereodescriptor_part()
                 $stereodescriptor = join( ',', $self->locants( $i ) ) . $stereodescriptor;
             }
             push @stereodescriptors, $stereodescriptor;
-        } elsif( $i < $#vertices &&
-                 is_double_bond( $graph, $vertices[$i], $vertices[$i+1] ) &&
-                 (any { is_cis_trans_bond( $graph, $vertices[$i],   $_ ) } $graph->neighbours( $vertices[$i] )) &&
-                 (any { is_cis_trans_bond( $graph, $vertices[$i+1], $_ ) } $graph->neighbours( $vertices[$i+1] )) ) {
-            my @neighbours1 = sort { ChemOnomatopist::order_by_neighbours( $graph, $vertices[$i], $a, $b ) }
-                              grep { $_ != $vertices[$i+1] } $graph->neighbours( $vertices[$i] );
-            my @neighbours2 = sort { ChemOnomatopist::order_by_neighbours( $graph, $vertices[$i+1], $a, $b ) }
-                              grep { $_ != $vertices[$i]   } $graph->neighbours( $vertices[$i+1] );
-            # TODO: Detect cis/trans character
+        } else {
+            next unless $double_bond_positions->has( $i );
+            next if $i == $#vertices;
+            next if any { blessed $_ } map { $vertices[$_] } ( $i, $i+1 );
+            my( $atom2, $atom3 ) = sort { $a->{number} <=> $b->{number} }
+                                   map  { $vertices[$_] }
+                                        ( $i, $i+1 );
+            my $atom1 = first { is_cis_trans_bond( $graph, $atom2, $_ ) } $graph->neighbours( $atom2 );
+            next unless $atom1;
+            my $atom4 = first { is_cis_trans_bond( $graph, $atom3, $_ ) } $graph->neighbours( $atom3 );
+            next unless $atom4;
+
+            my $cistrans = 1; # 1 = cis, -1 = trans
+            if( $graph->get_edge_attribute( $atom1, $atom2, 'bond' ) eq
+                $graph->get_edge_attribute( $atom3, $atom4, 'bond' ) ) {
+                $cistrans *= -1;
+            }
+            $cistrans *= -1 if $atom1->{number} > $atom2->{number};
+
+            my $atom1_new = first { 1 }
+                            sort  { ChemOnomatopist::order_by_neighbours( $graph, $atom2, $a, $b ) }
+                            grep  { $_ != $atom3 }
+                                  $graph->neighbours( $atom2 );
+            my $atom4_new = first { 1 }
+                            sort  { ChemOnomatopist::order_by_neighbours( $graph, $atom3, $a, $b ) }
+                            grep  { $_ != $atom2 }
+                                  $graph->neighbours( $atom3 );
+            $cistrans *= -1 if ($atom1 == $atom1_new) ^ ($atom4 == $atom4_new);
+            my $stereodescriptor = $cistrans == 1 ? 'Z' : 'E';
+            if( $self->length > 1 ) {
+                $stereodescriptor = join( ',', $self->locants( $i ) ) . $stereodescriptor;
+            }
+            push @stereodescriptors, $stereodescriptor;
         }
     }
     return ChemOnomatopist::Name->new unless @stereodescriptors;
