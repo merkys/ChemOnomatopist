@@ -10,6 +10,7 @@ use parent ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist::Chain::Phenanthrene;
 use ChemOnomatopist::Chain::Polyacene;
+use ChemOnomatopist::Util qw( element );
 use ChemOnomatopist::Util::Graph qw(
     graph_without_edge_attributes
     subgraph
@@ -83,17 +84,17 @@ sub has_form($$)
     my( $class, $graph ) = @_;
 
     return '' unless $graph->vertices == 12 || $graph->vertices == 16;
-    return '' if any { blessed $_ || ChemOnomatopist::element( $_ ) ne 'C' } $graph->vertices;
+    return '' if any { blessed $_ || element( $_ ) ne 'C' } $graph->vertices;
 
     return 1 if are_isomorphic( graph_without_edge_attributes( $graph ),
                                 $class->ideal_graph_acenaphthylene,
-                                sub { ChemOnomatopist::element( $_[0] ) } );
+                                sub { element( $_[0] ) } );
     return 1 if are_isomorphic( graph_without_edge_attributes( $graph ),
                                 $class->ideal_graph_aceanthrylene,
-                                sub { ChemOnomatopist::element( $_[0] ) } );
+                                sub { element( $_[0] ) } );
     return 1 if are_isomorphic( graph_without_edge_attributes( $graph ),
                                 $class->ideal_graph_acephenanthrylene,
-                                sub { ChemOnomatopist::element( $_[0] ) } );
+                                sub { element( $_[0] ) } );
     return '';
 }
 

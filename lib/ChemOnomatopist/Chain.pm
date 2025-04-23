@@ -6,7 +6,6 @@ package ChemOnomatopist::Chain;
 use strict;
 use warnings;
 
-use ChemOnomatopist;
 use ChemOnomatopist::Chain::Amide;
 use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Ether;
@@ -18,7 +17,7 @@ use ChemOnomatopist::Isotope;
 use ChemOnomatopist::Name::Part::AlkaneANSuffix;
 use ChemOnomatopist::Name::Part::Isotope;
 use ChemOnomatopist::Name::Part::Stereodescriptor;
-use ChemOnomatopist::Util qw( atomic_number );
+use ChemOnomatopist::Util qw( atomic_number element );
 use ChemOnomatopist::Util::SMILES qw( path_SMILES );
 use Chemistry::OpenSMILES qw( is_chiral_tetrahedral );
 use Chemistry::OpenSMILES::Writer;
@@ -206,8 +205,8 @@ sub nonstandard_valence_positions()
     my @nonstandard_valence_positions;
     for (0..$#vertices) {
         next if blessed $vertices[$_];
-        next if ChemOnomatopist::element( $vertices[$_] ) eq 'C';
-        next if ChemOnomatopist::element( $vertices[$_] ) eq 'N';
+        next if element( $vertices[$_] ) eq 'C';
+        next if element( $vertices[$_] ) eq 'N';
         next unless exists $vertices[$_]->{valence};
         push @nonstandard_valence_positions, $_;
     }
@@ -261,7 +260,7 @@ sub max_valence()
 
     my $max_valence = 0;
     for my $vertex ($self->vertices) {
-        my $element = ChemOnomatopist::element( $vertex );
+        my $element = element( $vertex );
         next unless $element;
         next if !exists $elements{$element};
         next if !exists $elements{$element}->{standard_bonding_number};
@@ -380,7 +379,7 @@ sub needs_heteroatom_names()
     }
 
     # Chalcogen analogues of ethers
-    if( @vertices == 1 && $self->parent && grep { ChemOnomatopist::element( @vertices ) eq $_ } qw( S Se Te ) ) {
+    if( @vertices == 1 && $self->parent && grep { element( @vertices ) eq $_ } qw( S Se Te ) ) {
         return '';
     }
 
@@ -403,8 +402,8 @@ sub needs_suffix_locant()
     return '' unless @most_senior_groups;
     return 1 if $self->number_of_heteroatoms; # P-15.4.3.2.3: Characteristic groups cited as suffixes are given locants
     return 1 if @most_senior_groups > 2;
-    return 1 if !ChemOnomatopist::element( $most_senior_groups[0] );
-    return 1 if  ChemOnomatopist::element( $most_senior_groups[0] ) ne 'C';
+    return 1 if !element( $most_senior_groups[0] );
+    return 1 if  element( $most_senior_groups[0] ) ne 'C';
     return '';
 }
 
@@ -454,7 +453,7 @@ sub heteroatoms()
 {
     my( $self ) = @_;
     my @vertices = $self->vertices;
-    return map { ChemOnomatopist::element( $vertices[$_] ) }
+    return map { element( $vertices[$_] ) }
                $self->heteroatom_positions;
 }
 
@@ -477,7 +476,7 @@ sub isotopes()
         next if blessed $vertices[$i];
 
         if( exists $vertices[$i]->{isotope} ) {
-            push @isotopes, ChemOnomatopist::Isotope->new( ChemOnomatopist::element( $vertices[$i] ),
+            push @isotopes, ChemOnomatopist::Isotope->new( element( $vertices[$i] ),
                                                            $vertices[$i]->{isotope},
                                                            $i,
                                                            $self->locants( $i ) );
@@ -751,7 +750,7 @@ sub prefix()
         return $vertex->prefix if blessed $vertex;
 
         # Chalcogen analogues of ethers
-        my $element = ChemOnomatopist::element( $vertex );
+        my $element = element( $vertex );
         return ChemOnomatopist::Name->new( 'sulfan' ) if $element eq 'S';
         return ChemOnomatopist::Name->new( 'selan'  ) if $element eq 'Se';
         return ChemOnomatopist::Name->new( 'tellan' ) if $element eq 'Te';
@@ -770,7 +769,7 @@ sub suffix()
     my @chain = $self->vertices;
 
     my $name = ChemOnomatopist::Name->new;
-    if( $self->length == 1 && !blessed $chain[0] && ChemOnomatopist::element( @chain ) ne 'C' ) {
+    if( $self->length == 1 && !blessed $chain[0] && element( @chain ) ne 'C' ) {
         return $name . 'ne'; # Leaving element prefix appending to the caller
     }
 
@@ -782,8 +781,8 @@ sub suffix()
     my @triple = grep { $bonds[$_] eq '#' } 0..$#bonds;
 
     # BBv2 P-63.2.2.2
-    if( $self->parent && @chain && (all { !blessed $_ } @chain) && ChemOnomatopist::element( @chain ) eq 'O' &&
-        !@double && !@triple && all { ChemOnomatopist::element( $_ ) eq 'C' } @chain[1..$#chain] ) {
+    if( $self->parent && @chain && (all { !blessed $_ } @chain) && element( @chain ) eq 'O' &&
+        !@double && !@triple && all { element( $_ ) eq 'C' } @chain[1..$#chain] ) {
         $name->append_stem( ChemOnomatopist::alkane_chain_name( $self->length - 1 ) );
         $name .= 'oxy';
         return $name;
@@ -793,7 +792,7 @@ sub suffix()
         $self->isa( ChemOnomatopist::Chain::Amine:: ) ) {
         $name->append_stem( ChemOnomatopist::alkane_chain_name( scalar grep { !blessed $_ } $self->vertices ) );
     } elsif( (any { ChemOnomatopist::is_element( $_, 'C' ) } @chain) ||
-        scalar( uniq map { ChemOnomatopist::element( $_ ) } @chain ) > 1 ) {
+        scalar( uniq map { element( $_ ) } @chain ) > 1 ) {
         $name->append_stem( ChemOnomatopist::alkane_chain_name( $self->length ) );
     }
 

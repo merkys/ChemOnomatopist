@@ -6,7 +6,6 @@ package ChemOnomatopist::Util;
 use strict;
 use warnings;
 
-use ChemOnomatopist;
 use Chemistry::Isotope qw( isotope_abundance );
 use Exporter;
 use Graph::Undirected;
@@ -23,6 +22,7 @@ our @EXPORT_OK = qw(
     circle_permutations
     cmp_arrays
     copy
+    element
     zip
 );
 
@@ -111,6 +111,24 @@ sub copy($)
         $copy->set_edge_attributes( @$edge, $graph->get_edge_attributes( @$edge ) );
     }
     return $copy;
+}
+
+# Derive the chemical element of atom or group representation
+sub element
+{
+    my( $atom_or_group ) = @_;
+    return undef unless ref $atom_or_group;
+
+    if( !blessed $atom_or_group ) {
+        die "unknown value '$atom_or_group' given for element()\n" unless ref $atom_or_group eq 'HASH';
+        return ucfirst $atom_or_group->{symbol};
+    }
+
+    if( $atom_or_group->isa( 'Chemistry::Atom' ) ) { # PerlMol Atom
+        return $atom_or_group->symbol;
+    }
+
+    return $atom_or_group->element;
 }
 
 sub zip(@)

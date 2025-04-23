@@ -48,6 +48,7 @@ use ChemOnomatopist::Util qw(
     atomic_number
     cmp_arrays
     copy
+    element
     zip
 );
 use ChemOnomatopist::Util::Graph qw(
@@ -771,24 +772,6 @@ sub find_groups
     }
 
     return;
-}
-
-# Derive the chemical element of atom or group representation
-sub element
-{
-    my( $atom_or_group ) = @_;
-    return undef unless ref $atom_or_group;
-
-    if( !blessed $atom_or_group ) {
-        die "unknown value '$atom_or_group' given for element()\n" unless ref $atom_or_group eq 'HASH';
-        return ucfirst $atom_or_group->{symbol};
-    }
-
-    if( $atom_or_group->isa( 'Chemistry::Atom' ) ) { # PerlMol Atom
-        return $atom_or_group->symbol;
-    }
-
-    return $atom_or_group->element;
 }
 
 sub charge
