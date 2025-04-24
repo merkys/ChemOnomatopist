@@ -62,6 +62,8 @@ sub atomic_number($)
 {
     my( $element ) = @_;
     $element = element( $element ) if ref $element;
+    return unless $element;
+
     my $abundance = isotope_abundance( $element );
     my $most_abundant = first { 1 }
                         sort  { $abundance->{$b} <=> $abundance->{$a} }
