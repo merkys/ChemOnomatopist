@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Util::Graph;
+use Graph::MoreUtils qw( graph_replace );
 use Graph::Undirected;
 use List::Util qw( all any );
 use Set::Object qw( set );
@@ -46,6 +47,12 @@ sub copy()
     }
 
     return $copy;
+}
+
+sub replace()
+{
+    my( $self, $new, @old ) = @_;
+    return graph_replace( $self, $new, @old );
 }
 
 # TODO: Add edge attributes

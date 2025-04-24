@@ -50,7 +50,6 @@ use Chemistry::OpenSMILES qw(
     is_triple_bond
 );
 use Graph::Grammar;
-use Graph::MoreUtils qw( graph_replace );
 use List::Util qw( all any first sum );
 use Scalar::Util qw( blessed );
 
@@ -176,18 +175,18 @@ my @rules = (
       \&anything,
       NO_MORE_VERTICES,
 
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carboxyl->new( $_[2], $_[3] ), @_[1..3] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Carboxyl->new( $_[2], $_[3] ), @_[1..3] ) } ],
 
     # Nitramide
     [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, ( sub { &is_nongroup_atom && &is_O && &has_1_neighbour } ) x 2, sub { &is_nongroup_atom && &is_N }, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitramide->new, @_[1..4] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Nitramide->new, @_[1..4] ) } ],
 
     # Azide
     [ sub { &is_nongroup_atom && &is_N && &charge_plus_one },
         EDGE { is_double_bond( @_ ) }, sub { &is_nongroup_atom && &is_N && &charge_minus_one && &has_1_neighbour },
         EDGE { is_double_bond( @_ ) }, \&is_N,
       NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Azide->new, @_[1..3] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Azide->new, @_[1..3] ) } ],
 
     # Hydrazine and diazene
     [ ( sub { &is_nongroup_atom && &is_N } ) x 2,
@@ -211,27 +210,27 @@ my @rules = (
     # Amide
     # CHECKME: Why ketone has to be deleted and not used in replace? It fails somewhy.
     [ sub { &is_nongroup_atom && &is_C }, \&is_amine, \&is_ketone,
-      sub { $_[0]->delete_vertices( $_[3] ); graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1], $_[3] ), $_[2] ) } ],
+      sub { $_[0]->delete_vertices( $_[3] ); $_[0]->replace( ChemOnomatopist::Group::Amide->new( $_[1], $_[3] ), $_[2] ) } ],
     [ sub { &is_sulfinyl || &is_sulfonyl }, \&is_amine,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Amide->new( $_[1] ), $_[2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Amide->new( $_[1] ), $_[2] ) } ],
 
     # Aldehyde
     [ sub { &is_nongroup_atom && &is_C && &has_H1 }, \&is_ketone,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Aldehyde->new( $_[2] ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Aldehyde->new( $_[2] ), @_[1..2] ) } ],
 
     # Aldehydes attached to carbon in cyclic system or a heteroatom
     [ \&is_aldehyde, sub { &is_circular || ( &is_nongroup_atom && &is_heteroatom ) }, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbaldehyde->new( $_[1] ), $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Carbaldehyde->new( $_[1] ), $_[1] ) } ],
 
     # Acid halide
     [ sub { &is_sulfinyl || &is_sulfonyl }, \&is_Br_Cl_F_I,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::AcidHalide->new( $_[1], element( $_[2] ) ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::AcidHalide->new( $_[1], element( $_[2] ) ), @_[1..2] ) } ],
 
     # Acyl halide
     [ sub { &is_nongroup_atom && &is_C }, sub { &is_nongroup_atom && &is_Br_Cl_F_I }, sub { &is_ketone && &is_O }, \&is_C, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
     [ sub { &is_nongroup_atom && &is_C }, sub { &is_cyanide || &is_isocyanide || &is_isocyanate }, sub { &is_ketone && &is_O }, \&is_C, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::AcylHalide->new( $_[2] ), @_[1..3] ) } ],
 
     # a(ba)n chain
     [ sub { &is_nongroup_atom && &is_heteroatom && &looks_like_ABA_chain }, ( sub { &is_nongroup_atom && &is_heteroatom } ) x 2, NO_MORE_VERTICES,
@@ -249,11 +248,11 @@ my @rules = (
 
     # O-based groups
     [ 'hydroxy', sub { &is_nongroup_atom && &is_O && ( &has_H1 || &charge_minus_one ) }, \&anything, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( $_[1] ), $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Hydroxy->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_O },
         EDGE { is_double_bond( @_ ) }, \&anything,
       NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( element( $_[1] ) ), $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Ketone->new( element( $_[1] ) ), $_[1] ) } ],
 
     # Ester
     [ sub { &is_nongroup_atom && &is_C }, sub { &is_ketone && &is_O }, sub { &is_nongroup_atom && &is_O && &no_charge }, \&is_C, NO_MORE_VERTICES,
@@ -262,16 +261,16 @@ my @rules = (
 
     # Ether
     [ sub { &is_nongroup_atom && &is_O }, ( \&is_C ) x 2, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Ether->new, $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Ether->new, $_[1] ) } ],
 
     # Hydroxy groups and their chalcogen analogues
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te && ( &has_H1 || &charge_minus_one ) }, \&is_C_N_O_S_Se_Te, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroxy->new( $_[1] ), $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Hydroxy->new( $_[1] ), $_[1] ) } ],
     # Ketones and their chalcogen analogues
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te && all { is_double_bond( @_, $_ ) } $_[0]->neighbours( $_[1] ) },
         EDGE { is_double_bond( @_ ) }, \&anything,
       NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Ketone->new( element( $_[1] ) ), $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Ketone->new( element( $_[1] ) ), $_[1] ) } ],
 
     # Urea
     [ sub { &is_nongroup_atom && &is_C }, \&is_ketone, ( sub { &is_nongroup_atom && &is_N } ) x 2, NO_MORE_VERTICES,
@@ -279,44 +278,44 @@ my @rules = (
 
     # Isocyanide
     [ sub { &is_nongroup_atom && &is_C && &has_H0 && &charge_minus_one }, sub { &is_nongroup_atom && &is_N && &has_H0 && &charge_plus_one }, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Isocyanide->new, @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Isocyanide->new, @_[1..2] ) } ],
 
     # Isocyanate
     [ sub { &is_nongroup_atom && &is_C && &has_H0 && &no_charge }, \&is_ketone, \&is_N, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Isocyanate->new( $_[2]->element ), @_[1..3] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Isocyanate->new( $_[2]->element ), @_[1..3] ) } ],
 
     # N-based groups
     [ 'cyanide without N-substitutions',
       sub { &is_nongroup_atom && &is_N },
         EDGE { is_triple_bond( @_ ) }, sub { &is_nongroup_atom && &is_C },
         NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Cyanide->new, @_[1..2] ) } ],
     [ 'cyanide with N-substitutions',
       sub { &is_nongroup_atom && &is_N },
         EDGE { is_triple_bond( @_ ) }, sub { &is_nongroup_atom && &is_C },
       sub { die "cannot name N-substituted cyano groups yet\n" } ],
     # TODO: Recognise aminium cations
     # [ sub { &is_nongroup_atom && &is_N && &has_H0 && &charge_plus_one }, ( \&anything ) x 4, NO_MORE_VERTICES,
-    #   sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
+    #   sub { $_[0]->replace( ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &no_charge }, ( \&anything ) x 3, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &has_H1 }, ( \&anything ) x 2, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && ( &has_H2 || ( &has_H1 && &charge_minus_one ) ) }, \&anything, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &has_H3 }, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Amine->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &has_H0 },
         EDGE { is_double_bond( @_ ) && $_[0]->degree( $_[2] ) + ($_[2]->{hcount} ? $_[2]->{hcount} : 0) == 3 }, \&is_C,
         \&anything,
       NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Imine->new( $_[1] ), $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Imine->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && ( &has_H1 || ( &has_H0 && &charge_minus_one ) ) },
         EDGE { is_double_bond( @_ ) && $_[0]->degree( $_[2] ) + ($_[2]->{hcount} ? $_[2]->{hcount} : 0) == 3 }, \&is_C,
       NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Imine->new( $_[1] ), $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Imine->new( $_[1] ), $_[1] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &charge_plus_one }, \&is_ketone, sub { &is_hydroxy && &is_O && &charge_minus_one }, \&anything,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitro->new, @_[1..3] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Nitro->new, @_[1..3] ) } ],
     [ sub { &is_nongroup_atom && &is_N && &has_H0 },
         EDGE { is_double_bond( @_) && $_[0]->degree( $_[2] ) + ($_[2]->{hcount} ? $_[2]->{hcount} : 0) == 3 }, sub { &is_nongroup_atom && &is_S_Se_Te },
         \&anything,
@@ -332,9 +331,9 @@ my @rules = (
     # Carbonitrile, special case of cyanide
     [ 'cyanide attached to circular compound',
       \&is_cyanide, \&is_circular, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
     [ 'cyanide attached to heteroatom', \&is_cyanide, \&is_heteroatom, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Carbonitrile->new, $_[1] ) } ],
 
     # Amidines (BBv3 P-66.4.1)
     [ sub { &is_nongroup_atom && &is_C }, sub { &is_amine && &is_nongroup }, sub { &is_imine && &is_nongroup },
@@ -346,65 +345,65 @@ my @rules = (
 
     # Nitroso and its analogues
     [ sub { &is_nongroup_atom && &is_Br_Cl_F_I_N }, \&is_ketone, sub { &is_C || &is_N }, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Nitroso->new( element( $_[1] ) ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Nitroso->new( element( $_[1] ) ), @_[1..2] ) } ],
 
     # XO3
     [ sub { &is_nongroup_atom && &is_Br_Cl_F_I }, ( sub { &is_ketone && &is_O } ) x 3,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::XO3->new( element( $_[1] ) ), @_[1..4] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::XO3->new( element( $_[1] ) ), @_[1..4] ) } ],
 
     # Peroxide
     [ sub { &is_nongroup_atom && &is_O }, sub { ( &is_nongroup_atom && &is_O ) || ( &is_hydroxy && &charge_minus_one ) }, \&is_C, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Peroxide->new( @_[1..2] ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Peroxide->new( @_[1..2] ), @_[1..2] ) } ],
 
     # Hydroperoxide
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, \&is_hydroxy, \&anything, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroperoxide->new( $_[1], $_[2] ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Hydroperoxide->new( $_[1], $_[2] ), @_[1..2] ) } ],
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, sub { &is_nongroup_atom && &is_O && &charge_minus_one }, \&anything, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Hydroperoxide->new( $_[1], $_[2] ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Hydroperoxide->new( $_[1], $_[2] ), @_[1..2] ) } ],
 
     # S-based groups
     [ sub { &is_nongroup_atom && &is_S_Se_Te }, sub { &is_ketone || ( &is_nongroup_atom && &is_N && &has_H1 ) || &is_hydrazine }, sub { &is_hydroxy || &is_hydroperoxide }, \&is_C, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfinicAcid->new( element( $_[1] ), @_[2..3] ), @_[1..3] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::SulfinicAcid->new( element( $_[1] ), @_[2..3] ), @_[1..3] ) } ],
     [ sub { &is_nongroup_atom && &is_S_Se_Te }, ( sub { &is_ketone || ( &is_nongroup_atom && &is_N && &has_H1 ) || &is_hydrazine } ) x 2, sub { &is_hydroxy || &is_hydroperoxide }, \&is_C, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::SulfonicAcid->new( element( $_[1] ), @_[2..4] ), @_[1..4] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::SulfonicAcid->new( element( $_[1] ), @_[2..4] ), @_[1..4] ) } ],
 
     # Sulfoxide group and its analogues
     [ sub { &is_nongroup_atom && &is_S_Se_Te }, \&is_ketone, ( \&anything ) x 2, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfinyl->new( element( $_[1] ) ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Sulfinyl->new( element( $_[1] ) ), @_[1..2] ) } ],
     [ sub { &is_nongroup_atom && &is_S_Se_Te }, ( \&is_ketone ) x 2, ( \&anything ) x 2, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfonyl->new( element( $_[1] ) ), @_[1..3] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Sulfonyl->new( element( $_[1] ) ), @_[1..3] ) } ],
 
     # Noncarbon oxoacids
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 4,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..5] ), @_[1..5] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..5] ), @_[1..5] ) } ],
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 2, ( sub { &is_ketone && &is_O } ) x 2,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..5] ), @_[1..5] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..5] ), @_[1..5] ) } ],
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 3, sub { &is_ketone && &is_O },
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..5] ), @_[1..5] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..5] ), @_[1..5] ) } ],
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 3,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..4] ), @_[1..4] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..4] ), @_[1..4] ) } ],
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 2, sub { &is_ketone && &is_O },
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..4] ), @_[1..4] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..4] ), @_[1..4] ) } ],
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te }, ( sub { &is_ketone && &is_O }  ) x 2, sub { &is_hydroxy && &is_O },
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..4] ), @_[1..4] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..4] ), @_[1..4] ) } ],
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 2,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..3] ), @_[1..3] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..3] ), @_[1..3] ) } ],
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te },   sub { &is_hydroxy && &is_O }, sub { &is_ketone && &is_O },
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..3] ), @_[1..3] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..3] ), @_[1..3] ) } ],
     [ 'noncarbon oxoacid', sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te }, sub { &is_hydroxy && &is_O },
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
     [ \&is_XO3, sub { &is_hydroxy && &is_O },
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
     [ sub { &is_sulfinyl || &is_sulfonyl }, ( sub { &is_hydroxy && &is_O } ) x 2,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..3] ), @_[1..3] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..3] ), @_[1..3] ) } ],
     [ \&is_nitro, sub { &is_hydroxy && &is_O },
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::NoncarbonOxoacid->new( @_[1..2] ), @_[1..2] ) } ],
 
     # Sulfinamides and sulfonamides
     [ \&is_amide, \&is_sulfinyl, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfinamide->new( $_[2]->element ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Sulfinamide->new( $_[2]->element ), @_[1..2] ) } ],
     [ \&is_amide, \&is_sulfonyl, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], ChemOnomatopist::Group::Sulfonamide->new( $_[2]->element ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Sulfonamide->new( $_[2]->element ), @_[1..2] ) } ],
 
     # Detecting amides attached to cyclic chains
     [ sub { &is_nongroup_atom && &is_C && 1 == grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) && $_->{parent} == $_[1] } $_[0]->neighbours( $_[1] ) }, \&is_amide, \&is_monocycle, NO_MORE_VERTICES,
@@ -417,9 +416,9 @@ my @rules = (
 # Old unused rules
 my @rules_old = (
     [ \&is_C, \&is_benzene, \&is_ketone, \&is_N, NO_MORE_VERTICES,
-      sub { graph_replace( $_[0], { type => 'benzamide' }, @_[1..4] ) } ],
+      sub { $_[0]->replace( { type => 'benzamide' }, @_[1..4] ) } ],
 
-    [ \&is_benzene, \&is_hydroxy, sub { graph_replace( $_[0], { type => 'phenol' }, @_[1..2] ) } ],
+    [ \&is_benzene, \&is_hydroxy, sub { $_[0]->replace( { type => 'phenol' }, @_[1..2] ) } ],
 );
 
 sub is_mainchain() { any { $_->is_main } $_[0]->groups( $_[1] ) }
@@ -478,7 +477,7 @@ our @mainchain_rules = (
     # Unpack sidechain amides
     [ sub { !&is_mainchain && &is_amide && !&is_carboxamide },
       sub {
-            graph_replace( $_[0], ChemOnomatopist::Group::Amine->new, $_[1] );
+            $_[0]->replace( ChemOnomatopist::Group::Amine->new, $_[1] );
             $_[0]->set_edge_attribute( $_[1]->{parent}, $_[1]->{ketone}, 'bond', '=' ) if $_[1]->{ketone};
           } ],
 
