@@ -220,6 +220,22 @@ sub nonstandard_valence_positions()
     return @nonstandard_valence_positions;
 }
 
+sub R_positions()
+{
+    my( $self ) = @_;
+    my @vertices = $self->vertices;
+    return grep { !blessed $vertices[$_] && is_chiral_tetrahedral $vertices[$_] &&
+                  $vertices[$_]->{chirality} eq '@@' } 0..$#vertices;
+}
+
+sub S_positions()
+{
+    my( $self ) = @_;
+    my @vertices = $self->vertices;
+    return grep { !blessed $vertices[$_] && is_chiral_tetrahedral $vertices[$_] &&
+                  $vertices[$_]->{chirality} eq '@' } 0..$#vertices;
+}
+
 sub is_main() { $_[0]->{is_main} }
 
 sub is_hydrocarbon()
