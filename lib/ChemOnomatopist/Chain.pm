@@ -764,7 +764,7 @@ sub stereodescriptor_part()
                 $stereodescriptor = 'Ξ';
             }
 
-            if( $self->length > 1 ) {
+            if( $self->length > 2 ) {
                 $stereodescriptor = join( ',', $self->locants( $i ) ) . $stereodescriptor;
             }
             push @stereodescriptors, $stereodescriptor;
