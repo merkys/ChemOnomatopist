@@ -72,7 +72,7 @@ use Chemistry::OpenSMILES qw(
     is_single_bond
     is_triple_bond
 );
-use Graph::MoreUtils qw( SSSR graph_replace );
+use Graph::MoreUtils qw( SSSR );
 use Graph::Nauty qw( are_isomorphic );
 use Graph::Traversal::DFS;
 use Graph::Undirected;

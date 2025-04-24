@@ -7,9 +7,11 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Util::Graph;
+use Chemistry::OpenSMILES qw( is_chiral );
 use Graph::MoreUtils qw( graph_replace );
 use Graph::Undirected;
-use List::Util qw( all any );
+use List::Util qw( all any first );
+use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
 use parent Graph::Undirected::;
@@ -52,7 +54,26 @@ sub copy()
 sub replace()
 {
     my( $self, $new, @old ) = @_;
-    return graph_replace( $self, $new, @old );
+    graph_replace( $self, $new, @old );
+
+    # Adjust chiral neighbours
+    for my $vertex (grep { !blessed $_ && is_chiral( $_ ) } $self->vertices) {
+        next unless exists $vertex->{chirality_neighbours};
+        my $common = set( @old ) * set( @{$vertex->{chirality_neighbours}} );
+        next unless $common->size;
+
+        if( $common->size == 1 ) {
+            my $old = first { 1 } @$common;
+            @{$vertex->{chirality_neighbours}} =
+                map { $_ == $old ? $new : $_ } @{$vertex->{chirality_neighbours}};
+        } else {
+            # Multiple changes in chirality, cannot retain the center
+            delete $vertex->{chirality};
+            delete $vertex->{chirality_neighbours};
+        }
+    }
+
+    return $self;
 }
 
 # TODO: Add edge attributes
