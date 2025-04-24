@@ -17,13 +17,16 @@ sub new
 {
     my $class = shift;
 
+    my $self;
     if( ref $class ) {
-        return bless $class->SUPER::new( refvertexed => 1 );
+        $self = bless $class->SUPER::new( refvertexed => 1 );
     } elsif( @_ == 1 && $_[0]->isa( Graph::Undirected:: ) ) {
-        return bless $_[0], $class;
+        $self = bless $_[0], $class;
     } else {
-        return bless Graph::Undirected->new( @_, refvertexed => 1 ), $class;
+        $self = bless Graph::Undirected->new( @_, refvertexed => 1 ), $class;
     }
+
+    return $self;
 }
 
 # copy() is overridden as Graph::copy() does not copy edge attributes
