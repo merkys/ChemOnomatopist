@@ -727,8 +727,10 @@ sub stereodescriptor_part()
             my( $atom2, $atom3 ) = sort { $a->{number} <=> $b->{number} }
                                    map  { $vertices[$_] }
                                         ( $i, $i+1 );
-            my $atom1 = first { is_cis_trans_bond( $graph, $atom2, $_ ) } $graph->neighbours( $atom2 );
-            my $atom4 = first { is_cis_trans_bond( $graph, $atom3, $_ ) } $graph->neighbours( $atom3 );
+            my $atom1 = first { !blessed $_ && is_cis_trans_bond( $graph, $atom2, $_ ) }
+                              $graph->neighbours( $atom2 );
+            my $atom4 = first { !blessed $_ && is_cis_trans_bond( $graph, $atom3, $_ ) }
+                              $graph->neighbours( $atom3 );
 
             my $stereodescriptor;
             if( $atom1 && $atom4 ) {
