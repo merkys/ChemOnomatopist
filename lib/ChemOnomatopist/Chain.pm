@@ -707,15 +707,7 @@ sub stereodescriptor_part()
             my @chirality_neighbours = @{$vertices[$i]->{chirality_neighbours}};
             die "cannot process complicated chiral centers\n" unless @chirality_neighbours == 4;
 
-            my %order = map { ( $chirality_neighbours[$_] => $_ ) } 0..3;
-            my @order_now = sort { ChemOnomatopist::order_by_neighbours( $graph, $vertices[$i], $a, $b ) }
-                                 @chirality_neighbours;
-
-            my $chirality = $vertices[$i]->{chirality};
-            if( join( '', Chemistry::OpenSMILES::Writer::_permutation_order( map { $order{$_} } @order_now ) ) ne '0123' ) {
-                $chirality = $chirality eq '@' ? '@@' : '@';
-            }
-            my $stereodescriptor = $chirality eq '@' ? 'S' : 'R';
+            my $stereodescriptor = $vertices[$i]->{chirality} eq '@' ? 'S' : 'R';
             if( $self->length > 1 ) {
                 $stereodescriptor = join( ',', $self->locants( $i ) ) . $stereodescriptor;
             }

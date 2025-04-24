@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Util::Graph;
-use Chemistry::OpenSMILES qw( is_chiral );
+use Chemistry::OpenSMILES qw( is_chiral mirror );
 use Graph::MoreUtils qw( graph_replace );
 use Graph::Undirected;
 use List::Util qw( all any first );
@@ -27,6 +27,32 @@ sub new
         $self = bless $_[0], $class;
     } else {
         $self = bless Graph::Undirected->new( @_, refvertexed => 1 ), $class;
+    }
+
+    # Reorder chiral centers
+    for my $atom (grep { is_chiral $_ } $self->vertices) {
+        if( !exists $atom->{chirality_neighbours} ) {
+            delete  $atom->{chirality};
+            next;
+        }
+
+        my @chirality_neighbours = @{$atom->{chirality_neighbours}};
+        my %order = map { ( $chirality_neighbours[$_] => $_ ) }
+                        0..$#chirality_neighbours;
+        my @order_now = sort { ChemOnomatopist::order_by_neighbours( $self, $atom, $a, $b ) }
+                             @chirality_neighbours;
+        if( any { !ChemOnomatopist::order_by_neighbours( $self, $atom, $order_now[$_], $order_now[$_+1] ) }
+                0..@order_now-2 ) {
+            # Unimportant chiral center
+            delete $atom->{chirality};
+            delete $atom->{chirality_neighbours};
+            next;
+        }
+
+        $atom->{chirality_neighbours} = \@order_now;
+        if( join( '', Chemistry::OpenSMILES::Writer::_permutation_order( map { $order{$_} } @order_now ) ) ne '0123' ) {
+            mirror $atom;
+        }
     }
 
     return $self;
@@ -57,7 +83,7 @@ sub replace()
     graph_replace( $self, $new, @old );
 
     # Adjust chiral neighbours
-    for my $vertex (grep { !blessed $_ && is_chiral( $_ ) } $self->vertices) {
+    for my $vertex (grep { !blessed $_ && is_chiral $_ } $self->vertices) {
         next unless exists $vertex->{chirality_neighbours};
         my $common = set( @old ) * set( @{$vertex->{chirality_neighbours}} );
         next unless $common->size;

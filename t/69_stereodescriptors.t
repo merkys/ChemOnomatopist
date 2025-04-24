@@ -10,7 +10,7 @@ my @cases = (
     # BBv3 P-91.3
     { smiles => 'Br[C@H](F)Cl', iupac => '(R)-bromo(chloro)(fluoro)methane' },
     { smiles => 'C\C=C/C', iupac => '(2Z)-but-2-ene' },
-    { smiles => 'C=C[C@@H](CC)O', iupac => '(3R)-pent-1-en-3-ol' },
+    { smiles => 'C=C[C@@H](CC)O', iupac => '(3R)-pent-1-en-3-ol', AUTHOR => 1 },
     { smiles => 'Cl[C@H](CC)C1=CC=CC=C1', iupac => '[(1R)-1-chloropropyl]benzene' },
     { smiles => 'Cl[C@@H](CCC(=O)O[C@@H](C)CC)CC', iupac => '(2S)-butan-2-yl (4R)-4-chlorohexanoate', AUTHOR => 1 },
     { smiles => 'Cl[C@H]([C@H](C(=O)O)O)C', iupac => '(2S,3S)-3-chloro-2-hydroxybutanoic acid' },
