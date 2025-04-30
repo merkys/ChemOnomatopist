@@ -1558,7 +1558,17 @@ sub cmp_heteroatom_seniority
 sub cmp_locants($$)
 {
     my( $A, $B ) = @_;
+
     return $A <=> $B if $A =~ /^[0-9]+$/ && $B =~ /^[0-9]+$/;
+
+    if( $A =~ /^[0-9]+/ && $B =~ /^[0-9]+/ ) {
+        $A =~ /^([0-9]+)/;
+        my $A_number = $1;
+        $B =~ /^([0-9]+)/;
+        my $B_number = $1;
+        return $A_number <=> $B_number if $A_number <=> $B_number;
+    }
+
     return $A cmp $B if $A !~ /^[0-9]+$/ && $B !~ /^[0-9]+$/;
     return ($A =~ /^[0-9]+$/) <=> ($B =~ /^[0-9]+$/); # Letters go first
 }

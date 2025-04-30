@@ -723,10 +723,8 @@ sub stereodescriptor_part()
             my @chirality_neighbours = @{$vertices[$i]->{chirality_neighbours}};
             die "cannot process complicated chiral centers\n" unless @chirality_neighbours == 4;
 
-            my $stereodescriptor = $vertices[$i]->{chirality} eq '@' ? 'S' : 'R';
-            if( $self->length > 1 ) {
-                $stereodescriptor = join( ',', $self->locants( $i ) ) . $stereodescriptor;
-            }
+            my $stereodescriptor = { symbol => $vertices[$i]->{chirality} eq '@' ? 'S' : 'R' };
+            $stereodescriptor->{locant} = join ',', $self->locants( $i ) if $self->length > 1;
             push @stereodescriptors, $stereodescriptor;
         } else {
             next unless $double_bond_positions->has( $i );
@@ -740,7 +738,7 @@ sub stereodescriptor_part()
             my $atom4 = first { !blessed $_ && is_cis_trans_bond( $graph, $atom3, $_ ) }
                               $graph->neighbours( $atom3 );
 
-            my $stereodescriptor;
+            my $stereodescriptor = {};
             if( $atom1 && $atom4 ) {
                 my $cistrans = 1; # 1 = cis, -1 = trans
                 if( $graph->get_edge_attribute( $atom1, $atom2, 'bond' ) eq
@@ -759,7 +757,7 @@ sub stereodescriptor_part()
                                 grep  { $_ != $atom2 }
                                       $graph->neighbours( $atom3 );
                 $cistrans *= -1 if ($atom1 == $atom1_new) ^ ($atom4 == $atom4_new);
-                $stereodescriptor = $cistrans == 1 ? 'Z' : 'E';
+                $stereodescriptor->{symbol} = $cistrans == 1 ? 'Z' : 'E';
             } else {
                 next; # TODO: Finish the implementation
                 next if $self->isa( ChemOnomatopist::Chain::Monocycle:: ) && $self->length <= 7;
@@ -769,16 +767,23 @@ sub stereodescriptor_part()
                 my @neighbours3 = grep { $_ != $atom2 } $graph->neighbours( $atom3 );
                 next if all { !blessed $_ && $_->{symbol} eq 'H' } @neighbours2;
                 next if all { !blessed $_ && $_->{symbol} eq 'H' } @neighbours3;
-                $stereodescriptor = 'Ξ';
+                $stereodescriptor->{symbol} = 'Ξ';
             }
 
-            if( $self->length > 2 ) {
-                $stereodescriptor = join( ',', $self->locants( $i ) ) . $stereodescriptor;
-            }
+            $stereodescriptor->{locant} = join ',', $self->locants( $i ) if $self->length > 2;
             push @stereodescriptors, $stereodescriptor;
         }
     }
     return ChemOnomatopist::Name->new unless @stereodescriptors;
+
+    if( all { exists $_->{locant} } @stereodescriptors ) {
+        @stereodescriptors = map  { $_->{locant} . $_->{symbol} }
+                             sort { ChemOnomatopist::cmp_locants( $a->{locant}, $b->{locant} ) }
+                                  @stereodescriptors;
+    } else {
+        @stereodescriptors = map { $_->{symbol} } @stereodescriptors;
+    }
+
     return ChemOnomatopist::Name::Part::Stereodescriptor->new( '(' . join( ',', @stereodescriptors ) . ')-' )->to_name;
 }
 
