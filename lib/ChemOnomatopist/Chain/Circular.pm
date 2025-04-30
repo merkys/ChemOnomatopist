@@ -211,7 +211,8 @@ sub indicated_hydrogens_part()
         my $single_H = shift @indicated_hydrogens if @indicated_hydrogens % 2;
         if( @indicated_hydrogens ) {
             if( $self->number_of_indicated_hydrogens < $self->length ) {
-                $part->append_locants( $self->locants( @indicated_hydrogens ) );
+                $part->append_locants( sort { ChemOnomatopist::cmp_locants( $a, $b ) }
+                                            $self->locants( @indicated_hydrogens ) );
             }
             $part .= ChemOnomatopist::IUPAC_numerical_multiplier( scalar @indicated_hydrogens );
             $part->[-1] .= 'a' unless $part =~ /[ai]$/;
