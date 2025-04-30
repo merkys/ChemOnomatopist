@@ -9,7 +9,8 @@ use warnings;
 use parent ChemOnomatopist::Chain::Circular::;
 
 use ChemOnomatopist::Elements qw( %elements );
-use List::Util qw( any first uniq );
+use List::Util qw( all any first uniq );
+use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
 sub new
@@ -104,7 +105,17 @@ sub ideal_graph() { ChemOnomatopist::Chain::Polyacene->ideal_graph( 14 ) }
 
 sub needs_heteroatom_locants() { '' }
 sub needs_heteroatom_names() { '' }
-sub needs_substituent_locants() { 1 }
+
+# FIXME: This needs a better algorithm, as current one only works on single-atom substituents
+sub needs_substituent_locants()
+{
+    my( $self ) = @_;
+    return 1 unless $self->number_of_branches == 8;
+    return 1 unless all { $self->graph->degree( $_ ) == 1 &&
+                          !blessed $_ } $self->substituents;
+    return 1 unless uniq( map { ChemOnomatopist::Util::element( $_ ) } $self->substituents ) == 1;
+    return '';
+}
 
 sub number_of_rings() { 3 }
 
