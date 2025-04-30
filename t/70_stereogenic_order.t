@@ -17,7 +17,7 @@ my @cases = (
     { smiles => 'O[C@H](C=O)C',          order => '0,2,4,6'  },
 
     # From BBv3 P-92.1.4.3
-    { smiles => 'C1(CCC[C@]12C=CCC2)=O', order => '0,5,8,3', AUTHOR => 'not implemented yet' },
+    { smiles => 'C1(CCC[C@]12C=CCC2)=O', order => '0,5,8,3'  },
     { smiles => 'C1(CC1)[C@@H](C(C)C)O', order => '7,0,4,13' },
 );
 

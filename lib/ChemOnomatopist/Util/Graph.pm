@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Util qw( copy );
+use Chemistry::OpenSMILES qw( is_double_bond );
 use Exporter;
 use Graph::Traversal::BFS;
 use List::Util qw( any sum0 );
@@ -287,12 +288,15 @@ sub neighbours_at_distance
 
     my @neighbours = grep { !$path->has( $_ ) }
                           $graph->neighbours( $vertex );
+    my @double_bonds = grep { is_double_bond( $graph, $vertex, $_ ) }
+                            $graph->neighbours( $vertex );
 
     if( $distance ) {
-        return map { neighbours_at_distance( $graph, $_, $vertex, $distance-1, set( @$path, $vertex ) ) }
-                   @neighbours
+        return @double_bonds,
+               map { neighbours_at_distance( $graph, $_, $vertex, $distance-1, set( @$path, $vertex ) ) }
+                   @neighbours;
     } else {
-        return @neighbours
+        return @double_bonds, @neighbours;
     }
 }
 
