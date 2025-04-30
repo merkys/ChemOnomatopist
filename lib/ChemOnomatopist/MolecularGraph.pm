@@ -30,17 +30,17 @@ sub new
     }
 
     # Detect chiralities that cannot be handled yet
-    if( any { is_chiral $_ && !is_chiral_tetrahedral $_ } $self->vertices ) {
+    if( any { is_chiral $_ && !is_chiral_tetrahedral $_ } $self->atoms ) {
         die 'cannot handle chirality other than tetrahedral' . "\n";
     }
     if( any { is_chiral_tetrahedral $_ && exists $_->{chirality_neighbours} &&
-              @{$_->{chirality_neighbours}} != 4 } $self->vertices ) {
+              @{$_->{chirality_neighbours}} != 4 } $self->atoms ) {
         die 'cannot handle chiral tetrahedral centers with other than ' .
             '4 neighbours' . "\n";
     }
 
     # Reorder chiral centers
-    for my $atom (grep { is_chiral $_ } $self->vertices) {
+    for my $atom (grep { is_chiral $_ } $self->atoms) {
         if( !exists $atom->{chirality_neighbours} ) {
             delete  $atom->{chirality};
             next;
@@ -67,6 +67,9 @@ sub new
 
     return $self;
 }
+
+sub atoms() { $_[0]->vertices }
+sub bonds() { $_[0]->edges }
 
 # copy() is overridden as Graph::copy() does not copy edge attributes
 sub copy()
@@ -157,13 +160,13 @@ sub groups(@)
 sub has_negative_charge()
 {
     my( $self ) = @_;
-    return any { $_->{charge} && $_->{charge} < 0 } $self->vertices;
+    return any { $_->{charge} && $_->{charge} < 0 } $self->atoms;
 }
 
 sub has_positive_charge()
 {
     my( $self ) = @_;
-    return any { $_->{charge} && $_->{charge} > 0 } $self->vertices;
+    return any { $_->{charge} && $_->{charge} > 0 } $self->atoms;
 }
 
 sub is_anion()      {  $_[0]->has_negative_charge && !$_[0]->has_positive_charge }
