@@ -24,6 +24,20 @@ my @cases = (
     # BBv3 P-92.2.1.1.1
     { smiles => 'CO[C@@H](C)SC', iupac => '(1R)-1-methoxy-1-(methylsulfanyl)ethane', AUTHOR => 1 },
     { smiles => '[GeH3][C@](SC)(OC)[SiH3]', iupac => '[(R)-germyl(methoxy)(methylsulfanyl)methyl]silane', AUTHOR => 1 },
+
+    # BBv3 P-92.2.1.1.2
+    { smiles => 'Cl[C@@H](CO)C', iupac => '(2R)-2-chloropropan-1-ol' },
+    { smiles => 'Cl[C@@H](CO)CCl', iupac => '(2S)-2,3-dichloropropan-1-ol' },
+    { smiles => 'Cl[C@@H](CO)[C@H](C)Cl', iupac => '(2S,3S)-2,3-dichlorobutan-1-ol' },
+
+    # BBv3 P-92.2.1.1.3
+    { smiles => 'BrCC[C@H]([C@H](CCl)F)[C@@H]([C@H]([C@@H](CF)F)CCI)O', iupac => '(2R,3S,4R,5R,6S)-3-(2-bromoethyl)-1-chloro-2,6,7-trifluoro-5-(2-iodoethyl)heptan-4-ol' },
+    { smiles => 'BrCC[C@H]([C@H](CF)F)[C@@H]([C@H]([C@@H](CF)F)CCI)O', iupac => '(2R,3S,4S,5R,6S)-3-(2-bromoethyl)-1,2,6,7-tetrafluoro-5-(2-iodoethyl)heptan-4-ol', AUTHOR => 1 },
+
+    # BBv3 P-92.2.1.2
+    { smiles => 'O[C@@H](C=O)C=C', iupac => '(2R)-2-hydroxybut-3-enal' },
+    { smiles => 'O[C@@H](C#N)C=C', iupac => '(2R)-2-hydroxybut-3-enenitrile', AUTHOR => 1 },
+    { smiles => 'O[C@@H](C=O)CO', iupac => '(2R)-2,3-dihydroxypropanal' },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
