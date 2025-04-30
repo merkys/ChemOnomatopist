@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Util::Graph;
-use Chemistry::OpenSMILES qw( is_chiral mirror );
+use Chemistry::OpenSMILES qw( is_chiral is_chiral_tetrahedral mirror );
 use Graph::MoreUtils qw( graph_replace );
 use Graph::Undirected;
 use List::Util qw( all any first );
@@ -27,6 +27,16 @@ sub new
         $self = bless $_[0], $class;
     } else {
         $self = bless Graph::Undirected->new( @_, refvertexed => 1 ), $class;
+    }
+
+    # Detect chiralities that cannot be handled yet
+    if( any { is_chiral $_ && !is_chiral_tetrahedral $_ } $self->vertices ) {
+        die 'cannot handle chirality other than tetrahedral' . "\n";
+    }
+    if( any { is_chiral_tetrahedral $_ && exists $_->{chirality_neighbours} &&
+              @{$_->{chirality_neighbours}} != 4 } $self->vertices ) {
+        die 'cannot handle chiral tetrahedral centers with other than ' .
+            '4 neighbours' . "\n";
     }
 
     # Reorder chiral centers
