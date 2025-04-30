@@ -285,12 +285,14 @@ sub neighbours_at_distance
 {
     my( $graph, $vertex, $from, $distance, $path ) = @_;
 
+    my @neighbours = grep { !$path->has( $_ ) }
+                          $graph->neighbours( $vertex );
+
     if( $distance ) {
-        return map  { neighbours_at_distance( $graph, $_, $vertex, $distance-1, set( @$path, $vertex ) ) }
-               grep { !$path->has( $_ ) }
-                    $graph->neighbours( $vertex );
+        return map { neighbours_at_distance( $graph, $_, $vertex, $distance-1, set( @$path, $vertex ) ) }
+                   @neighbours
     } else {
-        return grep { $_ ne $from } $graph->neighbours( $vertex );
+        return @neighbours
     }
 }
 
