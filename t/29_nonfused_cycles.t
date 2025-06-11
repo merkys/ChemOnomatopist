@@ -16,7 +16,7 @@ my @cases = (
     { smiles => 'C1(CCCCC1)OC1=CC=CC=C1', iupac => '(cyclohexyloxy)benzene', AUTHOR => 1 }, # FIXME: Very close
     { smiles => 'N1=CC(=CC=C1)OC1=NC=CN=C1', iupac => '2-[(pyridin-3-yl)oxy]pyrazine' },
 
-    { smiles => 'c1ncccc1[C@@H]2CCCN2C', iupac => '3-[(2S)-1-methylpyrrolidin-2-yl]pyridine', AUTHOR => 1 }, # nicotine
+    { smiles => 'c1ncccc1[C@@H]2CCCN2C', iupac => '3-[(2S)-1-methylpyrrolidin-2-yl]pyridine' }, # nicotine
 
     { smiles => 'C1=CSC(=C1)SSC2=CC=CS2', iupac => '2-(thiophen-2-yldisulfanyl)thiophene' }, # PubChem 23347
     { smiles => 'CC1C(=O)NC(C(=O)N1C(C)C(C)C)C2CCCCC2', iupac => '3-cyclohexyl-6-methyl-1-(3-methylbutan-2-yl)piperazine-2,5-dione' }, # PubChem 64959818
