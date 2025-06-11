@@ -1684,23 +1684,25 @@ sub order_by_neighbours($$$$)
 {
     my( $graph, $parent, $A, $B ) = @_;
 
-    my $cmp = 0;
     my $distance = 0;
     my @frontA = ( $A );
     my @frontB = ( $B );
-    while( !$cmp && ( @frontA || @frontB ) ) {
-        $cmp = cmp_arrays( [ reverse sort map { atomic_number( $_ ) } @frontB ],
-                           [ reverse sort map { atomic_number( $_ ) } @frontA ] );
-        if( !$cmp ) { # BBv3 P-92.3: higher atomic numbers appear first
-            $cmp = cmp_arrays( [ reverse sort map { exists $_->{isotope} ? $_->{isotope} : atomic_number( $_ ) } @frontB ],
-                               [ reverse sort map { exists $_->{isotope} ? $_->{isotope} : atomic_number( $_ ) } @frontA ] );
-        }
+    while( @frontA || @frontB ) {
+        my $cmp = cmp_arrays( [ reverse sort map { atomic_number( $_ ) } @frontB ],
+                              [ reverse sort map { atomic_number( $_ ) } @frontA ] );
+        return $cmp if $cmp;
+
+        # BBv3 P-92.3: higher atomic numbers appear first
+        $cmp = cmp_arrays( [ reverse sort map { exists $_->{isotope} ? $_->{isotope} : atomic_number( $_ ) } @frontB ],
+                           [ reverse sort map { exists $_->{isotope} ? $_->{isotope} : atomic_number( $_ ) } @frontA ] );
+        return $cmp if $cmp;
+
         @frontA = neighbours_at_distance( $graph, $A, $parent, $distance, set( $parent ) );
         @frontB = neighbours_at_distance( $graph, $B, $parent, $distance, set( $parent ) );
         $distance++;
     }
 
-    return $cmp;
+    return 0;
 }
 
 1;
