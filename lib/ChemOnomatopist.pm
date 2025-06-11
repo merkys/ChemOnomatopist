@@ -1691,6 +1691,10 @@ sub order_by_neighbours($$$$)
     while( !$cmp && ( @frontA || @frontB ) ) {
         $cmp = cmp_arrays( [ reverse sort map { atomic_number( $_ ) } @frontB ],
                            [ reverse sort map { atomic_number( $_ ) } @frontA ] );
+        if( !$cmp ) { # BBv3 P-92.3: higher atomic numbers appear first
+            $cmp = cmp_arrays( [ reverse sort map { exists $_->{isotope} ? $_->{isotope} : atomic_number( $_ ) } @frontB ],
+                               [ reverse sort map { exists $_->{isotope} ? $_->{isotope} : atomic_number( $_ ) } @frontA ] );
+        }
         @frontA = neighbours_at_distance( $graph, $A, $parent, $distance, set( $parent ) );
         @frontB = neighbours_at_distance( $graph, $B, $parent, $distance, set( $parent ) );
         $distance++;

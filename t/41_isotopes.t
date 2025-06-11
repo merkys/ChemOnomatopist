@@ -56,8 +56,8 @@ my @cases = (
     { smiles => 'CC([14CH2]C)([2H])[2H]', iupac => '(3-14C,2,2-2H2)butane' },
     { smiles => 'C[14CH2]C(C)[2H]', iupac => '(2-14C,3-2H1)butane' },
     { smiles => 'C1(=CC(=CC=C1)[3H])O', iupac => '(3-3H)phenol' },
-    { smiles => 'C([C@@H](C)O)[2H]', iupac => '(2R)-(1-2H1)propan-2-ol', AUTHOR => 1 },
-    { smiles => 'C[C@@H](C[C@@H](C)[2H])[3H]', iupac => '(2S,4R)-(4-2H1,2-3H1)pentane', AUTHOR => 1 },
+    { smiles => 'C([C@@H](C)O)[2H]', iupac => '(2R)-(1-2H1)propan-2-ol' },
+    { smiles => 'C[C@@H](C[C@@H](C)[2H])[3H]', iupac => '(2S,4R)-(4-2H1,2-3H1)pentane' },
 
     # From BBv3 P-82.6.3.3
     { smiles => 'C1=C(C=CC2=CC=CC=C12)[15N]=NC1=CC=CC=C1', iupac => '1-(naphthalen-2-yl)-2-phenyl(1-15N)diazene' },
