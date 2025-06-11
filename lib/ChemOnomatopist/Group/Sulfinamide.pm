@@ -23,6 +23,7 @@ sub new
 }
 
 sub prefix { ChemOnomatopist::Name->new( 'sulfinamido' ) } # FIXME: May be incorrect
+
 sub suffix
 {
     my( $self ) = @_;

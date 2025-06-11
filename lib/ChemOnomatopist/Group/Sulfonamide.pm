@@ -9,11 +9,19 @@ use warnings;
 use parent ChemOnomatopist::Group::;
 
 use ChemOnomatopist::Name;
+use List::Util qw( all uniq );
 
 my %prefixes = (
     S  => 'sulfonamide',
     Se => 'selenonamide',
     Te => 'telluronamide',
+);
+
+my %ketone_infixes = (
+    O  => '',
+    S  => 'thio',
+    Se => 'seleno',
+    Te => 'telluro',
 );
 
 sub new
@@ -23,6 +31,25 @@ sub new
 }
 
 sub prefix { ChemOnomatopist::Name->new( 'sulfamoyl' ) } # FIXME: May be incorrect
-sub suffix { ChemOnomatopist::Name->new( $prefixes{$_[0]->element} ) }
+
+sub suffix
+{
+    my( $self ) = @_;
+    if( all { $_->element eq 'O' } @{$self->{ketones}} ) {
+        return ChemOnomatopist::Name->new( $prefixes{$self->element} );
+    }
+
+    my $name = $prefixes{$self->element};
+    $name =~ s/amide$/o/;
+
+    if( uniq( map { $_->element } @{$self->{ketones}} ) == 1 ) {
+        $name .= 'di' . $ketone_infixes{$self->{ketones}[0]->element};
+    } else {
+        $name .= join '', sort map { $ketone_infixes{$_->element} } @{$self->{ketones}};
+    }
+    $name .= 'amide';
+
+    return ChemOnomatopist::Name->new( $name );
+}
 
 1;

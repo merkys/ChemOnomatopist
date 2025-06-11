@@ -19,6 +19,8 @@ my @cases = (
     # Hand-crafted tests, confirmed with OPSIN
     { smiles => 'C(CCCC)S(N)=[Se]', iupac => 'pentane-1-sulfinoselenoamide' },
     { smiles => 'C(CCCC)S(N)=[Te]', iupac => 'pentane-1-sulfinotelluroamide' },
+    { smiles => 'C(CCCC)S(=O)(N)=S', iupac => 'pentane-1-sulfonothioamide' },
+    { smiles => 'C(CCCC)S(N)(=[Se])=S', iupac => 'pentane-1-sulfonoselenothioamide' },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
