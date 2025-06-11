@@ -369,9 +369,9 @@ my @rules = (
 
     # Sulfoxide group and its analogues
     [ sub { &is_nongroup_atom && &is_S_Se_Te }, \&is_ketone, ( \&anything ) x 2, NO_MORE_VERTICES,
-      sub { $_[0]->replace( ChemOnomatopist::Group::Sulfinyl->new( element( $_[1] ) ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Sulfinyl->new( element( $_[1] ), $_[2] ), @_[1..2] ) } ],
     [ sub { &is_nongroup_atom && &is_S_Se_Te }, ( \&is_ketone ) x 2, ( \&anything ) x 2, NO_MORE_VERTICES,
-      sub { $_[0]->replace( ChemOnomatopist::Group::Sulfonyl->new( element( $_[1] ) ), @_[1..3] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Sulfonyl->new( element( $_[1] ), $_[2], $_[3] ), @_[1..3] ) } ],
 
     # Noncarbon oxoacids
     [ sub { &is_nongroup_atom && &is_As_N_B_P_Se_Si_Sb_S_Te }, ( sub { &is_hydroxy && &is_O } ) x 4,
@@ -401,9 +401,9 @@ my @rules = (
 
     # Sulfinamides and sulfonamides
     [ \&is_amide, \&is_sulfinyl, NO_MORE_VERTICES,
-      sub { $_[0]->replace( ChemOnomatopist::Group::Sulfinamide->new( $_[2]->element ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Sulfinamide->new( $_[2]->element, $_[2]->{ketone} ), @_[1..2] ) } ],
     [ \&is_amide, \&is_sulfonyl, NO_MORE_VERTICES,
-      sub { $_[0]->replace( ChemOnomatopist::Group::Sulfonamide->new( $_[2]->element ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Sulfonamide->new( $_[2]->element, @{$_[2]->{ketones}} ), @_[1..2] ) } ],
 
     # Detecting amides attached to cyclic chains
     [ sub { &is_nongroup_atom && &is_C && 1 == grep { blessed $_ && $_->isa( ChemOnomatopist::Group::Amide:: ) && $_->{parent} == $_[1] } $_[0]->neighbours( $_[1] ) }, \&is_amide, \&is_monocycle, NO_MORE_VERTICES,

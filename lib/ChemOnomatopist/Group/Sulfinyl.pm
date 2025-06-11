@@ -16,6 +16,12 @@ my %prefixes = (
     Te => 'tellurinyl',
 );
 
+sub new
+{
+    my( $class, $element, $ketone ) = @_;
+    return bless { element => $element, ketone => $ketone }, $class;
+}
+
 sub is_prefix_only() { 1 }
 
 sub prefix { ChemOnomatopist::Name->new( $prefixes{$_[0]->element} ) }

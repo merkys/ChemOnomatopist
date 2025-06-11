@@ -16,6 +16,12 @@ my %prefixes = (
     Te => 'tellurinamide',
 );
 
+sub new
+{
+    my( $class, $element, $ketone ) = @_;
+    return bless { element => $element, ketone => $ketone }, $class;
+}
+
 sub prefix { ChemOnomatopist::Name->new( 'sulfinamido' ) } # FIXME: May be incorrect
 sub suffix { ChemOnomatopist::Name->new( $prefixes{$_[0]->element} ) }
 
