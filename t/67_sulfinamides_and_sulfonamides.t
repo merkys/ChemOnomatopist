@@ -15,6 +15,10 @@ my @cases = (
 
     # From BBv3 P-66.1.1.4.2
     { smiles => 'CNS(=O)C=1C=C2C=CC(=CC2=CC1)C(=O)O', iupac => '6-[(methylamino)sulfinyl]naphthalene-2-carboxylic acid' },
+
+    # Hand-crafted tests, confirmed with OPSIN
+    { smiles => 'C(CCCC)S(N)=[Se]', iupac => 'pentane-1-sulfinoselenoamide' },
+    { smiles => 'C(CCCC)S(N)=[Te]', iupac => 'pentane-1-sulfinotelluroamide' },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};

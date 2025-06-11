@@ -23,6 +23,18 @@ sub new
 }
 
 sub prefix { ChemOnomatopist::Name->new( 'sulfinamido' ) } # FIXME: May be incorrect
-sub suffix { ChemOnomatopist::Name->new( $prefixes{$_[0]->element} ) }
+sub suffix
+{
+    my( $self ) = @_;
+    if( $self->{ketone}->element eq 'O' ) {
+        return ChemOnomatopist::Name->new( $prefixes{$self->element} );
+    }
+
+    my $name = $prefixes{$self->element};
+    $name =~ s/amide$/o/;
+    $name .= $prefixes{$self->{ketone}->element};
+    $name =~ s/inamide$/oamide/;
+    return ChemOnomatopist::Name->new( $name );
+}
 
 1;
