@@ -42,12 +42,11 @@ sub suffix
     my $name = $prefixes{$self->element};
     $name =~ s/amide$/o/;
 
-    if( uniq( map { $_->element } @{$self->{ketones}} ) == 1 ) {
-        $name .= 'di' . $ketone_infixes{$self->{ketones}[0]->element};
-    } else {
-        $name .= join '', sort map { $ketone_infixes{$_->element} } @{$self->{ketones}};
-    }
-    $name .= 'amide';
+    my @ketone_infixes = sort { $a cmp $b }
+                         uniq map { $ketone_infixes{$_->element} }
+                                  @{$self->{ketones}};
+    $name .= 'di' if @ketone_infixes == 1;
+    $name .= join( '', @ketone_infixes ) . 'amide';
 
     return ChemOnomatopist::Name->new( $name );
 }
