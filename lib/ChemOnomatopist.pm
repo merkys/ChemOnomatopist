@@ -707,8 +707,8 @@ sub find_groups
             } elsif( ChemOnomatopist::Chain::Aceylene->has_form( $core ) ) {
                 $compound = ChemOnomatopist::Chain::Aceylene->new( $graph, @cycles );
             } elsif( @cycles == 3 &&
-                     (grep { $_->is_benzene } @cycles) == 2 &&
-                     (grep { $_->is_hydrocarbon && $_->length == 5 } @cycles) &&
+                     (grep { $_->is_benzene }  @cycles) == 2 &&
+                     (any  { $_->length == 5 } @cycles) &&
                      ChemOnomatopist::Chain::Fluorene->has_form( $core ) ) {
                 $compound = ChemOnomatopist::Chain::Fluorene->new( $graph, @cycles );
             } elsif( @cycles >= 3 &&

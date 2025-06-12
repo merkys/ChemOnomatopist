@@ -26,10 +26,19 @@ sub new
 
     my $subgraph = $graph->subgraph( map { $_->vertices } @cycles );
 
+    my @heteroatoms = grep { ChemOnomatopist::Util::element( $_ ) ne 'C' }
+                           $subgraph->vertices;
+    die "unknown fluorene derivative\n" if @heteroatoms > 1;
+
     my( $cyclopentane, @benzenes ) = sort { $a->length <=> $b->length } @cycles;
     my( $apex ) = (set( $cyclopentane->vertices ) -
                    set( $benzenes[0]->vertices  ) -
                    set( $benzenes[1]->vertices  ))->members;
+
+    if( @heteroatoms && ChemOnomatopist::Util::element( $apex ) ne 'N' ) {
+        die "unknown fluorene derivative\n";
+    }
+
     $subgraph->delete_vertices( $apex, $subgraph->neighbours( $apex ) );
     my $start = first { $subgraph->degree( $_ ) == 1 } $subgraph->vertices;
 
@@ -51,7 +60,7 @@ sub has_form($$)
 
     return are_isomorphic( graph_without_edge_attributes( $graph ),
                            $class->ideal_graph,
-                           sub { ChemOnomatopist::Util::element( $_[0] ) } );
+                           sub { 'C' } );
 }
 
 sub ideal_graph($)
@@ -79,9 +88,17 @@ sub ideal_graph($)
     return $graph;
 }
 
+sub needs_heteroatom_locants() { '' }
+sub needs_heteroatom_names() { '' }
+
 sub number_of_rings() { 3 }
 
-sub prefix() { ChemOnomatopist::Name->new( 'fluorene' ) }
-sub suffix() { ChemOnomatopist::Name->new( 'fluorene' ) }
+sub prefix()
+{
+    my( $self ) = @_;
+    return ChemOnomatopist::Name->new( $self->is_hydrocarbon ? 'fluorene' : 'carbazole' );
+}
+
+sub suffix() { $_[0]->prefix }
 
 1;
