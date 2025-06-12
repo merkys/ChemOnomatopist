@@ -353,7 +353,7 @@ my @rules = (
 
     # Peroxide
     [ sub { &is_nongroup_atom && &is_O }, sub { ( &is_nongroup_atom && &is_O ) || ( &is_hydroxy && &charge_minus_one ) }, \&is_C, NO_MORE_VERTICES,
-      sub { $_[0]->replace( ChemOnomatopist::Group::Peroxide->new( @_[1..2] ), @_[1..2] ) } ],
+      sub { $_[0]->replace( ChemOnomatopist::Group::Peroxide->new( @_ ), @_[1..2] ) } ],
 
     # Hydroperoxide
     [ sub { &is_nongroup_atom && &is_O_S_Se_Te }, \&is_hydroxy, \&anything, NO_MORE_VERTICES,

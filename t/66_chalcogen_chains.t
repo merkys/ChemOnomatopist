@@ -8,12 +8,12 @@ use Test::More;
 
 my @cases = (
     # From BBv3 P-68.4.2.2
-    { smiles => 'COOS', iupac => 'methyldioxidanethiol', AUTHOR => 1 },
+    { smiles => 'COOS', iupac => 'methyldioxidanethiol' },
     { smiles => 'COOOS', iupac => 'methyltrioxidanethiol' },
     { smiles => 'COSO', iupac => 'methyloxidane-SO-thioperoxol', AUTHOR => 1 },
     { smiles => 'CSSO', iupac => 'methyldisulfanol', AUTHOR => 1 },
     { smiles => 'CSSS[SeH]', iupac => 'methyltrisulfaneselenol' },
-    { smiles => 'COOSS', iupac => 'methyldioxidanedithioperoxol', AUTHOR => 1 },
+    { smiles => 'COOSS', iupac => 'methyldioxidanedithioperoxol' },
     { smiles => 'COS[Se][SeH]', iupac => 'methoxysulfanediselenoperoxol', AUTHOR => 1 },
     { smiles => 'CSSOO', iupac => 'methyldisulfaneperoxol', AUTHOR => 1 },
     { smiles => 'CSOSO', iupac => '[(methylsulfanyl)oxy]sulfanol', AUTHOR => 1 },
