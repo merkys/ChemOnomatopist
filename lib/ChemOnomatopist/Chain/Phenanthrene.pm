@@ -11,7 +11,7 @@ use ChemOnomatopist::Name;
 use ChemOnomatopist::Util;
 use ChemOnomatopist::Util::Graph qw( merge_graphs );
 use Graph::Undirected;
-use List::Util qw( first all any );
+use List::Util qw( all any first );
 
 use parent ChemOnomatopist::Chain::Polyaphene::;
 
@@ -32,10 +32,10 @@ sub new
     my @vertices = Graph::Traversal::DFS->new( $subgraph, start => $start )->dfs;
 
     # Adjust the order
-    if( any { ChemOnomatopist::Util::element( $_ ) eq 'N' } @vertices ) {
+    if( any { ChemOnomatopist::Util::element( $_ ) ne 'C' } @vertices ) {
         # Find the order so as N is closest to the beginning of the chain
-        my $first = first { ChemOnomatopist::Util::element( $vertices[$_] )    eq 'N' } 0..$#vertices;
-        my $last  = first { ChemOnomatopist::Util::element( $vertices[-1-$_] ) eq 'N' } 0..$#vertices;
+        my $first = first { ChemOnomatopist::Util::element( $vertices[$_] )    ne 'C' } 0..$#vertices;
+        my $last  = first { ChemOnomatopist::Util::element( $vertices[-1-$_] ) ne 'C' } 0..$#vertices;
         @vertices = reverse @vertices if $last < $first;
         push @vertices, shift @vertices;
 
@@ -44,7 +44,7 @@ sub new
             ChemOnomatopist::Util::element( $vertices[5] ) ne 'N' ) {
             die "cannot handle complicated cyclic compounds\n";
         }
-    } else { # CHECKME: Is this really needed? From BBv3 Table 2.9 it seems that phenanthrene numbering is followed
+    } else {
         for (1..5) {
             push @vertices, shift @vertices;
         }
@@ -124,7 +124,7 @@ sub prefix()
         }
     }
 
-    if( @heteroatom_locants == 1 && all { $_ == 10 } @heteroatom_locants ) {
+    if( @heteroatom_locants == 1 && all { $_ == 5 } @heteroatom_locants ) {
         return ChemOnomatopist::Name->new( 'arsanthridine' )    if all { $_ eq 'As' } $self->heteroatoms;
         return ChemOnomatopist::Name->new( 'phosphanthridine' ) if all { $_ eq 'P'  } $self->heteroatoms;
     }
