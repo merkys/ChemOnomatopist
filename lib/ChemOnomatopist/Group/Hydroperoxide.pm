@@ -37,7 +37,7 @@ sub prefix()
     }
 
     my $name = ChemOnomatopist::Name->new;
-    for my $element (reverse @elements) { # FIXME: Incomplete
+    for my $element (reverse @elements) {
         if( $element eq 'O' ) {
             $name .= 'hydr' unless $name;
             $name->append_stem( 'oxy' );
