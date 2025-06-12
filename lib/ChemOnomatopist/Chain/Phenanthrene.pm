@@ -44,7 +44,7 @@ sub new
             ChemOnomatopist::Util::element( $vertices[5] ) ne 'N' ) {
             die "cannot handle complicated cyclic compounds\n";
         }
-    } else {
+    } else { # CHECKME: Is this really needed? From BBv3 Table 2.9 it seems that phenanthrene numbering is followed
         for (1..5) {
             push @vertices, shift @vertices;
         }
@@ -107,15 +107,24 @@ sub prefix()
 {
     my( $self ) = @_;
 
-    # TODO: Check the heteroatom sites
-    my $heteroatom_positions = join ',', $self->heteroatom_positions;
+    my @heteroatom_locants = $self->locants( $self->heteroatom_positions );
 
     if( all { $_ eq 'N' } $self->heteroatoms ) {
-        return ChemOnomatopist::Name->new( 'phenanthridine' ) if $self->number_of_heteroatoms == 1;
-        return ChemOnomatopist::Name->new( 'phenanthroline' ) if $self->number_of_heteroatoms == 2;
+        if( @heteroatom_locants == 1 && all { $_ == 5 } @heteroatom_locants ) {
+            return ChemOnomatopist::Name->new( 'phenanthridine' );
+        }
+        if( @heteroatom_locants == 2 &&
+            (
+              ( $heteroatom_locants[0] == 1 && $heteroatom_locants[1] >= 7 && $heteroatom_locants[1] <= 10 ) ||
+              ( $heteroatom_locants[0] == 2 && $heteroatom_locants[1] >= 7 && $heteroatom_locants[1] <=  9 ) ||
+              ( $heteroatom_locants[0] == 3 && $heteroatom_locants[1] >= 7 && $heteroatom_locants[1] <=  8 ) ||
+              ( $heteroatom_locants[0] == 4 && $heteroatom_locants[1] == 7 )
+            ) ) {
+            return ChemOnomatopist::Name->new( 'phenanthroline' );
+        }
     }
 
-    if( $self->number_of_heteroatoms == 1 ) {
+    if( @heteroatom_locants == 1 && all { $_ == 10 } @heteroatom_locants ) {
         return ChemOnomatopist::Name->new( 'arsanthridine' )    if all { $_ eq 'As' } $self->heteroatoms;
         return ChemOnomatopist::Name->new( 'phosphanthridine' ) if all { $_ eq 'P'  } $self->heteroatoms;
     }
