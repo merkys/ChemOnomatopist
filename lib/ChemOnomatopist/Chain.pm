@@ -31,7 +31,7 @@ use List::Util qw( all any first none sum0 uniq );
 use Scalar::Util qw( blessed );
 use Set::Object qw( set );
 
-sub vertices();
+sub vertices(@);
 
 sub new
 {
@@ -104,10 +104,17 @@ sub substituents()
     return @substituents;
 }
 
-sub vertices()
+sub vertices(@)
 {
-    my( $self ) = @_;
-    return @{$self->{vertices}};
+    my( $self, @vertices_new ) = @_;
+    my @vertices = @{$self->{vertices}};
+    if( @vertices_new ) {
+        $self->{vertices} = \@vertices_new;
+        # TODO: Invalidate all cache
+        delete $self->{bonds};
+        delete $self->{heteroatom_positions};
+    }
+    return @vertices;
 }
 
 # Properties

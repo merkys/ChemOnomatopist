@@ -35,7 +35,6 @@ our @names = (
 
     [ qw( NCCNCC CCCCCC quinoxaline ) ],
 
-    [ 'c:c:c:n:c:c:', 'n:c:c:c:c:c:', '1,5-naphthyridine' ], # TODO: There are isomers
     [ 'c:n:n:c:c:c:', 'c:c:c:c:c:c:', 'phthalazine' ],
     [ 'n:c:c:c:c:c:', 'c:c:c:c:c:c:', 'quinoline' ],
 
@@ -199,7 +198,7 @@ sub new
             }
         }
 
-        $self->{vertices} = [ (shift @candidates)->vertices ]; # FIXME: Simply return instead of self
+        $self->vertices( (shift @candidates)->vertices ); # FIXME: Simply return instead of self
     } elsif( $nbenzene == 1 ) {
         # Numbering has to start from cycle other than benzene
         if( $cycles[0]->is_benzene ) {
@@ -244,7 +243,7 @@ sub flipped_horizontally()
     my $copy = $self->copy;
     my @vertices = reverse $copy->vertices;
     push @vertices, shift @vertices;
-    $copy->{vertices} = \@vertices;
+    $copy->vertices( @vertices );
     return $copy;
 }
 
@@ -258,7 +257,7 @@ sub flipped_vertically()
     for (1..$cycle->length-2) {
         unshift @vertices, pop @vertices;
     }
-    $copy->{vertices} = \@vertices;
+    $copy->vertices( @vertices );
     return $copy;
 }
 
@@ -309,7 +308,7 @@ sub parent(;$)
 
     if( $self->is_naphthalene ) {
         my( $chain ) = ChemOnomatopist::filter_chains( $self->candidates );
-        $self->{vertices} = [ $chain->vertices ];
+        $self->vertices( $chain->vertices );
     }
 
     return $old_parent;
@@ -367,6 +366,13 @@ sub is_naphthalene()
     return $self->is_hydrocarbon && all { $_->length == 6 } $self->cycles;
 }
 
+sub is_naphthyridine()
+{
+    my( $self ) = @_;
+    return '' unless all { $_->length == 6 && $_->is_monoreplaced } $self->cycles;
+    return join( ',', uniq $self->heteroatoms ) eq 'N';
+}
+
 sub is_purine()
 {
     my( $self ) = @_;
@@ -391,7 +397,7 @@ sub needs_indicated_hydrogens() { 1 }
 sub needs_heteroatom_locants()
 {
     my( $self ) = @_;
-    return $self->suffix =~ /^benzo/;
+    return $self->suffix =~ /^benzo/ || $self->is_naphthyridine;
 }
 
 sub needs_heteroatom_names()
@@ -455,6 +461,10 @@ sub suffix()
             my $name = ChemOnomatopist::alkane_chain_name( $1 ) . 'alene';
             return ChemOnomatopist::Name::Part::Stem->new( $name )->to_name;
         }
+    }
+
+    if( $self->is_naphthyridine ) {
+        return ChemOnomatopist::Name::Part::Stem->new( 'naphthyridine' )->to_name;
     }
 
     my @SMILES = map { $_->backbone_SMILES } $self->cycles;
@@ -587,11 +597,12 @@ sub _adjust_vertices_to_cycles()
 
     my @cycles = $self->cycles;
 
-    $self->{vertices} = [];
-    push @{$self->{vertices}}, $cycles[0]->vertices;
-    pop  @{$self->{vertices}};
-    push @{$self->{vertices}}, $cycles[1]->vertices;
-    pop  @{$self->{vertices}};
+    my @vertices;
+    push @vertices, $cycles[0]->vertices;
+    pop  @vertices;
+    push @vertices, $cycles[1]->vertices;
+    pop  @vertices;
+    $self->vertices( @vertices );
 
     return $self;
 }
