@@ -150,7 +150,7 @@ sub parent(;$)
     @candidates = rule_lowest_parent_locant( @candidates ) if defined $self->parent_locant;
     @candidates = ChemOnomatopist::filter_chains( @candidates );
 
-    $self->{vertices} = [ $candidates[0]->vertices ];
+    $self->vertices( $candidates[0]->vertices );
     return $old_parent;
 }
 

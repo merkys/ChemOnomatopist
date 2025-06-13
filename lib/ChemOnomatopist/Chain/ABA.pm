@@ -43,7 +43,7 @@ sub add
         }
     }
 
-    $self->{vertices} = \@vertices;
+    $self->vertices( @vertices );
 }
 
 sub inner_element { ChemOnomatopist::Util::element( $_[0]->{vertices}[1] ) }

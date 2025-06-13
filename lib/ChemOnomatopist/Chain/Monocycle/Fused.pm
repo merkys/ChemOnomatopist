@@ -10,7 +10,6 @@ use parent ChemOnomatopist::Chain::Monocycle::;
 
 use ChemOnomatopist;
 use ChemOnomatopist::Util::SMILES qw( cycle_SMILES );
-use List::Util qw( all );
 
 sub new
 {
@@ -50,7 +49,7 @@ sub orient()
     my( $chain ) = ChemOnomatopist::filter_chains( $self, $self->flipped );
     return '' if $chain == $self;
 
-    $self->{vertices} = $chain->{vertices};
+    $self->vertices( $chain->vertices );
     return 1;
 }
 
