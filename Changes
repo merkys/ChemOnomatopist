@@ -1,3 +1,8 @@
+0.11.0 2025-11-06
+
+    - Implement support for chiral tetrahedral centers.
+    - Implement support for azides.
+
 0.10.0 2024-06-28
 
     - Implement support for acyl halides.
