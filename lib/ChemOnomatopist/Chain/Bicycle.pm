@@ -506,8 +506,8 @@ sub suffix()
     my @equiv_A = $self->{cycles}[0]->autosymmetric_equivalents;
     my @equiv_B = $self->{cycles}[1]->autosymmetric_equivalents;
 
-    my $min_A = min map {  $_->vertex_ids( @bridge ) } @equiv_A;
-    @equiv_A = grep { min( $_->vertex_ids( @bridge ) ) == $min_A } @equiv_A;
+    my( $A_min, $A_max ) = sort map { $_->vertex_ids( @bridge ) } @equiv_A;
+    @equiv_A = grep { min( $_->vertex_ids( @bridge ) ) == $A_min } @equiv_A;
 
     my( $B_min, $B_max ) = sort map { $_->vertex_ids( @bridge ) } @equiv_B;
     @equiv_B = grep { min( $_->vertex_ids( @bridge ) ) == $B_min } @equiv_B;
@@ -532,7 +532,7 @@ sub suffix()
         }
         $fusion .= '-';
     }
-    $fusion .= chr( 97 + $min_A ) . ']';
+    $fusion .= chr( 97 + $A_min ) . ']';
 
     my @ideal = map { ChemOnomatopist::Chain::Monocycle->new( $_->graph, $_->vertices ) }
                     $self->cycles;
