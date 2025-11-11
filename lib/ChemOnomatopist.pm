@@ -156,10 +156,10 @@ sub get_sidechain_name
     my $chain;
     if( blessed $start && $start->isa( ChemOnomatopist::Chain:: ) ) {
         $chain = $start;
-        $chain->parent( $parent ) if $parent;
+        $chain->parent( $parent ) if $parent && !$chain->parent;
     } elsif( $graph->groups( $start ) ) {
         ( $chain ) = $graph->groups( $start );
-        $chain->parent( $parent ) if $parent;
+        $chain->parent( $parent ) if $parent && !$chain->parent;
     } else {
         $chain = select_sidechain( $graph, $parent, $start );
     }
