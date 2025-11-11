@@ -509,8 +509,8 @@ sub suffix()
     my $min_A = min map {  $_->vertex_ids( @bridge ) } @equiv_A;
     @equiv_A = grep { min( $_->vertex_ids( @bridge ) ) == $min_A } @equiv_A;
 
-    my $min_B = min map {  $_->vertex_ids( @bridge ) } @equiv_B;
-    @equiv_B = grep { min( $_->vertex_ids( @bridge ) ) == $min_B } @equiv_B;
+    my( $B_min, $B_max ) = sort map { $_->vertex_ids( @bridge ) } @equiv_B;
+    @equiv_B = grep { min( $_->vertex_ids( @bridge ) ) == $B_min } @equiv_B;
 
     my $fusion;
     if( $self->{cycles}[1]->is_homogeneous &&
@@ -518,17 +518,17 @@ sub suffix()
         $fusion = '[';
     } elsif( @equiv_A > 1 || @equiv_B > 1 ) {
         # At least one of the rings has mirror symmetry ("flip-symmetric"), thus numeric order is ascending
-        $fusion = '[' . ($min_B+1) . ',' . ($min_B+2) . '-';
+        $fusion = '[' . ($B_min+1) . ',' . ($B_min+2) . '-';
     } else {
         # Rings are rigid, thus numeric order has to be derived
         my @order_A = $equiv_A[0]->vertex_ids( @bridge );
         my @order_B = $equiv_B[0]->vertex_ids( @bridge );
         if( ($order_A[0] <=> $order_A[1]) == ($order_B[0] <=> $order_B[1]) ) {
             # Ring atoms are encountered in the same order in both of the rings
-            $fusion = '[' . ($min_B+1) . ',' . ($min_B+2);
+            $fusion = '[' . ($B_min+1) . ',' . ($B_max+1);
         } else {
             # Ring atom orders differ
-            $fusion = '[' . ($min_B+2) . ',' . ($min_B+1);
+            $fusion = '[' . ($B_max+1) . ',' . ($B_min+1);
         }
         $fusion .= '-';
     }
