@@ -284,16 +284,16 @@ sub merge_graphs
 
 sub neighbours_at_distance
 {
-    my( $graph, $vertex, $distance, $path ) = @_;
+    my( $graph, $vertex, $distance, $seen ) = @_;
 
-    my @neighbours = grep { !$path->has( $_ ) }
+    my @neighbours = grep { !$seen->has( $_ ) }
                           $graph->neighbours( $vertex );
     my @double_bonds = grep { is_double_bond( $graph, $vertex, $_ ) }
                             $graph->neighbours( $vertex );
 
     if( $distance ) {
         return @double_bonds,
-               map { neighbours_at_distance( $graph, $_, $distance-1, set( @$path, $vertex ) ) }
+               map { neighbours_at_distance( $graph, $_, $distance-1, set( @$seen, $vertex ) ) }
                    @neighbours;
     } else {
         return @double_bonds, @neighbours;
