@@ -282,6 +282,8 @@ sub merge_graphs
     return $merged;
 }
 
+# Returns a list of neighbours at certain distance from the central vertex.
+# Distance of 0 means immediate neighbours, distance of 1 means neighbours of neighbours and so on.
 sub neighbours_at_distance
 {
     my( $graph, $vertex, $distance, $seen ) = @_;
