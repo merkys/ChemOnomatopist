@@ -1,3 +1,7 @@
+0.11.1 2025-11-11
+
+    - Fix endless loop in chiral center neighbour ordering.
+
 0.11.0 2025-11-06
 
     - Implement support for chiral tetrahedral centers.
