@@ -17,6 +17,12 @@ my @cases = (
     { smiles => 'ClCC[C@H](CC(C)O)O', start => 3, distance => 3, neighbours => ';;;' },
     { smiles => 'ClCC[C@H](CC(C)O)O', start => 3, distance => 4, neighbours => ';;;' },
     { smiles => 'ClCC[C@H](CC(C)O)O', start => 3, distance => 5, neighbours => ';;;' },
+
+    { smiles => 'c1(ccccc1)Cc1ccccc1', start => 6, distance => 0, neighbours => ';;1,5;8,12' },
+    { smiles => 'c1(ccccc1)Cc1ccccc1', start => 6, distance => 1, neighbours => ';;2,4,13,17;9,11,20,24' },
+    { smiles => 'c1(ccccc1)Cc1ccccc1', start => 6, distance => 2, neighbours => ';;10,10,21,23;3,3,14,16' },
+    { smiles => 'c1(ccccc1)Cc1ccccc1', start => 6, distance => 3, neighbours => ';;2,4,15,15;9,11,22,22' },
+    { smiles => 'c1(ccccc1)Cc1ccccc1', start => 6, distance => 4, neighbours => ';;1,5,14,16;8,12,21,23' },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
