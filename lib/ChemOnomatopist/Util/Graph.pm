@@ -290,14 +290,15 @@ sub neighbours_at_distance
 
     my @neighbours = grep { !$seen->has( $_ ) }
                           $graph->neighbours( $vertex );
-    my @double_bonds = grep { is_double_bond( $graph, $vertex, $_ ) }
-                            $graph->neighbours( $vertex );
 
     if( $distance ) {
         return map { neighbours_at_distance( $graph, $_, $distance-1, set( @$seen, $vertex ) ) }
                    @neighbours;
     } else {
-        return @double_bonds, @neighbours;
+        # This is needed per BBv3 P-92.1.4
+        my @double_bonded_neighbours = grep { is_double_bond( $graph, $vertex, $_ ) }
+                                            $graph->neighbours( $vertex );
+        return @double_bonded_neighbours, @neighbours;
     }
 }
 
