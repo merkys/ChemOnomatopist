@@ -1697,8 +1697,8 @@ sub order_by_neighbours($$$$)
                            [ reverse sort map { exists $_->{isotope} ? $_->{isotope} : atomic_number( $_ ) } @frontA ] );
         return $cmp if $cmp;
 
-        @frontA = neighbours_at_distance( $graph, $A, $parent, $distance, set( $parent ) );
-        @frontB = neighbours_at_distance( $graph, $B, $parent, $distance, set( $parent ) );
+        @frontA = neighbours_at_distance( $graph, $A, $distance, set( $parent ) );
+        @frontB = neighbours_at_distance( $graph, $B, $distance, set( $parent ) );
         $distance++;
     }
 

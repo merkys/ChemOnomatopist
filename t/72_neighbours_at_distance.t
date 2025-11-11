@@ -36,7 +36,7 @@ for my $case (@cases) {
     my $start = first { $_->{number} == $case->{start} } $moiety->vertices;
     my @neighbours;
     for my $atom ($moiety->neighbours( $start )) {
-        my @atoms = neighbours_at_distance( $moiety, $atom, undef, $case->{distance}, set( $start ) );
+        my @atoms = neighbours_at_distance( $moiety, $atom, $case->{distance}, set( $start ) );
         push @neighbours, join ',', sort { $a <=> $b } map { $_->{number} } @atoms;
     }
     is join( ';', sort @neighbours ), $case->{neighbours};
