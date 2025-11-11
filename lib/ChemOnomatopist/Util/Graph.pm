@@ -294,8 +294,7 @@ sub neighbours_at_distance
                             $graph->neighbours( $vertex );
 
     if( $distance ) {
-        return @double_bonds,
-               map { neighbours_at_distance( $graph, $_, $distance-1, set( @$seen, $vertex ) ) }
+        return map { neighbours_at_distance( $graph, $_, $distance-1, set( @$seen, $vertex ) ) }
                    @neighbours;
     } else {
         return @double_bonds, @neighbours;
