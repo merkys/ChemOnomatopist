@@ -296,9 +296,6 @@ sub get_sidechain_name
 
     $name .= $chain->isotope_part;
 
-    # Record the parent
-    $chain->parent( $parent ) if $chain->can( 'parent' );
-
     if(  $chain->isa( ChemOnomatopist::Chain::Circular:: ) ||
          $chain->isa( ChemOnomatopist::Group:: ) ||
         ($chain->isa( ChemOnomatopist::Chain::Amine:: ) && @chain == 1) ||
