@@ -32,10 +32,18 @@ sub new
     my @N = grep { ChemOnomatopist::is_element( $_, 'N' ) } @vertices;
     $subgraph->delete_edge( $first, $last );
     $subgraph->delete_vertices( @N );
-    my @order = reverse Graph::Traversal::DFS->new( $subgraph, start => $first )->dfs;
+    my @order = Graph::Traversal::DFS->new( $subgraph, start => $last )->dfs;
+
+    # Order the N atoms.
+    # BBv3 Appendix 3 has a self-contradicting example with numbering.
+    # More natural order is maintained here.
+    $subgraph = $graph->subgraph( \@vertices );
+    @N = grep { ChemOnomatopist::is_element( $_, 'N' ) }
+         map  { $subgraph->neighbours( $order[$_] ) }
+              ( 0, 5, 10, 15 );
+
     @vertices = ( @order, @N );
 
-    # FIXME: Order N atoms
     # FIXME: Need to do better to achieve minimal locants
 
     return bless { graph => $graph, vertices => \@vertices }, $class;
