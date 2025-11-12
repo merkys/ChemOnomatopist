@@ -884,7 +884,8 @@ sub suffix()
 sub vertex_ids
 {
     my $self = shift;
-    my %ids = map { $self->{vertices}[$_] => $_ } 0..$self->length-1;
+    my @vertices = $self->vertices;
+    my %ids = map { $vertices[$_] => $_ } 0..$#vertices;
     return map { exists $ids{$_} ? $ids{$_} : undef } @_;
 }
 
