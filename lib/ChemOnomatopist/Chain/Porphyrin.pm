@@ -12,16 +12,39 @@ use ChemOnomatopist::Name;
 use ChemOnomatopist::Util;
 use ChemOnomatopist::Util::Graph qw( graph_without_edge_attributes );
 use Graph::Nauty qw( are_isomorphic );
+use Graph::Traversal::DFS;
 use Graph::Undirected;
+use List::Util qw( all first );
 
 sub new
 {
     my( $class, $graph, @vertices ) = @_;
+
+    my $subgraph = $graph->subgraph( \@vertices );
+
+    my $first = first { ChemOnomatopist::is_element( $_, 'C' ) &&
+                      $subgraph->degree( $_ ) == 3 } @vertices;
+    my $last = first { ChemOnomatopist::is_element( $_, 'C' ) &&
+                       all { $subgraph->degree( $_ ) == 3 }
+                           $subgraph->neighbours( $_ ) }
+                     $subgraph->neighbours( $first );
+
+    my @N = grep { ChemOnomatopist::is_element( $_, 'N' ) } @vertices;
+    $subgraph->delete_edge( $first, $last );
+    $subgraph->delete_vertices( @N );
+    my @order = reverse Graph::Traversal::DFS->new( $subgraph, start => $first )->dfs;
+    @vertices = ( @order, @N );
+
+    # FIXME: Order N atoms
+    # FIXME: Need to do better to achieve minimal locants
+
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
 sub needs_heteroatom_locants() { '' }
 sub needs_heteroatom_names() { '' }
+
+sub locants(@) { map { $_ + 1 } @_[1..$#_] }
 
 sub has_form($$)
 {
