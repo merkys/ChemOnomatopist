@@ -44,7 +44,6 @@ sub append($)
     my( $self, $name ) = @_;
     return $self if $name eq ''; # Do not do anything if name is empty
 
-    $self->[-1] =~ s/a$// if $name =~ /^[ai]/ && @$self;
     $self->[-1] =~ s/o$// if $name =~ /^o/ && @$self && $self->[-1] ne 'cyclo';
 
     # If names are combined and the second one starts with a number, a separator is added.

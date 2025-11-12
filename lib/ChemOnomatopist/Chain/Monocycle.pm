@@ -284,14 +284,18 @@ sub suffix()
 
         for my $element (sort { $elements{$a}->{seniority} <=> $elements{$b}->{seniority} }
                               keys %heteroatoms) {
+            my $element_name = exists $elements{$element}->{HantzschWidman}
+                                    ? $elements{$element}->{HantzschWidman}
+                                    : $elements{$element}->{prefix};
             if( @{$heteroatoms{$element}} > 1 ) {
                 $name->append_multiplier( ChemOnomatopist::IUPAC_numerical_multiplier( scalar @{$heteroatoms{$element}} ) );
+            } else {
+                # BBv3 P-16.7.1 (b)
+                $name->[-1]{value} =~ s/a$// if @$name && $element_name =~ /^[aeiouy]/;
             }
-            $name->append_element( exists $elements{$element}->{HantzschWidman}
-                                        ? $elements{$element}->{HantzschWidman}
-                                        : $elements{$element}->{prefix} );
+            $name->append_element( $element_name );
         }
-        $name->[-1] =~ s/a$//;
+        $name->[-1]{value} =~ s/a$//;
 
         if(      $self->length <= 5 ) {
             my @stems = ( 'ir', 'et', 'ol' );
