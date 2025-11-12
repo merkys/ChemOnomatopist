@@ -9,7 +9,7 @@ use Test::More;
 my @cases = (
     { smiles => 'C12=CC=C(N1)C=C1C=CC(=N1)C=C1C=CC(N1)=CC=1C=CC(N1)=C2', iupac => 'porphyrin' },
 
-    { smiles => 'C1(=CC=CC=C1)C=1C2=CC=C(N2)C=C2C=CC(C(=C3C=CC(=CC=4C=CC1N4)N3)C3=CC=CC=C3)=N2', iupac => '5,15-diphenylporphyrin', AUTHOR => 1 },
+    { smiles => 'C1(=CC=CC=C1)C=1C2=CC=C(N2)C=C2C=CC(C(=C3C=CC(=CC=4C=CC1N4)N3)C3=CC=CC=C3)=N2', iupac => '5,15-diphenylporphyrin' },
 
     { smiles => 'BrC=1C2=C(C3=CC=C(N3)C(=C3C(=C(C(C(=C4C=CC(=C(C(C1Br)=N2)C2=CC=CC=C2)N4)C4=CC=CC=C4)=N3)Br)Br)C3=CC=CC=C3)C3=CC=CC=C3',
       iupac  => '7,8,17,18-tetrabromo-5,10,15,20-tetraphenylporphyrin' }, # COD entry 2241690

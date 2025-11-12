@@ -49,6 +49,43 @@ sub new
     return bless { graph => $graph, vertices => \@vertices }, $class;
 }
 
+sub candidates()
+{
+    my $self = shift;
+    my @candidates = ( $self,
+                       $self->flipped_horizontally,
+                       $self->flipped_vertically,
+                       $self->flipped_vertically->flipped_horizontally );
+
+    for (1..$#candidates) {
+        $candidates[$_]->{candidate_for} = $self;
+    }
+
+    return @candidates;
+}
+
+sub flipped_horizontally()
+{
+    my( $self ) = @_;
+    my @vertices = $self->vertices;
+    my @N = splice @vertices, -4;
+    for (1..9) {
+        push @vertices, shift @vertices;
+    }
+    @vertices = ( reverse( @vertices ), $N[1], $N[0], $N[3], $N[2] );
+    return bless { graph => $self->graph, vertices => \@vertices };
+}
+
+sub flipped_vertically()
+{
+    my( $self ) = @_;
+    my @vertices = $self->vertices;
+    my @N = splice @vertices, -4;
+    unshift @vertices, pop @vertices;
+    @vertices = ( reverse( @vertices ), reverse( @N ) );
+    return bless { graph => $self->graph, vertices => \@vertices };
+}
+
 sub needs_heteroatom_locants() { '' }
 sub needs_heteroatom_names() { '' }
 
