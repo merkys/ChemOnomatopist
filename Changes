@@ -1,3 +1,10 @@
+0.11.3 unreleased
+
+    - Fix an issue with ChemOnomatopist::Chain::vertex_ids() accessing
+      the vertex array directly.
+    - Fix porphyrin numbering.
+    - Fix infinite loop in a(ba)_n chain extension.
+
 0.11.2 2025-11-11
 
     - Fix infinite recursion in chain naming.
