@@ -111,7 +111,15 @@ sub is_monocycle { any { $_->isa( ChemOnomatopist::Chain::Monocycle:: ) } $_[0]-
 
 sub is_hydrazine { any { $_->isa( ChemOnomatopist::Group::Hydrazine:: ) } $_[0]->groups( $_[1] ) }
 
-sub is_ABA_chain { any { $_->isa( ChemOnomatopist::Chain::ABA:: ) } $_[0]->groups( $_[1] ) }
+sub is_ABA_chain_end
+{
+    my( $graph, $atom ) = @_;
+    my $ABA = first { $_->isa( ChemOnomatopist::Chain::ABA:: ) } $graph->groups( $atom );
+    return '' unless $ABA;
+
+    my @vertices = $ABA->vertices;
+    return any { $vertices[$_] == $atom } ( 0, -1 );
+}
 
 sub looks_like_ABA_chain
 {
@@ -235,9 +243,9 @@ my @rules = (
     # a(ba)n chain
     [ sub { &is_nongroup_atom && &is_heteroatom && &looks_like_ABA_chain }, ( sub { &is_nongroup_atom && &is_heteroatom } ) x 2, NO_MORE_VERTICES,
       sub { $_[0]->add_group( ChemOnomatopist::Chain::ABA->new( $_[0], $_[2], $_[1], $_[3] ) ) } ],
-    [ sub { &is_nongroup_atom && &is_heteroatom && &looks_like_ABA_chain }, \&is_ABA_chain, sub { &is_nongroup_atom && &is_heteroatom }, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_heteroatom && &looks_like_ABA_chain }, \&is_ABA_chain_end, sub { &is_nongroup_atom && &is_heteroatom }, NO_MORE_VERTICES,
       sub { for ($_[0]->groups( $_[2] )) { $_->add( $_[1] ); $_->add( $_[3] ) } } ],
-    [ sub { &is_nongroup_atom && &is_heteroatom && &looks_like_ABA_chain }, ( \&is_ABA_chain ) x 2, NO_MORE_VERTICES,
+    [ sub { &is_nongroup_atom && &is_heteroatom && &looks_like_ABA_chain }, ( \&is_ABA_chain_end ) x 2, NO_MORE_VERTICES,
       sub {
             my( $target ) = $_[0]->groups( $_[2] );
             my( $source ) = $_[0]->groups( $_[3] );
