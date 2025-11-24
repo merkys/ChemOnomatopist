@@ -82,8 +82,12 @@ sub _order_chiral_center_neighbours
     my( $digraph, $A, $B ) = @_;
 
     my $root = first { $_->{root} } $digraph->vertices;
+    die "malformed hierarchical digraph\n" unless $root;
+
     $A = first { $_->{original} == $A } $digraph->neighbours( $root );
     $B = first { $_->{original} == $B } $digraph->neighbours( $root );
+    die "vertex not found in hierarchical digraph\n" unless $A && $B;
+
     my $seen = set( $A, $B );
 
     my @A = ( $A );
