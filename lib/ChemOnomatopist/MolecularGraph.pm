@@ -49,10 +49,8 @@ sub new
         my @chirality_neighbours = @{$atom->{chirality_neighbours}};
         my %order = map { ( $chirality_neighbours[$_] => $_ ) }
                         0..$#chirality_neighbours;
-        my @order_now = sort { ChemOnomatopist::order_by_neighbours( $self, $atom, $a, $b ) }
-                             @chirality_neighbours;
-        if( any { !ChemOnomatopist::order_by_neighbours( $self, $atom, $order_now[$_], $order_now[$_+1] ) }
-                0..@order_now-2 ) {
+        my @order_now = $self->_order_chiral_neighbours( $atom, @chirality_neighbours );
+        if( !@order_now ) {
             # Unimportant chiral center
             delete $atom->{chirality};
             delete $atom->{chirality_neighbours};
@@ -172,5 +170,48 @@ sub has_positive_charge()
 sub is_anion()      {  $_[0]->has_negative_charge && !$_[0]->has_positive_charge }
 sub is_cation()     { !$_[0]->has_negative_charge &&  $_[0]->has_positive_charge }
 sub is_zwitterion() {  $_[0]->has_negative_charge &&  $_[0]->has_positive_charge }
+
+sub _order_chiral_neighbours
+{
+    my( $self, $atom, @neighbours ) = @_;
+    my @order;
+
+    my $cmp;
+    my $in_order = sub { $cmp < 0 };
+
+    $cmp = ChemOnomatopist::order_by_neighbours( $self, $atom, $neighbours[0], $neighbours[1] );
+    return unless $cmp;
+
+    @order = @neighbours[0..1];
+    @order = reverse @order unless $in_order->();
+
+    $cmp = ChemOnomatopist::order_by_neighbours( $self, $atom, $order[0], $neighbours[2] );
+    return unless $cmp;
+
+    if( $in_order->() ) {
+        $cmp = ChemOnomatopist::order_by_neighbours( $self, $atom, $order[1], $neighbours[2] );
+        return unless $cmp;
+
+        push @order, $neighbours[2] if $in_order->();
+        @order = ( $order[0], $neighbours[2], $order[1] ) unless $in_order->();
+    } else {
+        unshift @order, $neighbours[2];
+    }
+
+    $cmp = ChemOnomatopist::order_by_neighbours( $self, $atom, $order[1], $neighbours[3] );
+    return unless $cmp;
+
+    if( $in_order->() ) {
+        $cmp = ChemOnomatopist::order_by_neighbours( $self, $atom, $order[2], $neighbours[3] );
+        push @order, $neighbours[3] if $in_order->();
+        @order = ( @order[0..1], $neighbours[3], $order[2] ) unless $in_order->();
+    } else {
+        $cmp = ChemOnomatopist::order_by_neighbours( $self, $atom, $order[0], $neighbours[3] );
+        @order = ( $order[0], $neighbours[3], @order[1..2] ) if $in_order->();
+        unshift @order, $neighbours[3] unless $in_order->();
+    }
+
+    return @order;
+}
 
 1;
