@@ -126,6 +126,27 @@ sub subgraph()
     }
 }
 
+# Implemented according to BBv3 P-92.1.4
+# TODO: Finish
+sub hierarchical_digraph($$@)
+{
+    my( $self, $atom, $digraph, $atom_image, $parent, $path ) = @_;
+
+    $digraph = Graph::Undirected->new unless $digraph;
+    $path = set( $atom ) unless $path;
+    $atom_image = { original => $atom } unless $atom_image;
+
+    for my $neighbour ($self->neighbours( $atom )) {
+        next if $parent && $neighbour == $parent;
+        my $neighbour_image = { original => $neighbour };
+        $digraph->add_edge( $atom_image, $neighbour_image );
+        next if $path->has( $neighbour );
+        $self->hierarchical_digraph( $neighbour, $digraph, $neighbour_image, $atom, set( @$path, $neighbour ) );
+    }
+
+    return $digraph;
+}
+
 sub add_group($)
 {
     my( $self, $group ) = @_;
