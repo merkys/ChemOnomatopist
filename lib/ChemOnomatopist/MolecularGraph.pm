@@ -7,7 +7,12 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::Util::Graph;
-use Chemistry::OpenSMILES qw( is_chiral is_chiral_tetrahedral mirror );
+use Chemistry::OpenSMILES qw(
+    is_chiral
+    is_chiral_tetrahedral
+    is_double_bond
+    mirror
+);
 use Graph::MoreUtils qw( graph_replace );
 use Graph::Undirected;
 use List::Util qw( all any first );
@@ -137,6 +142,10 @@ sub hierarchical_digraph($$@)
     $atom_image = { original => $atom } unless $atom_image;
 
     for my $neighbour ($self->neighbours( $atom )) {
+        if( is_double_bond( $self, $atom, $neighbour ) ) {
+            # Depict double bonds
+            $digraph->add_edge( $atom_image, { original => $neighbour } );
+        }
         next if $parent && $neighbour == $parent;
         my $neighbour_image = { original => $neighbour };
         $digraph->add_edge( $atom_image, $neighbour_image );
