@@ -99,8 +99,11 @@ sub get_name
 
         require Chemistry::OpenSMILES::Parser;
         my $parser = Chemistry::OpenSMILES::Parser->new;
-        my @graphs = map { ChemOnomatopist::MolecularGraph->new( $_ ) }
-                         $parser->parse( $what );
+        my @graphs = $parser->parse( $what );
+
+        die "separate molecular entities are not handled yet\n" if @graphs > 2;
+
+        @graphs = map { ChemOnomatopist::MolecularGraph->new( $_ ) } @graphs;
 
         # Detecting and naming salts
         if( !$CAUTIOUS && @graphs == 2 &&
