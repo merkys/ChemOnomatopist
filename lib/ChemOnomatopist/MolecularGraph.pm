@@ -6,6 +6,10 @@ package ChemOnomatopist::MolecularGraph;
 use strict;
 use warnings;
 
+use ChemOnomatopist::Util qw(
+    atomic_number
+    cmp_arrays
+);
 use ChemOnomatopist::Util::Graph;
 use Chemistry::OpenSMILES qw(
     is_chiral
@@ -51,12 +55,12 @@ sub new
             next;
         }
 
+        my $digraph = $self->hierarchical_digraph( $atom );
         my @chirality_neighbours = @{$atom->{chirality_neighbours}};
         my %order = map { ( $chirality_neighbours[$_] => $_ ) }
                         0..$#chirality_neighbours;
-        my @order_now = sort { ChemOnomatopist::order_by_neighbours( $self, $atom, $a, $b ) }
-                             @chirality_neighbours;
-        if( any { !ChemOnomatopist::order_by_neighbours( $self, $atom, $order_now[$_], $order_now[$_+1] ) }
+        my @order_now = sort { _order_chiral_center_neighbours( $digraph, $a, $b ) } @chirality_neighbours;
+        if( any { !_order_chiral_center_neighbours( $digraph, $order_now[$_], $order_now[$_+1] ) }
                 0..@order_now-2 ) {
             # Unimportant chiral center
             delete $atom->{chirality};
@@ -71,6 +75,36 @@ sub new
     }
 
     return $self;
+}
+
+sub _order_chiral_center_neighbours
+{
+    my( $digraph, $A, $B ) = @_;
+
+    my $root = first { $_->{root} } $digraph->vertices;
+    $A = first { $_->{original} == $A } $digraph->neighbours( $root );
+    $B = first { $_->{original} == $B } $digraph->neighbours( $root );
+    my $seen = set( $A, $B );
+
+    my @A = ( $A );
+    my @B = ( $B );
+    while( @A || @B ) {
+        my $cmp;
+        $cmp = cmp_arrays( [ reverse sort map { atomic_number( $_->{original} ) } @B ],
+                           [ reverse sort map { atomic_number( $_->{original} ) } @A ] );
+        return $cmp if $cmp;
+
+        # BBv3 P-92.3: higher atomic numbers appear first
+        $cmp = cmp_arrays( [ reverse sort map { exists $_->{isotope} ? $_->{isotope} : atomic_number( $_ ) } map { $_->{original} } @B ],
+                           [ reverse sort map { exists $_->{isotope} ? $_->{isotope} : atomic_number( $_ ) } map { $_->{original} } @A ] );
+        return $cmp if $cmp;
+
+        @A = grep { !$seen->has( $_ ) } map { $digraph->neighbours( $_ ) } @A;
+        @B = grep { !$seen->has( $_ ) } map { $digraph->neighbours( $_ ) } @B;
+        $seen->insert( @A, @B );
+    }
+
+    return 0;
 }
 
 sub atoms() { $_[0]->vertices }
@@ -132,14 +166,14 @@ sub subgraph()
 }
 
 # Implemented according to BBv3 P-92.1.4
-# TODO: Finish
+# TODO: Implement support for rings as per BBv3 P-92.1.4.4
 sub hierarchical_digraph($$@)
 {
     my( $self, $atom, $digraph, $atom_image, $parent, $path ) = @_;
 
     $digraph = Graph::Undirected->new unless $digraph;
     $path = set( $atom ) unless $path;
-    $atom_image = { original => $atom } unless $atom_image;
+    $atom_image = { original => $atom, root => 1 } unless $atom_image;
 
     for my $neighbour ($self->neighbours( $atom )) {
         if( is_double_bond( $self, $atom, $neighbour ) ) {
