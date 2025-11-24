@@ -12,10 +12,8 @@ use Test::More;
 
 my @cases = (
     # From BBv3 P-92.1.4.3
-    { smiles => 'O=C1CCCC12CCC=C2', atom => 5, digraph => 'CCCCC([O])(OC)C(C(C)C(C)CCC)(CCC(C)C(C)C)CCCC([O])(OC)C', AUTHOR => 1 },
-
-    # (1R)-1-cyclopropyl-2-methylpropan-1-ol from BBv3 P-92.1.4.3
-    { smiles => 'C1(CC1)[C@@H](C(C)C)O', atom => 3, digraph => 'CC(C)C(O)C(CC[C])CC[C]' },
+    { smiles => 'O=C1CCCC12CCC=C2', atom => 5, digraph => '[C]CCCC([O])(O[C])C(C([C])C([C])CC[C])(CCC([C])C([C])[C])CCCC([O])(O[C])[C]' },
+    { smiles => 'C1(CC1)[C@@H](C(C)C)O', atom => 3, digraph => 'CC(C)C(O)C(CC[C])CC[C]' }, # (1R)-1-cyclopropyl-2-methylpropan-1-ol
 );
 
 eval 'use Graph::Nauty qw( are_isomorphic )';
@@ -33,6 +31,9 @@ for my $case (@cases) {
                         $parser->parse( $case->{smiles} );
     my $atom = first { $_->{number} == $case->{atom} } $moiety->vertices;
     my $digraph_got = $moiety->hierarchical_digraph( $atom );
+    for ($digraph_got->vertices) {
+        $_->{symbol} = $_->{original}{symbol};
+    }
     my( $digraph_exp ) = $parser->parse( $case->{digraph} );
-    ok are_isomorphic( $digraph_got, $digraph_exp, sub { $_[0]->{original} ? $_[0]->{original}{symbol} : $_[0]->{symbol} } );
+    ok are_isomorphic( $digraph_got, $digraph_exp, sub { $_[0]->{symbol} } );
 }
