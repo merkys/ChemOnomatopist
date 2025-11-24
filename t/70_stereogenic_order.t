@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use ChemOnomatopist;
+use ChemOnomatopist::MolecularGraph;
 use Chemistry::OpenSMILES qw( is_chiral );
 use Chemistry::OpenSMILES::Parser;
 use List::Util qw( first );
@@ -32,9 +33,13 @@ plan tests => scalar @cases;
 my $parser = Chemistry::OpenSMILES::Parser->new;
 
 for my $case (@cases) {
-    my( $moiety ) = $parser->parse( $case->{smiles} );
+    # Manual bless() as new() would perform the chirality ordering on its own
+    my( $moiety ) = map { bless $_, ChemOnomatopist::MolecularGraph:: }
+                        $parser->parse( $case->{smiles} );
     my $atom = first { is_chiral $_ } $moiety->vertices;
-    my @order = sort { ChemOnomatopist::order_by_neighbours( $moiety, $atom, $a, $b ) } $moiety->neighbours( $atom );
+    my $digraph = $moiety->hierarchical_digraph( $atom );
+    my @order = sort { ChemOnomatopist::MolecularGraph::_order_chiral_center_neighbours( $digraph, $a, $b ) }
+                     $moiety->neighbours( $atom );
     my $ok;
     if( ref $case->{order} ) {
         my $regex = '^(' . join( '|', @{$case->{order}} ) . ')$';
