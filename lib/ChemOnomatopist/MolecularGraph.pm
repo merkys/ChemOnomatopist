@@ -6,6 +6,7 @@ package ChemOnomatopist::MolecularGraph;
 use strict;
 use warnings;
 
+use ChemOnomatopist::DigraphComparator;
 use ChemOnomatopist::Util qw(
     atomic_number
     cmp_arrays
@@ -55,12 +56,11 @@ sub new
             next;
         }
 
-        my $digraph = $self->hierarchical_digraph( $atom );
         my @chirality_neighbours = @{$atom->{chirality_neighbours}};
         my %order = map { ( $chirality_neighbours[$_] => $_ ) }
                         0..$#chirality_neighbours;
-        my @order_now = sort { _order_chiral_center_neighbours( $digraph, $a, $b ) } @chirality_neighbours;
-        if( any { !_order_chiral_center_neighbours( $digraph, $order_now[$_], $order_now[$_+1] ) }
+        my @order_now = sort { ChemOnomatopist::DigraphComparator->new( $self, $atom, $a, $b )->compare } @chirality_neighbours;
+        if( any { !ChemOnomatopist::DigraphComparator->new( $self, $atom,  $order_now[$_], $order_now[$_+1] )->compare }
                 0..@order_now-2 ) {
             # Unimportant chiral center
             delete $atom->{chirality};
