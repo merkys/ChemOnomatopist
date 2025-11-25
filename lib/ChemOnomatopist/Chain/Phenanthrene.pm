@@ -41,7 +41,7 @@ sub new
 
         # Phenanthridine and its derivatives have a strict order
         if( (grep { ChemOnomatopist::Util::element( $_ ) ne 'C' } @vertices) == 1 &&
-            (grep { ChemOnomatopist::Util::element( $_ ) =~ /^(As|N|P)$/ } @vertices) == 1 &&
+            (grep { ChemOnomatopist::Util::element( $_ ) =~ /^(As|N|O|P)$/ } @vertices) == 1 &&
             ChemOnomatopist::Util::element( $vertices[5] ) eq 'C' ) {
             die "unknown phenanthrene derivative\n";
         }
@@ -126,8 +126,9 @@ sub prefix()
     }
 
     if( @heteroatom_locants == 1 && all { $_ == 5 } @heteroatom_locants ) {
-        return ChemOnomatopist::Name->new( 'arsanthridine' )    if all { $_ eq 'As' } $self->heteroatoms;
-        return ChemOnomatopist::Name->new( 'phosphanthridine' ) if all { $_ eq 'P'  } $self->heteroatoms;
+        return ChemOnomatopist::Name->new( 'arsanthridine' )        if all { $_ eq 'As' } $self->heteroatoms;
+        return ChemOnomatopist::Name->new( '6H-dibenzo[b,d]pyran' ) if all { $_ eq 'O'  } $self->heteroatoms;
+        return ChemOnomatopist::Name->new( 'phosphanthridine' )     if all { $_ eq 'P'  } $self->heteroatoms;
     }
 
     return ChemOnomatopist::Name->new( 'phenanthrene' ) if $self->is_hydrocarbon;
