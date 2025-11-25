@@ -33,16 +33,17 @@ sub new
 
     # Adjust the order
     if( any { ChemOnomatopist::Util::element( $_ ) ne 'C' } @vertices ) {
-        # Find the order so as N is closest to the beginning of the chain
+        # Flip the order to get a heteroatom closest to the beginning of the chain
         my $first = first { ChemOnomatopist::Util::element( $vertices[$_] )    ne 'C' } 0..$#vertices;
         my $last  = first { ChemOnomatopist::Util::element( $vertices[-1-$_] ) ne 'C' } 0..$#vertices;
         @vertices = reverse @vertices if $last < $first;
         push @vertices, shift @vertices;
 
-        # Phenanthridine has a strict order
-        if( (grep { ChemOnomatopist::Util::element( $_ ) eq 'N' } @vertices) == 1 &&
-            ChemOnomatopist::Util::element( $vertices[5] ) ne 'N' ) {
-            die "cannot handle complicated cyclic compounds\n";
+        # Phenanthridine and its derivatives have a strict order
+        if( (grep { ChemOnomatopist::Util::element( $_ ) ne 'C' } @vertices) == 1 &&
+            (grep { ChemOnomatopist::Util::element( $_ ) =~ /^(As|N|P)$/ } @vertices) == 1 &&
+            ChemOnomatopist::Util::element( $vertices[5] ) eq 'C' ) {
+            die "unknown phenanthrene derivative\n";
         }
     } else {
         for (1..5) {
