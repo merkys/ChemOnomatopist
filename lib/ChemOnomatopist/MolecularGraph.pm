@@ -77,40 +77,6 @@ sub new
     return $self;
 }
 
-sub _order_chiral_center_neighbours
-{
-    my( $digraph, $A, $B ) = @_;
-
-    my $root = first { $_->{root} } $digraph->vertices;
-    die "malformed hierarchical digraph\n" unless $root;
-
-    $A = first { $_->{original} == $A } $digraph->neighbours( $root );
-    $B = first { $_->{original} == $B } $digraph->neighbours( $root );
-    die "vertex not found in hierarchical digraph\n" unless $A && $B;
-
-    my $seen = set( $root, $A, $B );
-
-    my @A = ( $A );
-    my @B = ( $B );
-    while( @A || @B ) {
-        my $cmp;
-        $cmp = cmp_arrays( [ reverse sort map { atomic_number( $_->{original} ) } @B ],
-                           [ reverse sort map { atomic_number( $_->{original} ) } @A ] );
-        return $cmp if $cmp;
-
-        # BBv3 P-92.3: higher atomic numbers appear first
-        $cmp = cmp_arrays( [ reverse sort map { exists $_->{isotope} ? $_->{isotope} : atomic_number( $_ ) } map { $_->{original} } @B ],
-                           [ reverse sort map { exists $_->{isotope} ? $_->{isotope} : atomic_number( $_ ) } map { $_->{original} } @A ] );
-        return $cmp if $cmp;
-
-        @A = grep { !$seen->has( $_ ) } map { $digraph->neighbours( $_ ) } @A;
-        @B = grep { !$seen->has( $_ ) } map { $digraph->neighbours( $_ ) } @B;
-        $seen->insert( @A, @B );
-    }
-
-    return 0;
-}
-
 sub atoms() { $_[0]->vertices }
 sub bonds() { $_[0]->edges }
 
@@ -167,31 +133,6 @@ sub subgraph()
     } else {
         return ChemOnomatopist::Util::Graph::subgraph( $self, @vertices );
     }
-}
-
-# Implemented according to BBv3 P-92.1.4
-# TODO: Implement support for rings as per BBv3 P-92.1.4.4
-sub hierarchical_digraph($$@)
-{
-    my( $self, $atom, $digraph, $atom_image, $parent, $path ) = @_;
-
-    $digraph = Graph::Undirected->new unless $digraph;
-    $path = set( $atom ) unless $path;
-    $atom_image = { original => $atom, root => 1 } unless $atom_image;
-
-    for my $neighbour ($self->neighbours( $atom )) {
-        if( is_double_bond( $self, $atom, $neighbour ) ) {
-            # Depict double bonds
-            $digraph->add_edge( $atom_image, { original => $neighbour } );
-        }
-        next if $parent && $neighbour == $parent;
-        my $neighbour_image = { original => $neighbour };
-        $digraph->add_edge( $atom_image, $neighbour_image );
-        next if $path->has( $neighbour );
-        $self->hierarchical_digraph( $neighbour, $digraph, $neighbour_image, $atom, set( @$path, $neighbour ) );
-    }
-
-    return $digraph;
 }
 
 sub add_group($)
