@@ -88,7 +88,7 @@ sub _order_chiral_center_neighbours
     $B = first { $_->{original} == $B } $digraph->neighbours( $root );
     die "vertex not found in hierarchical digraph\n" unless $A && $B;
 
-    my $seen = set( $A, $B );
+    my $seen = set( $root, $A, $B );
 
     my @A = ( $A );
     my @B = ( $B );

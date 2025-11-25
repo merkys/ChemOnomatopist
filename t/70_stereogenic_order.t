@@ -24,6 +24,9 @@ my @cases = (
     # Derived from COD entry 1516725
     { smiles => 'C1N(C=C(CN1))Cc1ccc(cc1)[C@H]1[C@H](c2ccncc2)[C@H](c2ccc(CN3CNCC=C3)cc2)[C@H]1c1ccncc1', order => [ '14,35,10,55', '35,14,10,55' ] },
     { smiles => 'O=C1N(C=C(C(=O)N1C)C)Cc1ccc(cc1)[C@H]1[C@H](c2ccncc2)[C@H](c2ccc(CN3C(=O)N(C)C(=O)C(C)=C3)cc2)[C@H]1c1ccncc1', order => [ '18,43,14,63', '43,18,14,63' ] },
+
+    # Synthetic test case for a center in a ring
+    { smiles => '[C@H]1(Cl)OCCCCC1',     order => '1,2,7,8' },
 );
 
 @cases = grep { !exists $_->{AUTHOR} } @cases unless $ENV{AUTHOR_TESTING};
