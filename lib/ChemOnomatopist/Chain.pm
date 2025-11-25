@@ -11,6 +11,7 @@ use ChemOnomatopist::Chain::Amine;
 use ChemOnomatopist::Chain::Bicycle;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Charge;
+use ChemOnomatopist::DigraphComparator;
 use ChemOnomatopist::Elements qw( %elements );
 use ChemOnomatopist::Group::Carboxyl;
 use ChemOnomatopist::Group::Ether;
@@ -756,11 +757,11 @@ sub stereodescriptor_part()
                 $cistrans *= -1 if $atom3->{number} > $atom4->{number};
 
                 my $atom1_new = first { 1 }
-                                sort  { ChemOnomatopist::order_by_neighbours( $graph, $atom2, $a, $b ) }
+                                sort  { ChemOnomatopist::DigraphComparator->new( $graph, $atom2, $a, $b )->compare }
                                 grep  { $_ != $atom3 }
                                       $graph->neighbours( $atom2 );
                 my $atom4_new = first { 1 }
-                                sort  { ChemOnomatopist::order_by_neighbours( $graph, $atom3, $a, $b ) }
+                                sort  { ChemOnomatopist::DigraphComparator->new( $graph, $atom3, $a, $b )->compare }
                                 grep  { $_ != $atom2 }
                                       $graph->neighbours( $atom3 );
                 $cistrans *= -1 if ($atom1 == $atom1_new) ^ ($atom4 == $atom4_new);

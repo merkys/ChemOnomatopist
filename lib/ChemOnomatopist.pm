@@ -1679,30 +1679,4 @@ sub alkane_chain_name($)
     return IUPAC_numerical_multiplier( $N );
 }
 
-# Implemented according to BBv3 P-92.1.4
-sub order_by_neighbours($$$$)
-{
-    my( $graph, $parent, $A, $B ) = @_;
-
-    my $distance = 0;
-    my @frontA = ( $A );
-    my @frontB = ( $B );
-    while( @frontA || @frontB ) {
-        my $cmp = cmp_arrays( [ reverse sort map { atomic_number( $_ ) } @frontB ],
-                              [ reverse sort map { atomic_number( $_ ) } @frontA ] );
-        return $cmp if $cmp;
-
-        # BBv3 P-92.3: higher atomic numbers appear first
-        $cmp = cmp_arrays( [ reverse sort map { exists $_->{isotope} ? $_->{isotope} : atomic_number( $_ ) } @frontB ],
-                           [ reverse sort map { exists $_->{isotope} ? $_->{isotope} : atomic_number( $_ ) } @frontA ] );
-        return $cmp if $cmp;
-
-        @frontA = neighbours_at_distance( $graph, $A, $distance, set( $parent ) );
-        @frontB = neighbours_at_distance( $graph, $B, $distance, set( $parent ) );
-        $distance++;
-    }
-
-    return 0;
-}
-
 1;
