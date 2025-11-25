@@ -110,25 +110,21 @@ sub prefix()
 
     my @heteroatom_locants = $self->locants( $self->heteroatom_positions );
 
-    if( all { $_ eq 'N' } $self->heteroatoms ) {
-        if( @heteroatom_locants == 1 && all { $_ == 5 } @heteroatom_locants ) {
-            return ChemOnomatopist::Name->new( 'phenanthridine' );
-        }
-        if( @heteroatom_locants == 2 &&
-            (
-              ( $heteroatom_locants[0] == 1 && $heteroatom_locants[1] >= 7 && $heteroatom_locants[1] <= 10 ) ||
-              ( $heteroatom_locants[0] == 2 && $heteroatom_locants[1] >= 7 && $heteroatom_locants[1] <=  9 ) ||
-              ( $heteroatom_locants[0] == 3 && $heteroatom_locants[1] >= 7 && $heteroatom_locants[1] <=  8 ) ||
-              ( $heteroatom_locants[0] == 4 && $heteroatom_locants[1] == 7 )
-            ) ) {
-            return ChemOnomatopist::Name->new( 'phenanthroline' );
-        }
-    }
-
     if( @heteroatom_locants == 1 && all { $_ == 5 } @heteroatom_locants ) {
         return ChemOnomatopist::Name->new( 'arsanthridine' )        if all { $_ eq 'As' } $self->heteroatoms;
+        return ChemOnomatopist::Name->new( 'phenanthridine' )       if all { $_ eq 'N'  } $self->heteroatoms;
         return ChemOnomatopist::Name->new( '6H-dibenzo[b,d]pyran' ) if all { $_ eq 'O'  } $self->heteroatoms;
         return ChemOnomatopist::Name->new( 'phosphanthridine' )     if all { $_ eq 'P'  } $self->heteroatoms;
+    }
+
+    if( @heteroatom_locants == 2 && (all { $_ eq 'N' } $self->heteroatoms) &&
+        (
+          ( $heteroatom_locants[0] == 1 && $heteroatom_locants[1] >= 7 && $heteroatom_locants[1] <= 10 ) ||
+          ( $heteroatom_locants[0] == 2 && $heteroatom_locants[1] >= 7 && $heteroatom_locants[1] <=  9 ) ||
+          ( $heteroatom_locants[0] == 3 && $heteroatom_locants[1] >= 7 && $heteroatom_locants[1] <=  8 ) ||
+          ( $heteroatom_locants[0] == 4 && $heteroatom_locants[1] == 7 )
+        ) ) {
+        return ChemOnomatopist::Name->new( 'phenanthroline' );
     }
 
     return ChemOnomatopist::Name->new( 'phenanthrene' ) if $self->is_hydrocarbon;
