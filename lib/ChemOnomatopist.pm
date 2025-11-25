@@ -60,7 +60,6 @@ use ChemOnomatopist::Util::Graph qw(
     graph_longest_paths_from_vertex
     graph_path_between_vertices
     graph_without_edge_attributes
-    neighbours_at_distance
     subgraph
     tree_branch_positions
     tree_number_of_branches

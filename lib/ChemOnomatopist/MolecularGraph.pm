@@ -7,15 +7,10 @@ use strict;
 use warnings;
 
 use ChemOnomatopist::DigraphComparator;
-use ChemOnomatopist::Util qw(
-    atomic_number
-    cmp_arrays
-);
 use ChemOnomatopist::Util::Graph;
 use Chemistry::OpenSMILES qw(
     is_chiral
     is_chiral_tetrahedral
-    is_double_bond
     mirror
 );
 use Graph::MoreUtils qw( graph_replace );
