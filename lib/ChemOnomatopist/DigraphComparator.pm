@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use Chemistry::OpenSMILES qw( is_double_bond );
+use ChemOnomatopist;
 use ChemOnomatopist::Util qw(
     atomic_number
     cmp_arrays
@@ -61,6 +62,10 @@ sub bump
         }
     }
     $self->{B_paths} = \@B_paths;
+
+    if( @A_paths > 10000 || @B_paths > 10000 ) {
+        die 'structure is too complex to rearrange its chiral centers' . "\n";
+    }
 
     return \@A, \@B;
 }
