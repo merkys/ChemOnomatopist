@@ -47,6 +47,7 @@ use ChemOnomatopist::Group::XO3;
 use ChemOnomatopist::Util qw( element );
 use Chemistry::OpenSMILES qw(
     is_double_bond
+    is_single_bond
     is_triple_bond
 );
 use Graph::Grammar;
@@ -197,10 +198,14 @@ my @rules = (
       sub { $_[0]->replace( ChemOnomatopist::Group::Azide->new, @_[1..3] ) } ],
 
     # Hydrazine and diazene
-    [ ( sub { &is_nongroup_atom && &is_N } ) x 2,
-        sub { is_double_bond( @_ )
-                ? $_[0]->add_group( ChemOnomatopist::Group::Diazene->new( @_[0..2] ) )
-                : $_[0]->add_group( ChemOnomatopist::Group::Hydrazine->new( @_[0..2] ) ) } ],
+    [ sub { &is_nongroup_atom && &is_N },
+        EDGE { is_double_bond( @_ ) },
+      sub { &is_nongroup_atom && &is_N },
+      sub { $_[0]->add_group( ChemOnomatopist::Group::Diazene->new( @_[0..2] ) ) } ],
+    [ sub { &is_nongroup_atom && &is_N },
+        EDGE { is_single_bond( @_ ) },
+      sub { &is_nongroup_atom && &is_N },
+      sub { $_[0]->add_group( ChemOnomatopist::Group::Hydrazine->new( @_[0..2] ) ) } ],
 
     # Hydrazide
     [ sub { &is_nongroup_atom && &is_C }, \&is_hydrazine, \&is_ketone,
