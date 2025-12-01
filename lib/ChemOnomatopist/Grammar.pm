@@ -192,7 +192,7 @@ my @rules = (
     # Azide
     [ sub { &is_nongroup_atom && &is_N && &charge_plus_one },
         EDGE { is_double_bond( @_ ) }, sub { &is_nongroup_atom && &is_N && &charge_minus_one && &has_1_neighbour },
-        EDGE { is_double_bond( @_ ) }, \&is_N,
+        EDGE { is_double_bond( @_ ) }, sub { &is_N && !&is_circular },
       NO_MORE_VERTICES,
       sub { $_[0]->replace( ChemOnomatopist::Group::Azide->new, @_[1..3] ) } ],
 
