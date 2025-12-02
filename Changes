@@ -1,5 +1,6 @@
 0.11.5 unreleased
 
+    - Filter out identical amine-only chains in select_sidechain().
     - Do not detect N#N as hydrazine.
     - Require all azide atoms to be acyclic.
     - Improve phenanthrene derivative recognition.
