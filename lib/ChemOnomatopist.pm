@@ -49,6 +49,7 @@ use ChemOnomatopist::Util qw(
     cmp_arrays
     copy
     element
+    uniqby
     zip
 );
 use ChemOnomatopist::Util::Graph qw(
@@ -1147,8 +1148,13 @@ sub select_sidechain
             }
         }
     } else {
-        @chains = map { ChemOnomatopist::Chain->new( $graph, $parent, $_->vertices ) }
-                      @path_parts;
+        # Filter out identical amine-only chains
+        @chains = uniqby { ref $_ eq ChemOnomatopist::Chain::
+                           && $_->length == 1 &&
+                           ($_->vertices)[0]->isa( ChemOnomatopist::Group::Amine:: )
+                                ? ($_->vertices)[0] : $_ }
+                  map    { ChemOnomatopist::Chain->new( $graph, $parent, $_->vertices ) }
+                         @path_parts;
     }
 
     die "cannot select a sidechain\n" unless @chains;

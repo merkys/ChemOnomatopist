@@ -23,6 +23,7 @@ our @EXPORT_OK = qw(
     cmp_arrays
     copy
     element
+    uniqby
     zip
 );
 
@@ -131,6 +132,22 @@ sub element
     }
 
     return $atom_or_group->element;
+}
+
+sub uniqby(&@)
+{
+    my $code = shift;
+    return () unless @_;
+
+    my @values = map { $code->( $_ ) } @_;
+    my %seen;
+    my @filtered;
+    for (0..$#_) {
+        next if $seen{$values[$_]};
+        $seen{$values[$_]} = 1;
+        push @filtered, $_[$_];
+    }
+    return @filtered;
 }
 
 sub zip(@)
