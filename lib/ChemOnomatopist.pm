@@ -1464,20 +1464,25 @@ sub pick_chain_with_lowest_attachments_alphabetically
 
     my @chain_locants;
     for my $chain (@chains) {
-        my @locant_names = $chain->locant_names;
-        my @names;
-        my @positions;
-        for (0..$#locant_names) {
-            next unless @{$locant_names[$_]}; # Skip empty positions
-            push @names, @{$locant_names[$_]};
-            push @positions, ( $_ ) x @{$locant_names[$_]};
-        }
+        if( $chain->length > 1 ) {
+            my @locant_names = $chain->locant_names;
+            my @names;
+            my @positions;
+            for (0..$#locant_names) {
+                next unless @{$locant_names[$_]}; # Skip empty positions
+                push @names, @{$locant_names[$_]};
+                push @positions, ( $_ ) x @{$locant_names[$_]};
+            }
 
-        # At this point parallel arrays @names contains names, and @positions contains positions.
-        my @order = sort { cmp_only_alphabetical( $names[$a], $names[$b] ) ||
-                           $names[$a] cmp $names[$b] }
-                         0..$#names;
-        push @chain_locants, [ map { $positions[$_] } @order ];
+            # At this point parallel arrays @names contains names, and @positions contains positions.
+            my @order = sort { cmp_only_alphabetical( $names[$a], $names[$b] ) ||
+                               $names[$a] cmp $names[$b] }
+                             0..$#names;
+            push @chain_locants, [ map { $positions[$_] } @order ];
+        } else {
+            # Locants are going to be the same, no need to retrieve their names
+            push @chain_locants, [ ( 0 ) x $chain->number_of_branches ];
+        }
     }
 
     my @sorted = sort { cmp_arrays( $chain_locants[$a], $chain_locants[$b] ) }
