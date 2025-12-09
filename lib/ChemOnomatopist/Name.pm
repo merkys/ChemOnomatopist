@@ -56,7 +56,9 @@ sub append($)
         $self =~ /a$/ && $name =~ /^o/ ) {
         $self->[-1]{value} =~ s/a$//;
     }
-    $name->[0]{value} =~ s/^-// if @$self && $self->[-1] =~ /-$/ && $name =~ /^-/;
+    if( @$self && $self->[-1] =~ /-$/ && $name =~ /^-/ ) {
+        $name->isa( ChemOnomatopist::Name:: ) ? $name->[0]{value} =~ s/^-// : $name->{value} =~ s/^-//;
+    }
 
     push @$self, blessed $name && $name->isa( ChemOnomatopist::Name:: ) ? @$name : $name;
 
