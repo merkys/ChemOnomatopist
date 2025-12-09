@@ -165,9 +165,9 @@ sub prefix() { &suffix }
 sub suffix()
 {
     my( $self ) = @_;
-    return 'acenaphthylene'    if $self->is_acenaphthylene;
-    return 'aceanthrylene'     if $self->is_aceanthrylene;
-    return 'acephenanthrylene' if $self->is_acephenanthrylene;
+    return ChemOnomatopist::Name->new( 'acenaphthylene'    ) if $self->is_acenaphthylene;
+    return ChemOnomatopist::Name->new( 'aceanthrylene'     ) if $self->is_aceanthrylene;
+    return ChemOnomatopist::Name->new( 'acephenanthrylene' ) if $self->is_acephenanthrylene;
     die "unknown ace...ylene\n";
 }
 
