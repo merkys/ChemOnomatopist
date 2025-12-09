@@ -16,7 +16,6 @@ use ChemOnomatopist::Chain::Circular;
 use ChemOnomatopist::Chain::Ether;
 use ChemOnomatopist::Chain::Fluorene;
 use ChemOnomatopist::Chain::FromHalves;
-use ChemOnomatopist::Chain::Imine;
 use ChemOnomatopist::Chain::Monocycle;
 use ChemOnomatopist::Chain::Monospiro;
 use ChemOnomatopist::Chain::Phenanthrene;

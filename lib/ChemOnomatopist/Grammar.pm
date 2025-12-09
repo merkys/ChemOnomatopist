@@ -28,6 +28,7 @@ use ChemOnomatopist::Group::Cyanide;
 use ChemOnomatopist::Group::Diazene;
 use ChemOnomatopist::Group::Hydroperoxide;
 use ChemOnomatopist::Group::Hydroxy;
+use ChemOnomatopist::Chain::Imine;
 use ChemOnomatopist::Group::Imine;
 use ChemOnomatopist::Group::Isocyanate;
 use ChemOnomatopist::Group::Isocyanide;
@@ -467,8 +468,8 @@ our @mainchain_rules = (
           } ],
 
     # Imine chains
-    [ sub { &is_mainchain && &most_senior_group && &most_senior_group->isa( ChemOnomatopist::Group::Imine:: ) && &number_of_most_senior_groups == 1 },
-      sub { &is_imine && &is_nongroup },
+    [ sub { !&is_imine && &is_mainchain && &most_senior_group && &most_senior_group->isa( ChemOnomatopist::Group::Imine:: ) && &number_of_most_senior_groups == 1 },
+      sub {  &is_imine && &is_nongroup },
       sub {
             my( $chain ) = $_[0]->groups( $_[1] );
             $_[0]->delete_group( $chain );
